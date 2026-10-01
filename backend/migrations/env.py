@@ -7,7 +7,8 @@ from sqlalchemy.engine import Connection
 from sqlalchemy.ext.asyncio import async_engine_from_config
 
 from app.core.config import get_settings
-from app.models import User
+from app.db.base import Base
+from app.models import Document, User  # noqa: F401
 
 config = context.config
 
@@ -21,7 +22,7 @@ config.set_main_option(
     settings.database_url.replace("%", "%%"),
 )
 
-target_metadata = User.metadata
+target_metadata = Base.metadata
 
 
 def run_migrations_offline() -> None:
