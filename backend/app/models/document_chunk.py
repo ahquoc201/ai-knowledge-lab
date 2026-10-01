@@ -1,6 +1,7 @@
 from datetime import datetime
 from uuid import UUID, uuid4
 
+from pgvector.sqlalchemy import Vector
 from sqlalchemy import (
     DateTime,
     ForeignKey,
@@ -12,6 +13,7 @@ from sqlalchemy import (
 from sqlalchemy.dialects.postgresql import UUID as PG_UUID
 from sqlalchemy.orm import Mapped, mapped_column
 
+from app.core.embedding import EMBEDDING_DIMENSIONS
 from app.db.base import Base
 
 
@@ -57,6 +59,11 @@ class DocumentChunk(Base):
     char_end: Mapped[int] = mapped_column(
         Integer,
         nullable=False,
+    )
+
+    embedding: Mapped[list[float] | None] = mapped_column(
+        Vector(EMBEDDING_DIMENSIONS),
+        nullable=True,
     )
 
     created_at: Mapped[datetime] = mapped_column(
