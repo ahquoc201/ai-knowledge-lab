@@ -1,9 +1,17 @@
+from uuid import UUID
+
+from anyio import to_thread
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.models.document import Document
 from app.models.document_chunk import DocumentChunk
-from app.repositories.document_chunk import replace_document_chunks
+from app.repositories.document_chunk import (
+    list_document_chunks,
+    replace_document_chunks,
+    save_chunk_embeddings,
+)
 from app.services.chunking import chunk_text
+from app.services.embedding import get_embedding_service
 
 
 async def chunk_document(
@@ -34,4 +42,40 @@ async def chunk_document(
         session,
         document_id=document.id,
         chunks=document_chunks,
+    )
+
+def _embed_passages(
+    texts: list[str],
+) -> list[list[float]]:
+    service = get_embedding_service()
+    return service.embed_passages(texts)
+
+
+async def embed_document_chunks(
+    session: AsyncSession,
+    *,
+    document_id: UUID,
+) -> list[DocumentChunk]:
+    chunks = await list_document_chunks(
+        session,
+        document_id=document_id,
+    )
+
+    if not chunks:
+        return []
+
+    texts = [
+        chunk.content
+        for chunk in chunks
+    ]
+
+    embeddings = await to_thread.run_sync(
+        _embed_passages,
+        texts,
+    )
+
+    return await save_chunk_embeddings(
+        session,
+        chunks=chunks,
+        embeddings=embeddings,
     )

@@ -83,6 +83,17 @@ def test_document_chunking_and_user_isolation(client: TestClient):
 
     chunks = chunk_response.json()
 
+    embedding_response = client.post(
+        f"/api/v1/documents/{document_id}/embeddings",
+        headers=user_a_headers,
+    )
+
+    assert embedding_response.status_code == 200
+    assert embedding_response.json() == {
+        "document_id": document_id,
+        "embedded_chunks": 3,
+    }
+
     assert len(chunks) == 3
 
     assert chunks[0]["chunk_index"] == 0
@@ -124,6 +135,17 @@ def test_document_chunking_and_user_isolation(client: TestClient):
     assert len(rechunked) == 2
     assert rechunked[0]["content"] == "abcdef"
     assert rechunked[1]["content"] == "ghij"
+
+    reembed_response = client.post(
+        f"/api/v1/documents/{document_id}/embeddings",
+        headers=user_a_headers,
+    )
+
+    assert reembed_response.status_code == 200
+    assert reembed_response.json() == {
+        "document_id": document_id,
+        "embedded_chunks": 2,
+    }
 
     user_b_get_response = client.get(
         f"/api/v1/documents/{document_id}/chunks",

@@ -13,7 +13,10 @@ from app.schemas.document_chunk import (
     DocumentChunkResponse,
 )
 from app.services.document import get_user_document
-from app.services.document_chunk import chunk_document
+from app.services.document_chunk import (
+    chunk_document,
+    embed_document_chunks,
+)
 
 router = APIRouter(
     prefix="/documents",
@@ -80,3 +83,34 @@ async def get_document_chunks(
     )
 
     return chunks
+
+@router.post(
+    "/{document_id}/embeddings",
+    status_code=status.HTTP_200_OK,
+)
+async def create_document_embeddings(
+    document_id: UUID,
+    session: Annotated[AsyncSession, Depends(get_session)],
+    current_user: Annotated[User, Depends(get_current_user)],
+) -> dict[str, int | str]:
+    document = await get_user_document(
+        session,
+        document_id=document_id,
+        user=current_user,
+    )
+
+    if document is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Document not found",
+        )
+
+    chunks = await embed_document_chunks(
+        session,
+        document_id=document.id,
+    )
+
+    return {
+        "document_id": str(document.id),
+        "embedded_chunks": len(chunks),
+    }
