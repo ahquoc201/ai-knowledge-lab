@@ -10,6 +10,7 @@ class Settings(BaseSettings):
     app_name: str = "AI Knowledge Lab"
     app_env: str = "development"
 
+    max_upload_size_bytes: int = 5 * 1024 * 1024
 
     database_url: str
 

@@ -58,3 +58,16 @@ async def get_document_by_id_for_user(
     )
 
     return result.scalar_one_or_none()
+
+async def update_document_status(
+    session: AsyncSession,
+    *,
+    document: Document,
+    status: str,
+) -> Document:
+    document.status = status
+
+    await session.commit()
+    await session.refresh(document)
+
+    return document
