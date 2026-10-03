@@ -7,6 +7,7 @@ from app.repositories.document import (
     create_document,
     get_document_by_id_for_user,
     list_documents_by_user,
+    update_document_content,
     update_document_status,
 )
 from app.schemas.document import DocumentCreate
@@ -64,4 +65,16 @@ async def set_document_status(
         session,
         document=document,
         status=status.value,
+    )
+
+async def set_document_content(
+    session: AsyncSession,
+    *,
+    document: Document,
+    content: str,
+) -> Document:
+    return await update_document_content(
+        session,
+        document=document,
+        content=content,
     )

@@ -16,6 +16,22 @@ class FileExtractionError(ValueError):
     pass
 
 
+SUPPORTED_FILE_EXTENSIONS = {
+    ".txt",
+    ".pdf",
+    ".docx",
+}
+
+
+def validate_supported_file_type(filename: str) -> None:
+    extension = Path(filename).suffix.lower()
+
+    if extension not in SUPPORTED_FILE_EXTENSIONS:
+        raise UnsupportedFileTypeError(
+            f"Unsupported file type: {extension or 'unknown'}"
+        )
+
+
 def _extract_txt(data: bytes) -> str:
     try:
         return data.decode("utf-8")
@@ -48,6 +64,7 @@ def _extract_pdf(data: bytes) -> str:
 
     return "\n\n".join(pages)
 
+
 def _extract_docx(data: bytes) -> str:
     try:
         document = DocxDocument(BytesIO(data))
@@ -64,23 +81,22 @@ def _extract_docx(data: bytes) -> str:
 
     return "\n\n".join(paragraphs)
 
+
 def extract_text(
     *,
     filename: str,
     data: bytes,
 ) -> str:
+    validate_supported_file_type(filename)
+
     extension = Path(filename).suffix.lower()
 
     if extension == ".txt":
         text = _extract_txt(data)
     elif extension == ".pdf":
         text = _extract_pdf(data)
-    elif extension == ".docx":
-        text = _extract_docx(data)
     else:
-        raise UnsupportedFileTypeError(
-            f"Unsupported file type: {extension or 'unknown'}"
-        )
+        text = _extract_docx(data)
 
     text = text.strip()
 
