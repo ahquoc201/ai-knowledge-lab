@@ -71,3 +71,16 @@ async def update_document_status(
     await session.refresh(document)
 
     return document
+
+async def update_document_content(
+    session: AsyncSession,
+    *,
+    document: Document,
+    content: str,
+) -> Document:
+    document.content = content
+
+    await session.commit()
+    await session.refresh(document)
+
+    return document

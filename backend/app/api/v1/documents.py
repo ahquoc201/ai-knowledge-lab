@@ -6,6 +6,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.api.deps import get_current_user
 from app.core.config import get_settings
+from app.core.document_status import DocumentStatus
 from app.db.session import get_session
 from app.models.user import User
 from app.schemas.document import DocumentCreate, DocumentResponse
@@ -13,12 +14,17 @@ from app.services.document import (
     create_user_document,
     get_user_document,
     list_user_documents,
+    set_document_status,
 )
 from app.services.file_extractor import (
-    FileExtractionError,
     UnsupportedFileTypeError,
+    validate_supported_file_type,
 )
-from app.services.ingestion import ingest_file
+from app.services.file_storage import (
+    delete_upload_file,
+    save_upload_file,
+)
+from app.tasks.ingestion import process_document_task
 
 router = APIRouter(
     prefix="/documents",
@@ -62,6 +68,14 @@ async def upload_document(
             detail="Uploaded file must have a filename",
         )
 
+    try:
+        validate_supported_file_type(file.filename)
+    except UnsupportedFileTypeError as exc:
+        raise HTTPException(
+            status_code=status.HTTP_415_UNSUPPORTED_MEDIA_TYPE,
+            detail=str(exc),
+        ) from exc
+
     data = await file.read(settings.max_upload_size_bytes + 1)
 
     if len(data) > settings.max_upload_size_bytes:
@@ -70,24 +84,42 @@ async def upload_document(
             detail="Uploaded file exceeds the maximum allowed size",
         )
 
+    stored_path = save_upload_file(
+        filename=file.filename,
+        data=data,
+    )
+
+    document = None
+
     try:
-        document = await ingest_file(
+        document = await create_user_document(
             session,
             user=current_user,
-            filename=file.filename,
-            data=data,
-            mime_type=file.content_type,
+            data=DocumentCreate(
+                title=file.filename,
+                content=None,
+                source_type="file",
+                source_name=file.filename,
+                mime_type=file.content_type,
+            ),
         )
-    except UnsupportedFileTypeError as exc:
-        raise HTTPException(
-            status_code=status.HTTP_415_UNSUPPORTED_MEDIA_TYPE,
-            detail=str(exc),
-        ) from exc
-    except FileExtractionError as exc:
-        raise HTTPException(
-            status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
-            detail=str(exc),
-        ) from exc
+
+        process_document_task.delay(
+            str(document.id),
+            str(current_user.id),
+            str(stored_path),
+        )
+    except Exception:
+        delete_upload_file(stored_path)
+
+        if document is not None:
+            await set_document_status(
+                session,
+                document=document,
+                status=DocumentStatus.FAILED,
+            )
+
+        raise
 
     return DocumentResponse.model_validate(document)
 

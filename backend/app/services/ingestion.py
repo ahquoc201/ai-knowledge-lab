@@ -6,6 +6,7 @@ from app.models.user import User
 from app.schemas.document import DocumentCreate
 from app.services.document import (
     create_user_document,
+    set_document_content,
     set_document_status,
 )
 from app.services.document_chunk import (
@@ -15,31 +16,12 @@ from app.services.document_chunk import (
 from app.services.file_extractor import extract_text
 
 
-async def ingest_file(
+async def process_document(
     session: AsyncSession,
     *,
-    user: User,
-    filename: str,
+    document: Document,
     data: bytes,
-    mime_type: str | None = None,
 ) -> Document:
-    content = extract_text(
-        filename=filename,
-        data=data,
-    )
-
-    document = await create_user_document(
-        session,
-        user=user,
-        data=DocumentCreate(
-            title=filename,
-            content=content,
-            source_type="file",
-            source_name=filename,
-            mime_type=mime_type,
-        ),
-    )
-
     await set_document_status(
         session,
         document=document,
@@ -47,6 +29,19 @@ async def ingest_file(
     )
 
     try:
+        filename = document.source_name or document.title
+
+        content = extract_text(
+            filename=filename,
+            data=data,
+        )
+
+        await set_document_content(
+            session,
+            document=document,
+            content=content,
+        )
+
         await chunk_document(
             session,
             document=document,
@@ -74,3 +69,30 @@ async def ingest_file(
         raise
 
     return document
+
+
+async def ingest_file(
+    session: AsyncSession,
+    *,
+    user: User,
+    filename: str,
+    data: bytes,
+    mime_type: str | None = None,
+) -> Document:
+    document = await create_user_document(
+        session,
+        user=user,
+        data=DocumentCreate(
+            title=filename,
+            content=None,
+            source_type="file",
+            source_name=filename,
+            mime_type=mime_type,
+        ),
+    )
+
+    return await process_document(
+        session,
+        document=document,
+        data=data,
+    )

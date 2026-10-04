@@ -1,10 +1,13 @@
 from datetime import UTC, datetime
+from pathlib import Path
 from types import SimpleNamespace
+from unittest.mock import AsyncMock, Mock
 from uuid import uuid4
 
 import pytest
 from fastapi.testclient import TestClient
 
+from app.core.document_status import DocumentStatus
 from tests.test_documents import register_and_login
 
 
@@ -20,41 +23,65 @@ def get_auth_headers(client: TestClient) -> dict[str, str]:
     }
 
 
-def test_upload_txt_document_success(
+def build_pending_document(
+    *,
+    user_id,
+    filename: str,
+    mime_type: str,
+):
+    now = datetime.now(UTC)
+
+    return SimpleNamespace(
+        id=uuid4(),
+        user_id=user_id,
+        title=filename,
+        source_type="file",
+        source_name=filename,
+        mime_type=mime_type,
+        content=None,
+        status="pending",
+        created_at=now,
+        updated_at=now,
+    )
+
+
+def test_upload_txt_document_queues_background_processing(
     client: TestClient,
     monkeypatch,
 ):
-    document_id = uuid4()
-    now = datetime.now(UTC)
+    stored_path = Path("/tmp/fake-knowledge.txt")
+    task_delay = Mock()
 
-    async def fake_ingest_file(
+    monkeypatch.setattr(
+        "app.api.v1.documents.save_upload_file",
+        lambda *, filename, data: stored_path,
+    )
+
+    async def fake_create_user_document(
         session,
         *,
         user,
-        filename,
         data,
-        mime_type,
     ):
-        assert filename == "knowledge.txt"
-        assert data == b"PostgreSQL supports transactions."
-        assert mime_type == "text/plain"
+        assert data.title == "knowledge.txt"
+        assert data.content is None
+        assert data.source_type == "file"
+        assert data.source_name == "knowledge.txt"
+        assert data.mime_type == "text/plain"
 
-        return SimpleNamespace(
-            id=document_id,
+        return build_pending_document(
             user_id=user.id,
-            title=filename,
-            source_type="file",
-            source_name=filename,
-            mime_type=mime_type,
-            content=data.decode(),
-            status="ready",
-            created_at=now,
-            updated_at=now,
+            filename="knowledge.txt",
+            mime_type="text/plain",
         )
 
     monkeypatch.setattr(
-        "app.api.v1.documents.ingest_file",
-        fake_ingest_file,
+        "app.api.v1.documents.create_user_document",
+        fake_create_user_document,
+    )
+    monkeypatch.setattr(
+        "app.api.v1.documents.process_document_task",
+        SimpleNamespace(delay=task_delay),
     )
 
     response = client.post(
@@ -73,62 +100,69 @@ def test_upload_txt_document_success(
 
     body = response.json()
 
-    assert body["id"] == str(document_id)
     assert body["title"] == "knowledge.txt"
     assert body["source_type"] == "file"
     assert body["source_name"] == "knowledge.txt"
     assert body["mime_type"] == "text/plain"
-    assert body["status"] == "ready"
+    assert body["content"] is None
+    assert body["status"] == "pending"
+
+    task_delay.assert_called_once_with(
+        body["id"],
+        body["user_id"],
+        str(stored_path),
+    )
+
 
 @pytest.mark.parametrize(
     ("filename", "data", "mime_type"),
     [
         (
             "knowledge.pdf",
-            b"%PDF-1.4 fake content",
+            b"%PDF fake bytes",
             "application/pdf",
         ),
         (
             "knowledge.docx",
-            b"PK\x03\x04fake content",
+            b"PK\x03\x04fake bytes",
             "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
         ),
     ],
 )
-def test_upload_supported_document_types(
+def test_upload_supported_document_types_are_queued(
     client: TestClient,
     monkeypatch,
     filename: str,
     data: bytes,
     mime_type: str,
 ):
-    document_id = uuid4()
-    now = datetime.now(UTC)
+    stored_path = Path(f"/tmp/{filename}")
+    task_delay = Mock()
 
-    async def fake_ingest_file(
+    monkeypatch.setattr(
+        "app.api.v1.documents.save_upload_file",
+        lambda *, filename, data: stored_path,
+    )
+
+    async def fake_create_user_document(
         session,
         *,
         user,
-        filename,
         data,
-        mime_type,
     ):
-        return SimpleNamespace(
-            id=document_id,
+        return build_pending_document(
             user_id=user.id,
-            title=filename,
-            source_type="file",
-            source_name=filename,
+            filename=filename,
             mime_type=mime_type,
-            content="Extracted document content",
-            status="ready",
-            created_at=now,
-            updated_at=now,
         )
 
     monkeypatch.setattr(
-        "app.api.v1.documents.ingest_file",
-        fake_ingest_file,
+        "app.api.v1.documents.create_user_document",
+        fake_create_user_document,
+    )
+    monkeypatch.setattr(
+        "app.api.v1.documents.process_document_task",
+        SimpleNamespace(delay=task_delay),
     )
 
     response = client.post(
@@ -147,12 +181,13 @@ def test_upload_supported_document_types(
 
     body = response.json()
 
-    assert body["id"] == str(document_id)
     assert body["title"] == filename
-    assert body["source_type"] == "file"
-    assert body["source_name"] == filename
     assert body["mime_type"] == mime_type
-    assert body["status"] == "ready"
+    assert body["content"] is None
+    assert body["status"] == "pending"
+
+    task_delay.assert_called_once()
+
 
 def test_upload_rejects_unsupported_file_type(
     client: TestClient,
@@ -173,9 +208,39 @@ def test_upload_rejects_unsupported_file_type(
     assert "Unsupported file type" in response.json()["detail"]
 
 
-def test_upload_rejects_empty_txt(
+def test_upload_empty_txt_is_queued_for_background_processing(
     client: TestClient,
+    monkeypatch,
 ):
+    stored_path = Path("/tmp/empty.txt")
+    task_delay = Mock()
+
+    monkeypatch.setattr(
+        "app.api.v1.documents.save_upload_file",
+        lambda *, filename, data: stored_path,
+    )
+
+    async def fake_create_user_document(
+        session,
+        *,
+        user,
+        data,
+    ):
+        return build_pending_document(
+            user_id=user.id,
+            filename="empty.txt",
+            mime_type="text/plain",
+        )
+
+    monkeypatch.setattr(
+        "app.api.v1.documents.create_user_document",
+        fake_create_user_document,
+    )
+    monkeypatch.setattr(
+        "app.api.v1.documents.process_document_task",
+        SimpleNamespace(delay=task_delay),
+    )
+
     response = client.post(
         "/api/v1/documents/upload",
         headers=get_auth_headers(client),
@@ -188,14 +253,22 @@ def test_upload_rejects_empty_txt(
         },
     )
 
-    assert response.status_code == 422
-    assert response.json()["detail"] == "Extracted text is empty"
+    assert response.status_code == 201
+    assert response.json()["status"] == "pending"
+
+    task_delay.assert_called_once()
 
 
 def test_upload_rejects_file_over_size_limit(
     client: TestClient,
+    monkeypatch,
 ):
-    oversized_data = b"a" * ((5 * 1024 * 1024) + 1)
+    monkeypatch.setattr(
+        "app.api.v1.documents.get_settings",
+        lambda: SimpleNamespace(
+            max_upload_size_bytes=10,
+        ),
+    )
 
     response = client.post(
         "/api/v1/documents/upload",
@@ -203,7 +276,7 @@ def test_upload_rejects_file_over_size_limit(
         files={
             "file": (
                 "large.txt",
-                oversized_data,
+                b"a" * 11,
                 "text/plain",
             ),
         },
@@ -213,3 +286,76 @@ def test_upload_rejects_file_over_size_limit(
     assert response.json()["detail"] == (
         "Uploaded file exceeds the maximum allowed size"
     )
+
+
+def test_upload_deletes_stored_file_when_enqueue_fails(
+    client: TestClient,
+    monkeypatch,
+):
+    stored_path = Path("/tmp/fake-failed.txt")
+    delete_upload_file = Mock()
+
+    set_document_status = AsyncMock()
+
+    monkeypatch.setattr(
+        "app.api.v1.documents.set_document_status",
+        set_document_status,
+    )
+
+    monkeypatch.setattr(
+        "app.api.v1.documents.save_upload_file",
+        lambda *, filename, data: stored_path,
+    )
+    monkeypatch.setattr(
+        "app.api.v1.documents.delete_upload_file",
+        delete_upload_file,
+    )
+
+    async def fake_create_user_document(
+        session,
+        *,
+        user,
+        data,
+    ):
+        return build_pending_document(
+            user_id=user.id,
+            filename="knowledge.txt",
+            mime_type="text/plain",
+        )
+
+    task_delay = Mock(
+        side_effect=RuntimeError("Broker unavailable")
+    )
+
+    monkeypatch.setattr(
+        "app.api.v1.documents.create_user_document",
+        fake_create_user_document,
+    )
+    monkeypatch.setattr(
+        "app.api.v1.documents.process_document_task",
+        SimpleNamespace(delay=task_delay),
+    )
+
+    with pytest.raises(
+        RuntimeError,
+        match="Broker unavailable",
+    ):
+        client.post(
+            "/api/v1/documents/upload",
+            headers=get_auth_headers(client),
+            files={
+                "file": (
+                    "knowledge.txt",
+                    b"PostgreSQL knowledge",
+                    "text/plain",
+                ),
+            },
+        )
+
+    delete_upload_file.assert_called_once_with(stored_path)
+
+    set_document_status.assert_awaited_once()
+
+    call = set_document_status.await_args
+
+    assert call.kwargs["status"] == DocumentStatus.FAILED

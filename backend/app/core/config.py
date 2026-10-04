@@ -11,6 +11,9 @@ class Settings(BaseSettings):
     app_env: str = "development"
 
     max_upload_size_bytes: int = 5 * 1024 * 1024
+    upload_storage_dir: Path = PROJECT_ROOT / "storage" / "uploads"
+
+    celery_broker_url: str = "redis://127.0.0.1:16379/0"
 
     database_url: str
 
