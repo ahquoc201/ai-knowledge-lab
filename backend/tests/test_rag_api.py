@@ -97,7 +97,7 @@ def test_rag_api_returns_answer_and_sources(
 
         assert embedding_response.status_code == 200
 
-        rag_response = client.post(
+        first_rag_response = client.post(
             "/api/v1/rag/ask",
             headers=headers,
             json={
@@ -106,24 +106,168 @@ def test_rag_api_returns_answer_and_sources(
             },
         )
 
-        assert rag_response.status_code == 200
+        assert first_rag_response.status_code == 200
 
-        data = rag_response.json()
+        first_data = first_rag_response.json()
 
-        assert data["answer"] == (
+        conversation_id = first_data["conversation_id"]
+
+        assert conversation_id
+
+        assert first_data["answer"] == (
             "PostgreSQL hỗ trợ lưu trữ dữ liệu "
             "và transaction [Source 1]."
         )
 
-        assert len(data["sources"]) >= 1
-        assert data["sources"][0]["document_id"] == document_id
-        assert data["sources"][0]["source_index"] == 1
+        assert len(first_data["sources"]) >= 1
+        assert (
+            first_data["sources"][0]["document_id"]
+            == document_id
+        )
+        assert first_data["sources"][0]["source_index"] == 1
 
         assert len(fake_llm.received_messages) == 2
-        assert "[Source 1]" in fake_llm.received_messages[1].content
+        assert (
+            "[Source 1]"
+            in fake_llm.received_messages[1].content
+        )
         assert (
             "PostgreSQL dùng để làm gì?"
             in fake_llm.received_messages[1].content
         )
+
+        second_rag_response = client.post(
+            "/api/v1/rag/ask",
+            headers=headers,
+            json={
+                "query": "Nó hỗ trợ gì?",
+                "limit": 5,
+                "conversation_id": conversation_id,
+            },
+        )
+
+        assert second_rag_response.status_code == 200
+
+        second_data = second_rag_response.json()
+
+        assert second_data["conversation_id"] == conversation_id
+
+        assert (
+            "user: PostgreSQL dùng để làm gì?"
+            in fake_llm.received_messages[1].content
+        )
+
+        assert (
+            "assistant: PostgreSQL hỗ trợ lưu trữ dữ liệu "
+            "và transaction [Source 1]."
+            in fake_llm.received_messages[1].content
+        )
+
+        assert (
+            "Nó hỗ trợ gì?"
+            in fake_llm.received_messages[1].content
+        )
+
+        conversation_response = client.get(
+            f"/api/v1/conversations/{conversation_id}",
+            headers=headers,
+        )
+
+        assert conversation_response.status_code == 200
+
+        conversation = conversation_response.json()
+
+        assert conversation["id"] == conversation_id
+        assert (
+            conversation["title"]
+            == "PostgreSQL dùng để làm gì?"
+        )
+
+        messages = conversation["messages"]
+
+        assert len(messages) == 4
+
+        assert messages[0]["role"] == "user"
+        assert (
+            messages[0]["content"]
+            == "PostgreSQL dùng để làm gì?"
+        )
+
+        assert messages[1]["role"] == "assistant"
+        assert messages[1]["content"] == (
+            "PostgreSQL hỗ trợ lưu trữ dữ liệu "
+            "và transaction [Source 1]."
+        )
+
+        assert messages[2]["role"] == "user"
+        assert messages[2]["content"] == "Nó hỗ trợ gì?"
+
+        assert messages[3]["role"] == "assistant"
+        assert messages[3]["content"] == (
+            "PostgreSQL hỗ trợ lưu trữ dữ liệu "
+            "và transaction [Source 1]."
+        )
+    finally:
+        app.dependency_overrides.clear()
+
+def test_rag_api_rejects_other_users_conversation(
+    client: TestClient,
+):
+    fake_llm = FakeLLMProvider()
+
+    app.dependency_overrides[get_ollama_llm_provider] = (
+        lambda: fake_llm
+    )
+
+    try:
+        password = "TestPassword123!"
+
+        user_a_token = register_and_login(
+            client,
+            email=f"rag-owner-a-{uuid4()}@example.com",
+            password=password,
+        )
+
+        user_b_token = register_and_login(
+            client,
+            email=f"rag-owner-b-{uuid4()}@example.com",
+            password=password,
+        )
+
+        user_a_headers = {
+            "Authorization": f"Bearer {user_a_token}",
+        }
+
+        user_b_headers = {
+            "Authorization": f"Bearer {user_b_token}",
+        }
+
+        create_response = client.post(
+            "/api/v1/conversations",
+            headers=user_a_headers,
+            json={
+                "title": "Private conversation",
+            },
+        )
+
+        assert create_response.status_code == 201
+
+        conversation_id = create_response.json()["id"]
+
+        rag_response = client.post(
+            "/api/v1/rag/ask",
+            headers=user_b_headers,
+            json={
+                "query": "Cho tôi xem nội dung cuộc trò chuyện này",
+                "conversation_id": conversation_id,
+            },
+        )
+
+        assert rag_response.status_code == 404
+        assert rag_response.json() == {
+            "detail": "Conversation not found",
+        }
+
+        assert fake_llm.received_messages == []
     finally:
         app.dependency_overrides.clear()

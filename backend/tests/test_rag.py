@@ -2,6 +2,7 @@ from uuid import uuid4
 
 import pytest
 
+from app.llm.base import LLMMessage
 from app.services.context_builder import (
     ContextSource,
     RetrievalContext,
@@ -58,12 +59,24 @@ async def test_answer_with_rag_builds_prompt_and_returns_sources(
         ),
     )
 
+    history = [
+        LLMMessage(
+            role="user",
+            content="PostgreSQL là gì?",
+        ),
+        LLMMessage(
+            role="assistant",
+            content="Đây là một hệ quản trị cơ sở dữ liệu.",
+        ),
+    ]
+
     result = await answer_with_rag(
         None,
         user_id=uuid4(),
         query="PostgreSQL dùng để làm gì?",
         llm=llm,
         limit=5,
+        history=history,
     )
 
     assert result.answer == (
@@ -80,5 +93,15 @@ async def test_answer_with_rag_builds_prompt_and_returns_sources(
     assert "[Source 1]" in llm.received_messages[1].content
     assert (
         "PostgreSQL dùng để làm gì?"
+        in llm.received_messages[1].content
+    )
+
+    assert (
+        "user: PostgreSQL là gì?"
+        in llm.received_messages[1].content
+    )
+
+    assert (
+        "assistant: Đây là một hệ quản trị cơ sở dữ liệu."
         in llm.received_messages[1].content
     )
