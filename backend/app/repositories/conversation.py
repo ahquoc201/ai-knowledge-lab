@@ -51,3 +51,25 @@ async def get_conversation_by_id_for_user(
     )
 
     return result.scalar_one_or_none()
+
+async def update_conversation_title(
+    session: AsyncSession,
+    *,
+    conversation: Conversation,
+    title: str,
+) -> Conversation:
+    conversation.title = title
+
+    await session.commit()
+    await session.refresh(conversation)
+
+    return conversation
+
+
+async def delete_conversation(
+    session: AsyncSession,
+    *,
+    conversation: Conversation,
+) -> None:
+    await session.delete(conversation)
+    await session.commit()

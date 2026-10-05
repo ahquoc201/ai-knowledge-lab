@@ -11,12 +11,15 @@ from app.schemas.conversation import (
     ConversationCreate,
     ConversationDetailResponse,
     ConversationResponse,
+    ConversationUpdate,
 )
 from app.schemas.message import MessageResponse
 from app.services.conversation import (
     create_user_conversation,
+    delete_user_conversation,
     get_user_conversation,
     list_user_conversations,
+    update_user_conversation,
 )
 from app.services.message import list_conversation_messages
 
@@ -106,3 +109,50 @@ async def get_conversation(
             for message in messages
         ],
     )
+
+@router.patch(
+    "/{conversation_id}",
+    response_model=ConversationResponse,
+)
+async def update_conversation(
+    conversation_id: UUID,
+    data: ConversationUpdate,
+    current_user: Annotated[User, Depends(get_current_user)],
+    session: Annotated[AsyncSession, Depends(get_session)],
+) -> ConversationResponse:
+    conversation = await update_user_conversation(
+        session,
+        user=current_user,
+        conversation_id=conversation_id,
+        title=data.title,
+    )
+
+    if conversation is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Conversation not found",
+        )
+
+    return ConversationResponse.model_validate(conversation)
+
+
+@router.delete(
+    "/{conversation_id}",
+    status_code=status.HTTP_204_NO_CONTENT,
+)
+async def delete_conversation(
+    conversation_id: UUID,
+    current_user: Annotated[User, Depends(get_current_user)],
+    session: Annotated[AsyncSession, Depends(get_session)],
+) -> None:
+    deleted = await delete_user_conversation(
+        session,
+        user=current_user,
+        conversation_id=conversation_id,
+    )
+
+    if not deleted:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Conversation not found",
+        )
