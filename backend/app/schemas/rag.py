@@ -13,6 +13,7 @@ class RAGRequest(BaseModel):
         ge=1,
         le=20,
     )
+    conversation_id: UUID | None = None
 
 
 class RAGSourceResponse(BaseModel):
@@ -25,5 +26,6 @@ class RAGSourceResponse(BaseModel):
 
 
 class RAGResponse(BaseModel):
+    conversation_id: UUID
     answer: str
     sources: list[RAGSourceResponse]

@@ -3,7 +3,7 @@ from uuid import UUID
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.llm.base import LLMProvider
+from app.llm.base import LLMMessage, LLMProvider
 from app.services.context_builder import ContextSource
 from app.services.rag_prompt import build_rag_messages
 from app.services.retrieval import retrieve_context
@@ -22,6 +22,7 @@ async def answer_with_rag(
     query: str,
     llm: LLMProvider,
     limit: int = 5,
+    history: list[LLMMessage] | None = None,
 ) -> RAGResult:
     context = await retrieve_context(
         session,
@@ -33,6 +34,7 @@ async def answer_with_rag(
     messages = build_rag_messages(
         query=query,
         context=context,
+        history=history,
     )
 
     answer = await llm.generate(messages)

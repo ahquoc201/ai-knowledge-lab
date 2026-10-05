@@ -8,7 +8,13 @@ from sqlalchemy.ext.asyncio import async_engine_from_config
 
 from app.core.config import get_settings
 from app.db.base import Base
-from app.models import Document, DocumentChunk, User  # noqa: F401
+from app.models import (  # noqa: F401
+    Conversation,
+    Document,
+    DocumentChunk,
+    Message,
+    User,
+)
 
 config = context.config
 

@@ -1,5 +1,6 @@
 from uuid import uuid4
 
+from app.llm.base import LLMMessage
 from app.services.context_builder import (
     ContextSource,
     RetrievalContext,
@@ -83,3 +84,36 @@ def test_build_rag_messages_with_empty_context():
         "Thông tin này có trong tài liệu không?"
         in messages[1].content
     )
+
+def test_build_rag_messages_with_conversation_history():
+    context = RetrievalContext(
+        text="[Source 1]\nPostgreSQL hỗ trợ transaction.",
+        sources=[],
+    )
+
+    history = [
+        LLMMessage(
+            role="user",
+            content="PostgreSQL là gì?",
+        ),
+        LLMMessage(
+            role="assistant",
+            content="Đây là một hệ quản trị cơ sở dữ liệu.",
+        ),
+    ]
+
+    messages = build_rag_messages(
+        query="Nó hỗ trợ gì?",
+        context=context,
+        history=history,
+    )
+
+    assert len(messages) == 2
+
+    assert "user: PostgreSQL là gì?" in messages[1].content
+    assert (
+        "assistant: Đây là một hệ quản trị cơ sở dữ liệu."
+        in messages[1].content
+    )
+    assert "[Source 1]" in messages[1].content
+    assert "Nó hỗ trợ gì?" in messages[1].content
