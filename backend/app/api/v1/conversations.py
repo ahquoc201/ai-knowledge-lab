@@ -14,6 +14,7 @@ from app.schemas.conversation import (
     ConversationUpdate,
 )
 from app.schemas.message import MessageResponse
+from app.schemas.message_source import MessageSourceResponse
 from app.services.conversation import (
     create_user_conversation,
     delete_user_conversation,
@@ -21,12 +22,15 @@ from app.services.conversation import (
     list_user_conversations,
     update_user_conversation,
 )
-from app.services.message import list_conversation_messages
+from app.services.message_source import (
+    get_message_sources_by_message_ids,
+)
 
 router = APIRouter(
     prefix="/conversations",
     tags=["Conversations"],
 )
+from app.services.message import list_conversation_messages
 
 
 @router.post(
@@ -100,12 +104,27 @@ async def get_conversation(
             detail="Conversation not found",
         )
 
+    sources_by_message_id = await get_message_sources_by_message_ids(
+        session,
+        message_ids=[
+            message.id
+            for message in messages
+        ],
+    )
+
     return ConversationDetailResponse(
         **ConversationResponse.model_validate(
             conversation
         ).model_dump(),
         messages=[
-            MessageResponse.model_validate(message)
+            MessageResponse.model_validate(message).model_copy(
+                update={
+                    "sources": [
+                        MessageSourceResponse.model_validate(source)
+                        for source in sources_by_message_id[message.id]
+                    ],
+                }
+            )
             for message in messages
         ],
     )
