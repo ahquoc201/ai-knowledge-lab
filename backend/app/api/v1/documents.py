@@ -25,6 +25,11 @@ from app.services.file_storage import (
     delete_upload_file,
     save_upload_file,
 )
+from app.services.reprocessing import (
+    EmptyDocumentContentError,
+    UnsupportedDocumentReprocessingError,
+    reprocess_text_document,
+)
 from app.tasks.ingestion import process_document_task
 
 router = APIRouter(
@@ -186,3 +191,42 @@ async def delete_document(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Document not found",
         )
+
+@router.post(
+    "/{document_id}/reprocess",
+    response_model=DocumentResponse,
+)
+async def reprocess_document(
+    document_id: UUID,
+    current_user: Annotated[User, Depends(get_current_user)],
+    session: Annotated[AsyncSession, Depends(get_session)],
+) -> DocumentResponse:
+    document = await get_user_document(
+        session,
+        user=current_user,
+        document_id=document_id,
+    )
+
+    if document is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Document not found",
+        )
+
+    try:
+        document = await reprocess_text_document(
+            session,
+            document=document,
+        )
+    except UnsupportedDocumentReprocessingError as exc:
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail=str(exc),
+        ) from exc
+    except EmptyDocumentContentError as exc:
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            detail=str(exc),
+        ) from exc
+
+    return DocumentResponse.model_validate(document)
