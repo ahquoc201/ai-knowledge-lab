@@ -19,6 +19,7 @@ from app.schemas.rag import (
 from app.services.chat_history import get_conversation_history
 from app.services.conversation import create_user_conversation
 from app.services.message import create_conversation_message
+from app.services.message_source import save_assistant_message_sources
 from app.services.rag import answer_with_rag
 
 router = APIRouter(
@@ -102,6 +103,12 @@ async def ask_rag(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Conversation not found",
         )
+
+    await save_assistant_message_sources(
+        session,
+        message=assistant_message,
+        sources=result.sources,
+    )
 
     return RAGResponse(
         conversation_id=conversation_id,

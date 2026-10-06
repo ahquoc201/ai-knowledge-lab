@@ -1,9 +1,19 @@
-from uuid import uuid4
+import asyncio
+from uuid import UUID, uuid4
 
 from fastapi.testclient import TestClient
+from sqlalchemy import delete
+from sqlalchemy.ext.asyncio import (
+    AsyncSession,
+    async_sessionmaker,
+    create_async_engine,
+)
+from sqlalchemy.pool import NullPool
 
+from app.core.config import get_settings
 from app.llm.ollama import get_ollama_llm_provider
 from app.main import app
+from app.models.document import Document
 from tests.fakes import FakeLLMProvider
 
 
@@ -35,6 +45,33 @@ def register_and_login(
     assert login_response.status_code == 200
 
     return login_response.json()["access_token"]
+
+async def delete_document_directly(
+    document_id: UUID,
+) -> None:
+    settings = get_settings()
+
+    engine = create_async_engine(
+        settings.database_url,
+        poolclass=NullPool,
+    )
+
+    session_factory = async_sessionmaker(
+        bind=engine,
+        class_=AsyncSession,
+        expire_on_commit=False,
+    )
+
+    try:
+        async with session_factory() as session:
+            await session.execute(
+                delete(Document).where(
+                    Document.id == document_id
+                )
+            )
+            await session.commit()
+    finally:
+        await engine.dispose()
 
 
 def test_rag_api_returns_answer_and_sources(
@@ -173,6 +210,12 @@ def test_rag_api_returns_answer_and_sources(
             headers=headers,
         )
 
+        asyncio.run(
+            delete_document_directly(
+                UUID(document_id),
+            )
+        )
+
         assert conversation_response.status_code == 200
 
         conversation = conversation_response.json()
@@ -199,6 +242,22 @@ def test_rag_api_returns_answer_and_sources(
             "và transaction [Source 1]."
         )
 
+        assert messages[0]["sources"] == []
+
+        assert len(messages[1]["sources"]) >= 1
+
+        first_persisted_source = messages[1]["sources"][0]
+
+        assert first_persisted_source["source_index"] == 1
+        assert first_persisted_source["document_id"] == document_id
+        assert first_persisted_source["chunk_id"]
+        assert first_persisted_source["chunk_index"] == 0
+        assert first_persisted_source["content"]
+        assert isinstance(
+            first_persisted_source["similarity"],
+            float,
+        )
+
         assert messages[2]["role"] == "user"
         assert messages[2]["content"] == "Nó hỗ trợ gì?"
 
@@ -207,6 +266,10 @@ def test_rag_api_returns_answer_and_sources(
             "PostgreSQL hỗ trợ lưu trữ dữ liệu "
             "và transaction [Source 1]."
         )
+
+        assert messages[2]["sources"] == []
+        assert len(messages[3]["sources"]) >= 1
+        assert messages[3]["sources"][0]["document_id"] == document_id
     finally:
         app.dependency_overrides.clear()
 
