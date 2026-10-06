@@ -84,3 +84,11 @@ async def update_document_content(
     await session.refresh(document)
 
     return document
+
+async def delete_document(
+    session: AsyncSession,
+    *,
+    document: Document,
+) -> None:
+    await session.delete(document)
+    await session.commit()

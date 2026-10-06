@@ -12,6 +12,7 @@ from app.models.user import User
 from app.schemas.document import DocumentCreate, DocumentResponse
 from app.services.document import (
     create_user_document,
+    delete_user_document,
     get_user_document,
     list_user_documents,
     set_document_status,
@@ -164,3 +165,24 @@ async def get_document(
         )
 
     return DocumentResponse.model_validate(document)
+
+@router.delete(
+    "/{document_id}",
+    status_code=status.HTTP_204_NO_CONTENT,
+)
+async def delete_document(
+    document_id: UUID,
+    current_user: Annotated[User, Depends(get_current_user)],
+    session: Annotated[AsyncSession, Depends(get_session)],
+) -> None:
+    deleted = await delete_user_document(
+        session,
+        user=current_user,
+        document_id=document_id,
+    )
+
+    if not deleted:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Document not found",
+        )
