@@ -1,19 +1,9 @@
-import asyncio
-from uuid import UUID, uuid4
+from uuid import uuid4
 
 from fastapi.testclient import TestClient
-from sqlalchemy import delete
-from sqlalchemy.ext.asyncio import (
-    AsyncSession,
-    async_sessionmaker,
-    create_async_engine,
-)
-from sqlalchemy.pool import NullPool
 
-from app.core.config import get_settings
 from app.llm.ollama import get_ollama_llm_provider
 from app.main import app
-from app.models.document import Document
 from tests.fakes import FakeLLMProvider
 
 
@@ -45,34 +35,6 @@ def register_and_login(
     assert login_response.status_code == 200
 
     return login_response.json()["access_token"]
-
-async def delete_document_directly(
-    document_id: UUID,
-) -> None:
-    settings = get_settings()
-
-    engine = create_async_engine(
-        settings.database_url,
-        poolclass=NullPool,
-    )
-
-    session_factory = async_sessionmaker(
-        bind=engine,
-        class_=AsyncSession,
-        expire_on_commit=False,
-    )
-
-    try:
-        async with session_factory() as session:
-            await session.execute(
-                delete(Document).where(
-                    Document.id == document_id
-                )
-            )
-            await session.commit()
-    finally:
-        await engine.dispose()
-
 
 def test_rag_api_returns_answer_and_sources(
     client: TestClient,
@@ -205,15 +167,16 @@ def test_rag_api_returns_answer_and_sources(
             in fake_llm.received_messages[1].content
         )
 
-        conversation_response = client.get(
-            f"/api/v1/conversations/{conversation_id}",
+        delete_response = client.delete(
+            f"/api/v1/documents/{document_id}",
             headers=headers,
         )
 
-        asyncio.run(
-            delete_document_directly(
-                UUID(document_id),
-            )
+        assert delete_response.status_code == 204
+
+        conversation_response = client.get(
+            f"/api/v1/conversations/{conversation_id}",
+            headers=headers,
         )
 
         assert conversation_response.status_code == 200

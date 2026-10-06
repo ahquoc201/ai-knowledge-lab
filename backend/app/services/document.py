@@ -5,6 +5,7 @@ from app.models.document import Document
 from app.models.user import User
 from app.repositories.document import (
     create_document,
+    delete_document,
     get_document_by_id_for_user,
     list_documents_by_user,
     update_document_content,
@@ -78,3 +79,25 @@ async def set_document_content(
         document=document,
         content=content,
     )
+
+async def delete_user_document(
+    session: AsyncSession,
+    *,
+    user: User,
+    document_id: UUID,
+) -> bool:
+    document = await get_user_document(
+        session,
+        user=user,
+        document_id=document_id,
+    )
+
+    if document is None:
+        return False
+
+    await delete_document(
+        session,
+        document=document,
+    )
+
+    return True
