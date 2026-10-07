@@ -92,3 +92,13 @@ async def delete_document(
 ) -> None:
     await session.delete(document)
     await session.commit()
+
+async def save_document(
+    session: AsyncSession,
+    *,
+    document: Document,
+) -> Document:
+    await session.commit()
+    await session.refresh(document)
+
+    return document

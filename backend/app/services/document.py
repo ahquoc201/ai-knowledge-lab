@@ -8,10 +8,11 @@ from app.repositories.document import (
     delete_document,
     get_document_by_id_for_user,
     list_documents_by_user,
+    save_document,
     update_document_content,
     update_document_status,
 )
-from app.schemas.document import DocumentCreate
+from app.schemas.document import DocumentCreate, DocumentUpdate
 
 
 async def create_user_document(
@@ -101,3 +102,51 @@ async def delete_user_document(
     )
 
     return True
+
+class UnsupportedDocumentContentUpdateError(ValueError):
+    pass
+
+
+class InvalidDocumentUpdateError(ValueError):
+    pass
+
+
+async def update_user_document(
+    session: AsyncSession,
+    *,
+    user: User,
+    document_id: UUID,
+    data: DocumentUpdate,
+) -> Document | None:
+    document = await get_user_document(
+        session,
+        user=user,
+        document_id=document_id,
+    )
+
+    if document is None:
+        return None
+
+    fields_set = data.model_fields_set
+
+    if "title" in fields_set:
+        if data.title is None:
+            raise InvalidDocumentUpdateError(
+                "Document title cannot be null"
+            )
+
+        document.title = data.title
+
+    if "content" in fields_set:
+        if document.source_type != "text":
+            raise UnsupportedDocumentContentUpdateError(
+                "File document content cannot be updated"
+            )
+
+        document.content = data.content
+        document.status = DocumentStatus.PENDING.value
+
+    return await save_document(
+        session,
+        document=document,
+    )
