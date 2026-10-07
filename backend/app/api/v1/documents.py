@@ -9,13 +9,20 @@ from app.core.config import get_settings
 from app.core.document_status import DocumentStatus
 from app.db.session import get_session
 from app.models.user import User
-from app.schemas.document import DocumentCreate, DocumentResponse
+from app.schemas.document import (
+    DocumentCreate,
+    DocumentResponse,
+    DocumentUpdate,
+)
 from app.services.document import (
+    InvalidDocumentUpdateError,
+    UnsupportedDocumentContentUpdateError,
     create_user_document,
     delete_user_document,
     get_user_document,
     list_user_documents,
     set_document_status,
+    update_user_document,
 )
 from app.services.file_extractor import (
     UnsupportedFileTypeError,
@@ -171,6 +178,42 @@ async def get_document(
 
     return DocumentResponse.model_validate(document)
 
+@router.patch(
+    "/{document_id}",
+    response_model=DocumentResponse,
+)
+async def update_document(
+    document_id: UUID,
+    data: DocumentUpdate,
+    current_user: Annotated[User, Depends(get_current_user)],
+    session: Annotated[AsyncSession, Depends(get_session)],
+) -> DocumentResponse:
+    try:
+        document = await update_user_document(
+            session,
+            user=current_user,
+            document_id=document_id,
+            data=data,
+        )
+    except UnsupportedDocumentContentUpdateError as exc:
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail=str(exc),
+        ) from exc
+    except InvalidDocumentUpdateError as exc:
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
+            detail=str(exc),
+        ) from exc
+
+    if document is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Document not found",
+        )
+
+    return DocumentResponse.model_validate(document)
+
 @router.delete(
     "/{document_id}",
     status_code=status.HTTP_204_NO_CONTENT,
@@ -225,7 +268,7 @@ async def reprocess_document(
         ) from exc
     except EmptyDocumentContentError as exc:
         raise HTTPException(
-            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
             detail=str(exc),
         ) from exc
 

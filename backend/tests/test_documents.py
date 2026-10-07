@@ -322,3 +322,160 @@ def test_reprocess_rejects_unsupported_documents(
     assert empty_reprocess_response.json() == {
         "detail": "Document content is empty",
     }
+
+def test_update_document_and_user_isolation(
+    client: TestClient,
+):
+    password = "TestPassword123!"
+
+    user_a_token = register_and_login(
+        client,
+        email=f"document-update-a-{uuid4()}@example.com",
+        password=password,
+    )
+
+    user_b_token = register_and_login(
+        client,
+        email=f"document-update-b-{uuid4()}@example.com",
+        password=password,
+    )
+
+    user_a_headers = {
+        "Authorization": f"Bearer {user_a_token}",
+    }
+
+    user_b_headers = {
+        "Authorization": f"Bearer {user_b_token}",
+    }
+
+    create_response = client.post(
+        "/api/v1/documents",
+        headers=user_a_headers,
+        json={
+            "title": "Original title",
+            "content": "Original content",
+            "source_type": "text",
+        },
+    )
+
+    assert create_response.status_code == 201
+
+    document_id = create_response.json()["id"]
+
+    user_b_response = client.patch(
+        f"/api/v1/documents/{document_id}",
+        headers=user_b_headers,
+        json={
+            "title": "Unauthorized update",
+        },
+    )
+
+    assert user_b_response.status_code == 404
+    assert user_b_response.json() == {
+        "detail": "Document not found",
+    }
+
+    title_response = client.patch(
+        f"/api/v1/documents/{document_id}",
+        headers=user_a_headers,
+        json={
+            "title": "Updated title",
+        },
+    )
+
+    assert title_response.status_code == 200
+    assert title_response.json()["title"] == "Updated title"
+    assert title_response.json()["content"] == "Original content"
+    assert title_response.json()["status"] == "pending"
+
+    reprocess_response = client.post(
+        f"/api/v1/documents/{document_id}/reprocess",
+        headers=user_a_headers,
+    )
+
+    assert reprocess_response.status_code == 200
+    assert reprocess_response.json()["status"] == "ready"
+
+    content_response = client.patch(
+        f"/api/v1/documents/{document_id}",
+        headers=user_a_headers,
+        json={
+            "content": "Updated content for reprocessing.",
+        },
+    )
+
+    assert content_response.status_code == 200
+    assert content_response.json()["content"] == (
+        "Updated content for reprocessing."
+    )
+    assert content_response.json()["status"] == "pending"
+
+
+def test_update_document_validation(
+    client: TestClient,
+):
+    password = "TestPassword123!"
+
+    token = register_and_login(
+        client,
+        email=f"document-update-validation-{uuid4()}@example.com",
+        password=password,
+    )
+
+    headers = {
+        "Authorization": f"Bearer {token}",
+    }
+
+    file_response = client.post(
+        "/api/v1/documents",
+        headers=headers,
+        json={
+            "title": "Uploaded file",
+            "content": "Extracted content",
+            "source_type": "file",
+        },
+    )
+
+    assert file_response.status_code == 201
+
+    file_document_id = file_response.json()["id"]
+
+    file_update_response = client.patch(
+        f"/api/v1/documents/{file_document_id}",
+        headers=headers,
+        json={
+            "content": "Changed content",
+        },
+    )
+
+    assert file_update_response.status_code == 409
+    assert file_update_response.json() == {
+        "detail": "File document content cannot be updated",
+    }
+
+    text_response = client.post(
+        "/api/v1/documents",
+        headers=headers,
+        json={
+            "title": "Text document",
+            "content": "Content",
+            "source_type": "text",
+        },
+    )
+
+    assert text_response.status_code == 201
+
+    text_document_id = text_response.json()["id"]
+
+    null_title_response = client.patch(
+        f"/api/v1/documents/{text_document_id}",
+        headers=headers,
+        json={
+            "title": None,
+        },
+    )
+
+    assert null_title_response.status_code == 422
+    assert null_title_response.json() == {
+        "detail": "Document title cannot be null",
+    }
