@@ -4,6 +4,7 @@ from app.core.document_status import DocumentStatus
 from app.models.document import Document
 from app.models.user import User
 from app.repositories.document import (
+    count_documents_by_user,
     create_document,
     delete_document,
     get_document_by_id_for_user,
@@ -41,8 +42,8 @@ async def list_user_documents(
     source_type: str | None = None,
     limit: int = 20,
     offset: int = 0,
-) -> list[Document]:
-    return await list_documents_by_user(
+) -> tuple[list[Document], int]:
+    documents = await list_documents_by_user(
         session,
         user.id,
         search=search,
@@ -51,6 +52,16 @@ async def list_user_documents(
         limit=limit,
         offset=offset,
     )
+
+    total = await count_documents_by_user(
+        session,
+        user.id,
+        search=search,
+        status=status,
+        source_type=source_type,
+    )
+
+    return documents, total
 
 from uuid import UUID
 
