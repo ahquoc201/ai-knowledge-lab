@@ -479,3 +479,203 @@ def test_update_document_validation(
     assert null_title_response.json() == {
         "detail": "Document title cannot be null",
     }
+
+def test_list_documents_search_filter_pagination_and_isolation(
+    client: TestClient,
+):
+    password = "TestPassword123!"
+
+    user_a_token = register_and_login(
+        client,
+        email=f"document-search-a-{uuid4()}@example.com",
+        password=password,
+    )
+
+    user_b_token = register_and_login(
+        client,
+        email=f"document-search-b-{uuid4()}@example.com",
+        password=password,
+    )
+
+    user_a_headers = {
+        "Authorization": f"Bearer {user_a_token}",
+    }
+    user_b_headers = {
+        "Authorization": f"Bearer {user_b_token}",
+    }
+
+    def create_document(
+        headers,
+        *,
+        title,
+        content,
+        source_type="text",
+    ):
+        response = client.post(
+            "/api/v1/documents",
+            headers=headers,
+            json={
+                "title": title,
+                "content": content,
+                "source_type": source_type,
+            },
+        )
+
+        assert response.status_code == 201
+        return response.json()
+
+    postgres_ready = create_document(
+        user_a_headers,
+        title="PostgreSQL Ready Guide",
+        content="PostgreSQL indexing knowledge.",
+    )
+
+    create_document(
+        user_a_headers,
+        title="PostgreSQL Pending Notes",
+        content="Pending PostgreSQL knowledge.",
+    )
+
+    redis_ready = create_document(
+        user_a_headers,
+        title="Redis Ready Guide",
+        content="Redis caching knowledge.",
+    )
+
+    file_document = create_document(
+        user_a_headers,
+        title="PostgreSQL File",
+        content="Extracted file content.",
+        source_type="file",
+    )
+
+    user_b_document = create_document(
+        user_b_headers,
+        title="PostgreSQL Ready Secret",
+        content="Another user's private knowledge.",
+    )
+
+    for document in (
+        postgres_ready,
+        redis_ready,
+        user_b_document,
+    ):
+        headers = (
+            user_a_headers
+            if document["id"] != user_b_document["id"]
+            else user_b_headers
+        )
+
+        response = client.post(
+            f"/api/v1/documents/{document['id']}/reprocess",
+            headers=headers,
+        )
+
+        assert response.status_code == 200
+
+    filtered_response = client.get(
+        "/api/v1/documents",
+        headers=user_a_headers,
+        params={
+            "search": "postgres",
+            "status": "ready",
+            "source_type": "text",
+        },
+    )
+
+    assert filtered_response.status_code == 200
+
+    filtered_documents = filtered_response.json()
+
+    assert [
+        document["id"]
+        for document in filtered_documents
+    ] == [postgres_ready["id"]]
+
+    file_response = client.get(
+        "/api/v1/documents",
+        headers=user_a_headers,
+        params={
+            "source_type": "file",
+        },
+    )
+
+    assert file_response.status_code == 200
+    assert [
+        document["id"]
+        for document in file_response.json()
+    ] == [file_document["id"]]
+
+    all_text_response = client.get(
+        "/api/v1/documents",
+        headers=user_a_headers,
+        params={
+            "source_type": "text",
+            "limit": 100,
+        },
+    )
+
+    assert all_text_response.status_code == 200
+
+    all_text_documents = all_text_response.json()
+
+    first_page = client.get(
+        "/api/v1/documents",
+        headers=user_a_headers,
+        params={
+            "source_type": "text",
+            "limit": 1,
+            "offset": 0,
+        },
+    )
+
+    second_page = client.get(
+        "/api/v1/documents",
+        headers=user_a_headers,
+        params={
+            "source_type": "text",
+            "limit": 1,
+            "offset": 1,
+        },
+    )
+
+    assert first_page.status_code == 200
+    assert second_page.status_code == 200
+
+    assert first_page.json()[0]["id"] == all_text_documents[0]["id"]
+    assert second_page.json()[0]["id"] == all_text_documents[1]["id"]
+
+    assert all(
+        document["id"] != user_b_document["id"]
+        for document in all_text_documents
+    )
+
+def test_list_documents_pagination_validation(
+    client: TestClient,
+):
+    password = "TestPassword123!"
+
+    token = register_and_login(
+        client,
+        email=f"document-pagination-{uuid4()}@example.com",
+        password=password,
+    )
+
+    headers = {
+        "Authorization": f"Bearer {token}",
+    }
+
+    invalid_cases = [
+        {"limit": 0},
+        {"limit": 101},
+        {"offset": -1},
+    ]
+
+    for params in invalid_cases:
+        response = client.get(
+            "/api/v1/documents",
+            headers=headers,
+            params=params,
+        )
+
+        assert response.status_code == 422
