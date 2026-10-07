@@ -82,9 +82,16 @@ def test_document_creation_and_user_isolation(client: TestClient):
     )
 
     assert user_a_documents.status_code == 200
+
+    user_a_data = user_a_documents.json()
+
+    assert user_a_data["total"] >= 1
+    assert user_a_data["limit"] == 20
+    assert user_a_data["offset"] == 0
+
     assert any(
         document["id"] == created_document["id"]
-        for document in user_a_documents.json()
+        for document in user_a_data["items"]
     )
 
     user_b_documents = client.get(
@@ -93,9 +100,12 @@ def test_document_creation_and_user_isolation(client: TestClient):
     )
 
     assert user_b_documents.status_code == 200
+
+    user_b_data = user_b_documents.json()
+
     assert all(
         document["id"] != created_document["id"]
-        for document in user_b_documents.json()
+        for document in user_b_data["items"]
     )
 
     user_a_get_response = client.get(
@@ -115,6 +125,7 @@ def test_document_creation_and_user_isolation(client: TestClient):
     assert user_b_get_response.json() == {
         "detail": "Document not found",
     }
+
 
 def test_delete_document_and_user_isolation(
     client: TestClient,
@@ -189,6 +200,7 @@ def test_delete_document_and_user_isolation(
     assert deleted_get_response.json() == {
         "detail": "Document not found",
     }
+
 
 def test_reprocess_document_and_user_isolation(
     client: TestClient,
@@ -322,6 +334,7 @@ def test_reprocess_rejects_unsupported_documents(
     assert empty_reprocess_response.json() == {
         "detail": "Document content is empty",
     }
+
 
 def test_update_document_and_user_isolation(
     client: TestClient,
@@ -480,6 +493,7 @@ def test_update_document_validation(
         "detail": "Document title cannot be null",
     }
 
+
 def test_list_documents_search_filter_pagination_and_isolation(
     client: TestClient,
 ):
@@ -500,6 +514,7 @@ def test_list_documents_search_filter_pagination_and_isolation(
     user_a_headers = {
         "Authorization": f"Bearer {user_a_token}",
     }
+
     user_b_headers = {
         "Authorization": f"Bearer {user_b_token}",
     }
@@ -585,7 +600,12 @@ def test_list_documents_search_filter_pagination_and_isolation(
 
     assert filtered_response.status_code == 200
 
-    filtered_documents = filtered_response.json()
+    filtered_data = filtered_response.json()
+    filtered_documents = filtered_data["items"]
+
+    assert filtered_data["total"] == 1
+    assert filtered_data["limit"] == 20
+    assert filtered_data["offset"] == 0
 
     assert [
         document["id"]
@@ -601,9 +621,16 @@ def test_list_documents_search_filter_pagination_and_isolation(
     )
 
     assert file_response.status_code == 200
+
+    file_data = file_response.json()
+
+    assert file_data["total"] == 1
+    assert file_data["limit"] == 20
+    assert file_data["offset"] == 0
+
     assert [
         document["id"]
-        for document in file_response.json()
+        for document in file_data["items"]
     ] == [file_document["id"]]
 
     all_text_response = client.get(
@@ -617,7 +644,12 @@ def test_list_documents_search_filter_pagination_and_isolation(
 
     assert all_text_response.status_code == 200
 
-    all_text_documents = all_text_response.json()
+    all_text_data = all_text_response.json()
+    all_text_documents = all_text_data["items"]
+
+    assert all_text_data["total"] == len(all_text_documents)
+    assert all_text_data["limit"] == 100
+    assert all_text_data["offset"] == 0
 
     first_page = client.get(
         "/api/v1/documents",
@@ -642,13 +674,33 @@ def test_list_documents_search_filter_pagination_and_isolation(
     assert first_page.status_code == 200
     assert second_page.status_code == 200
 
-    assert first_page.json()[0]["id"] == all_text_documents[0]["id"]
-    assert second_page.json()[0]["id"] == all_text_documents[1]["id"]
+    first_page_data = first_page.json()
+    second_page_data = second_page.json()
+
+    assert first_page_data["total"] == all_text_data["total"]
+    assert second_page_data["total"] == all_text_data["total"]
+
+    assert first_page_data["limit"] == 1
+    assert first_page_data["offset"] == 0
+
+    assert second_page_data["limit"] == 1
+    assert second_page_data["offset"] == 1
+
+    assert (
+        first_page_data["items"][0]["id"]
+        == all_text_documents[0]["id"]
+    )
+
+    assert (
+        second_page_data["items"][0]["id"]
+        == all_text_documents[1]["id"]
+    )
 
     assert all(
         document["id"] != user_b_document["id"]
         for document in all_text_documents
     )
+
 
 def test_list_documents_pagination_validation(
     client: TestClient,
@@ -679,3 +731,48 @@ def test_list_documents_pagination_validation(
         )
 
         assert response.status_code == 422
+
+def test_list_documents_offset_beyond_total(
+    client: TestClient,
+):
+    password = "TestPassword123!"
+
+    token = register_and_login(
+        client,
+        email=f"document-offset-{uuid4()}@example.com",
+        password=password,
+    )
+
+    headers = {
+        "Authorization": f"Bearer {token}",
+    }
+
+    create_response = client.post(
+        "/api/v1/documents",
+        headers=headers,
+        json={
+            "title": "Pagination document",
+            "content": "Pagination content",
+            "source_type": "text",
+        },
+    )
+
+    assert create_response.status_code == 201
+
+    response = client.get(
+        "/api/v1/documents",
+        headers=headers,
+        params={
+            "limit": 20,
+            "offset": 100,
+        },
+    )
+
+    assert response.status_code == 200
+
+    data = response.json()
+
+    assert data["items"] == []
+    assert data["total"] == 1
+    assert data["limit"] == 20
+    assert data["offset"] == 100

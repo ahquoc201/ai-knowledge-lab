@@ -19,6 +19,7 @@ from app.db.session import get_session
 from app.models.user import User
 from app.schemas.document import (
     DocumentCreate,
+    DocumentListResponse,
     DocumentResponse,
     DocumentUpdate,
 )
@@ -147,7 +148,7 @@ async def upload_document(
 
 @router.get(
     "",
-    response_model=list[DocumentResponse],
+    response_model=DocumentListResponse,
 )
 async def list_documents(
     current_user: Annotated[User, Depends(get_current_user)],
@@ -172,8 +173,8 @@ async def list_documents(
         int,
         Query(ge=0),
     ] = 0,
-) -> list[DocumentResponse]:
-    documents = await list_user_documents(
+) -> DocumentListResponse:
+    documents, total = await list_user_documents(
         session,
         user=current_user,
         search=search,
@@ -183,10 +184,15 @@ async def list_documents(
         offset=offset,
     )
 
-    return [
-        DocumentResponse.model_validate(document)
-        for document in documents
-    ]
+    return DocumentListResponse(
+        items=[
+            DocumentResponse.model_validate(document)
+            for document in documents
+        ],
+        total=total,
+        limit=limit,
+        offset=offset,
+    )
 
 @router.get(
     "/{document_id}",

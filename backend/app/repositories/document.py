@@ -1,6 +1,6 @@
 from uuid import UUID
 
-from sqlalchemy import select
+from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.models.document import Document
@@ -72,6 +72,39 @@ async def list_documents_by_user(
     )
 
     return list(result.scalars().all())
+
+async def count_documents_by_user(
+    session: AsyncSession,
+    user_id: UUID,
+    *,
+    search: str | None = None,
+    status: str | None = None,
+    source_type: str | None = None,
+) -> int:
+    query = select(
+        func.count(Document.id)
+    ).where(
+        Document.user_id == user_id,
+    )
+
+    if search:
+        query = query.where(
+            Document.title.ilike(f"%{search}%")
+        )
+
+    if status:
+        query = query.where(
+            Document.status == status
+        )
+
+    if source_type:
+        query = query.where(
+            Document.source_type == source_type
+        )
+
+    result = await session.execute(query)
+
+    return result.scalar_one()
 
 async def get_document_by_id_for_user(
     session: AsyncSession,
