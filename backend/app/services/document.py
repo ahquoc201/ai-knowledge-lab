@@ -36,10 +36,20 @@ async def list_user_documents(
     session: AsyncSession,
     *,
     user: User,
+    search: str | None = None,
+    status: str | None = None,
+    source_type: str | None = None,
+    limit: int = 20,
+    offset: int = 0,
 ) -> list[Document]:
     return await list_documents_by_user(
         session,
         user.id,
+        search=search,
+        status=status,
+        source_type=source_type,
+        limit=limit,
+        offset=offset,
     )
 
 from uuid import UUID

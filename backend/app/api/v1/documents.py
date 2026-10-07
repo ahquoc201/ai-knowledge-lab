@@ -1,7 +1,15 @@
 from typing import Annotated
 from uuid import UUID
 
-from fastapi import APIRouter, Depends, File, HTTPException, UploadFile, status
+from fastapi import (
+    APIRouter,
+    Depends,
+    File,
+    HTTPException,
+    Query,
+    UploadFile,
+    status,
+)
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.api.deps import get_current_user
@@ -144,10 +152,35 @@ async def upload_document(
 async def list_documents(
     current_user: Annotated[User, Depends(get_current_user)],
     session: Annotated[AsyncSession, Depends(get_session)],
+    search: Annotated[
+        str | None,
+        Query(min_length=1, max_length=255),
+    ] = None,
+    document_status: Annotated[
+        str | None,
+        Query(alias="status", max_length=30),
+    ] = None,
+    source_type: Annotated[
+        str | None,
+        Query(max_length=50),
+    ] = None,
+    limit: Annotated[
+        int,
+        Query(ge=1, le=100),
+    ] = 20,
+    offset: Annotated[
+        int,
+        Query(ge=0),
+    ] = 0,
 ) -> list[DocumentResponse]:
     documents = await list_user_documents(
         session,
         user=current_user,
+        search=search,
+        status=document_status,
+        source_type=source_type,
+        limit=limit,
+        offset=offset,
     )
 
     return [

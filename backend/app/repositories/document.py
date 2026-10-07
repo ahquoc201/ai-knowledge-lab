@@ -35,11 +35,40 @@ async def create_document(
 async def list_documents_by_user(
     session: AsyncSession,
     user_id: UUID,
+    *,
+    search: str | None = None,
+    status: str | None = None,
+    source_type: str | None = None,
+    limit: int = 20,
+    offset: int = 0,
 ) -> list[Document]:
+    query = select(Document).where(
+        Document.user_id == user_id,
+    )
+
+    if search:
+        query = query.where(
+            Document.title.ilike(f"%{search}%")
+        )
+
+    if status:
+        query = query.where(
+            Document.status == status
+        )
+
+    if source_type:
+        query = query.where(
+            Document.source_type == source_type
+        )
+
     result = await session.execute(
-        select(Document)
-        .where(Document.user_id == user_id)
-        .order_by(Document.created_at.desc())
+        query
+        .order_by(
+            Document.created_at.desc(),
+            Document.id.desc(),
+        )
+        .limit(limit)
+        .offset(offset)
     )
 
     return list(result.scalars().all())
