@@ -1,4 +1,4 @@
-from typing import Annotated
+from typing import Annotated, Literal
 from uuid import UUID
 
 from fastapi import (
@@ -165,6 +165,14 @@ async def list_documents(
         str | None,
         Query(max_length=50),
     ] = None,
+    sort_by: Annotated[
+        Literal["created_at", "updated_at", "title"],
+        Query(),
+    ] = "created_at",
+    sort_order: Annotated[
+        Literal["asc", "desc"],
+        Query(),
+    ] = "desc",
     limit: Annotated[
         int,
         Query(ge=1, le=100),
@@ -180,6 +188,8 @@ async def list_documents(
         search=search,
         status=document_status,
         source_type=source_type,
+        sort_by=sort_by,
+        sort_order=sort_order,
         limit=limit,
         offset=offset,
     )

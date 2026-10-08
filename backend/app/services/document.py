@@ -40,6 +40,8 @@ async def list_user_documents(
     search: str | None = None,
     status: str | None = None,
     source_type: str | None = None,
+    sort_by: str = "created_at",
+    sort_order: str = "desc",
     limit: int = 20,
     offset: int = 0,
 ) -> tuple[list[Document], int]:
@@ -49,6 +51,8 @@ async def list_user_documents(
         search=search,
         status=status,
         source_type=source_type,
+        sort_by=sort_by,
+        sort_order=sort_order,
         limit=limit,
         offset=offset,
     )

@@ -39,6 +39,8 @@ async def list_documents_by_user(
     search: str | None = None,
     status: str | None = None,
     source_type: str | None = None,
+    sort_by: str = "created_at",
+    sort_order: str = "desc",
     limit: int = 20,
     offset: int = 0,
 ) -> list[Document]:
@@ -61,17 +63,34 @@ async def list_documents_by_user(
             Document.source_type == source_type
         )
 
-    result = await session.execute(
-        query
-        .order_by(
-            Document.created_at.desc(),
+    sort_columns = {
+        "created_at": Document.created_at,
+        "updated_at": Document.updated_at,
+        "title": Document.title,
+    }
+
+    sort_column = sort_columns[sort_by]
+
+    if sort_order == "asc":
+        order_by = (
+            sort_column.asc(),
+            Document.id.asc(),
+        )
+    else:
+        order_by = (
+            sort_column.desc(),
             Document.id.desc(),
         )
+
+    result = await session.execute(
+        query
+        .order_by(*order_by)
         .limit(limit)
         .offset(offset)
     )
 
     return list(result.scalars().all())
+
 
 async def count_documents_by_user(
     session: AsyncSession,
@@ -106,6 +125,7 @@ async def count_documents_by_user(
 
     return result.scalar_one()
 
+
 async def get_document_by_id_for_user(
     session: AsyncSession,
     *,
@@ -121,6 +141,7 @@ async def get_document_by_id_for_user(
 
     return result.scalar_one_or_none()
 
+
 async def update_document_status(
     session: AsyncSession,
     *,
@@ -133,6 +154,7 @@ async def update_document_status(
     await session.refresh(document)
 
     return document
+
 
 async def update_document_content(
     session: AsyncSession,
@@ -147,6 +169,7 @@ async def update_document_content(
 
     return document
 
+
 async def delete_document(
     session: AsyncSession,
     *,
@@ -154,6 +177,7 @@ async def delete_document(
 ) -> None:
     await session.delete(document)
     await session.commit()
+
 
 async def save_document(
     session: AsyncSession,
