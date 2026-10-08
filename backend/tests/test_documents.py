@@ -776,3 +776,112 @@ def test_list_documents_offset_beyond_total(
     assert data["total"] == 1
     assert data["limit"] == 20
     assert data["offset"] == 100
+
+def test_list_documents_sorting(
+    client: TestClient,
+):
+    password = "TestPassword123!"
+
+    token = register_and_login(
+        client,
+        email=f"document-sorting-{uuid4()}@example.com",
+        password=password,
+    )
+
+    headers = {
+        "Authorization": f"Bearer {token}",
+    }
+
+    titles = [
+        "Charlie document",
+        "Alpha document",
+        "Bravo document",
+    ]
+
+    for title in titles:
+        response = client.post(
+            "/api/v1/documents",
+            headers=headers,
+            json={
+                "title": title,
+                "content": f"Content for {title}",
+                "source_type": "text",
+            },
+        )
+
+        assert response.status_code == 201
+
+    ascending_response = client.get(
+        "/api/v1/documents",
+        headers=headers,
+        params={
+            "sort_by": "title",
+            "sort_order": "asc",
+            "limit": 100,
+        },
+    )
+
+    assert ascending_response.status_code == 200
+
+    ascending_titles = [
+        document["title"]
+        for document in ascending_response.json()["items"]
+    ]
+
+    assert ascending_titles == sorted(ascending_titles)
+
+    descending_response = client.get(
+        "/api/v1/documents",
+        headers=headers,
+        params={
+            "sort_by": "title",
+            "sort_order": "desc",
+            "limit": 100,
+        },
+    )
+
+    assert descending_response.status_code == 200
+
+    descending_titles = [
+        document["title"]
+        for document in descending_response.json()["items"]
+    ]
+
+    assert descending_titles == sorted(
+        descending_titles,
+        reverse=True,
+    )
+
+
+def test_list_documents_sorting_validation(
+    client: TestClient,
+):
+    password = "TestPassword123!"
+
+    token = register_and_login(
+        client,
+        email=f"document-sorting-validation-{uuid4()}@example.com",
+        password=password,
+    )
+
+    headers = {
+        "Authorization": f"Bearer {token}",
+    }
+
+    invalid_cases = [
+        {
+            "sort_by": "status",
+        },
+        {
+            "sort_order": "random",
+        },
+    ]
+
+    for params in invalid_cases:
+        response = client.get(
+            "/api/v1/documents",
+            headers=headers,
+            params=params,
+        )
+
+        assert response.status_code == 422
