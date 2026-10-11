@@ -7,7 +7,10 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.api.deps import get_current_user
 from app.db.session import get_session
 from app.models.user import User
-from app.repositories.document_chunk import list_document_chunks
+from app.repositories.document_chunk import (
+    DocumentChunkWriteConflictError,
+    list_document_chunks,
+)
 from app.schemas.document_chunk import (
     DocumentChunkCreateRequest,
     DocumentChunkResponse,
@@ -46,12 +49,18 @@ async def create_document_chunks(
             detail="Document not found",
         )
 
-    chunks = await chunk_document(
-        session,
-        document=document,
-        chunk_size=payload.chunk_size,
-        overlap=payload.overlap,
-    )
+    try:
+        chunks = await chunk_document(
+            session,
+            document=document,
+            chunk_size=payload.chunk_size,
+            overlap=payload.overlap,
+        )
+    except DocumentChunkWriteConflictError as exc:
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail=str(exc),
+        ) from exc
 
     return chunks
 
@@ -84,6 +93,7 @@ async def get_document_chunks(
 
     return chunks
 
+
 @router.post(
     "/{document_id}/embeddings",
     status_code=status.HTTP_200_OK,
@@ -105,10 +115,16 @@ async def create_document_embeddings(
             detail="Document not found",
         )
 
-    chunks = await embed_document_chunks(
-        session,
-        document_id=document.id,
-    )
+    try:
+        chunks = await embed_document_chunks(
+            session,
+            document_id=document.id,
+        )
+    except DocumentChunkWriteConflictError as exc:
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail=str(exc),
+        ) from exc
 
     return {
         "document_id": str(document.id),

@@ -46,6 +46,11 @@ class Document(Base):
         nullable=True,
     )
 
+    storage_key: Mapped[str | None] = mapped_column(
+        String(255),
+        nullable=True,
+    )
+
     content: Mapped[str | None] = mapped_column(
         Text,
         nullable=True,
@@ -56,6 +61,21 @@ class Document(Base):
         default="pending",
         server_default="pending",
         nullable=False,
+    )
+
+    processing_run_id: Mapped[UUID | None] = mapped_column(
+        PG_UUID(as_uuid=True),
+        nullable=True,
+    )
+
+    processing_started_at: Mapped[datetime | None] = mapped_column(
+        DateTime(timezone=True),
+        nullable=True,
+    )
+
+    processing_heartbeat_at: Mapped[datetime | None] = mapped_column(
+        DateTime(timezone=True),
+        nullable=True,
     )
 
     created_at: Mapped[datetime] = mapped_column(

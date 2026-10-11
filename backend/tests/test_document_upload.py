@@ -1,3 +1,4 @@
+
 from datetime import UTC, datetime
 from pathlib import Path
 from types import SimpleNamespace
@@ -28,6 +29,7 @@ def build_pending_document(
     user_id,
     filename: str,
     mime_type: str,
+    storage_key: str,
 ):
     now = datetime.now(UTC)
 
@@ -38,6 +40,7 @@ def build_pending_document(
         source_type="file",
         source_name=filename,
         mime_type=mime_type,
+        storage_key=storage_key,
         content=None,
         status="pending",
         created_at=now,
@@ -51,10 +54,15 @@ def test_upload_txt_document_queues_background_processing(
 ):
     stored_path = Path("/tmp/fake-knowledge.txt")
     task_delay = Mock()
+    delete_file = Mock()
 
     monkeypatch.setattr(
         "app.api.v1.documents.save_upload_file",
         lambda *, filename, data: stored_path,
+    )
+    monkeypatch.setattr(
+        "app.api.v1.documents.delete_upload_file",
+        delete_file,
     )
 
     async def fake_create_user_document(
@@ -62,17 +70,20 @@ def test_upload_txt_document_queues_background_processing(
         *,
         user,
         data,
+        storage_key,
     ):
         assert data.title == "knowledge.txt"
         assert data.content is None
         assert data.source_type == "file"
         assert data.source_name == "knowledge.txt"
         assert data.mime_type == "text/plain"
+        assert storage_key == stored_path.name
 
         return build_pending_document(
             user_id=user.id,
             filename="knowledge.txt",
             mime_type="text/plain",
+            storage_key=storage_key,
         )
 
     monkeypatch.setattr(
@@ -107,15 +118,20 @@ def test_upload_txt_document_queues_background_processing(
     assert body["content"] is None
     assert body["status"] == "pending"
 
+    # Internal storage location must not be exposed by the API.
+    assert "storage_key" not in body
+
+    # The new Celery contract uses exactly two arguments.
     task_delay.assert_called_once_with(
         body["id"],
         body["user_id"],
-        str(stored_path),
     )
+
+    delete_file.assert_not_called()
 
 
 @pytest.mark.parametrize(
-    ("filename", "data", "mime_type"),
+    ("filename", "file_data", "mime_type"),
     [
         (
             "knowledge.pdf",
@@ -133,7 +149,7 @@ def test_upload_supported_document_types_are_queued(
     client: TestClient,
     monkeypatch,
     filename: str,
-    data: bytes,
+    file_data: bytes,
     mime_type: str,
 ):
     stored_path = Path(f"/tmp/{filename}")
@@ -149,11 +165,17 @@ def test_upload_supported_document_types_are_queued(
         *,
         user,
         data,
+        storage_key,
     ):
+        assert data.source_type == "file"
+        assert data.source_name == filename
+        assert storage_key == stored_path.name
+
         return build_pending_document(
             user_id=user.id,
             filename=filename,
             mime_type=mime_type,
+            storage_key=storage_key,
         )
 
     monkeypatch.setattr(
@@ -171,7 +193,7 @@ def test_upload_supported_document_types_are_queued(
         files={
             "file": (
                 filename,
-                data,
+                file_data,
                 mime_type,
             ),
         },
@@ -186,7 +208,10 @@ def test_upload_supported_document_types_are_queued(
     assert body["content"] is None
     assert body["status"] == "pending"
 
-    task_delay.assert_called_once()
+    task_delay.assert_called_once_with(
+        body["id"],
+        body["user_id"],
+    )
 
 
 def test_upload_rejects_unsupported_file_type(
@@ -225,11 +250,15 @@ def test_upload_empty_txt_is_queued_for_background_processing(
         *,
         user,
         data,
+        storage_key,
     ):
+        assert storage_key == stored_path.name
+
         return build_pending_document(
             user_id=user.id,
             filename="empty.txt",
             mime_type="text/plain",
+            storage_key=storage_key,
         )
 
     monkeypatch.setattr(
@@ -254,9 +283,15 @@ def test_upload_empty_txt_is_queued_for_background_processing(
     )
 
     assert response.status_code == 201
-    assert response.json()["status"] == "pending"
 
-    task_delay.assert_called_once()
+    body = response.json()
+
+    assert body["status"] == "pending"
+
+    task_delay.assert_called_once_with(
+        body["id"],
+        body["user_id"],
+    )
 
 
 def test_upload_rejects_file_over_size_limit(
@@ -288,20 +323,19 @@ def test_upload_rejects_file_over_size_limit(
     )
 
 
-def test_upload_deletes_stored_file_when_enqueue_fails(
+def test_upload_keeps_stored_file_when_enqueue_fails(
     client: TestClient,
     monkeypatch,
 ):
     stored_path = Path("/tmp/fake-failed.txt")
     delete_upload_file = Mock()
-
     set_document_status = AsyncMock()
+    created_documents = []
 
     monkeypatch.setattr(
         "app.api.v1.documents.set_document_status",
         set_document_status,
     )
-
     monkeypatch.setattr(
         "app.api.v1.documents.save_upload_file",
         lambda *, filename, data: stored_path,
@@ -316,12 +350,19 @@ def test_upload_deletes_stored_file_when_enqueue_fails(
         *,
         user,
         data,
+        storage_key,
     ):
-        return build_pending_document(
+        assert storage_key == stored_path.name
+
+        document = build_pending_document(
             user_id=user.id,
             filename="knowledge.txt",
             mime_type="text/plain",
+            storage_key=storage_key,
         )
+
+        created_documents.append(document)
+        return document
 
     task_delay = Mock(
         side_effect=RuntimeError("Broker unavailable")
@@ -352,10 +393,81 @@ def test_upload_deletes_stored_file_when_enqueue_fails(
             },
         )
 
-    delete_upload_file.assert_called_once_with(stored_path)
+    # The stored source remains available for future reprocessing.
+    delete_upload_file.assert_not_called()
+
+    assert len(created_documents) == 1
+    document = created_documents[0]
+
+    task_delay.assert_called_once_with(
+        str(document.id),
+        str(document.user_id),
+    )
 
     set_document_status.assert_awaited_once()
-
     call = set_document_status.await_args
 
+    assert call.kwargs["document"] is document
     assert call.kwargs["status"] == DocumentStatus.FAILED
+
+
+def test_upload_deletes_stored_file_when_document_creation_fails(
+    client: TestClient,
+    monkeypatch,
+):
+    stored_path = Path("/tmp/fake-db-failed.txt")
+    delete_upload_file = Mock()
+    set_document_status = AsyncMock()
+    task_delay = Mock()
+
+    monkeypatch.setattr(
+        "app.api.v1.documents.save_upload_file",
+        lambda *, filename, data: stored_path,
+    )
+    monkeypatch.setattr(
+        "app.api.v1.documents.delete_upload_file",
+        delete_upload_file,
+    )
+    monkeypatch.setattr(
+        "app.api.v1.documents.set_document_status",
+        set_document_status,
+    )
+    monkeypatch.setattr(
+        "app.api.v1.documents.process_document_task",
+        SimpleNamespace(delay=task_delay),
+    )
+
+    async def fake_create_user_document(
+        session,
+        *,
+        user,
+        data,
+        storage_key,
+    ):
+        assert storage_key == stored_path.name
+        raise RuntimeError("Database unavailable")
+
+    monkeypatch.setattr(
+        "app.api.v1.documents.create_user_document",
+        fake_create_user_document,
+    )
+
+    with pytest.raises(
+        RuntimeError,
+        match="Database unavailable",
+    ):
+        client.post(
+            "/api/v1/documents/upload",
+            headers=get_auth_headers(client),
+            files={
+                "file": (
+                    "knowledge.txt",
+                    b"PostgreSQL knowledge",
+                    "text/plain",
+                ),
+            },
+        )
+
+    delete_upload_file.assert_called_once_with(stored_path)
+    task_delay.assert_not_called()
+    set_document_status.assert_not_awaited()

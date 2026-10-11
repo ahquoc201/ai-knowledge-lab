@@ -1,5 +1,6 @@
+
 from types import SimpleNamespace
-from unittest.mock import AsyncMock
+from unittest.mock import AsyncMock, Mock
 from uuid import uuid4
 
 import pytest
@@ -22,7 +23,6 @@ async def test_process_document_marks_document_ready(
     session = AsyncMock()
 
     statuses: list[DocumentStatus] = []
-    saved_content: list[str] = []
 
     async def fake_set_document_status(
         session,
@@ -34,46 +34,54 @@ async def test_process_document_marks_document_ready(
         document.status = status.value
         return document
 
-    async def fake_set_document_content(
+    extract_text = Mock(
+        return_value="PostgreSQL knowledge",
+    )
+
+    chunks = [
+        SimpleNamespace(
+            document_id=document.id,
+            chunk_index=0,
+            content="PostgreSQL knowledge",
+            embedding=[0.1, 0.2, 0.3],
+        ),
+    ]
+
+    build_chunks = AsyncMock(
+        return_value=chunks,
+    )
+
+    async def fake_replace_document_data(
         session,
         *,
         document,
         content,
+        chunks,
+        processing_run_id,
     ):
-        saved_content.append(content)
         document.content = content
-        return document
+        document.status = DocumentStatus.READY.value
+        return chunks
 
-    async def fake_chunk_document(
-        session,
-        *,
-        document,
-    ):
-        return []
-
-    async def fake_embed_document_chunks(
-        session,
-        *,
-        document_id,
-    ):
-        assert document_id == document.id
-        return []
+    replace_data = AsyncMock(
+        side_effect=fake_replace_document_data,
+    )
 
     monkeypatch.setattr(
         "app.services.ingestion.set_document_status",
         fake_set_document_status,
     )
     monkeypatch.setattr(
-        "app.services.ingestion.set_document_content",
-        fake_set_document_content,
+        "app.services.ingestion.extract_text",
+        extract_text,
     )
     monkeypatch.setattr(
-        "app.services.ingestion.chunk_document",
-        fake_chunk_document,
+        "app.services.ingestion.build_embedded_document_chunks",
+        build_chunks,
     )
     monkeypatch.setattr(
-        "app.services.ingestion.embed_document_chunks",
-        fake_embed_document_chunks,
+        "app.services.ingestion.replace_document_content_and_chunks",
+        replace_data,
     )
 
     result = await process_document(
@@ -83,11 +91,27 @@ async def test_process_document_marks_document_ready(
     )
 
     assert result is document
-    assert saved_content == ["PostgreSQL knowledge"]
+
+    extract_text.assert_called_once_with(
+        filename="knowledge.txt",
+        data=b"PostgreSQL knowledge",
+    )
+
+    build_chunks.assert_awaited_once_with(
+        document_id=document.id,
+        content="PostgreSQL knowledge",
+    )
+
+    replace_data.assert_awaited_once_with(
+        session,
+        document=document,
+        content="PostgreSQL knowledge",
+        chunks=chunks,
+        processing_run_id=None,
+    )
 
     assert statuses == [
         DocumentStatus.PROCESSING,
-        DocumentStatus.READY,
     ]
 
     assert document.status == DocumentStatus.READY.value
@@ -104,7 +128,7 @@ async def test_process_document_marks_document_failed(
         id=uuid4(),
         title="knowledge.txt",
         source_name="knowledge.txt",
-        content=None,
+        content="Existing knowledge",
         status=DocumentStatus.PENDING.value,
     )
     session = AsyncMock()
@@ -121,44 +145,31 @@ async def test_process_document_marks_document_failed(
         document.status = status.value
         return document
 
-    async def fake_set_document_content(
-        session,
-        *,
-        document,
-        content,
-    ):
-        document.content = content
-        return document
+    extract_text = Mock(
+        return_value="PostgreSQL knowledge",
+    )
 
-    async def fake_chunk_document(
-        session,
-        *,
-        document,
-    ):
-        return []
+    build_chunks = AsyncMock(
+        side_effect=RuntimeError("Embedding failed"),
+    )
 
-    async def fake_embed_document_chunks(
-        session,
-        *,
-        document_id,
-    ):
-        raise RuntimeError("Embedding failed")
+    replace_data = AsyncMock()
 
     monkeypatch.setattr(
         "app.services.ingestion.set_document_status",
         fake_set_document_status,
     )
     monkeypatch.setattr(
-        "app.services.ingestion.set_document_content",
-        fake_set_document_content,
+        "app.services.ingestion.extract_text",
+        extract_text,
     )
     monkeypatch.setattr(
-        "app.services.ingestion.chunk_document",
-        fake_chunk_document,
+        "app.services.ingestion.build_embedded_document_chunks",
+        build_chunks,
     )
     monkeypatch.setattr(
-        "app.services.ingestion.embed_document_chunks",
-        fake_embed_document_chunks,
+        "app.services.ingestion.replace_document_content_and_chunks",
+        replace_data,
     )
 
     with pytest.raises(
@@ -171,6 +182,14 @@ async def test_process_document_marks_document_failed(
             data=b"PostgreSQL knowledge",
         )
 
+    build_chunks.assert_awaited_once_with(
+        document_id=document.id,
+        content="PostgreSQL knowledge",
+    )
+
+    # Embedding failed before the database replacement.
+    replace_data.assert_not_awaited()
+
     session.rollback.assert_awaited_once()
 
     assert statuses == [
@@ -179,6 +198,9 @@ async def test_process_document_marks_document_failed(
     ]
 
     assert document.status == DocumentStatus.FAILED.value
+
+    # Existing content must not be overwritten.
+    assert document.content == "Existing knowledge"
 
 
 @pytest.mark.anyio
@@ -215,13 +237,20 @@ async def test_ingest_file_creates_pending_document_then_processes_it(
         assert data == b"PostgreSQL knowledge"
         return document
 
+    create_document = AsyncMock(
+        side_effect=fake_create_user_document,
+    )
+    process = AsyncMock(
+        side_effect=fake_process_document,
+    )
+
     monkeypatch.setattr(
         "app.services.ingestion.create_user_document",
-        fake_create_user_document,
+        create_document,
     )
     monkeypatch.setattr(
         "app.services.ingestion.process_document",
-        fake_process_document,
+        process,
     )
 
     result = await ingest_file(
@@ -233,3 +262,11 @@ async def test_ingest_file_creates_pending_document_then_processes_it(
     )
 
     assert result is document
+
+    assert create_document.await_count == 1
+
+    process.assert_awaited_once_with(
+        session,
+        document=document,
+        data=b"PostgreSQL knowledge",
+    )
