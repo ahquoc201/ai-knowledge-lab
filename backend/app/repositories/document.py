@@ -1,8 +1,9 @@
-from uuid import UUID
+from uuid import UUID, uuid4
 
-from sqlalchemy import func, select
+from sqlalchemy import and_, func, or_, select, text, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.core.document_status import DocumentStatus
 from app.models.document import Document
 
 
@@ -15,6 +16,7 @@ async def create_document(
     source_type: str,
     source_name: str | None,
     mime_type: str | None,
+    storage_key: str | None = None,
 ) -> Document:
     document = Document(
         user_id=user_id,
@@ -23,6 +25,7 @@ async def create_document(
         source_type=source_type,
         source_name=source_name,
         mime_type=mime_type,
+        storage_key=storage_key,
     )
 
     session.add(document)
@@ -141,6 +144,28 @@ async def get_document_by_id_for_user(
 
     return result.scalar_one_or_none()
 
+async def get_document_by_id_for_user_for_update(
+    session: AsyncSession,
+    *,
+    document_id: UUID,
+    user_id: UUID,
+) -> Document | None:
+    """Lock document row before checking whether deletion is safe."""
+
+    statement = (
+        select(Document)
+        .where(
+            Document.id == document_id,
+            Document.user_id == user_id,
+        )
+        .with_for_update()
+        .execution_options(populate_existing=True)
+    )
+
+    result = await session.execute(statement)
+
+    return result.scalar_one_or_none()
+
 
 async def update_document_status(
     session: AsyncSession,
@@ -154,6 +179,162 @@ async def update_document_status(
     await session.refresh(document)
 
     return document
+
+async def claim_file_document_reprocessing(
+    session: AsyncSession,
+    *,
+    document_id: UUID,
+    user_id: UUID,
+) -> bool:
+    """Atomically claim a file document for reprocessing."""
+
+    statement = (
+        update(Document)
+        .where(
+            Document.id == document_id,
+            Document.user_id == user_id,
+            Document.source_type == "file",
+            Document.storage_key.is_not(None),
+            Document.status.in_(
+                [
+                    DocumentStatus.READY.value,
+                    DocumentStatus.FAILED.value,
+                ]
+            ),
+        )
+        .values(
+            status=DocumentStatus.PENDING.value,
+        )
+        .returning(Document.id)
+        .execution_options(synchronize_session=False)
+    )
+
+    result = await session.execute(statement)
+
+    claimed_id = result.scalar_one_or_none()
+
+    if claimed_id is None:
+        await session.rollback()
+        return False
+
+    await session.commit()
+
+    return True
+
+async def claim_pending_file_processing(
+    session: AsyncSession,
+    *,
+    document_id: UUID,
+    user_id: UUID,
+) -> UUID | None:
+    """Atomically claim a pending file and issue a fencing token."""
+
+    run_id = uuid4()
+
+    statement = (
+        update(Document)
+        .where(
+            Document.id == document_id,
+            Document.user_id == user_id,
+            Document.source_type == "file",
+            Document.status == DocumentStatus.PENDING.value,
+        )
+        .values(
+            status=DocumentStatus.PROCESSING.value,
+            processing_run_id=run_id,
+            processing_started_at=func.now(),
+            processing_heartbeat_at=func.now(),
+        )
+        .returning(Document.id)
+        .execution_options(synchronize_session=False)
+    )
+
+    result = await session.execute(statement)
+
+    claimed_id = result.scalar_one_or_none()
+
+    if claimed_id is None:
+        await session.rollback()
+        return None
+
+    await session.commit()
+
+    return run_id
+
+
+async def mark_processing_run_failed(
+    session: AsyncSession,
+    *,
+    document_id: UUID,
+    user_id: UUID,
+    processing_run_id: UUID,
+) -> bool:
+    """Mark processing as failed only if the worker still owns the lease."""
+
+    statement = (
+        update(Document)
+        .where(
+            Document.id == document_id,
+            Document.user_id == user_id,
+            Document.status == DocumentStatus.PROCESSING.value,
+            Document.processing_run_id == processing_run_id,
+        )
+        .values(
+            status=DocumentStatus.FAILED.value,
+            processing_run_id=None,
+            processing_started_at=None,
+            processing_heartbeat_at=None,
+        )
+        .returning(Document.id)
+        .execution_options(synchronize_session=False)
+    )
+
+    result = await session.execute(statement)
+
+    if result.scalar_one_or_none() is None:
+        await session.rollback()
+        return False
+
+    await session.commit()
+    return True
+
+
+async def heartbeat_processing_run(
+    session: AsyncSession,
+    *,
+    document_id: UUID,
+    user_id: UUID,
+    processing_run_id: UUID,
+) -> bool:
+    """Renew heartbeat only for the current processing lease."""
+
+    statement = (
+        update(Document)
+        .where(
+            Document.id == document_id,
+            Document.user_id == user_id,
+            Document.status == DocumentStatus.PROCESSING.value,
+            Document.processing_run_id == processing_run_id,
+        )
+        .values(
+            processing_heartbeat_at=func.now(),
+            # Heartbeats must not change the document's
+            # normal updated_at timestamp.
+            updated_at=Document.updated_at,
+        )
+        .returning(Document.id)
+        .execution_options(synchronize_session=False)
+    )
+
+    result = await session.execute(statement)
+    renewed = result.scalar_one_or_none() is not None
+
+    if renewed:
+        await session.commit()
+    else:
+        await session.rollback()
+
+    return renewed
 
 
 async def update_document_content(
@@ -188,3 +369,84 @@ async def save_document(
     await session.refresh(document)
 
     return document
+
+async def refresh_processing_heartbeat(
+    session: AsyncSession,
+    *,
+    document_id: UUID,
+    user_id: UUID,
+    processing_run_id: UUID,
+) -> bool:
+    """Refresh heartbeat only for the current processing lease."""
+
+    statement = (
+        update(Document)
+        .where(
+            Document.id == document_id,
+            Document.user_id == user_id,
+            Document.status == DocumentStatus.PROCESSING.value,
+            Document.processing_run_id == processing_run_id,
+        )
+        .values(
+            processing_heartbeat_at=func.now(),
+        )
+        .returning(Document.id)
+        .execution_options(synchronize_session=False)
+    )
+
+    result = await session.execute(statement)
+
+    if result.scalar_one_or_none() is None:
+        await session.rollback()
+        return False
+
+    await session.commit()
+    return True
+
+async def recover_stale_file_processing(
+    session: AsyncSession,
+    *,
+    document_id: UUID,
+    user_id: UUID,
+) -> bool:
+    """Recover a file document whose processing lease expired."""
+
+    # Use the PostgreSQL clock to avoid application clock skew.
+    cutoff = func.now() - text("INTERVAL '5 minutes'")
+
+    statement = (
+        update(Document)
+        .where(
+            Document.id == document_id,
+            Document.user_id == user_id,
+            Document.source_type == "file",
+            Document.status == DocumentStatus.PROCESSING.value,
+            or_(
+                Document.processing_heartbeat_at < cutoff,
+                and_(
+                    Document.processing_heartbeat_at.is_(None),
+                    or_(
+                        Document.processing_started_at.is_(None),
+                        Document.processing_started_at < cutoff,
+                    ),
+                ),
+            ),
+        )
+        .values(
+            status=DocumentStatus.FAILED.value,
+            processing_run_id=None,
+            processing_started_at=None,
+            processing_heartbeat_at=None,
+        )
+        .returning(Document.id)
+        .execution_options(synchronize_session=False)
+    )
+
+    result = await session.execute(statement)
+
+    if result.scalar_one_or_none() is None:
+        await session.rollback()
+        return False
+
+    await session.commit()
+    return True

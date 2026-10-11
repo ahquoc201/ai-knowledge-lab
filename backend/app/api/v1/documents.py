@@ -7,6 +7,7 @@ from fastapi import (
     File,
     HTTPException,
     Query,
+    Response,
     UploadFile,
     status,
 )
@@ -24,12 +25,15 @@ from app.schemas.document import (
     DocumentUpdate,
 )
 from app.services.document import (
+    DocumentProcessingError,
     InvalidDocumentUpdateError,
     UnsupportedDocumentContentUpdateError,
+    claim_user_file_reprocessing,
     create_user_document,
     delete_user_document,
     get_user_document,
     list_user_documents,
+    recover_user_stale_file_processing,
     set_document_status,
     update_user_document,
 )
@@ -124,17 +128,18 @@ async def upload_document(
                 source_name=file.filename,
                 mime_type=file.content_type,
             ),
+            storage_key=stored_path.name,
         )
 
         process_document_task.delay(
             str(document.id),
             str(current_user.id),
-            str(stored_path),
         )
-    except Exception:
-        delete_upload_file(stored_path)
 
-        if document is not None:
+    except Exception:
+        if document is None:
+            delete_upload_file(stored_path)
+        else:
             await set_document_status(
                 session,
                 document=document,
@@ -272,11 +277,18 @@ async def delete_document(
     current_user: Annotated[User, Depends(get_current_user)],
     session: Annotated[AsyncSession, Depends(get_session)],
 ) -> None:
-    deleted = await delete_user_document(
-        session,
-        user=current_user,
-        document_id=document_id,
-    )
+    try:
+        deleted = await delete_user_document(
+            session,
+            user=current_user,
+            document_id=document_id,
+        )
+
+    except DocumentProcessingError as exc:
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail=str(exc),
+        ) from exc
 
     if not deleted:
         raise HTTPException(
@@ -287,11 +299,15 @@ async def delete_document(
 @router.post(
     "/{document_id}/reprocess",
     response_model=DocumentResponse,
+    responses={
+        202: {"description": "File reprocessing queued"},
+    },
 )
 async def reprocess_document(
     document_id: UUID,
     current_user: Annotated[User, Depends(get_current_user)],
     session: Annotated[AsyncSession, Depends(get_session)],
+    response: Response,
 ) -> DocumentResponse:
     document = await get_user_document(
         session,
@@ -304,6 +320,68 @@ async def reprocess_document(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Document not found",
         )
+
+    if document.source_type == "file":
+        if not document.storage_key:
+            raise HTTPException(
+                status_code=status.HTTP_409_CONFLICT,
+                detail="Document has no stored source file",
+            )
+
+        if document.status == DocumentStatus.PROCESSING.value:
+            await recover_user_stale_file_processing(
+                session,
+                user=current_user,
+                document_id=document.id,
+            )
+
+            # Reload status after the conditional UPDATE.
+            # Recovery may succeed, fail, or another worker
+            # may finish processing concurrently.
+            await session.refresh(document)
+
+        if document.status in {
+            DocumentStatus.PENDING.value,
+            DocumentStatus.PROCESSING.value,
+        }:
+            raise HTTPException(
+                status_code=status.HTTP_409_CONFLICT,
+                detail="Document is already queued or processing",
+            )
+
+        claimed = await claim_user_file_reprocessing(
+            session,
+            user=current_user,
+            document_id=document.id,
+        )
+
+        if not claimed:
+            raise HTTPException(
+                status_code=status.HTTP_409_CONFLICT,
+                detail="Document is already queued or processing",
+            )
+
+        await session.refresh(document)
+
+        try:
+            process_document_task.delay(
+                str(document.id),
+                str(current_user.id),
+            )
+        except Exception as exc:
+            await set_document_status(
+                session,
+                document=document,
+                status=DocumentStatus.FAILED,
+            )
+
+            raise HTTPException(
+                status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+                detail="Unable to schedule document reprocessing",
+            ) from exc
+
+        response.status_code = status.HTTP_202_ACCEPTED
+        return DocumentResponse.model_validate(document)
 
     try:
         document = await reprocess_text_document(

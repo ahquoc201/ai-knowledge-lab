@@ -308,7 +308,7 @@ def test_reprocess_rejects_unsupported_documents(
 
     assert file_reprocess_response.status_code == 409
     assert file_reprocess_response.json() == {
-        "detail": "Only text documents can currently be reprocessed",
+        "detail": "Document has no stored source file",
     }
 
     empty_response = client.post(

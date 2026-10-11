@@ -1,5 +1,6 @@
+
 from types import SimpleNamespace
-from unittest.mock import AsyncMock
+from unittest.mock import AsyncMock, call
 from uuid import uuid4
 
 import pytest
@@ -12,56 +13,79 @@ from app.services.reprocessing import (
 )
 
 
-@pytest.mark.anyio
-async def test_reprocess_text_document_marks_document_ready(
-    monkeypatch,
+def make_text_document(
+    content: str = "PostgreSQL knowledge",
 ):
-    document = SimpleNamespace(
+    return SimpleNamespace(
         id=uuid4(),
         source_type="text",
-        content="PostgreSQL knowledge",
+        content=content,
         status=DocumentStatus.READY.value,
     )
-    session = AsyncMock()
 
-    statuses: list[DocumentStatus] = []
 
+def mock_document_status(monkeypatch):
     async def fake_set_document_status(
         session,
         *,
         document,
         status,
     ):
-        statuses.append(status)
         document.status = status.value
         return document
 
-    async def fake_chunk_document(
-        session,
-        *,
-        document,
-    ):
-        return []
-
-    async def fake_embed_document_chunks(
-        session,
-        *,
-        document_id,
-    ):
-        assert document_id == document.id
-        return []
+    set_status = AsyncMock(
+        side_effect=fake_set_document_status,
+    )
 
     monkeypatch.setattr(
         "app.services.reprocessing.set_document_status",
-        fake_set_document_status,
+        set_status,
+    )
+
+    return set_status
+
+
+@pytest.mark.anyio
+async def test_reprocess_text_document_marks_document_ready(
+    monkeypatch,
+):
+    document = make_text_document()
+    session = AsyncMock()
+
+    set_status = mock_document_status(monkeypatch)
+
+    chunks = [
+        SimpleNamespace(
+            document_id=document.id,
+            chunk_index=0,
+            content="PostgreSQL knowledge",
+            embedding=[0.1, 0.2, 0.3],
+        ),
+    ]
+
+    build_chunks = AsyncMock(return_value=chunks)
+
+    async def fake_replace(
+        session,
+        *,
+        document,
+        content,
+        chunks,
+    ):
+        document.content = content
+        document.status = DocumentStatus.READY.value
+        return chunks
+
+    replace_data = AsyncMock(side_effect=fake_replace)
+
+    monkeypatch.setattr(
+        "app.services.reprocessing.build_embedded_document_chunks",
+        build_chunks,
     )
     monkeypatch.setattr(
-        "app.services.reprocessing.chunk_document",
-        fake_chunk_document,
-    )
-    monkeypatch.setattr(
-        "app.services.reprocessing.embed_document_chunks",
-        fake_embed_document_chunks,
+        "app.services.reprocessing.replace_document_content_and_chunks",
+        replace_data,
     )
 
     result = await reprocess_text_document(
@@ -70,11 +94,26 @@ async def test_reprocess_text_document_marks_document_ready(
     )
 
     assert result is document
-    assert statuses == [
-        DocumentStatus.PROCESSING,
-        DocumentStatus.READY,
-    ]
     assert document.status == DocumentStatus.READY.value
+    assert document.content == "PostgreSQL knowledge"
+
+    set_status.assert_awaited_once_with(
+        session,
+        document=document,
+        status=DocumentStatus.PROCESSING,
+    )
+
+    build_chunks.assert_awaited_once_with(
+        document_id=document.id,
+        content="PostgreSQL knowledge",
+    )
+
+    replace_data.assert_awaited_once_with(
+        session,
+        document=document,
+        content="PostgreSQL knowledge",
+        chunks=chunks,
+    )
 
     session.rollback.assert_not_awaited()
 
@@ -87,6 +126,7 @@ async def test_reprocess_rejects_file_document():
         content="Extracted file content",
         status=DocumentStatus.READY.value,
     )
+
     session = AsyncMock()
 
     with pytest.raises(
@@ -99,16 +139,12 @@ async def test_reprocess_rejects_file_document():
         )
 
     session.rollback.assert_not_awaited()
+    session.commit.assert_not_awaited()
 
 
 @pytest.mark.anyio
 async def test_reprocess_rejects_empty_content():
-    document = SimpleNamespace(
-        id=uuid4(),
-        source_type="text",
-        content="   ",
-        status=DocumentStatus.READY.value,
-    )
+    document = make_text_document(content="   ")
     session = AsyncMock()
 
     with pytest.raises(
@@ -120,58 +156,35 @@ async def test_reprocess_rejects_empty_content():
             document=document,
         )
 
+    assert document.status == DocumentStatus.READY.value
+
     session.rollback.assert_not_awaited()
+    session.commit.assert_not_awaited()
 
 
 @pytest.mark.anyio
-async def test_reprocess_marks_document_failed(
+async def test_embedding_failure_preserves_existing_content(
     monkeypatch,
 ):
-    document = SimpleNamespace(
-        id=uuid4(),
-        source_type="text",
-        content="PostgreSQL knowledge",
-        status=DocumentStatus.READY.value,
+    document = make_text_document(
+        content="Original PostgreSQL knowledge",
     )
+
     session = AsyncMock()
+    set_status = mock_document_status(monkeypatch)
 
-    statuses: list[DocumentStatus] = []
-
-    async def fake_set_document_status(
-        session,
-        *,
-        document,
-        status,
-    ):
-        statuses.append(status)
-        document.status = status.value
-        return document
-
-    async def fake_chunk_document(
-        session,
-        *,
-        document,
-    ):
-        return []
-
-    async def fake_embed_document_chunks(
-        session,
-        *,
-        document_id,
-    ):
-        raise RuntimeError("Embedding failed")
+    build_chunks = AsyncMock(
+        side_effect=RuntimeError("Embedding failed"),
+    )
+    replace_data = AsyncMock()
 
     monkeypatch.setattr(
-        "app.services.reprocessing.set_document_status",
-        fake_set_document_status,
+        "app.services.reprocessing.build_embedded_document_chunks",
+        build_chunks,
     )
     monkeypatch.setattr(
-        "app.services.reprocessing.chunk_document",
-        fake_chunk_document,
-    )
-    monkeypatch.setattr(
-        "app.services.reprocessing.embed_document_chunks",
-        fake_embed_document_chunks,
+        "app.services.reprocessing.replace_document_content_and_chunks",
+        replace_data,
     )
 
     with pytest.raises(
@@ -183,10 +196,100 @@ async def test_reprocess_marks_document_failed(
             document=document,
         )
 
+    build_chunks.assert_awaited_once_with(
+        document_id=document.id,
+        content="Original PostgreSQL knowledge",
+    )
+
+    # No destructive replacement when embedding fails.
+    replace_data.assert_not_awaited()
+
     session.rollback.assert_awaited_once()
 
-    assert statuses == [
-        DocumentStatus.PROCESSING,
-        DocumentStatus.FAILED,
-    ]
+    assert document.content == "Original PostgreSQL knowledge"
     assert document.status == DocumentStatus.FAILED.value
+
+    assert set_status.await_args_list == [
+        call(
+            session,
+            document=document,
+            status=DocumentStatus.PROCESSING,
+        ),
+        call(
+            session,
+            document=document,
+            status=DocumentStatus.FAILED,
+        ),
+    ]
+
+
+@pytest.mark.anyio
+async def test_atomic_replacement_failure_rolls_back(
+    monkeypatch,
+):
+    document = make_text_document(
+        content="Existing knowledge",
+    )
+
+    session = AsyncMock()
+    set_status = mock_document_status(monkeypatch)
+
+    chunks = [
+        SimpleNamespace(
+            document_id=document.id,
+            chunk_index=0,
+            content="Existing knowledge",
+            embedding=[0.1, 0.2, 0.3],
+        ),
+    ]
+
+    build_chunks = AsyncMock(return_value=chunks)
+
+    replace_data = AsyncMock(
+        side_effect=RuntimeError("Database commit failed"),
+    )
+
+    monkeypatch.setattr(
+        "app.services.reprocessing.build_embedded_document_chunks",
+        build_chunks,
+    )
+    monkeypatch.setattr(
+        "app.services.reprocessing.replace_document_content_and_chunks",
+        replace_data,
+    )
+
+    with pytest.raises(
+        RuntimeError,
+        match="Database commit failed",
+    ):
+        await reprocess_text_document(
+            session,
+            document=document,
+        )
+
+    build_chunks.assert_awaited_once()
+
+    replace_data.assert_awaited_once_with(
+        session,
+        document=document,
+        content="Existing knowledge",
+        chunks=chunks,
+    )
+
+    session.rollback.assert_awaited_once()
+
+    assert document.content == "Existing knowledge"
+    assert document.status == DocumentStatus.FAILED.value
+
+    assert set_status.await_args_list == [
+        call(
+            session,
+            document=document,
+            status=DocumentStatus.PROCESSING,
+        ),
+        call(
+            session,
+            document=document,
+            status=DocumentStatus.FAILED,
+        ),
+    ]

@@ -1,19 +1,55 @@
+
+import logging
+from uuid import UUID
+
+from sqlalchemy import func, select, text
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.document_status import DocumentStatus
 from app.models.document import Document
 from app.models.user import User
 from app.repositories.document import (
+    claim_file_document_reprocessing,
     count_documents_by_user,
     create_document,
     delete_document,
     get_document_by_id_for_user,
+    get_document_by_id_for_user_for_update,
     list_documents_by_user,
+    recover_stale_file_processing,
     save_document,
     update_document_content,
     update_document_status,
 )
 from app.schemas.document import DocumentCreate, DocumentUpdate
+from app.services.file_storage import (
+    InvalidStorageKeyError,
+    delete_stored_file,
+)
+
+logger = logging.getLogger(__name__)
+
+
+# ============================================================
+# Exceptions
+# ============================================================
+
+
+class DocumentProcessingError(ValueError):
+    """Document cannot be deleted while processing."""
+
+
+class UnsupportedDocumentContentUpdateError(ValueError):
+    """Content updates are not supported for file documents."""
+
+
+class InvalidDocumentUpdateError(ValueError):
+    """Invalid document update request."""
+
+
+# ============================================================
+# Create Document
+# ============================================================
 
 
 async def create_user_document(
@@ -21,6 +57,7 @@ async def create_user_document(
     *,
     user: User,
     data: DocumentCreate,
+    storage_key: str | None = None,
 ) -> Document:
     return await create_document(
         session,
@@ -30,7 +67,13 @@ async def create_user_document(
         source_type=data.source_type,
         source_name=data.source_name,
         mime_type=data.mime_type,
+        storage_key=storage_key,
     )
+
+
+# ============================================================
+# List Documents
+# ============================================================
 
 
 async def list_user_documents(
@@ -67,7 +110,10 @@ async def list_user_documents(
 
     return documents, total
 
-from uuid import UUID
+
+# ============================================================
+# Get Document
+# ============================================================
 
 
 async def get_user_document(
@@ -82,6 +128,12 @@ async def get_user_document(
         user_id=user.id,
     )
 
+
+# ============================================================
+# Update Document Status / Content
+# ============================================================
+
+
 async def set_document_status(
     session: AsyncSession,
     *,
@@ -93,6 +145,7 @@ async def set_document_status(
         document=document,
         status=status.value,
     )
+
 
 async def set_document_content(
     session: AsyncSession,
@@ -106,34 +159,100 @@ async def set_document_content(
         content=content,
     )
 
+
+# ============================================================
+# Delete Document with PostgreSQL Row Lock
+# ============================================================
+
+
 async def delete_user_document(
     session: AsyncSession,
     *,
     user: User,
     document_id: UUID,
 ) -> bool:
-    document = await get_user_document(
+    """
+    Delete a user-owned document safely.
+
+    Rules:
+    - Lock the document row before checking its status.
+    - Reject deletion while the document is PROCESSING.
+    - Delete the database record before the source file.
+    - Preserve the source file if the DB deletion fails.
+    - Log filesystem cleanup failures without masking
+      a successfully committed database deletion.
+    """
+
+    document = await get_document_by_id_for_user_for_update(
         session,
-        user=user,
         document_id=document_id,
+        user_id=user.id,
     )
 
     if document is None:
+        await session.rollback()
         return False
 
+    if document.status == DocumentStatus.PROCESSING.value:
+        # Use PostgreSQL time to avoid application clock skew.
+        cutoff = await session.scalar(
+            select(func.now() - text("INTERVAL '5 minutes'"))
+        )
+
+        heartbeat_at = document.processing_heartbeat_at
+        started_at = document.processing_started_at
+
+        lease_expired = (
+            (
+                heartbeat_at is not None
+                and heartbeat_at < cutoff
+            )
+            or (
+                heartbeat_at is None
+                and (
+                    started_at is None
+                    or started_at < cutoff
+                )
+            )
+        )
+
+        if not lease_expired:
+            await session.rollback()
+
+            raise DocumentProcessingError(
+                "Document is currently processing"
+            )
+
+        # Lease expired. Continue deleting while holding
+        # the PostgreSQL row lock. Do not commit here.
+
+    # Save the storage key before deleting the DB record.
+    storage_key = document.storage_key
+
+    # Delete and commit while holding the row lock.
+    # The commit releases the PostgreSQL row lock.
     await delete_document(
         session,
         document=document,
     )
 
+    # Only delete the original file after DB commit succeeds.
+    if storage_key:
+        try:
+            delete_stored_file(storage_key)
+
+        except (OSError, InvalidStorageKeyError):
+            logger.exception(
+                "Failed to clean up source file for document %s",
+                document_id,
+            )
+
     return True
 
-class UnsupportedDocumentContentUpdateError(ValueError):
-    pass
 
-
-class InvalidDocumentUpdateError(ValueError):
-    pass
+# ============================================================
+# Update Document
+# ============================================================
 
 
 async def update_user_document(
@@ -174,4 +293,48 @@ async def update_user_document(
     return await save_document(
         session,
         document=document,
+    )
+
+
+# ============================================================
+# Atomic File Reprocessing Claim
+# ============================================================
+
+
+async def claim_user_file_reprocessing(
+    session: AsyncSession,
+    *,
+    user: User,
+    document_id: UUID,
+) -> bool:
+    """
+    Atomically claim a file document for reprocessing.
+
+    Only documents in READY or FAILED status with a
+    valid storage key are eligible.
+
+    The repository performs a conditional UPDATE to
+    prevent multiple concurrent requests from claiming
+    the same document.
+    """
+
+    return await claim_file_document_reprocessing(
+        session,
+        document_id=document_id,
+        user_id=user.id,
+    )
+
+
+async def recover_user_stale_file_processing(
+    session: AsyncSession,
+    *,
+    user: User,
+    document_id: UUID,
+) -> bool:
+    """Recover an expired processing lease owned by this user."""
+
+    return await recover_stale_file_processing(
+        session,
+        document_id=document_id,
+        user_id=user.id,
     )

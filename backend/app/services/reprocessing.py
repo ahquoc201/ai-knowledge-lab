@@ -1,12 +1,13 @@
+
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.document_status import DocumentStatus
 from app.models.document import Document
-from app.services.document import set_document_status
-from app.services.document_chunk import (
-    chunk_document,
-    embed_document_chunks,
+from app.repositories.document_chunk import (
+    replace_document_content_and_chunks,
 )
+from app.services.document import set_document_status
+from app.services.document_chunk import build_embedded_document_chunks
 
 
 class UnsupportedDocumentReprocessingError(ValueError):
@@ -22,6 +23,8 @@ async def reprocess_text_document(
     *,
     document: Document,
 ) -> Document:
+    """Safely rebuild chunks and embeddings for a text document."""
+
     if document.source_type != "text":
         raise UnsupportedDocumentReprocessingError(
             "Only text documents can currently be reprocessed"
@@ -32,6 +35,8 @@ async def reprocess_text_document(
             "Document content is empty"
         )
 
+    content = document.content
+
     await set_document_status(
         session,
         document=document,
@@ -39,21 +44,22 @@ async def reprocess_text_document(
     )
 
     try:
-        await chunk_document(
-            session,
-            document=document,
-        )
-
-        await embed_document_chunks(
-            session,
+        # Build chunks and embeddings without changing
+        # existing persisted chunks.
+        chunks = await build_embedded_document_chunks(
             document_id=document.id,
+            content=content,
         )
 
-        await set_document_status(
+        # Replace chunks, embeddings and status
+        # in a single database transaction.
+        await replace_document_content_and_chunks(
             session,
             document=document,
-            status=DocumentStatus.READY,
+            content=content,
+            chunks=chunks,
         )
+
     except Exception:
         await session.rollback()
 
@@ -64,5 +70,9 @@ async def reprocess_text_document(
         )
 
         raise
+
+    # Reload database-generated fields after the atomic commit.
+    # In particular, updated_at may be expired by SQLAlchemy.
+    await session.refresh(document)
 
     return document
