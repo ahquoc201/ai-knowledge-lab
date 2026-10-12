@@ -1,0 +1,53 @@
+
+name: Retrieval Evaluation Checks
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  retrieval-evaluation:
+    name: Retrieval Evaluation Unit Tests
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: backend
+
+    env:
+      APP_ENV: test
+      DATABASE_URL: postgresql+asyncpg://ci:ci@127.0.0.1:5432/ci
+      JWT_SECRET_KEY: ci-only-not-for-production
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v6
+        with:
+          enable-cache: true
+          cache-dependency-glob: backend/uv.lock
+
+      - name: Install Python
+        run: uv python install 3.12
+
+      - name: Install dependencies
+        run: uv sync --locked --python 3.12
+
+      - name: Ruff check
+        run: uv run ruff check app tests
+
+      - name: Retrieval Evaluation Unit Tests
+        run: |
+          uv run pytest -q --tb=short \
+            tests/test_evaluation_metrics.py \
+            tests/test_evaluation_models.py \
+            tests/test_evaluation_runner.py \
+            tests/test_evaluation_dataset.py \
+            tests/test_evaluation_fixture_manifest.py \
+            tests/test_evaluation_fixture_provisioner.py \
+            tests/test_evaluation_regression.py \
+            tests/test_evaluation_reporting.py \
+            tests/test_evaluation_compare_cli.py \
+            tests/test_evaluation_adapters.py

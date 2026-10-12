@@ -1,0 +1,69 @@
+
+{
+  "dataset_id": "ai-knowledge-lab-retrieval",
+  "version": "1.0",
+  "documents": [
+    {
+      "key": "postgresql",
+      "title": "PostgreSQL Transactions",
+      "content": "PostgreSQL là hệ quản trị cơ sở dữ liệu quan hệ. PostgreSQL hỗ trợ giao dịch ACID, bao gồm tính nguyên tử, nhất quán, cô lập và bền vững. Lệnh COMMIT xác nhận giao dịch, còn ROLLBACK hoàn tác các thay đổi chưa được xác nhận."
+    },
+    {
+      "key": "redis",
+      "title": "Redis Cache",
+      "content": "Redis là hệ thống lưu trữ dữ liệu trong bộ nhớ, thường được sử dụng để cache dữ liệu và quản lý session. Redis hỗ trợ TTL để tự động hết hạn key, giúp giảm tải cho cơ sở dữ liệu và cải thiện tốc độ truy cập."
+    },
+    {
+      "key": "fastapi",
+      "title": "FastAPI Backend",
+      "content": "FastAPI là framework Python dùng để xây dựng REST API. FastAPI hỗ trợ async await, kiểm tra dữ liệu bằng Pydantic, dependency injection và tự động tạo tài liệu OpenAPI cho các endpoint."
+    },
+    {
+      "key": "docker",
+      "title": "Docker Containers",
+      "content": "Docker đóng gói ứng dụng cùng các thư viện phụ thuộc vào container. Docker image là bản mẫu để tạo container. Container chia sẻ kernel của hệ điều hành host, trong khi máy ảo thường chạy hệ điều hành khách riêng."
+    }
+  ],
+  "cases": [
+    {
+      "case_id": "postgresql-001",
+      "query": "PostgreSQL đảm bảo tính ACID của transaction như thế nào?",
+      "relevant_document_keys": ["postgresql"]
+    },
+    {
+      "case_id": "postgresql-002",
+      "query": "Lệnh COMMIT và ROLLBACK trong cơ sở dữ liệu dùng để làm gì?",
+      "relevant_document_keys": ["postgresql"]
+    },
+    {
+      "case_id": "redis-001",
+      "query": "Redis sử dụng TTL để quản lý bộ nhớ cache như thế nào?",
+      "relevant_document_keys": ["redis"]
+    },
+    {
+      "case_id": "redis-002",
+      "query": "Giải pháp nào giúp cache dữ liệu và giảm tải database?",
+      "relevant_document_keys": ["redis"]
+    },
+    {
+      "case_id": "fastapi-001",
+      "query": "FastAPI hỗ trợ async await và Pydantic ra sao?",
+      "relevant_document_keys": ["fastapi"]
+    },
+    {
+      "case_id": "fastapi-002",
+      "query": "Framework Python nào có dependency injection và tự động tạo OpenAPI?",
+      "relevant_document_keys": ["fastapi"]
+    },
+    {
+      "case_id": "docker-001",
+      "query": "Docker container khác máy ảo về kernel như thế nào?",
+      "relevant_document_keys": ["docker"]
+    },
+    {
+      "case_id": "docker-002",
+      "query": "Docker image và container có vai trò gì khi triển khai ứng dụng?",
+      "relevant_document_keys": ["docker"]
+    }
+  ]
+}
