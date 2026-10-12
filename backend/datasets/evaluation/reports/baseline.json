@@ -1,0 +1,153 @@
+{
+  "schema_version": 1,
+  "dataset_id": "ai-knowledge-lab-retrieval",
+  "dataset_version": "1.0",
+  "embedding_model": "intfloat/multilingual-e5-small",
+  "retrieval_method": "semantic-search-pgvector",
+  "evaluations": [
+    {
+      "k": 1,
+      "mean_precision_at_k": 1.0,
+      "mean_recall_at_k": 1.0,
+      "mrr_at_k": 1.0,
+      "cases": [
+        {
+          "case_id": "postgresql-001",
+          "precision_at_k": 1.0,
+          "recall_at_k": 1.0,
+          "reciprocal_rank_at_k": 1.0,
+          "relevant_chunk_count": 1,
+          "retrieved_chunk_count": 1
+        },
+        {
+          "case_id": "postgresql-002",
+          "precision_at_k": 1.0,
+          "recall_at_k": 1.0,
+          "reciprocal_rank_at_k": 1.0,
+          "relevant_chunk_count": 1,
+          "retrieved_chunk_count": 1
+        },
+        {
+          "case_id": "redis-001",
+          "precision_at_k": 1.0,
+          "recall_at_k": 1.0,
+          "reciprocal_rank_at_k": 1.0,
+          "relevant_chunk_count": 1,
+          "retrieved_chunk_count": 1
+        },
+        {
+          "case_id": "redis-002",
+          "precision_at_k": 1.0,
+          "recall_at_k": 1.0,
+          "reciprocal_rank_at_k": 1.0,
+          "relevant_chunk_count": 1,
+          "retrieved_chunk_count": 1
+        },
+        {
+          "case_id": "fastapi-001",
+          "precision_at_k": 1.0,
+          "recall_at_k": 1.0,
+          "reciprocal_rank_at_k": 1.0,
+          "relevant_chunk_count": 1,
+          "retrieved_chunk_count": 1
+        },
+        {
+          "case_id": "fastapi-002",
+          "precision_at_k": 1.0,
+          "recall_at_k": 1.0,
+          "reciprocal_rank_at_k": 1.0,
+          "relevant_chunk_count": 1,
+          "retrieved_chunk_count": 1
+        },
+        {
+          "case_id": "docker-001",
+          "precision_at_k": 1.0,
+          "recall_at_k": 1.0,
+          "reciprocal_rank_at_k": 1.0,
+          "relevant_chunk_count": 1,
+          "retrieved_chunk_count": 1
+        },
+        {
+          "case_id": "docker-002",
+          "precision_at_k": 1.0,
+          "recall_at_k": 1.0,
+          "reciprocal_rank_at_k": 1.0,
+          "relevant_chunk_count": 1,
+          "retrieved_chunk_count": 1
+        }
+      ]
+    },
+    {
+      "k": 3,
+      "mean_precision_at_k": 0.3333333333333333,
+      "mean_recall_at_k": 1.0,
+      "mrr_at_k": 1.0,
+      "cases": [
+        {
+          "case_id": "postgresql-001",
+          "precision_at_k": 0.3333333333333333,
+          "recall_at_k": 1.0,
+          "reciprocal_rank_at_k": 1.0,
+          "relevant_chunk_count": 1,
+          "retrieved_chunk_count": 3
+        },
+        {
+          "case_id": "postgresql-002",
+          "precision_at_k": 0.3333333333333333,
+          "recall_at_k": 1.0,
+          "reciprocal_rank_at_k": 1.0,
+          "relevant_chunk_count": 1,
+          "retrieved_chunk_count": 3
+        },
+        {
+          "case_id": "redis-001",
+          "precision_at_k": 0.3333333333333333,
+          "recall_at_k": 1.0,
+          "reciprocal_rank_at_k": 1.0,
+          "relevant_chunk_count": 1,
+          "retrieved_chunk_count": 3
+        },
+        {
+          "case_id": "redis-002",
+          "precision_at_k": 0.3333333333333333,
+          "recall_at_k": 1.0,
+          "reciprocal_rank_at_k": 1.0,
+          "relevant_chunk_count": 1,
+          "retrieved_chunk_count": 3
+        },
+        {
+          "case_id": "fastapi-001",
+          "precision_at_k": 0.3333333333333333,
+          "recall_at_k": 1.0,
+          "reciprocal_rank_at_k": 1.0,
+          "relevant_chunk_count": 1,
+          "retrieved_chunk_count": 3
+        },
+        {
+          "case_id": "fastapi-002",
+          "precision_at_k": 0.3333333333333333,
+          "recall_at_k": 1.0,
+          "reciprocal_rank_at_k": 1.0,
+          "relevant_chunk_count": 1,
+          "retrieved_chunk_count": 3
+        },
+        {
+          "case_id": "docker-001",
+          "precision_at_k": 0.3333333333333333,
+          "recall_at_k": 1.0,
+          "reciprocal_rank_at_k": 1.0,
+          "relevant_chunk_count": 1,
+          "retrieved_chunk_count": 3
+        },
+        {
+          "case_id": "docker-002",
+          "precision_at_k": 0.3333333333333333,
+          "recall_at_k": 1.0,
+          "reciprocal_rank_at_k": 1.0,
+          "relevant_chunk_count": 1,
+          "retrieved_chunk_count": 3
+        }
+      ]
+    }
+  ]
+}
