@@ -105,3 +105,235 @@ async def test_answer_with_rag_builds_prompt_and_returns_sources(
         "assistant: Đây là một hệ quản trị cơ sở dữ liệu."
         in llm.received_messages[1].content
     )
+
+
+@pytest.mark.anyio
+async def test_answer_with_rag_skips_llm_when_context_is_empty(
+    monkeypatch,
+):
+    """No retrieved sources must result in a grounded fallback."""
+
+    context = RetrievalContext(
+        text="",
+        sources=[],
+    )
+
+    async def fake_retrieve_context(
+        session,
+        *,
+        user_id,
+        query,
+        limit,
+    ):
+        return context
+
+    monkeypatch.setattr(
+        "app.services.rag.retrieve_context",
+        fake_retrieve_context,
+    )
+
+    class FailIfCalledLLM:
+        async def generate(self, messages):
+            raise AssertionError(
+                "LLM must not be called when no sources exist"
+            )
+
+    result = await answer_with_rag(
+        None,
+        user_id=uuid4(),
+        query="Tài liệu nói gì về Kubernetes?",
+        llm=FailIfCalledLLM(),
+        limit=5,
+    )
+
+    assert result.answer == (
+        "Không đủ thông tin trong tài liệu "
+        "để trả lời câu hỏi này."
+    )
+    assert result.sources == []
+
+
+@pytest.mark.anyio
+@pytest.mark.parametrize(
+    "context_text",
+    ["", " \n\t "],
+)
+async def test_answer_with_rag_skips_llm_when_context_text_is_blank(
+    monkeypatch,
+    context_text,
+):
+    """Do not generate answers from blank retrieval context."""
+
+    context = RetrievalContext(
+        text=context_text,
+        sources=[
+            ContextSource(
+                source_index=1,
+                document_id=uuid4(),
+                chunk_id=uuid4(),
+                chunk_index=0,
+                content="PostgreSQL supports ACID transactions.",
+                similarity=0.95,
+            ),
+        ],
+    )
+
+    async def fake_retrieve_context(
+        session,
+        *,
+        user_id,
+        query,
+        limit,
+    ):
+        return context
+
+    monkeypatch.setattr(
+        "app.services.rag.retrieve_context",
+        fake_retrieve_context,
+    )
+
+    class FailIfCalledLLM:
+        async def generate(self, messages):
+            raise AssertionError(
+                "LLM must not be called with blank context"
+            )
+
+    result = await answer_with_rag(
+        None,
+        user_id=uuid4(),
+        query="PostgreSQL hỗ trợ ACID như thế nào?",
+        llm=FailIfCalledLLM(),
+    )
+
+    assert result.answer == (
+        "Không đủ thông tin trong tài liệu "
+        "để trả lời câu hỏi này."
+    )
+    assert result.sources == []
+
+
+@pytest.mark.anyio
+@pytest.mark.parametrize(
+    "llm_answer",
+    [
+        "PostgreSQL hỗ trợ ACID [Source 9].",
+        "PostgreSQL hỗ trợ ACID [Source abc].",
+        "PostgreSQL hỗ trợ ACID.",
+        (
+            "PostgreSQL hỗ trợ ACID [Source 1]. "
+            "Redis hỗ trợ caching [Source 9]."
+        ),
+        "PostgreSQL hỗ trợ ACID [source 1].",
+    ],
+)
+async def test_answer_with_rag_rejects_invalid_citations(
+    monkeypatch,
+    llm_answer,
+):
+    context = RetrievalContext(
+        text="[Source 1]\nPostgreSQL hỗ trợ ACID.",
+        sources=[
+            ContextSource(
+                source_index=1,
+                document_id=uuid4(),
+                chunk_id=uuid4(),
+                chunk_index=0,
+                content="PostgreSQL hỗ trợ ACID.",
+                similarity=0.95,
+            )
+        ],
+    )
+
+    async def fake_retrieve_context(
+        session,
+        *,
+        user_id,
+        query,
+        limit,
+    ):
+        return context
+
+    monkeypatch.setattr(
+        "app.services.rag.retrieve_context",
+        fake_retrieve_context,
+    )
+
+    llm = FakeLLMProvider(response=llm_answer)
+
+    result = await answer_with_rag(
+        None,
+        user_id=uuid4(),
+        query="PostgreSQL hỗ trợ những gì?",
+        llm=llm,
+    )
+
+    assert result.answer == (
+        "Không thể xác minh câu trả lời "
+        "từ tài liệu được truy xuất."
+    )
+    assert result.sources == []
+
+    # The LLM was called, but its unsupported answer
+    # must not be returned to the API.
+    assert len(llm.received_messages) == 2
+
+
+@pytest.mark.anyio
+@pytest.mark.parametrize(
+    "llm_answer",
+    [
+        "Không đủ thông tin trong tài liệu để trả lời câu hỏi này.",
+        (
+            " \nKhông đủ thông tin trong tài liệu "
+            "để trả lời câu hỏi này.\n "
+        ),
+    ],
+)
+async def test_answer_with_rag_preserves_explicit_refusal(
+    monkeypatch,
+    llm_answer,
+):
+    context = RetrievalContext(
+        text="[Source 1]\nPostgreSQL hỗ trợ ACID.",
+        sources=[
+            ContextSource(
+                source_index=1,
+                document_id=uuid4(),
+                chunk_id=uuid4(),
+                chunk_index=0,
+                content="PostgreSQL hỗ trợ ACID.",
+                similarity=0.95,
+            ),
+        ],
+    )
+
+    async def fake_retrieve_context(
+        session,
+        *,
+        user_id,
+        query,
+        limit,
+    ):
+        return context
+
+    monkeypatch.setattr(
+        "app.services.rag.retrieve_context",
+        fake_retrieve_context,
+    )
+
+    llm = FakeLLMProvider(response=llm_answer)
+
+    result = await answer_with_rag(
+        None,
+        user_id=uuid4(),
+        query="PostgreSQL có hỗ trợ tính năng XYZ không?",
+        llm=llm,
+    )
+
+    assert result.answer == (
+        "Không đủ thông tin trong tài liệu "
+        "để trả lời câu hỏi này."
+    )
+    assert result.sources == []
+
+    assert len(llm.received_messages) == 2
