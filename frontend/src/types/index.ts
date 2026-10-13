@@ -20,6 +20,7 @@ export interface Document {
   source_name: string | null;
   mime_type: string | null;
   status: DocumentStatus;
+  error_message?: string | null;
   created_at: string;
   updated_at: string;
 }

@@ -83,19 +83,26 @@ async def _process_document_task(
                 try:
                     await session.refresh(document)
 
-                    if not document.storage_key:
-                        raise ValueError(
-                            "Document has no stored source file"
+                    source_type = getattr(document, "source_type", "file")
+                    if source_type == "text":
+                        content = getattr(document, "content", None)
+                        if not content or not content.strip():
+                            raise ValueError("Document content is empty")
+                        data = content.encode("utf-8")
+                    else:
+                        if not getattr(document, "storage_key", None):
+                            raise ValueError(
+                                "Document has no stored source file"
+                            )
+
+                        # Read from disk without blocking the
+                        # event loop used by the heartbeat.
+                        data = await asyncio.to_thread(
+                            read_stored_file,
+                            document.storage_key,
                         )
 
-                    # Read from disk without blocking the
-                    # event loop used by the heartbeat.
-                    data = await asyncio.to_thread(
-                        read_stored_file,
-                        document.storage_key,
-                    )
-
-                except Exception:
+                except Exception as exc:
                     await session.rollback()
 
                     # Only this run may record the failure.
@@ -104,6 +111,7 @@ async def _process_document_task(
                         document_id=document_id,
                         user_id=user_id,
                         processing_run_id=processing_run_id,
+                        error_message=str(exc),
                     )
 
                     raise
@@ -136,14 +144,27 @@ async def _process_document_task(
 
 @celery_app.task(
     name="documents.process",
+    bind=True,
+    max_retries=3,
+    default_retry_delay=5,
 )
 def process_document_task(
+    self,
     document_id: str,
     user_id: str,
 ) -> None:
-    asyncio.run(
-        _process_document_task(
-            document_id=UUID(document_id),
-            user_id=UUID(user_id),
+    try:
+        asyncio.run(
+            _process_document_task(
+                document_id=UUID(document_id),
+                user_id=UUID(user_id),
+            )
         )
-    )
+    except Exception as exc:
+        logger.exception(
+            "Document processing task failed for %s",
+            document_id,
+        )
+        if hasattr(self, "request") and self.request.retries < self.max_retries:
+            raise self.retry(exc=exc)
+        raise
