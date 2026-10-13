@@ -23,8 +23,8 @@ test.describe("Navigation and Layout Workflows (Scenario 4)", () => {
 
     // 2. Chuyển sang AI Chat / RAG tab
     await page.getByRole("button", { name: /AI Chat \/ RAG/i }).click();
-    await expect(page.getByRole("heading", { name: /AI Chat \/ RAG Assistant/i })).toBeVisible();
-    await expect(page.getByText(/T260022 In Progress/i)).toBeVisible();
+    await expect(page.getByRole("heading", { name: /AI RAG Assistant/i })).toBeVisible();
+    await expect(page.getByText(/Cuộc trò chuyện mới/i)).toBeVisible();
 
     // 3. Chuyển sang Cấu hình / Settings tab
     await page.getByRole("button", { name: /cấu hình \/ audit/i }).click();

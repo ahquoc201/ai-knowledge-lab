@@ -16,6 +16,9 @@ class ContextSource:
     chunk_index: int
     content: str
     similarity: float
+    document_title: str | None = None
+    char_start: int | None = None
+    char_end: int | None = None
 
 
 @dataclass(frozen=True, slots=True)
@@ -75,6 +78,9 @@ def build_retrieval_context(
             chunk_index=result.chunk.chunk_index,
             content=included_content,
             similarity=result.similarity,
+            document_title=result.document_title,
+            char_start=result.chunk.char_start,
+            char_end=result.chunk.char_end,
         )
 
         sources.append(source)

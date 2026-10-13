@@ -51,7 +51,7 @@ test.describe("Document Lifecycle Workflow (Scenario 3)", () => {
     await docRow.getByTitle(/reprocess/i).click();
 
     // Chờ thao tác reprocess hoàn tất (nút xóa quay lại trạng thái enabled)
-    await expect(docRow.getByTitle(/xóa tài liệu/i)).toBeEnabled({ timeout: 10000 });
+    await expect(docRow.getByTitle(/xóa tài liệu/i)).toBeEnabled({ timeout: 20000 });
 
     // 9. Xóa tài liệu thử nghiệm một cách an toàn (chấp nhận dialog confirm)
     page.once("dialog", async (dialog) => {

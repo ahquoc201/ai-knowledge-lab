@@ -5,7 +5,7 @@ import { AppLayout } from "./components/layout/AppLayout";
 import { NavItemKey } from "./components/layout/Sidebar";
 import { DashboardPage } from "./pages/DashboardPage";
 import { DocumentsPage } from "./pages/DocumentsPage";
-import { ChatPlaceholderPage } from "./pages/ChatPlaceholderPage";
+import { ChatPage } from "./pages/ChatPage";
 import { SettingsPage } from "./pages/SettingsPage";
 
 export const App: React.FC = () => {
@@ -28,7 +28,7 @@ export const App: React.FC = () => {
       case "documents":
         return <DocumentsPage />;
       case "chat":
-        return <ChatPlaceholderPage />;
+        return <ChatPage onNavigateToDocs={() => setCurrentTab("documents")} />;
       case "settings":
         return <SettingsPage />;
       default:

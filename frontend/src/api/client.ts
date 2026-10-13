@@ -1,4 +1,14 @@
-import { AuthTokenResponse, CreateDocumentPayload, Document, DocumentListResponse, User } from "../types";
+import {
+  AuthTokenResponse,
+  ChatStreamEvent,
+  Conversation,
+  ConversationDetail,
+  CreateDocumentPayload,
+  Document,
+  DocumentListResponse,
+  RAGResponse,
+  User,
+} from "../types";
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL || "/api/v1";
 
@@ -94,6 +104,118 @@ export const api = {
       request<Document>(`/documents/${id}/reprocess`, {
         method: "POST",
       }),
+  },
+
+  conversations: {
+    list: (): Promise<Conversation[]> =>
+      request<Conversation[]>("/conversations"),
+
+    get: (id: string): Promise<ConversationDetail> =>
+      request<ConversationDetail>(`/conversations/${id}`),
+
+    create: (title?: string): Promise<Conversation> =>
+      request<Conversation>("/conversations", {
+        method: "POST",
+        body: JSON.stringify({ title }),
+      }),
+
+    delete: (id: string): Promise<void> =>
+      request<void>(`/conversations/${id}`, {
+        method: "DELETE",
+      }),
+  },
+
+  rag: {
+    ask: (payload: { query: string; limit?: number; conversation_id?: string }): Promise<RAGResponse> =>
+      request<RAGResponse>("/rag/ask", {
+        method: "POST",
+        body: JSON.stringify(payload),
+      }),
+
+    askStream: async (
+      payload: { query: string; limit?: number; conversation_id?: string },
+      onEvent: (event: ChatStreamEvent) => void,
+      signal?: AbortSignal
+    ): Promise<void> => {
+      const token = localStorage.getItem("auth_token");
+      const headers = new Headers({
+        "Content-Type": "application/json",
+      });
+      if (token) {
+        headers.set("Authorization", `Bearer ${token}`);
+      }
+
+      const response = await fetch(`${API_BASE}/rag/ask/stream`, {
+        method: "POST",
+        headers,
+        body: JSON.stringify(payload),
+        signal,
+      });
+
+      if (!response.ok) {
+        let detail = "An unexpected error occurred.";
+        try {
+          const err = await response.json();
+          detail = err.detail || JSON.stringify(err);
+        } catch {
+          detail = response.statusText || detail;
+        }
+        throw new ApiError(response.status, detail);
+      }
+
+      const reader = response.body?.getReader();
+      if (!reader) {
+        throw new ApiError(500, "ReadableStream not supported by browser");
+      }
+
+      const decoder = new TextDecoder("utf-8");
+      let buffer = "";
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+
+        buffer += decoder.decode(value, { stream: true });
+        const parts = buffer.split("\n\n");
+        // Keep the last partial chunk in the buffer
+        buffer = parts.pop() || "";
+
+        for (const block of parts) {
+          const trimmed = block.trim();
+          if (!trimmed) continue;
+
+          for (const line of trimmed.split("\n")) {
+            if (line.startsWith("data: ")) {
+              const dataStr = line.slice(6).trim();
+              if (dataStr) {
+                try {
+                  const eventObj: ChatStreamEvent = JSON.parse(dataStr);
+                  onEvent(eventObj);
+                } catch {
+                  // Ignore parse error for malformed lines
+                }
+              }
+            }
+          }
+        }
+      }
+
+      if (buffer.trim()) {
+        for (const line of buffer.trim().split("\n")) {
+          if (line.startsWith("data: ")) {
+            const dataStr = line.slice(6).trim();
+            if (dataStr) {
+              try {
+                const eventObj: ChatStreamEvent = JSON.parse(dataStr);
+                onEvent(eventObj);
+              } catch {
+                // Ignore parse error
+              }
+            }
+          }
+        }
+      }
+    },
   },
 
   health: {
