@@ -13,6 +13,7 @@ from app.services.embedding import get_embedding_service
 class SemanticSearchResult:
     chunk: DocumentChunk
     similarity: float
+    document_title: str | None = None
 
 
 def _embed_query(text: str) -> list[float]:
@@ -41,8 +42,9 @@ async def semantic_search(
 
     return [
         SemanticSearchResult(
-            chunk=chunk,
-            similarity=1.0 - distance,
+            chunk=item[0],
+            similarity=1.0 - item[1],
+            document_title=item[2] if len(item) > 2 else None,
         )
-        for chunk, distance in matches
+        for item in matches
     ]

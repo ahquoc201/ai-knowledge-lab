@@ -273,7 +273,7 @@ async def search_similar_chunks(
     user_id: UUID,
     query_embedding: list[float],
     limit: int = 5,
-) -> list[tuple[DocumentChunk, float]]:
+) -> list[tuple[DocumentChunk, float, str]]:
     distance = DocumentChunk.embedding.cosine_distance(
         query_embedding
     ).label("distance")
@@ -282,6 +282,7 @@ async def search_similar_chunks(
         select(
             DocumentChunk,
             distance,
+            Document.title,
         )
         .join(
             Document,
@@ -296,6 +297,6 @@ async def search_similar_chunks(
     )
 
     return [
-        (chunk, float(chunk_distance))
-        for chunk, chunk_distance in result.all()
+        (chunk, float(chunk_distance), str(title))
+        for chunk, chunk_distance, title in result.all()
     ]

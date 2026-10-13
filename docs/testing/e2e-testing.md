@@ -203,3 +203,6 @@ jobs:
    - *Giải pháp:* Bổ sung cờ `silent = true` cho `fetchDocuments()` khi làm mới sau các thao tác ngầm, giữ nguyên trạng thái bảng và cập nhật dữ liệu mượt mà.
 3. **Định danh chính xác Heading & Text Scoping:**
    - *Giải pháp:* Điều chỉnh các selector Playwright sử dụng regex chính xác (`/thư viện tài liệu \(document library\)/i`) và scope email người dùng trong `getByRole("main")` để tránh lỗi đa phần tử (strict mode violation).
+4. **Bổ sung Scenario 6 (Evidence-Driven AI Chat - T260022):**
+   - *Kiểm thử:* Toàn bộ vòng đời hội thoại AI Chat bao gồm: Empty State, hỏi đáp qua SSE real-time streaming tokens, interactive inline citation buttons `[Source N]`, mở và đóng `EvidencePanel`, và reset phiên chat với nút "+ Cuộc trò chuyện mới".
+   - *Độ tin cậy:* Nâng tổng số kịch bản E2E lên 15 bài test, thời gian chạy ~32s với 100% tỷ lệ vượt qua.

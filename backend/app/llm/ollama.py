@@ -1,3 +1,5 @@
+import json
+from collections.abc import AsyncIterator
 from functools import lru_cache
 
 import httpx
@@ -8,8 +10,8 @@ from app.llm.base import LLMMessage
 
 class OllamaLLMProvider:
     def __init__(
-        self,
         *,
+        self,
         base_url: str | None = None,
         model: str | None = None,
         timeout_seconds: float | None = None,
@@ -77,6 +79,47 @@ class OllamaLLMProvider:
             )
 
         return content.strip()
+
+    async def generate_stream(
+        self,
+        messages: list[LLMMessage],
+    ) -> AsyncIterator[str]:
+        payload = {
+            "model": self.model,
+            "messages": [
+                {
+                    "role": message.role,
+                    "content": message.content,
+                }
+                for message in messages
+            ],
+            "stream": True,
+            "think": False,
+        }
+
+        async with httpx.AsyncClient(
+            timeout=self.timeout_seconds,
+        ) as client, client.stream(
+            "POST",
+            f"{self.base_url}/api/chat",
+            json=payload,
+        ) as response:
+            response.raise_for_status()
+
+            async for line in response.aiter_lines():
+                if not line:
+                    continue
+                try:
+                    data = json.loads(line)
+                except json.JSONDecodeError:
+                    continue
+
+                message = data.get("message")
+                if isinstance(message, dict):
+                    token = message.get("content")
+                    if isinstance(token, str) and token:
+                        yield token
+
 
 @lru_cache
 def get_ollama_llm_provider() -> OllamaLLMProvider:

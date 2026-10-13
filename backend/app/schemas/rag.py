@@ -23,6 +23,9 @@ class RAGSourceResponse(BaseModel):
     chunk_index: int
     content: str
     similarity: float
+    document_title: str | None = None
+    char_start: int | None = None
+    char_end: int | None = None
 
 
 class RAGResponse(BaseModel):

@@ -21,6 +21,8 @@ htmlcov/
 
 # Node.js
 node_modules/
+.vite/
+frontend/.vite/
 frontend/dist/
 test-results/
 playwright-report/
