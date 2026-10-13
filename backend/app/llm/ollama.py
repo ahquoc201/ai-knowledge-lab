@@ -10,8 +10,8 @@ from app.llm.base import LLMMessage
 
 class OllamaLLMProvider:
     def __init__(
-        *,
         self,
+        *,
         base_url: str | None = None,
         model: str | None = None,
         timeout_seconds: float | None = None,
