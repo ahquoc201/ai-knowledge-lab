@@ -157,3 +157,62 @@ def test_extract_text_rejects_invalid_docx():
             filename="broken.docx",
             data=b"not a valid docx",
         )
+
+
+def test_extract_text_from_markdown():
+    md_content = "# Knowledge Base\n\n- Point 1: Fast retrieval\n- Point 2: Accurate citation"
+    text = extract_text(
+        filename="notes.md",
+        data=md_content.encode("utf-8"),
+    )
+    assert "# Knowledge Base" in text
+    assert "Accurate citation" in text
+
+
+def test_extract_text_rejects_markdown_invalid_utf8():
+    with pytest.raises(
+        FileExtractionError,
+        match="Markdown file must be UTF-8 encoded",
+    ):
+        extract_text(
+            filename="notes.md",
+            data=b"\xff\xfe\xfd invalid",
+        )
+
+
+def build_blank_pdf() -> bytes:
+    output = BytesIO()
+    writer = PdfWriter()
+    writer.add_blank_page(width=612, height=792)
+    writer.write(output)
+    return output.getvalue()
+
+
+def test_extract_text_rejects_empty_scanned_pdf():
+    data = build_blank_pdf()
+    with pytest.raises(
+        FileExtractionError,
+        match="PDF file contains no extractable text",
+    ):
+        extract_text(
+            filename="scanned_doc.pdf",
+            data=data,
+        )
+
+
+def test_extract_text_rejects_encrypted_pdf():
+    output = BytesIO()
+    writer = PdfWriter()
+    writer.add_blank_page(width=612, height=792)
+    writer.encrypt("user_password")
+    writer.write(output)
+    data = output.getvalue()
+
+    with pytest.raises(
+        FileExtractionError,
+        match="Encrypted PDF files are not supported",
+    ):
+        extract_text(
+            filename="secret.pdf",
+            data=data,
+        )
