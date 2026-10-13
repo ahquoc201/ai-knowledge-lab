@@ -1,3 +1,4 @@
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.security import create_access_token, hash_password, verify_password
@@ -24,12 +25,15 @@ async def register_user(
     if existing_user is not None:
         raise EmailAlreadyRegisteredError
 
-    return await create_user(
-        session,
-        email=email,
-        full_name=data.full_name,
-        hashed_password=hash_password(data.password),
-    )
+    try:
+        return await create_user(
+            session,
+            email=email,
+            full_name=data.full_name,
+            hashed_password=hash_password(data.password),
+        )
+    except IntegrityError as exc:
+        raise EmailAlreadyRegisteredError from exc
 
 
 async def authenticate_user(

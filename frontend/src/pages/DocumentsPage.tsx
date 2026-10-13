@@ -38,8 +38,8 @@ export const DocumentsPage: React.FC = () => {
   // Action Loading
   const [actionLoadingId, setActionLoadingId] = useState<string | null>(null);
 
-  const fetchDocuments = useCallback(async () => {
-    setIsLoading(true);
+  const fetchDocuments = useCallback(async (silent = false) => {
+    if (!silent) setIsLoading(true);
     setError(null);
     try {
       const res = await api.documents.list({
@@ -51,7 +51,7 @@ export const DocumentsPage: React.FC = () => {
       const msg = err instanceof Error ? err.message : "Không thể tải danh sách tài liệu.";
       setError(msg);
     } finally {
-      setIsLoading(false);
+      if (!silent) setIsLoading(false);
     }
   }, [searchQuery]);
 
@@ -80,7 +80,7 @@ export const DocumentsPage: React.FC = () => {
       setIsCreateOpen(false);
       setNewTitle("");
       setNewContent("");
-      await fetchDocuments();
+      await fetchDocuments(true);
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : "Lỗi khi tạo tài liệu.";
       setCreateError(msg);
@@ -93,7 +93,7 @@ export const DocumentsPage: React.FC = () => {
     setActionLoadingId(id);
     try {
       await api.documents.reprocess(id);
-      await fetchDocuments();
+      await fetchDocuments(true);
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : "Lỗi khi chạy lại vector hóa.";
       setError(msg);
