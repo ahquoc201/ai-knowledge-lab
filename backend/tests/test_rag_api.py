@@ -297,3 +297,122 @@ def test_rag_api_rejects_other_users_conversation(
         assert fake_llm.received_messages == []
     finally:
         app.dependency_overrides.clear()
+
+
+def test_rag_api_does_not_persist_invalid_citations(
+    client: TestClient,
+):
+    """Invalid LLM citations must not reach API or history."""
+
+    invalid_answer = (
+        "PostgreSQL hỗ trợ ACID [Source 999]."
+    )
+    expected_fallback = (
+        "Không thể xác minh câu trả lời "
+        "từ tài liệu được truy xuất."
+    )
+
+    fake_llm = FakeLLMProvider(
+        response=invalid_answer,
+    )
+
+    app.dependency_overrides[get_ollama_llm_provider] = (
+        lambda: fake_llm
+    )
+
+    try:
+        token = register_and_login(
+            client,
+            email=f"rag-invalid-citation-{uuid4()}@example.com",
+            password="TestPassword123!",
+        )
+        headers = {
+            "Authorization": f"Bearer {token}",
+        }
+
+        # 1. Create a document with retrievable evidence.
+        document_response = client.post(
+            "/api/v1/documents",
+            headers=headers,
+            json={
+                "title": "PostgreSQL ACID knowledge",
+                "content": (
+                    "PostgreSQL là hệ quản trị cơ sở dữ liệu "
+                    "quan hệ. Nó hỗ trợ SQL và ACID transactions."
+                ),
+                "source_type": "text",
+            },
+        )
+
+        assert document_response.status_code == 201
+        document_id = document_response.json()["id"]
+
+        # 2. Prepare chunks and embeddings for retrieval.
+        chunk_response = client.post(
+            f"/api/v1/documents/{document_id}/chunks",
+            headers=headers,
+            json={
+                "chunk_size": 1000,
+                "overlap": 0,
+            },
+        )
+        assert chunk_response.status_code == 200
+
+        embedding_response = client.post(
+            f"/api/v1/documents/{document_id}/embeddings",
+            headers=headers,
+        )
+        assert embedding_response.status_code == 200
+
+        # 3. Ask RAG. The fake LLM returns an invalid citation.
+        rag_response = client.post(
+            "/api/v1/rag/ask",
+            headers=headers,
+            json={
+                "query": "PostgreSQL hỗ trợ những gì?",
+                "limit": 5,
+            },
+        )
+
+        assert rag_response.status_code == 200
+
+        rag_data = rag_response.json()
+        conversation_id = rag_data["conversation_id"]
+
+        assert rag_data["answer"] == expected_fallback
+        assert rag_data["sources"] == []
+
+        # Ensure the LLM was actually called.
+        assert len(fake_llm.received_messages) == 2
+        assert "[Source 1]" in (
+            fake_llm.received_messages[1].content
+        )
+
+        # 4. Read the persisted conversation.
+        conversation_response = client.get(
+            f"/api/v1/conversations/{conversation_id}",
+            headers=headers,
+        )
+
+        assert conversation_response.status_code == 200
+
+        messages = conversation_response.json()["messages"]
+
+        assert len(messages) == 2
+
+        assert messages[0]["role"] == "user"
+        assert messages[0]["content"] == (
+            "PostgreSQL hỗ trợ những gì?"
+        )
+        assert messages[0]["sources"] == []
+
+        assert messages[1]["role"] == "assistant"
+        assert messages[1]["content"] == expected_fallback
+        assert messages[1]["sources"] == []
+
+        # The original invalid output must never be persisted.
+        assert messages[1]["content"] != invalid_answer
+        assert "[Source 999]" not in messages[1]["content"]
+
+    finally:
+        app.dependency_overrides.clear()

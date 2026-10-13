@@ -4,8 +4,12 @@ from uuid import UUID
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.llm.base import LLMMessage, LLMProvider
+from app.services.citation_validation import validate_answer_citations
 from app.services.context_builder import ContextSource
-from app.services.rag_prompt import build_rag_messages
+from app.services.rag_prompt import (
+    INSUFFICIENT_CONTEXT_ANSWER,
+    build_rag_messages,
+)
 from app.services.retrieval import retrieve_context
 
 
@@ -31,6 +35,13 @@ async def answer_with_rag(
         limit=limit,
     )
 
+    # Only generate an answer when usable evidence exists.
+    if not context.sources or not context.text.strip():
+        return RAGResult(
+            answer=INSUFFICIENT_CONTEXT_ANSWER,
+            sources=[],
+        )
+
     messages = build_rag_messages(
         query=query,
         context=context,
@@ -38,6 +49,27 @@ async def answer_with_rag(
     )
 
     answer = await llm.generate(messages)
+
+    if answer.strip() == INSUFFICIENT_CONTEXT_ANSWER:
+        return RAGResult(
+            answer=INSUFFICIENT_CONTEXT_ANSWER,
+            sources=[],
+        )
+
+    validation = validate_answer_citations(
+        answer,
+        context.sources,
+    )
+
+    # Do not expose answers with missing or invalid citations.
+    if not validation.is_valid:
+        return RAGResult(
+            answer=(
+                "Không thể xác minh câu trả lời "
+                "từ tài liệu được truy xuất."
+            ),
+            sources=[],
+        )
 
     return RAGResult(
         answer=answer,
