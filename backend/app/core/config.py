@@ -13,6 +13,13 @@ class Settings(BaseSettings):
     max_upload_size_bytes: int = 5 * 1024 * 1024
     upload_storage_dir: Path = PROJECT_ROOT / "storage" / "uploads"
 
+    cors_origins: list[str] = [
+        "http://localhost:5173",
+        "http://127.0.0.1:5173",
+        "http://localhost:3000",
+        "http://127.0.0.1:3000",
+    ]
+
     celery_broker_url: str = "redis://127.0.0.1:16379/0"
 
     database_url: str
