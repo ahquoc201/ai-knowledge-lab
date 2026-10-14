@@ -11,6 +11,7 @@ import { EvidencePanel, DisplaySource } from "../components/chat/EvidencePanel";
 import { Alert } from "../components/ui/Alert";
 import { Button } from "../components/ui/Button";
 import { Spinner } from "../components/ui/Spinner";
+import { useWorkspace } from "../context/WorkspaceContext";
 import {
   Sparkles,
   ShieldCheck,
@@ -34,6 +35,7 @@ interface ChatPageProps {
 }
 
 export const ChatPage: React.FC<ChatPageProps> = ({ onNavigateToDocs }) => {
+  const { currentWorkspace, workspaceVersion } = useWorkspace();
   const [conversations, setConversations] = useState<Conversation[]>([]);
   const [activeConversationId, setActiveConversationId] = useState<string | null>(null);
   const [messages, setMessages] = useState<StreamingMessageState[]>([]);
@@ -51,11 +53,20 @@ export const ChatPage: React.FC<ChatPageProps> = ({ onNavigateToDocs }) => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, []);
 
-  // Fetch initial conversations and documents count
+  // Fetch initial conversations and documents count, and react to workspace switch
   useEffect(() => {
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort();
+      setIsStreaming(false);
+    }
+    setActiveConversationId(null);
+    setMessages([]);
+    setSelectedSource(null);
+    setErrorBanner(null);
+
     loadConversations();
     checkDocuments();
-  }, []);
+  }, [workspaceVersion, currentWorkspace?.id]);
 
   const loadConversations = async () => {
     try {

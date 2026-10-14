@@ -1,4 +1,5 @@
 import {
+  AuditEventListResponse,
   AuthTokenResponse,
   ChatStreamEvent,
   Conversation,
@@ -8,6 +9,10 @@ import {
   DocumentListResponse,
   RAGResponse,
   User,
+  Workspace,
+  WorkspaceInvitation,
+  WorkspaceMember,
+  WorkspaceRole,
 } from "../types";
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL || "/api/v1";
@@ -25,6 +30,7 @@ export class ApiError extends Error {
 
 async function request<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
   const token = localStorage.getItem("auth_token");
+  const workspaceId = localStorage.getItem("current_workspace_id");
   const headers = new Headers(options.headers || {});
 
   if (!headers.has("Content-Type") && !(options.body instanceof FormData)) {
@@ -33,6 +39,10 @@ async function request<T>(endpoint: string, options: RequestInit = {}): Promise<
 
   if (token) {
     headers.set("Authorization", `Bearer ${token}`);
+  }
+
+  if (workspaceId && !headers.has("X-Workspace-Id")) {
+    headers.set("X-Workspace-Id", workspaceId);
   }
 
   const response = await fetch(`${API_BASE}${endpoint}`, {
@@ -147,11 +157,15 @@ export const api = {
       signal?: AbortSignal
     ): Promise<void> => {
       const token = localStorage.getItem("auth_token");
+      const workspaceId = localStorage.getItem("current_workspace_id");
       const headers = new Headers({
         "Content-Type": "application/json",
       });
       if (token) {
         headers.set("Authorization", `Bearer ${token}`);
+      }
+      if (workspaceId && !headers.has("X-Workspace-Id")) {
+        headers.set("X-Workspace-Id", workspaceId);
       }
 
       const response = await fetch(`${API_BASE}/rag/ask/stream`, {
@@ -224,6 +238,70 @@ export const api = {
           }
         }
       }
+    },
+  },
+
+  workspaces: {
+    list: (): Promise<Workspace[]> =>
+      request<Workspace[]>("/workspaces"),
+
+    create: (payload: { name: string; description?: string }): Promise<Workspace> =>
+      request<Workspace>("/workspaces", {
+        method: "POST",
+        body: JSON.stringify(payload),
+      }),
+
+    get: (id: string): Promise<Workspace> =>
+      request<Workspace>(`/workspaces/${id}`),
+
+    update: (id: string, payload: { name?: string; description?: string }): Promise<Workspace> =>
+      request<Workspace>(`/workspaces/${id}`, {
+        method: "PATCH",
+        body: JSON.stringify(payload),
+      }),
+
+    delete: (id: string): Promise<void> =>
+      request<void>(`/workspaces/${id}`, {
+        method: "DELETE",
+      }),
+
+    leave: (id: string): Promise<void> =>
+      request<void>(`/workspaces/${id}/leave`, {
+        method: "POST",
+      }),
+
+    listMembers: (id: string): Promise<WorkspaceMember[]> =>
+      request<WorkspaceMember[]>(`/workspaces/${id}/members`),
+
+    updateMemberRole: (id: string, userId: string, role: WorkspaceRole): Promise<WorkspaceMember> =>
+      request<WorkspaceMember>(`/workspaces/${id}/members/${userId}`, {
+        method: "PATCH",
+        body: JSON.stringify({ role }),
+      }),
+
+    removeMember: (id: string, userId: string): Promise<void> =>
+      request<void>(`/workspaces/${id}/members/${userId}`, {
+        method: "DELETE",
+      }),
+
+    createInvitation: (id: string, payload: { email: string; role: WorkspaceRole }): Promise<WorkspaceInvitation> =>
+      request<WorkspaceInvitation>(`/workspaces/${id}/invitations`, {
+        method: "POST",
+        body: JSON.stringify(payload),
+      }),
+
+    acceptInvitation: (token: string): Promise<void> =>
+      request<void>("/workspaces/invitations/accept", {
+        method: "POST",
+        body: JSON.stringify({ token }),
+      }),
+
+    listAuditEvents: (id: string, params?: { limit?: number; offset?: number }): Promise<AuditEventListResponse> => {
+      const searchParams = new URLSearchParams();
+      if (params?.limit) searchParams.set("limit", params.limit.toString());
+      if (params?.offset) searchParams.set("offset", params.offset.toString());
+      const queryStr = searchParams.toString();
+      return request<AuditEventListResponse>(`/workspaces/${id}/audit-events${queryStr ? `?${queryStr}` : ""}`);
     },
   },
 
