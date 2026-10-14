@@ -26,7 +26,7 @@ async def register_user(
         raise EmailAlreadyRegisteredError
 
     try:
-        return await create_user(
+        user = await create_user(
             session,
             email=email,
             full_name=data.full_name,
@@ -34,6 +34,15 @@ async def register_user(
         )
     except IntegrityError as exc:
         raise EmailAlreadyRegisteredError from exc
+
+    from app.services.workspace import create_personal_workspace_for_user
+
+    await create_personal_workspace_for_user(
+        session,
+        user=user,
+    )
+
+    return user
 
 
 async def authenticate_user(

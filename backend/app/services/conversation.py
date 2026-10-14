@@ -18,10 +18,12 @@ async def create_user_conversation(
     *,
     user: User,
     title: str | None = None,
+    workspace_id: UUID | None = None,
 ) -> Conversation:
     return await create_conversation(
         session,
         user_id=user.id,
+        workspace_id=workspace_id,
         title=title,
     )
 

@@ -58,10 +58,12 @@ async def create_user_document(
     user: User,
     data: DocumentCreate,
     storage_key: str | None = None,
+    workspace_id: UUID | None = None,
 ) -> Document:
     return await create_document(
         session,
         user_id=user.id,
+        workspace_id=workspace_id,
         title=data.title,
         content=data.content,
         source_type=data.source_type,

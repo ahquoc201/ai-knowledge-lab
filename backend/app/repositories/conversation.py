@@ -11,9 +11,16 @@ async def create_conversation(
     *,
     user_id: UUID,
     title: str | None = None,
+    workspace_id: UUID | None = None,
 ) -> Conversation:
+    if workspace_id is None:
+        from app.repositories.workspace import resolve_or_create_user_workspace_id
+
+        workspace_id = await resolve_or_create_user_workspace_id(session, user_id)
+
     conversation = Conversation(
         user_id=user_id,
+        workspace_id=workspace_id,
         title=title,
     )
 

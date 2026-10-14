@@ -13,6 +13,7 @@ from sqlalchemy.ext.asyncio import AsyncEngine, AsyncSession
 from app.core.config import get_settings
 from app.core.document_status import DocumentStatus
 from app.core.security import hash_password
+from app.core.workspace_role import WorkspaceRole, WorkspaceStatus
 from app.evaluation.fixture_manifest import (
     RetrievalFixtureManifest,
     build_fixture_golden_dataset,
@@ -21,6 +22,8 @@ from app.evaluation.models import GoldenDataset
 from app.models.document import Document
 from app.models.document_chunk import DocumentChunk
 from app.models.user import User
+from app.models.workspace import Workspace
+from app.models.workspace_membership import WorkspaceMembership
 from app.services.document_chunk import build_embedded_document_chunks
 
 
@@ -58,6 +61,9 @@ async def _delete_evaluation_user(
     """Delete only the user created by this evaluation run."""
 
     async with AsyncSession(engine) as session, session.begin():
+        await session.execute(
+            delete(Workspace).where(Workspace.created_by == user_id)
+        )
         result = await session.execute(
             delete(User)
             .where(User.id == user_id)
@@ -86,6 +92,7 @@ async def provision_retrieval_fixture(
     )
 
     user_id = uuid4()
+    workspace_id = uuid4()
 
     evaluation_user = User(
         id=user_id,
@@ -93,6 +100,20 @@ async def provision_retrieval_fixture(
         full_name="Temporary Retrieval Evaluation",
         hashed_password=hash_password(token_urlsafe(32)),
         is_active=False,
+    )
+
+    evaluation_workspace = Workspace(
+        id=workspace_id,
+        name="Evaluation Workspace",
+        slug=f"eval-{user_id}",
+        status=WorkspaceStatus.ACTIVE.value,
+        created_by=user_id,
+    )
+
+    evaluation_membership = WorkspaceMembership(
+        workspace_id=workspace_id,
+        user_id=user_id,
+        role=WorkspaceRole.OWNER.value,
     )
 
     # Prepare embeddings before opening a write transaction.
@@ -117,6 +138,7 @@ async def provision_retrieval_fixture(
         document = Document(
             id=document_id,
             user_id=user_id,
+            workspace_id=workspace_id,
             title=fixture_document.title,
             content=fixture_document.content,
             source_type="text",
@@ -134,6 +156,8 @@ async def provision_retrieval_fixture(
         expire_on_commit=False,
     ) as session, session.begin():
         session.add(evaluation_user)
+        session.add(evaluation_workspace)
+        session.add(evaluation_membership)
         await session.flush()
 
         session.add_all(

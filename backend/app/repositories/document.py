@@ -17,9 +17,16 @@ async def create_document(
     source_name: str | None,
     mime_type: str | None,
     storage_key: str | None = None,
+    workspace_id: UUID | None = None,
 ) -> Document:
+    if workspace_id is None:
+        from app.repositories.workspace import resolve_or_create_user_workspace_id
+
+        workspace_id = await resolve_or_create_user_workspace_id(session, user_id)
+
     document = Document(
         user_id=user_id,
+        workspace_id=workspace_id,
         title=title,
         content=content,
         source_type=source_type,
