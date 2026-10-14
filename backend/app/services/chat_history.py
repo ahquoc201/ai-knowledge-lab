@@ -7,8 +7,9 @@ from app.llm.base import LLMMessage
 from app.models.user import User
 from app.repositories.message import (
     list_recent_messages_by_conversation_for_user,
+    list_recent_messages_by_conversation_for_workspace,
 )
-from app.services.conversation import get_user_conversation
+from app.services.conversation import get_user_conversation, get_workspace_conversation
 
 
 async def get_conversation_history(
@@ -31,6 +32,38 @@ async def get_conversation_history(
         session,
         conversation_id=conversation.id,
         user_id=user.id,
+        limit=limit,
+    )
+
+    return [
+        LLMMessage(
+            role=MessageRole(message.role).value,
+            content=message.content,
+        )
+        for message in messages
+    ]
+
+
+async def get_workspace_conversation_history(
+    session: AsyncSession,
+    *,
+    workspace_id: UUID,
+    conversation_id: UUID,
+    limit: int = 10,
+) -> list[LLMMessage] | None:
+    conversation = await get_workspace_conversation(
+        session,
+        workspace_id=workspace_id,
+        conversation_id=conversation_id,
+    )
+
+    if conversation is None:
+        return None
+
+    messages = await list_recent_messages_by_conversation_for_workspace(
+        session,
+        conversation_id=conversation.id,
+        workspace_id=workspace_id,
         limit=limit,
     )
 

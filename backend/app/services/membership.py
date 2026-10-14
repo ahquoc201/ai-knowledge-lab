@@ -216,6 +216,15 @@ async def change_member_role(
     new_role: WorkspaceRole,
 ) -> WorkspaceMembership:
     if actor.id == target_user_id:
+        target_membership = await get_membership(
+            session,
+            workspace_id=workspace_id,
+            user_id=target_user_id,
+        )
+        if target_membership and target_membership.role == WorkspaceRole.OWNER.value and new_role != WorkspaceRole.OWNER:
+            owner_count = await count_owners_for_workspace(session, workspace_id)
+            if owner_count <= 1:
+                raise LastOwnerProtectionError("Cannot demote the last owner (only owner) of the workspace")
         raise CannotManageRoleError("You cannot change your own role")
 
     target_membership = await get_membership(
@@ -290,7 +299,7 @@ async def remove_member(
     if target_membership.role == WorkspaceRole.OWNER.value:
         owner_count = await count_owners_for_workspace(session, workspace_id)
         if owner_count <= 1:
-            raise LastOwnerProtectionError("Cannot remove the last owner of the workspace")
+            raise LastOwnerProtectionError("Cannot remove the last owner (only owner) of the workspace")
 
     await delete_membership(session, membership=target_membership)
 
@@ -323,7 +332,7 @@ async def leave_workspace(
         owner_count = await count_owners_for_workspace(session, workspace_id)
         if owner_count <= 1:
             raise LastOwnerProtectionError(
-                "The last owner cannot leave the workspace. Transfer ownership first or delete the workspace."
+                "Cannot remove or leave as the last owner (only owner) of the workspace"
             )
 
     await delete_membership(session, membership=membership)

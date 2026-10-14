@@ -82,9 +82,74 @@ async def get_workspace_membership(
     )
 
     if membership is None:
+        from app.core.workspace_role import AuditOutcome
+        from app.services.audit import record_audit_event
+
+        await record_audit_event(
+            session,
+            workspace_id=target_workspace_id,
+            action="workspace.access",
+            resource_type="workspace",
+            actor_id=current_user.id,
+            outcome=AuditOutcome.DENIED,
+            details={"reason": "Not a member"},
+        )
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="You do not have access to this workspace",
+        )
+
+    return membership
+
+
+async def get_active_workspace_membership(
+    session: Annotated[AsyncSession, Depends(get_session)],
+    current_user: Annotated[User, Depends(get_current_user)],
+    workspace_id: UUID | None = None,
+    x_workspace_id: Annotated[UUID | None, Header(alias="X-Workspace-Id")] = None,
+) -> WorkspaceMembership:
+    """Resolve active workspace membership with fallback to personal workspace."""
+    target_workspace_id = workspace_id or x_workspace_id
+
+    if target_workspace_id is not None:
+        membership = await get_membership(
+            session,
+            workspace_id=target_workspace_id,
+            user_id=current_user.id,
+        )
+
+        if membership is None:
+            from app.core.workspace_role import AuditOutcome
+            from app.services.audit import record_audit_event
+
+            await record_audit_event(
+                session,
+                workspace_id=target_workspace_id,
+                action="workspace.access",
+                resource_type="workspace",
+                actor_id=current_user.id,
+                outcome=AuditOutcome.DENIED,
+                details={"reason": "Not a member of target workspace"},
+            )
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="You do not have access to this workspace",
+            )
+        return membership
+
+    from app.repositories.workspace import resolve_or_create_user_workspace_id
+
+    personal_ws_id = await resolve_or_create_user_workspace_id(session, current_user.id)
+    membership = await get_membership(
+        session,
+        workspace_id=personal_ws_id,
+        user_id=current_user.id,
+    )
+
+    if membership is None:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="User personal workspace membership could not be resolved",
         )
 
     return membership
@@ -102,6 +167,43 @@ def require_permission(
         ],
     ) -> WorkspaceMembership:
         if not has_permission(membership.role, permission):
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail=f"Permission denied: requires {permission.value}",
+            )
+        return membership
+
+    return permission_checker
+
+
+def require_workspace_permission(
+    permission: WorkspacePermission,
+) -> Callable[..., WorkspaceMembership]:
+    """Dependency factory that validates permissions using active workspace resolution."""
+
+    async def permission_checker(
+        session: Annotated[AsyncSession, Depends(get_session)],
+        membership: Annotated[
+            WorkspaceMembership,
+            Depends(get_active_workspace_membership),
+        ],
+    ) -> WorkspaceMembership:
+        if not has_permission(membership.role, permission):
+            from app.core.workspace_role import AuditOutcome
+            from app.services.audit import record_audit_event
+
+            await record_audit_event(
+                session,
+                workspace_id=membership.workspace_id,
+                action=permission.value,
+                resource_type="workspace",
+                actor_id=membership.user_id,
+                outcome=AuditOutcome.DENIED,
+                details={
+                    "role": membership.role,
+                    "required_permission": permission.value,
+                },
+            )
             raise HTTPException(
                 status_code=status.HTTP_403_FORBIDDEN,
                 detail=f"Permission denied: requires {permission.value}",

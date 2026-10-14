@@ -48,6 +48,7 @@ async def answer_with_rag_stream(
     *,
     user: User,
     conversation_id: UUID,
+    workspace_id: UUID | None = None,
     query: str,
     llm: LLMProvider,
     limit: int = 5,
@@ -72,12 +73,18 @@ async def answer_with_rag_stream(
             },
         )
 
-        context = await retrieve_context(
-            session,
-            user_id=user.id,
-            query=query,
-            limit=limit,
-        )
+        import inspect
+
+        retrieval_kwargs = {
+            "session": session,
+            "user_id": user.id,
+            "query": query,
+            "limit": limit,
+        }
+        if workspace_id is not None and "workspace_id" in inspect.signature(retrieve_context).parameters:
+            retrieval_kwargs["workspace_id"] = workspace_id
+
+        context = await retrieve_context(**retrieval_kwargs)
 
         serialized_sources = [serialize_source(s) for s in context.sources]
         yield format_sse("retrieval_completed", {"sources": serialized_sources})

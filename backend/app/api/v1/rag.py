@@ -4,22 +4,28 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.responses import StreamingResponse
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.api.deps import get_current_user
+from app.api.deps import get_current_user, require_workspace_permission
 from app.core.message_role import MessageRole
+from app.core.workspace_role import AuditOutcome, WorkspacePermission
 from app.db.session import get_session
 from app.llm.ollama import (
     OllamaLLMProvider,
     get_ollama_llm_provider,
 )
 from app.models.user import User
+from app.models.workspace_membership import WorkspaceMembership
 from app.schemas.rag import (
     RAGRequest,
     RAGResponse,
     RAGSourceResponse,
 )
-from app.services.chat_history import get_conversation_history
-from app.services.conversation import create_user_conversation
-from app.services.message import create_conversation_message
+from app.services.audit import record_audit_event
+from app.services.chat_history import get_workspace_conversation_history
+from app.services.conversation import (
+    create_user_conversation,
+    get_workspace_conversation,
+)
+from app.services.message import create_workspace_conversation_message
 from app.services.message_source import save_assistant_message_sources
 from app.services.rag import answer_with_rag
 from app.services.rag_stream import answer_with_rag_stream
@@ -38,6 +44,10 @@ async def ask_rag(
     payload: RAGRequest,
     session: Annotated[AsyncSession, Depends(get_session)],
     current_user: Annotated[User, Depends(get_current_user)],
+    membership: Annotated[
+        WorkspaceMembership,
+        Depends(require_workspace_permission(WorkspacePermission.CHAT_CREATE)),
+    ],
     llm: Annotated[
         OllamaLLMProvider,
         Depends(get_ollama_llm_provider),
@@ -50,6 +60,7 @@ async def ask_rag(
             session,
             user=current_user,
             title=title,
+            workspace_id=membership.workspace_id,
         )
 
         conversation_id = conversation.id
@@ -57,9 +68,21 @@ async def ask_rag(
     else:
         conversation_id = payload.conversation_id
 
-        history = await get_conversation_history(
+        conversation = await get_workspace_conversation(
             session,
-            user=current_user,
+            workspace_id=membership.workspace_id,
+            conversation_id=conversation_id,
+        )
+
+        if conversation is None:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Conversation not found",
+            )
+
+        history = await get_workspace_conversation_history(
+            session,
+            workspace_id=membership.workspace_id,
             conversation_id=conversation_id,
         )
 
@@ -69,9 +92,9 @@ async def ask_rag(
                 detail="Conversation not found",
             )
 
-    user_message = await create_conversation_message(
+    user_message = await create_workspace_conversation_message(
         session,
-        user=current_user,
+        workspace_id=membership.workspace_id,
         conversation_id=conversation_id,
         role=MessageRole.USER,
         content=payload.query,
@@ -86,15 +109,16 @@ async def ask_rag(
     result = await answer_with_rag(
         session,
         user_id=current_user.id,
+        workspace_id=membership.workspace_id,
         query=payload.query,
         llm=llm,
         limit=payload.limit,
         history=history,
     )
 
-    assistant_message = await create_conversation_message(
+    assistant_message = await create_workspace_conversation_message(
         session,
-        user=current_user,
+        workspace_id=membership.workspace_id,
         conversation_id=conversation_id,
         role=MessageRole.ASSISTANT,
         content=result.answer,
@@ -110,6 +134,17 @@ async def ask_rag(
         session,
         message=assistant_message,
         sources=result.sources,
+    )
+
+    await record_audit_event(
+        session,
+        workspace_id=membership.workspace_id,
+        action="chat.ask",
+        resource_type="conversation",
+        actor_id=current_user.id,
+        resource_id=conversation_id,
+        outcome=AuditOutcome.SUCCESS,
+        details={"source_count": len(result.sources)},
     )
 
     return RAGResponse(
@@ -139,6 +174,10 @@ async def ask_rag_stream(
     payload: RAGRequest,
     session: Annotated[AsyncSession, Depends(get_session)],
     current_user: Annotated[User, Depends(get_current_user)],
+    membership: Annotated[
+        WorkspaceMembership,
+        Depends(require_workspace_permission(WorkspacePermission.CHAT_CREATE)),
+    ],
     llm: Annotated[
         OllamaLLMProvider,
         Depends(get_ollama_llm_provider),
@@ -151,6 +190,7 @@ async def ask_rag_stream(
             session,
             user=current_user,
             title=title,
+            workspace_id=membership.workspace_id,
         )
 
         conversation_id = conversation.id
@@ -158,9 +198,21 @@ async def ask_rag_stream(
     else:
         conversation_id = payload.conversation_id
 
-        history = await get_conversation_history(
+        conversation = await get_workspace_conversation(
             session,
-            user=current_user,
+            workspace_id=membership.workspace_id,
+            conversation_id=conversation_id,
+        )
+
+        if conversation is None:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Conversation not found",
+            )
+
+        history = await get_workspace_conversation_history(
+            session,
+            workspace_id=membership.workspace_id,
             conversation_id=conversation_id,
         )
 
@@ -170,9 +222,9 @@ async def ask_rag_stream(
                 detail="Conversation not found",
             )
 
-    user_message = await create_conversation_message(
+    user_message = await create_workspace_conversation_message(
         session,
-        user=current_user,
+        workspace_id=membership.workspace_id,
         conversation_id=conversation_id,
         role=MessageRole.USER,
         content=payload.query,
@@ -184,10 +236,21 @@ async def ask_rag_stream(
             detail="Conversation not found",
         )
 
+    await record_audit_event(
+        session,
+        workspace_id=membership.workspace_id,
+        action="chat.ask_stream",
+        resource_type="conversation",
+        actor_id=current_user.id,
+        resource_id=conversation_id,
+        outcome=AuditOutcome.SUCCESS,
+    )
+
     stream_generator = answer_with_rag_stream(
         session,
         user=current_user,
         conversation_id=conversation_id,
+        workspace_id=membership.workspace_id,
         query=payload.query,
         llm=llm,
         limit=payload.limit,

@@ -44,6 +44,19 @@ async def list_conversations_by_user(
     return list(result.scalars().all())
 
 
+async def list_conversations_by_workspace(
+    session: AsyncSession,
+    workspace_id: UUID,
+) -> list[Conversation]:
+    result = await session.execute(
+        select(Conversation)
+        .where(Conversation.workspace_id == workspace_id)
+        .order_by(Conversation.updated_at.desc())
+    )
+
+    return list(result.scalars().all())
+
+
 async def get_conversation_by_id_for_user(
     session: AsyncSession,
     *,
@@ -58,6 +71,23 @@ async def get_conversation_by_id_for_user(
     )
 
     return result.scalar_one_or_none()
+
+
+async def get_conversation_by_id_and_workspace(
+    session: AsyncSession,
+    *,
+    conversation_id: UUID,
+    workspace_id: UUID,
+) -> Conversation | None:
+    result = await session.execute(
+        select(Conversation).where(
+            Conversation.id == conversation_id,
+            Conversation.workspace_id == workspace_id,
+        )
+    )
+
+    return result.scalar_one_or_none()
+
 
 async def update_conversation_title(
     session: AsyncSession,

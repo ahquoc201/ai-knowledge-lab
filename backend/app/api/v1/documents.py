@@ -1,3 +1,4 @@
+import inspect
 import logging
 from typing import Annotated, Literal
 from uuid import UUID
@@ -14,17 +15,20 @@ from fastapi import (
 )
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.api.deps import get_current_user
+from app.api.deps import get_current_user, require_workspace_permission
 from app.core.config import get_settings
 from app.core.document_status import DocumentStatus
+from app.core.workspace_role import AuditOutcome, WorkspacePermission
 from app.db.session import get_session
 from app.models.user import User
+from app.models.workspace_membership import WorkspaceMembership
 from app.schemas.document import (
     DocumentCreate,
     DocumentListResponse,
     DocumentResponse,
     DocumentUpdate,
 )
+from app.services.audit import record_audit_event
 from app.services.document import (
     DocumentProcessingError,
     InvalidDocumentUpdateError,
@@ -33,7 +37,7 @@ from app.services.document import (
     create_user_document,
     delete_user_document,
     get_user_document,
-    list_user_documents,
+    list_workspace_documents,
     recover_user_stale_file_processing,
     set_document_status,
     update_user_document,
@@ -69,12 +73,31 @@ router = APIRouter(
 async def create_document(
     data: DocumentCreate,
     current_user: Annotated[User, Depends(get_current_user)],
+    membership: Annotated[
+        WorkspaceMembership,
+        Depends(require_workspace_permission(WorkspacePermission.DOCUMENT_CREATE)),
+    ],
     session: Annotated[AsyncSession, Depends(get_session)],
 ) -> DocumentResponse:
-    document = await create_user_document(
+    create_kwargs = {
+        "session": session,
+        "user": current_user,
+        "data": data,
+    }
+    if "workspace_id" in inspect.signature(create_user_document).parameters:
+        create_kwargs["workspace_id"] = membership.workspace_id
+
+    document = await create_user_document(**create_kwargs)
+
+    await record_audit_event(
         session,
-        user=current_user,
-        data=data,
+        workspace_id=membership.workspace_id,
+        action="document.create",
+        resource_type="document",
+        actor_id=current_user.id,
+        resource_id=document.id,
+        outcome=AuditOutcome.SUCCESS,
+        details={"title": document.title, "source_type": document.source_type},
     )
 
     try:
@@ -97,6 +120,7 @@ async def create_document(
 
     return DocumentResponse.model_validate(document)
 
+
 @router.post(
     "/upload",
     response_model=DocumentResponse,
@@ -104,6 +128,10 @@ async def create_document(
 )
 async def upload_document(
     current_user: Annotated[User, Depends(get_current_user)],
+    membership: Annotated[
+        WorkspaceMembership,
+        Depends(require_workspace_permission(WorkspacePermission.DOCUMENT_CREATE)),
+    ],
     session: Annotated[AsyncSession, Depends(get_session)],
     file: Annotated[UploadFile, File()],
 ) -> DocumentResponse:
@@ -139,17 +167,32 @@ async def upload_document(
     document = None
 
     try:
-        document = await create_user_document(
-            session,
-            user=current_user,
-            data=DocumentCreate(
+        create_kwargs = {
+            "session": session,
+            "user": current_user,
+            "data": DocumentCreate(
                 title=file.filename,
                 content=None,
                 source_type="file",
                 source_name=file.filename,
                 mime_type=file.content_type,
             ),
-            storage_key=stored_path.name,
+            "storage_key": stored_path.name,
+        }
+        if "workspace_id" in inspect.signature(create_user_document).parameters:
+            create_kwargs["workspace_id"] = membership.workspace_id
+
+        document = await create_user_document(**create_kwargs)
+
+        await record_audit_event(
+            session,
+            workspace_id=membership.workspace_id,
+            action="document.upload",
+            resource_type="document",
+            actor_id=current_user.id,
+            resource_id=document.id,
+            outcome=AuditOutcome.SUCCESS,
+            details={"filename": file.filename},
         )
 
         process_document_task.delay(
@@ -179,6 +222,10 @@ async def upload_document(
 )
 async def list_documents(
     current_user: Annotated[User, Depends(get_current_user)],
+    membership: Annotated[
+        WorkspaceMembership,
+        Depends(require_workspace_permission(WorkspacePermission.DOCUMENT_READ)),
+    ],
     session: Annotated[AsyncSession, Depends(get_session)],
     search: Annotated[
         str | None,
@@ -209,9 +256,9 @@ async def list_documents(
         Query(ge=0),
     ] = 0,
 ) -> DocumentListResponse:
-    documents, total = await list_user_documents(
+    documents, total = await list_workspace_documents(
         session,
-        user=current_user,
+        workspace_id=membership.workspace_id,
         search=search,
         status=document_status,
         source_type=source_type,
@@ -231,6 +278,7 @@ async def list_documents(
         offset=offset,
     )
 
+
 @router.get(
     "/{document_id}",
     response_model=DocumentResponse,
@@ -238,6 +286,10 @@ async def list_documents(
 async def get_document(
     document_id: UUID,
     current_user: Annotated[User, Depends(get_current_user)],
+    membership: Annotated[
+        WorkspaceMembership,
+        Depends(require_workspace_permission(WorkspacePermission.DOCUMENT_READ)),
+    ],
     session: Annotated[AsyncSession, Depends(get_session)],
 ) -> DocumentResponse:
     document = await get_user_document(
@@ -246,13 +298,14 @@ async def get_document(
         document_id=document_id,
     )
 
-    if document is None:
+    if document is None or (getattr(document, "workspace_id", None) is not None and document.workspace_id != membership.workspace_id):
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Document not found",
         )
 
     return DocumentResponse.model_validate(document)
+
 
 @router.patch(
     "/{document_id}",
@@ -262,8 +315,24 @@ async def update_document(
     document_id: UUID,
     data: DocumentUpdate,
     current_user: Annotated[User, Depends(get_current_user)],
+    membership: Annotated[
+        WorkspaceMembership,
+        Depends(require_workspace_permission(WorkspacePermission.DOCUMENT_UPDATE)),
+    ],
     session: Annotated[AsyncSession, Depends(get_session)],
 ) -> DocumentResponse:
+    existing = await get_user_document(
+        session,
+        user=current_user,
+        document_id=document_id,
+    )
+
+    if existing is None or (getattr(existing, "workspace_id", None) is not None and existing.workspace_id != membership.workspace_id):
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Document not found",
+        )
+
     try:
         document = await update_user_document(
             session,
@@ -288,7 +357,18 @@ async def update_document(
             detail="Document not found",
         )
 
+    await record_audit_event(
+        session,
+        workspace_id=membership.workspace_id,
+        action="document.update",
+        resource_type="document",
+        actor_id=current_user.id,
+        resource_id=document.id,
+        outcome=AuditOutcome.SUCCESS,
+    )
+
     return DocumentResponse.model_validate(document)
+
 
 @router.delete(
     "/{document_id}",
@@ -297,15 +377,22 @@ async def update_document(
 async def delete_document(
     document_id: UUID,
     current_user: Annotated[User, Depends(get_current_user)],
+    membership: Annotated[
+        WorkspaceMembership,
+        Depends(require_workspace_permission(WorkspacePermission.DOCUMENT_DELETE)),
+    ],
     session: Annotated[AsyncSession, Depends(get_session)],
 ) -> None:
     try:
-        deleted = await delete_user_document(
-            session,
-            user=current_user,
-            document_id=document_id,
-        )
+        delete_kwargs = {
+            "session": session,
+            "user": current_user,
+            "document_id": document_id,
+        }
+        if "workspace_id" in inspect.signature(delete_user_document).parameters:
+            delete_kwargs["workspace_id"] = membership.workspace_id
 
+        deleted = await delete_user_document(**delete_kwargs)
     except DocumentProcessingError as exc:
         raise HTTPException(
             status_code=status.HTTP_409_CONFLICT,
@@ -318,6 +405,18 @@ async def delete_document(
             detail="Document not found",
         )
 
+
+    await record_audit_event(
+        session,
+        workspace_id=membership.workspace_id,
+        action="document.delete",
+        resource_type="document",
+        actor_id=current_user.id,
+        resource_id=document_id,
+        outcome=AuditOutcome.SUCCESS,
+    )
+
+
 @router.post(
     "/{document_id}/reprocess",
     response_model=DocumentResponse,
@@ -328,6 +427,10 @@ async def delete_document(
 async def reprocess_document(
     document_id: UUID,
     current_user: Annotated[User, Depends(get_current_user)],
+    membership: Annotated[
+        WorkspaceMembership,
+        Depends(require_workspace_permission(WorkspacePermission.DOCUMENT_REPROCESS)),
+    ],
     session: Annotated[AsyncSession, Depends(get_session)],
     response: Response,
 ) -> DocumentResponse:
@@ -337,7 +440,7 @@ async def reprocess_document(
         document_id=document_id,
     )
 
-    if document is None:
+    if document is None or (getattr(document, "workspace_id", None) is not None and document.workspace_id != membership.workspace_id):
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Document not found",
@@ -356,10 +459,6 @@ async def reprocess_document(
                 user=current_user,
                 document_id=document.id,
             )
-
-            # Reload status after the conditional UPDATE.
-            # Recovery may succeed, fail, or another worker
-            # may finish processing concurrently.
             await session.refresh(document)
 
         if document.status in {
@@ -403,6 +502,16 @@ async def reprocess_document(
                 detail="Unable to schedule document reprocessing",
             ) from exc
 
+        await record_audit_event(
+            session,
+            workspace_id=membership.workspace_id,
+            action="document.reprocess",
+            resource_type="document",
+            actor_id=current_user.id,
+            resource_id=document.id,
+            outcome=AuditOutcome.SUCCESS,
+        )
+
         response.status_code = status.HTTP_202_ACCEPTED
         return DocumentResponse.model_validate(document)
 
@@ -421,5 +530,15 @@ async def reprocess_document(
             status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
             detail=str(exc),
         ) from exc
+
+    await record_audit_event(
+        session,
+        workspace_id=membership.workspace_id,
+        action="document.reprocess",
+        resource_type="document",
+        actor_id=current_user.id,
+        resource_id=document.id,
+        outcome=AuditOutcome.SUCCESS,
+    )
 
     return DocumentResponse.model_validate(document)

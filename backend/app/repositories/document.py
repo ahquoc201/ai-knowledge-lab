@@ -136,6 +136,138 @@ async def count_documents_by_user(
     return result.scalar_one()
 
 
+async def list_documents_by_workspace(
+    session: AsyncSession,
+    workspace_id: UUID,
+    *,
+    search: str | None = None,
+    status: str | None = None,
+    source_type: str | None = None,
+    sort_by: str = "created_at",
+    sort_order: str = "desc",
+    limit: int = 20,
+    offset: int = 0,
+) -> list[Document]:
+    query = select(Document).where(
+        Document.workspace_id == workspace_id,
+    )
+
+    if search:
+        query = query.where(
+            Document.title.ilike(f"%{search}%")
+        )
+
+    if status:
+        query = query.where(
+            Document.status == status
+        )
+
+    if source_type:
+        query = query.where(
+            Document.source_type == source_type
+        )
+
+    sort_columns = {
+        "created_at": Document.created_at,
+        "updated_at": Document.updated_at,
+        "title": Document.title,
+    }
+
+    sort_column = sort_columns[sort_by]
+
+    if sort_order == "asc":
+        order_by = (
+            sort_column.asc(),
+            Document.id.asc(),
+        )
+    else:
+        order_by = (
+            sort_column.desc(),
+            Document.id.desc(),
+        )
+
+    result = await session.execute(
+        query
+        .order_by(*order_by)
+        .limit(limit)
+        .offset(offset)
+    )
+
+    return list(result.scalars().all())
+
+
+async def count_documents_by_workspace(
+    session: AsyncSession,
+    workspace_id: UUID,
+    *,
+    search: str | None = None,
+    status: str | None = None,
+    source_type: str | None = None,
+    user_id: UUID | None = None,
+) -> int:
+    query = select(
+        func.count(Document.id)
+    ).where(
+        Document.workspace_id == workspace_id,
+    )
+
+    if search:
+        query = query.where(
+            Document.title.ilike(f"%{search}%")
+        )
+
+    if status:
+        query = query.where(
+            Document.status == status
+        )
+
+    if source_type:
+        query = query.where(
+            Document.source_type == source_type
+        )
+
+    result = await session.execute(query)
+
+    return result.scalar_one()
+
+
+async def get_document_by_id_and_workspace(
+    session: AsyncSession,
+    *,
+    document_id: UUID,
+    workspace_id: UUID,
+) -> Document | None:
+    result = await session.execute(
+        select(Document).where(
+            Document.id == document_id,
+            Document.workspace_id == workspace_id,
+        )
+    )
+
+    return result.scalar_one_or_none()
+
+
+async def get_document_by_id_and_workspace_for_update(
+    session: AsyncSession,
+    *,
+    document_id: UUID,
+    workspace_id: UUID,
+) -> Document | None:
+    statement = (
+        select(Document)
+        .where(
+            Document.id == document_id,
+            Document.workspace_id == workspace_id,
+        )
+        .with_for_update()
+        .execution_options(populate_existing=True)
+    )
+
+    result = await session.execute(statement)
+
+    return result.scalar_one_or_none()
+
+
 async def get_document_by_id_for_user(
     session: AsyncSession,
     *,
@@ -172,6 +304,7 @@ async def get_document_by_id_for_user_for_update(
     result = await session.execute(statement)
 
     return result.scalar_one_or_none()
+
 
 
 async def update_document_status(
@@ -432,6 +565,97 @@ async def recover_stale_file_processing(
         .where(
             Document.id == document_id,
             Document.user_id == user_id,
+            Document.source_type == "file",
+            Document.status == DocumentStatus.PROCESSING.value,
+            or_(
+                Document.processing_heartbeat_at < cutoff,
+                and_(
+                    Document.processing_heartbeat_at.is_(None),
+                    or_(
+                        Document.processing_started_at.is_(None),
+                        Document.processing_started_at < cutoff,
+                    ),
+                ),
+            ),
+        )
+        .values(
+            status=DocumentStatus.FAILED.value,
+            processing_run_id=None,
+            processing_started_at=None,
+            processing_heartbeat_at=None,
+        )
+        .returning(Document.id)
+        .execution_options(synchronize_session=False)
+    )
+
+    result = await session.execute(statement)
+
+    if result.scalar_one_or_none() is None:
+        await session.rollback()
+        return False
+
+    await session.commit()
+    return True
+
+
+async def claim_workspace_file_reprocessing(
+    session: AsyncSession,
+    *,
+    document_id: UUID,
+    workspace_id: UUID,
+) -> bool:
+    """Atomically claim a document for reprocessing within a workspace."""
+
+    statement = (
+        update(Document)
+        .where(
+            Document.id == document_id,
+            Document.workspace_id == workspace_id,
+            Document.source_type == "file",
+            Document.storage_key.is_not(None),
+            Document.status.in_(
+                [
+                    DocumentStatus.READY.value,
+                    DocumentStatus.FAILED.value,
+                ]
+            ),
+        )
+        .values(
+            status=DocumentStatus.PENDING.value,
+            error_message=None,
+        )
+        .returning(Document.id)
+        .execution_options(synchronize_session=False)
+    )
+
+    result = await session.execute(statement)
+
+    claimed_id = result.scalar_one_or_none()
+
+    if claimed_id is None:
+        await session.rollback()
+        return False
+
+    await session.commit()
+
+    return True
+
+
+async def recover_workspace_stale_file_processing(
+    session: AsyncSession,
+    *,
+    document_id: UUID,
+    workspace_id: UUID,
+) -> bool:
+    """Recover a file document whose processing lease expired within a workspace."""
+
+    cutoff = func.now() - text("INTERVAL '5 minutes'")
+
+    statement = (
+        update(Document)
+        .where(
+            Document.id == document_id,
+            Document.workspace_id == workspace_id,
             Document.source_type == "file",
             Document.status == DocumentStatus.PROCESSING.value,
             or_(

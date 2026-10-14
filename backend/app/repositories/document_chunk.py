@@ -270,7 +270,8 @@ async def save_chunk_embeddings(
 async def search_similar_chunks(
     session: AsyncSession,
     *,
-    user_id: UUID,
+    user_id: UUID | None = None,
+    workspace_id: UUID | None = None,
     query_embedding: list[float],
     limit: int = 5,
 ) -> list[tuple[DocumentChunk, float, str]]:
@@ -278,7 +279,7 @@ async def search_similar_chunks(
         query_embedding
     ).label("distance")
 
-    result = await session.execute(
+    query = (
         select(
             DocumentChunk,
             distance,
@@ -288,15 +289,27 @@ async def search_similar_chunks(
             Document,
             Document.id == DocumentChunk.document_id,
         )
-        .where(
+    )
+
+    if workspace_id is not None:
+        query = query.where(
+            Document.workspace_id == workspace_id,
+            DocumentChunk.embedding.is_not(None),
+        )
+    elif user_id is not None:
+        query = query.where(
             Document.user_id == user_id,
             DocumentChunk.embedding.is_not(None),
         )
-        .order_by(distance)
-        .limit(limit)
+    else:
+        raise ValueError("Either workspace_id or user_id must be provided")
+
+    result = await session.execute(
+        query.order_by(distance).limit(limit)
     )
 
     return [
         (chunk, float(chunk_distance), str(title))
         for chunk, chunk_distance, title in result.all()
     ]
+
