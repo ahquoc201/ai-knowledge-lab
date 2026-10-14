@@ -143,6 +143,11 @@ def test_upload_txt_document_queues_background_processing(
             b"PK\x03\x04fake bytes",
             "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
         ),
+        (
+            "knowledge.md",
+            b"# Markdown knowledge\n\nContent",
+            "text/markdown",
+        ),
     ],
 )
 def test_upload_supported_document_types_are_queued(

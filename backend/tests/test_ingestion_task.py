@@ -238,6 +238,7 @@ async def test_worker_rejects_missing_storage_key(
         document_id=document_id,
         user_id=user_id,
         processing_run_id=processing_run_id,
+        error_message="Document has no stored source file",
     )
 
     process.assert_not_awaited()
@@ -306,6 +307,7 @@ async def test_worker_marks_failed_when_source_unavailable(
         document_id=document_id,
         user_id=user_id,
         processing_run_id=processing_run_id,
+        error_message=str(error),
     )
 
     process.assert_not_awaited()

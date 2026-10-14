@@ -104,6 +104,15 @@ export const api = {
       request<Document>(`/documents/${id}/reprocess`, {
         method: "POST",
       }),
+
+    upload: (file: File): Promise<Document> => {
+      const formData = new FormData();
+      formData.append("file", file);
+      return request<Document>("/documents/upload", {
+        method: "POST",
+        body: formData,
+      });
+    },
   },
 
   conversations: {

@@ -39,14 +39,18 @@ async def process_document(
         user_id = document.user_id
 
     try:
-        filename = document.source_name or document.title
+        if getattr(document, "source_type", None) == "text":
+            content = data.decode("utf-8") if data else (document.content or "")
+        else:
+            filename = document.source_name or document.title
+            content = await asyncio.to_thread(
+                extract_text,
+                filename=filename,
+                data=data,
+            )
 
-        # 1. Extract text without modifying stored content.
-        content = await asyncio.to_thread(
-            extract_text,
-            filename=filename,
-            data=data,
-        )
+        if not content or not content.strip():
+            raise ValueError("Không có nội dung văn bản để lập chỉ mục")
 
         # 2. Prepare chunks and embeddings in memory.
         chunks = await build_embedded_document_chunks(
@@ -63,7 +67,7 @@ async def process_document(
             processing_run_id=processing_run_id,
         )
 
-    except Exception:
+    except Exception as exc:
         # Roll back all uncommitted content/chunk changes.
         await session.rollback()
 
@@ -73,6 +77,7 @@ async def process_document(
                 session,
                 document=document,
                 status=DocumentStatus.FAILED,
+                error_message=str(exc),
             )
         else:
             # Only the current lease owner may mark FAILED.
@@ -82,6 +87,7 @@ async def process_document(
                 document_id=document_id,
                 user_id=user_id,
                 processing_run_id=processing_run_id,
+                error_message=str(exc),
             )
 
         raise

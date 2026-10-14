@@ -29,6 +29,7 @@ async def test_process_document_marks_document_ready(
         *,
         document,
         status,
+        error_message=None,
     ):
         statuses.append(status)
         document.status = status.value
@@ -140,9 +141,11 @@ async def test_process_document_marks_document_failed(
         *,
         document,
         status,
+        error_message=None,
     ):
         statuses.append(status)
         document.status = status.value
+        document.error_message = error_message
         return document
 
     extract_text = Mock(
@@ -198,6 +201,7 @@ async def test_process_document_marks_document_failed(
     ]
 
     assert document.status == DocumentStatus.FAILED.value
+    assert document.error_message == "Embedding failed"
 
     # Existing content must not be overwritten.
     assert document.content == "Existing knowledge"

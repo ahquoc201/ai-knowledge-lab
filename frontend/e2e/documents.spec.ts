@@ -82,4 +82,38 @@ test.describe("Document Lifecycle Workflow (Scenario 3)", () => {
       page.getByText(/vui lòng nhập tiêu đề|vui lòng điền/i).or(page.locator(":invalid"))
     ).toBeDefined();
   });
+
+  test("tải lên tệp tài liệu (file upload) và hiển thị trong danh sách", async ({
+    page,
+  }) => {
+    const user = generateTestUser();
+    await registerUserViaUI(page, user);
+
+    await page.getByRole("button", { name: /tài liệu \(documents\)/i }).click();
+
+    // Mở Modal tải lên tệp
+    await page.getByRole("button", { name: /tải lên tệp/i }).first().click();
+    await expect(page.getByRole("heading", { name: /tải lên tệp tài liệu/i })).toBeVisible();
+
+    // Upload file markdown
+    const fileName = `guide-${Date.now()}.md`;
+    const fileContent = "# Enterprise Knowledge Guide\n\nAI Knowledge Lab supports automated RAG ingestion.";
+    
+    // Set file input
+    const fileInput = page.locator('input[type="file"]');
+    await fileInput.setInputFiles({
+      name: fileName,
+      mimeType: "text/markdown",
+      buffer: Buffer.from(fileContent),
+    });
+
+    // File name hiển thị trong modal
+    await expect(page.getByText(fileName)).toBeVisible();
+
+    // Bấm Lưu và Xử lý
+    await page.getByRole("button", { name: /lưu và xử lý/i }).click();
+
+    // Tài liệu xuất hiện trong danh sách
+    await expect(page.getByText(fileName)).toBeVisible({ timeout: 10000 });
+  });
 });

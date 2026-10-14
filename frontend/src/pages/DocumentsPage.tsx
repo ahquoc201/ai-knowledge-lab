@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState, useCallback, useRef } from "react";
 import { api } from "../api/client";
 import { Document, DocumentStatus } from "../types";
 import { Button } from "../components/ui/Button";
@@ -17,6 +17,12 @@ import {
   RotateCcw,
   Eye,
   Calendar,
+  UploadCloud,
+  AlertCircle,
+  FileUp,
+  CheckCircle2,
+  Clock,
+  X,
 } from "lucide-react";
 
 export const DocumentsPage: React.FC = () => {
@@ -25,12 +31,21 @@ export const DocumentsPage: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
 
-  // Create Modal State
-  const [isCreateOpen, setIsCreateOpen] = useState(false);
+  // Create / Upload Modal State
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [activeTab, setActiveTab] = useState<"upload" | "text">("upload");
+
+  // File Upload State
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [isDragging, setIsDragging] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // Text Document State
   const [newTitle, setNewTitle] = useState("");
   const [newContent, setNewContent] = useState("");
+
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [createError, setCreateError] = useState<string | null>(null);
+  const [formError, setFormError] = useState<string | null>(null);
 
   // Detail Modal State
   const [selectedDoc, setSelectedDoc] = useState<Document | null>(null);
@@ -59,33 +74,113 @@ export const DocumentsPage: React.FC = () => {
     fetchDocuments();
   }, [fetchDocuments]);
 
-  const handleCreateDocument = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!newTitle.trim()) {
-      setCreateError("Vui lòng nhập tiêu đề tài liệu.");
-      return;
-    }
-    if (!newContent.trim()) {
-      setCreateError("Vui lòng nhập nội dung tài liệu.");
-      return;
-    }
+  // Auto-poll when any document is in pending or processing status
+  useEffect(() => {
+    const hasActiveJobs = documents.some(
+      (doc) => doc.status === "pending" || doc.status === "processing"
+    );
 
-    setIsSubmitting(true);
-    setCreateError(null);
-    try {
-      await api.documents.create({
-        title: newTitle.trim(),
-        content: newContent.trim(),
-      });
-      setIsCreateOpen(false);
-      setNewTitle("");
-      setNewContent("");
-      await fetchDocuments(true);
-    } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : "Lỗi khi tạo tài liệu.";
-      setCreateError(msg);
-    } finally {
-      setIsSubmitting(false);
+    if (!hasActiveJobs) return;
+
+    const interval = setInterval(() => {
+      fetchDocuments(true);
+    }, 2500);
+
+    return () => clearInterval(interval);
+  }, [documents, fetchDocuments]);
+
+  const handleOpenModal = (tab: "upload" | "text" = "upload") => {
+    setActiveTab(tab);
+    setFormError(null);
+    setSelectedFile(null);
+    setNewTitle("");
+    setNewContent("");
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    if (isSubmitting) return;
+    setIsModalOpen(false);
+    setSelectedFile(null);
+    setNewTitle("");
+    setNewContent("");
+    setFormError(null);
+  };
+
+  const handleFileDrop = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    setIsDragging(false);
+    if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+      const file = e.dataTransfer.files[0];
+      validateAndSetFile(file);
+    }
+  };
+
+  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files.length > 0) {
+      const file = e.target.files[0];
+      validateAndSetFile(file);
+    }
+  };
+
+  const validateAndSetFile = (file: File) => {
+    const supportedExtensions = [".pdf", ".docx", ".md", ".txt"];
+    const ext = "." + file.name.split(".").pop()?.toLowerCase();
+    if (!supportedExtensions.includes(ext)) {
+      setFormError(`Định dạng "${ext}" không được hỗ trợ. Chỉ chấp nhận .pdf, .docx, .md, .txt.`);
+      return;
+    }
+    if (file.size > 5 * 1024 * 1024) {
+      setFormError("Kích thước tệp vượt quá giới hạn tối đa 5MB.");
+      return;
+    }
+    setFormError(null);
+    setSelectedFile(file);
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setFormError(null);
+
+    if (activeTab === "upload") {
+      if (!selectedFile) {
+        setFormError("Vui lòng chọn một tệp văn bản để tải lên.");
+        return;
+      }
+      setIsSubmitting(true);
+      try {
+        await api.documents.upload(selectedFile);
+        handleCloseModal();
+        await fetchDocuments(true);
+      } catch (err: unknown) {
+        const msg = err instanceof Error ? err.message : "Lỗi khi tải tệp lên.";
+        setFormError(msg);
+      } finally {
+        setIsSubmitting(false);
+      }
+    } else {
+      if (!newTitle.trim()) {
+        setFormError("Vui lòng nhập tiêu đề tài liệu.");
+        return;
+      }
+      if (!newContent.trim()) {
+        setFormError("Vui lòng nhập nội dung tài liệu.");
+        return;
+      }
+      setIsSubmitting(true);
+      try {
+        await api.documents.create({
+          title: newTitle.trim(),
+          content: newContent.trim(),
+        });
+        handleCloseModal();
+        await fetchDocuments(true);
+      } catch (err: unknown) {
+        const msg = err instanceof Error ? err.message : "Lỗi khi tạo tài liệu.";
+        setFormError(msg);
+      } finally {
+        setIsSubmitting(false);
+      }
     }
   };
 
@@ -119,6 +214,44 @@ export const DocumentsPage: React.FC = () => {
     }
   };
 
+  const renderStatusBadge = (status: string, errorMessage?: string | null) => {
+    switch (status) {
+      case "ready":
+        return (
+          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-medium bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
+            <CheckCircle2 className="h-3 w-3" />
+            Ready
+          </span>
+        );
+      case "processing":
+        return (
+          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-medium bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20">
+            <RotateCcw className="h-3 w-3 animate-spin" />
+            Processing...
+          </span>
+        );
+      case "pending":
+        return (
+          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-medium bg-slate-500/10 text-slate-600 dark:text-slate-400 border border-slate-500/20">
+            <Clock className="h-3 w-3" />
+            Queued
+          </span>
+        );
+      case "failed":
+        return (
+          <span
+            className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-medium bg-rose-500/10 text-rose-600 dark:text-rose-400 border border-rose-500/20 cursor-help"
+            title={errorMessage || "Xử lý thất bại"}
+          >
+            <AlertCircle className="h-3 w-3" />
+            Failed
+          </span>
+        );
+      default:
+        return <Badge status={status as DocumentStatus}>{status}</Badge>;
+    }
+  };
+
   return (
     <div className="space-y-6 max-w-7xl mx-auto">
       {/* Page Header */}
@@ -126,7 +259,7 @@ export const DocumentsPage: React.FC = () => {
         <div>
           <h2 className="text-xl font-bold text-foreground">Thư viện tài liệu (Document Library)</h2>
           <p className="text-xs text-foreground-muted mt-0.5">
-            Quản lý kho tri thức, vector hóa văn bản và kiểm tra trạng thái index RAG.
+            Quản lý kho tri thức doanh nghiệp, tự động trích xuất và vector hóa tài liệu phục vụ RAG.
           </p>
         </div>
         <div className="flex items-center gap-2.5">
@@ -134,7 +267,11 @@ export const DocumentsPage: React.FC = () => {
             <RefreshCw className="h-3.5 w-3.5 mr-1.5" />
             Làm mới
           </Button>
-          <Button variant="primary" size="sm" onClick={() => setIsCreateOpen(true)}>
+          <Button variant="outline" size="sm" onClick={() => handleOpenModal("upload")}>
+            <UploadCloud className="h-4 w-4 mr-1.5 text-primary" />
+            Tải lên tệp
+          </Button>
+          <Button variant="primary" size="sm" onClick={() => handleOpenModal("text")}>
             <Plus className="h-4 w-4 mr-1.5" />
             Thêm tài liệu
           </Button>
@@ -182,11 +319,15 @@ export const DocumentsPage: React.FC = () => {
             <p className="mt-1 text-xs text-foreground-muted max-w-sm mx-auto">
               {searchQuery
                 ? `Không có kết quả nào khớp với "${searchQuery}". Hãy thử từ khóa khác.`
-                : "Hãy nạp tài liệu đầu tiên để bắt đầu quá trình trích xuất kiến thức và vector hóa."}
+                : "Hãy tải lên tệp đầu tiên (PDF, DOCX, MD, TXT) hoặc nhập văn bản để kích hoạt tự động hóa RAG."}
             </p>
             {!searchQuery && (
-              <div className="mt-5">
-                <Button variant="primary" size="sm" onClick={() => setIsCreateOpen(true)}>
+              <div className="mt-5 flex items-center justify-center gap-2">
+                <Button variant="outline" size="sm" onClick={() => handleOpenModal("upload")}>
+                  <UploadCloud className="h-4 w-4 mr-1.5" />
+                  Tải lên tệp
+                </Button>
+                <Button variant="primary" size="sm" onClick={() => handleOpenModal("text")}>
                   <Plus className="h-4 w-4 mr-1.5" />
                   Tạo tài liệu mới
                 </Button>
@@ -213,9 +354,14 @@ export const DocumentsPage: React.FC = () => {
                       <td className="py-3.5 px-4 font-medium text-foreground">
                         <div className="flex items-center gap-2">
                           <FileText className="h-4 w-4 text-foreground-subtle flex-shrink-0" />
-                          <span className="truncate max-w-xs md:max-w-md font-semibold">
-                            {doc.title}
-                          </span>
+                          <div className="truncate max-w-xs md:max-w-md">
+                            <span className="font-semibold block truncate">{doc.title}</span>
+                            {doc.source_name && doc.source_name !== doc.title && (
+                              <span className="text-[10px] text-foreground-subtle block truncate">
+                                {doc.source_name}
+                              </span>
+                            )}
+                          </div>
                         </div>
                       </td>
 
@@ -224,9 +370,17 @@ export const DocumentsPage: React.FC = () => {
                       </td>
 
                       <td className="py-3.5 px-4">
-                        <Badge status={doc.status as DocumentStatus}>
-                          {doc.status}
-                        </Badge>
+                        <div className="flex items-center gap-2">
+                          {renderStatusBadge(doc.status, doc.error_message)}
+                          {doc.status === "failed" && doc.error_message && (
+                            <span
+                              className="text-[10px] text-rose-500 max-w-[140px] truncate hidden md:inline-block"
+                              title={doc.error_message}
+                            >
+                              {doc.error_message}
+                            </span>
+                          )}
+                        </div>
                       </td>
 
                       <td className="py-3.5 px-4 text-foreground-muted">
@@ -252,6 +406,7 @@ export const DocumentsPage: React.FC = () => {
                             size="sm"
                             title="Reprocess Vector Index"
                             isLoading={isBusy}
+                            disabled={doc.status === "processing"}
                             onClick={() => handleReprocess(doc.id)}
                           >
                             <RotateCcw className="h-3.5 w-3.5" />
@@ -278,12 +433,16 @@ export const DocumentsPage: React.FC = () => {
         )}
       </Card>
 
-      {/* Create Document Modal */}
+      {/* Ingestion & Create Modal */}
       <Modal
-        isOpen={isCreateOpen}
-        onClose={() => !isSubmitting && setIsCreateOpen(false)}
-        title="Thêm tài liệu tri thức mới"
-        description="Nội dung sẽ được phân đoạn thành các chunks và vector hóa lưu vào pgvector."
+        isOpen={isModalOpen}
+        onClose={handleCloseModal}
+        title={activeTab === "upload" ? "Tải lên tệp tài liệu" : "Thêm tài liệu tri thức mới"}
+        description={
+          activeTab === "upload"
+            ? "Tự động trích xuất nội dung, phân đoạn chunks và vector hóa lưu trữ vào cơ sở tri thức."
+            : "Nội dung sẽ được phân đoạn thành các chunks và vector hóa lưu vào pgvector."
+        }
         size="lg"
         footer={
           <>
@@ -291,7 +450,7 @@ export const DocumentsPage: React.FC = () => {
               variant="outline"
               size="sm"
               disabled={isSubmitting}
-              onClick={() => setIsCreateOpen(false)}
+              onClick={handleCloseModal}
             >
               Hủy
             </Button>
@@ -299,46 +458,150 @@ export const DocumentsPage: React.FC = () => {
               variant="primary"
               size="sm"
               isLoading={isSubmitting}
-              onClick={handleCreateDocument}
+              onClick={handleSubmit}
             >
               Lưu và Xử lý (Ingest)
             </Button>
           </>
         }
       >
-        <form onSubmit={handleCreateDocument} className="space-y-4">
-          {createError && (
-            <Alert type="error" onClose={() => setCreateError(null)}>
-              {createError}
+        <div className="space-y-4">
+          {/* Navigation Tabs */}
+          <div className="flex border-b border-border text-xs font-semibold">
+            <button
+              type="button"
+              onClick={() => {
+                setActiveTab("upload");
+                setFormError(null);
+              }}
+              className={`pb-2.5 px-3 border-b-2 flex items-center gap-1.5 transition-colors ${
+                activeTab === "upload"
+                  ? "border-primary text-primary"
+                  : "border-transparent text-foreground-muted hover:text-foreground"
+              }`}
+            >
+              <UploadCloud className="h-3.5 w-3.5" />
+              Tải tệp lên (File Upload)
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                setActiveTab("text");
+                setFormError(null);
+              }}
+              className={`pb-2.5 px-3 border-b-2 flex items-center gap-1.5 transition-colors ${
+                activeTab === "text"
+                  ? "border-primary text-primary"
+                  : "border-transparent text-foreground-muted hover:text-foreground"
+              }`}
+            >
+              <FileText className="h-3.5 w-3.5" />
+              Nhập văn bản thô (Direct Text)
+            </button>
+          </div>
+
+          {formError && (
+            <Alert type="error" onClose={() => setFormError(null)}>
+              {formError}
             </Alert>
           )}
 
-          <Input
-            label="Tiêu đề tài liệu"
-            placeholder="Ví dụ: Chính sách bảo mật dữ liệu khách hàng 2026"
-            value={newTitle}
-            onChange={(e) => setNewTitle(e.target.value)}
-            required
-          />
+          {activeTab === "upload" ? (
+            <div className="space-y-4">
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept=".pdf,.docx,.md,.txt"
+                onChange={handleFileSelect}
+                className="hidden"
+              />
 
-          <div>
-            <label className="block text-xs font-semibold text-foreground uppercase tracking-wider mb-1.5">
-              Nội dung văn bản
-            </label>
-            <textarea
-              rows={8}
-              placeholder="Dán hoặc nhập toàn bộ nội dung văn bản cần nạp vào hệ thống..."
-              value={newContent}
-              onChange={(e) => setNewContent(e.target.value)}
-              required
-              className="w-full rounded-md border border-border bg-surface px-3 py-2 text-xs text-foreground placeholder-foreground-subtle focus:outline-none focus:ring-2 focus:ring-primary"
-            />
-            <p className="mt-1 text-[11px] text-foreground-subtle">
-              Tài liệu sẽ được xử lý tự động trong background pipeline và chuyển sang trạng thái
-              'ready' sau khi vector hóa.
-            </p>
-          </div>
-        </form>
+              {!selectedFile ? (
+                <div
+                  onDragOver={(e) => {
+                    e.preventDefault();
+                    setIsDragging(true);
+                  }}
+                  onDragLeave={() => setIsDragging(false)}
+                  onDrop={handleFileDrop}
+                  onClick={() => fileInputRef.current?.click()}
+                  className={`border-2 border-dashed rounded-lg p-8 text-center cursor-pointer transition-colors ${
+                    isDragging
+                      ? "border-primary bg-primary/5"
+                      : "border-border hover:border-primary/50 hover:bg-background/50"
+                  }`}
+                >
+                  <FileUp className="mx-auto h-10 w-10 text-foreground-subtle" />
+                  <p className="mt-3 text-xs font-medium text-foreground">
+                    Kéo thả tệp vào đây hoặc{" "}
+                    <span className="text-primary underline">nhấp để duyệt tệp</span>
+                  </p>
+                  <p className="mt-1 text-[11px] text-foreground-muted">
+                    Hỗ trợ: PDF (.pdf), Word (.docx), Markdown (.md), Văn bản thuần (.txt) • Tối đa 5MB
+                  </p>
+                </div>
+              ) : (
+                <div className="flex items-center justify-between p-3.5 rounded-lg border border-border bg-background">
+                  <div className="flex items-center gap-3">
+                    <div className="p-2 rounded bg-primary/10 text-primary">
+                      <FileText className="h-5 w-5" />
+                    </div>
+                    <div>
+                      <p className="text-xs font-semibold text-foreground truncate max-w-sm">
+                        {selectedFile.name}
+                      </p>
+                      <p className="text-[11px] text-foreground-muted">
+                        {(selectedFile.size / 1024).toFixed(1)} KB • {selectedFile.type || "Tài liệu văn bản"}
+                      </p>
+                    </div>
+                  </div>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setSelectedFile(null);
+                    }}
+                  >
+                    <X className="h-4 w-4" />
+                  </Button>
+                </div>
+              )}
+
+              <p className="text-[11px] text-foreground-subtle">
+                Hệ thống sẽ tự động đưa tệp vào hàng đợi Celery + Redis và kích hoạt quy trình trích xuất văn bản mà không cần thao tác thêm.
+              </p>
+            </div>
+          ) : (
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <Input
+                label="Tiêu đề tài liệu"
+                placeholder="Ví dụ: Chính sách bảo mật dữ liệu khách hàng 2026"
+                value={newTitle}
+                onChange={(e) => setNewTitle(e.target.value)}
+                required
+              />
+
+              <div>
+                <label className="block text-xs font-semibold text-foreground uppercase tracking-wider mb-1.5">
+                  Nội dung văn bản
+                </label>
+                <textarea
+                  rows={8}
+                  placeholder="Dán hoặc nhập toàn bộ nội dung văn bản cần nạp vào hệ thống..."
+                  value={newContent}
+                  onChange={(e) => setNewContent(e.target.value)}
+                  required
+                  className="w-full rounded-md border border-border bg-surface px-3 py-2 text-xs text-foreground placeholder-foreground-subtle focus:outline-none focus:ring-2 focus:ring-primary"
+                />
+                <p className="mt-1 text-[11px] text-foreground-subtle">
+                  Tài liệu sẽ được xử lý tự động trong background pipeline và chuyển sang trạng thái
+                  'ready' sau khi vector hóa.
+                </p>
+              </div>
+            </form>
+          )}
+        </div>
       </Modal>
 
       {/* View Document Detail Modal */}
@@ -359,13 +622,21 @@ export const DocumentsPage: React.FC = () => {
             <div className="grid grid-cols-2 gap-4 rounded-lg bg-background p-3.5 border border-border">
               <div>
                 <span className="text-foreground-subtle font-medium">Trạng thái: </span>
-                <Badge status={selectedDoc.status as DocumentStatus} size="sm">
-                  {selectedDoc.status}
-                </Badge>
+                {renderStatusBadge(selectedDoc.status, selectedDoc.error_message)}
               </div>
               <div>
                 <span className="text-foreground-subtle font-medium">Loại nguồn: </span>
                 <span className="font-semibold uppercase text-foreground">{selectedDoc.source_type}</span>
+              </div>
+              <div>
+                <span className="text-foreground-subtle font-medium">Tên file nguồn: </span>
+                <span className="font-medium text-foreground truncate block">
+                  {selectedDoc.source_name || selectedDoc.title}
+                </span>
+              </div>
+              <div>
+                <span className="text-foreground-subtle font-medium">Định dạng MIME: </span>
+                <span className="font-medium text-foreground">{selectedDoc.mime_type || "N/A"}</span>
               </div>
               <div>
                 <span className="text-foreground-subtle font-medium">Ngày tạo: </span>
@@ -381,12 +652,22 @@ export const DocumentsPage: React.FC = () => {
               </div>
             </div>
 
+            {selectedDoc.status === "failed" && selectedDoc.error_message && (
+              <div className="rounded-lg bg-rose-500/10 border border-rose-500/20 p-3.5 text-rose-600 dark:text-rose-400">
+                <div className="flex items-center gap-2 font-semibold">
+                  <AlertCircle className="h-4 w-4 flex-shrink-0" />
+                  <span>Chi tiết lỗi xử lý tài liệu:</span>
+                </div>
+                <p className="mt-1 text-xs font-mono">{selectedDoc.error_message}</p>
+              </div>
+            )}
+
             <div>
               <h4 className="font-semibold text-foreground uppercase tracking-wider mb-1.5">
-                Nội dung tài liệu:
+                Nội dung tài liệu đã trích xuất:
               </h4>
               <div className="max-h-60 overflow-y-auto rounded-md border border-border bg-background p-3 text-xs leading-relaxed text-foreground whitespace-pre-wrap font-mono">
-                {selectedDoc.content || "(Tài liệu không có nội dung text thô hoặc nội dung file)"}
+                {selectedDoc.content || "(Tài liệu đang xử lý hoặc chưa có nội dung text)"}
               </div>
             </div>
           </div>

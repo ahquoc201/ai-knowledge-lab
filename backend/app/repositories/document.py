@@ -172,8 +172,11 @@ async def update_document_status(
     *,
     document: Document,
     status: str,
+    error_message: str | None = None,
 ) -> Document:
     document.status = status
+    if error_message is not None or status == DocumentStatus.READY.value:
+        document.error_message = error_message
 
     await session.commit()
     await session.refresh(document)
@@ -186,7 +189,7 @@ async def claim_file_document_reprocessing(
     document_id: UUID,
     user_id: UUID,
 ) -> bool:
-    """Atomically claim a file document for reprocessing."""
+    """Atomically claim a document for reprocessing."""
 
     statement = (
         update(Document)
@@ -204,6 +207,7 @@ async def claim_file_document_reprocessing(
         )
         .values(
             status=DocumentStatus.PENDING.value,
+            error_message=None,
         )
         .returning(Document.id)
         .execution_options(synchronize_session=False)
@@ -227,7 +231,7 @@ async def claim_pending_file_processing(
     document_id: UUID,
     user_id: UUID,
 ) -> UUID | None:
-    """Atomically claim a pending file and issue a fencing token."""
+    """Atomically claim a pending document and issue a fencing token."""
 
     run_id = uuid4()
 
@@ -236,7 +240,6 @@ async def claim_pending_file_processing(
         .where(
             Document.id == document_id,
             Document.user_id == user_id,
-            Document.source_type == "file",
             Document.status == DocumentStatus.PENDING.value,
         )
         .values(
@@ -244,6 +247,7 @@ async def claim_pending_file_processing(
             processing_run_id=run_id,
             processing_started_at=func.now(),
             processing_heartbeat_at=func.now(),
+            error_message=None,
         )
         .returning(Document.id)
         .execution_options(synchronize_session=False)
@@ -268,6 +272,7 @@ async def mark_processing_run_failed(
     document_id: UUID,
     user_id: UUID,
     processing_run_id: UUID,
+    error_message: str | None = None,
 ) -> bool:
     """Mark processing as failed only if the worker still owns the lease."""
 
@@ -281,6 +286,7 @@ async def mark_processing_run_failed(
         )
         .values(
             status=DocumentStatus.FAILED.value,
+            error_message=error_message,
             processing_run_id=None,
             processing_started_at=None,
             processing_heartbeat_at=None,

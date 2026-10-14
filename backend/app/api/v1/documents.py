@@ -1,3 +1,4 @@
+import logging
 from typing import Annotated, Literal
 from uuid import UUID
 
@@ -52,6 +53,8 @@ from app.services.reprocessing import (
 )
 from app.tasks.ingestion import process_document_task
 
+logger = logging.getLogger(__name__)
+
 router = APIRouter(
     prefix="/documents",
     tags=["Documents"],
@@ -73,6 +76,24 @@ async def create_document(
         user=current_user,
         data=data,
     )
+
+    try:
+        process_document_task.delay(
+            str(document.id),
+            str(current_user.id),
+        )
+    except Exception as exc:  # noqa: BLE001
+        logger.warning(
+            "Failed to enqueue ingestion task for document %s: %s",
+            document.id,
+            exc,
+        )
+        await set_document_status(
+            session,
+            document=document,
+            status=DocumentStatus.FAILED,
+            error_message="Failed to schedule background processing task",
+        )
 
     return DocumentResponse.model_validate(document)
 
@@ -144,6 +165,7 @@ async def upload_document(
                 session,
                 document=document,
                 status=DocumentStatus.FAILED,
+                error_message="Failed to schedule background processing task",
             )
 
         raise
@@ -373,6 +395,7 @@ async def reprocess_document(
                 session,
                 document=document,
                 status=DocumentStatus.FAILED,
+                error_message="Unable to schedule document reprocessing",
             )
 
             raise HTTPException(

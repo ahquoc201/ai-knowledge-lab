@@ -1,4 +1,3 @@
-
 import asyncio
 import logging
 from uuid import UUID
@@ -17,6 +16,10 @@ from app.repositories.document import (
     get_document_by_id_for_user,
     mark_processing_run_failed,
 )
+from app.services.file_extractor import (
+    FileExtractionError,
+    UnsupportedFileTypeError,
+)
 from app.services.file_storage import read_stored_file
 from app.services.ingestion import process_document
 from app.services.processing_heartbeat import (
@@ -24,6 +27,10 @@ from app.services.processing_heartbeat import (
 )
 
 logger = logging.getLogger(__name__)
+
+
+class DocumentNotFoundError(ValueError):
+    """Raised when a document cannot be found in the database."""
 
 
 async def _process_document_task(
@@ -52,8 +59,18 @@ async def _process_document_task(
                 user_id=user_id,
             )
 
+            # Defensive visibility check: if not found immediately, retry a brief read
+            # after a short delay in case of transaction commit propagation lag.
             if document is None:
-                raise ValueError(
+                await asyncio.sleep(0.5)
+                document = await get_document_by_id_for_user(
+                    session,
+                    document_id=document_id,
+                    user_id=user_id,
+                )
+
+            if document is None:
+                raise DocumentNotFoundError(
                     f"Document not found: {document_id}"
                 )
 
@@ -83,19 +100,26 @@ async def _process_document_task(
                 try:
                     await session.refresh(document)
 
-                    if not document.storage_key:
-                        raise ValueError(
-                            "Document has no stored source file"
+                    source_type = getattr(document, "source_type", "file")
+                    if source_type == "text":
+                        content = getattr(document, "content", None)
+                        if not content or not content.strip():
+                            raise ValueError("Document content is empty")
+                        data = content.encode("utf-8")
+                    else:
+                        if not getattr(document, "storage_key", None):
+                            raise ValueError(
+                                "Document has no stored source file"
+                            )
+
+                        # Read from disk without blocking the
+                        # event loop used by the heartbeat.
+                        data = await asyncio.to_thread(
+                            read_stored_file,
+                            document.storage_key,
                         )
 
-                    # Read from disk without blocking the
-                    # event loop used by the heartbeat.
-                    data = await asyncio.to_thread(
-                        read_stored_file,
-                        document.storage_key,
-                    )
-
-                except Exception:
+                except Exception as exc:
                     await session.rollback()
 
                     # Only this run may record the failure.
@@ -104,6 +128,7 @@ async def _process_document_task(
                         document_id=document_id,
                         user_id=user_id,
                         processing_run_id=processing_run_id,
+                        error_message=str(exc),
                     )
 
                     raise
@@ -136,14 +161,72 @@ async def _process_document_task(
 
 @celery_app.task(
     name="documents.process",
+    bind=True,
+    max_retries=3,
+    default_retry_delay=5,
 )
 def process_document_task(
+    self,
     document_id: str,
     user_id: str,
 ) -> None:
-    asyncio.run(
-        _process_document_task(
-            document_id=UUID(document_id),
-            user_id=UUID(user_id),
+    task_id = getattr(getattr(self, "request", None), "id", "local")
+    is_direct_call = getattr(getattr(self, "request", None), "called_directly", False)
+
+    try:
+        asyncio.run(
+            _process_document_task(
+                document_id=UUID(document_id),
+                user_id=UUID(user_id),
+            )
         )
-    )
+    except DocumentNotFoundError:
+        # Document was deleted or rolled back before processing began.
+        # Discard the task without retrying to prevent log storms.
+        logger.warning(
+            "Task %s: Document %s (user: %s) not found in database. Discarding task without retrying.",
+            task_id,
+            document_id,
+            user_id,
+        )
+        if is_direct_call:
+            raise
+        return
+    except (UnsupportedFileTypeError, FileExtractionError, ValueError) as exc:
+        # Permanent extraction/input errors: Document has already been marked FAILED in DB.
+        # Do not retry permanent errors.
+        logger.warning(
+            "Task %s: Permanent failure processing document %s: %s. Document marked failed in database.",
+            task_id,
+            document_id,
+            exc,
+        )
+        if is_direct_call:
+            raise
+        return
+    except Exception as exc:
+        # Transient errors (e.g. database connectivity loss, network glitch)
+        retries = getattr(getattr(self, "request", None), "retries", 0)
+        max_retries = getattr(self, "max_retries", 3)
+        default_delay = getattr(self, "default_retry_delay", 5)
+
+        if hasattr(self, "retry") and retries < max_retries and not is_direct_call:
+            countdown = default_delay * (2 ** retries)
+            logger.warning(
+                "Task %s: Transient error processing document %s: %s. Retrying in %ss (attempt %s/%s)...",
+                task_id,
+                document_id,
+                exc,
+                countdown,
+                retries + 1,
+                max_retries,
+            )
+            raise self.retry(exc=exc, countdown=countdown) from exc
+
+        logger.exception(
+            "Task %s: Document processing task failed permanently after %s retries for document %s",
+            task_id,
+            max_retries,
+            document_id,
+        )
+        raise

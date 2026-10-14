@@ -139,11 +139,13 @@ async def set_document_status(
     *,
     document: Document,
     status: DocumentStatus,
+    error_message: str | None = None,
 ) -> Document:
     return await update_document_status(
         session,
         document=document,
         status=status.value,
+        error_message=error_message,
     )
 
 
