@@ -196,6 +196,8 @@ async def claim_file_document_reprocessing(
         .where(
             Document.id == document_id,
             Document.user_id == user_id,
+            Document.source_type == "file",
+            Document.storage_key.is_not(None),
             Document.status.in_(
                 [
                     DocumentStatus.READY.value,

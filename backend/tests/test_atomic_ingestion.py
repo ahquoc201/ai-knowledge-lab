@@ -83,6 +83,7 @@ async def test_embedding_failure_preserves_existing_data(
             session,
             document=document,
             status=DocumentStatus.FAILED,
+            error_message="Embedding unavailable",
         ),
     ]
 
