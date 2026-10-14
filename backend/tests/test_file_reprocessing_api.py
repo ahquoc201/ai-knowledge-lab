@@ -50,8 +50,10 @@ def mock_file_document(monkeypatch, document):
         *,
         document,
         status,
+        error_message=None,
     ):
         document.status = status.value
+        document.error_message = error_message
         return document
 
     set_status = AsyncMock(

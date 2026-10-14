@@ -88,6 +88,12 @@ async def create_document(
             document.id,
             exc,
         )
+        await set_document_status(
+            session,
+            document=document,
+            status=DocumentStatus.FAILED,
+            error_message="Failed to schedule background processing task",
+        )
 
     return DocumentResponse.model_validate(document)
 
@@ -159,6 +165,7 @@ async def upload_document(
                 session,
                 document=document,
                 status=DocumentStatus.FAILED,
+                error_message="Failed to schedule background processing task",
             )
 
         raise
@@ -388,6 +395,7 @@ async def reprocess_document(
                 session,
                 document=document,
                 status=DocumentStatus.FAILED,
+                error_message="Unable to schedule document reprocessing",
             )
 
             raise HTTPException(

@@ -32,9 +32,58 @@ An AI-powered knowledge management platform built with Python, FastAPI, PostgreS
 - Ollama
 - pgvector
 
-### DevOps
+- Celery
+- Redis
 - Docker
 - GitHub Actions
+
+## Quick Start
+
+### 1. Infrastructure Services
+
+Start PostgreSQL (pgvector) and Redis containers:
+
+```bash
+docker compose up -d
+```
+
+### 2. Celery Background Worker
+
+To process background document ingestion and vectorization tasks:
+
+```bash
+./scripts/start-worker.sh
+```
+
+Or manually from the `backend/` directory:
+
+```bash
+cd backend
+.venv/bin/celery -A app.core.celery_app worker --loglevel=info --concurrency=2
+```
+
+### 3. Backend API
+
+```bash
+cd backend
+.venv/bin/uvicorn app.main:app --reload --port 8000
+```
+
+### 4. Frontend
+
+```bash
+cd frontend
+npm run dev
+```
+
+## Running Tests
+
+Run backend tests:
+
+```bash
+cd backend
+.venv/bin/pytest -q --tb=short
+```
 
 ## Project Structure
 
@@ -43,8 +92,5 @@ An AI-powered knowledge management platform built with Python, FastAPI, PostgreS
 - ai-lab/: AI experiments and model training.
 - docs/: Technical documentation.
 - infrastructure/: Infrastructure configuration.
-- scripts/: Development scripts.
+- scripts/: Development and operations scripts.
 
-## Project Status
-
-Phase 0: Project initialization.
