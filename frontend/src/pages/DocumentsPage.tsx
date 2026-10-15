@@ -8,6 +8,7 @@ import { Modal } from "../components/ui/Modal";
 import { Alert } from "../components/ui/Alert";
 import { Spinner } from "../components/ui/Spinner";
 import { Card } from "../components/ui/Card";
+import { useWorkspace } from "../context/WorkspaceContext";
 import {
   Plus,
   Search,
@@ -23,9 +24,11 @@ import {
   CheckCircle2,
   Clock,
   X,
+  Lock,
 } from "lucide-react";
 
 export const DocumentsPage: React.FC = () => {
+  const { currentWorkspace, canEdit, isViewer, workspaceVersion } = useWorkspace();
   const [documents, setDocuments] = useState<Document[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -72,7 +75,7 @@ export const DocumentsPage: React.FC = () => {
 
   useEffect(() => {
     fetchDocuments();
-  }, [fetchDocuments]);
+  }, [fetchDocuments, workspaceVersion, currentWorkspace?.id]);
 
   // Auto-poll when any document is in pending or processing status
   useEffect(() => {
@@ -257,9 +260,18 @@ export const DocumentsPage: React.FC = () => {
       {/* Page Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h2 className="text-xl font-bold text-foreground">Thư viện tài liệu (Document Library)</h2>
+          <div className="flex items-center gap-2">
+            <h2 className="text-xl font-bold text-foreground">Thư viện tài liệu (Document Library)</h2>
+            {isViewer && (
+              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-semibold bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300 border border-gray-300 dark:border-gray-700">
+                <Lock className="h-3 w-3" />
+                Chỉ đọc (Read Only)
+              </span>
+            )}
+          </div>
           <p className="text-xs text-foreground-muted mt-0.5">
-            Quản lý kho tri thức doanh nghiệp, tự động trích xuất và vector hóa tài liệu phục vụ RAG.
+            Quản lý kho tri thức doanh nghiệp trong không gian{" "}
+            <span className="font-semibold text-foreground">{currentWorkspace?.name || "Workspace"}</span>.
           </p>
         </div>
         <div className="flex items-center gap-2.5">
@@ -267,14 +279,18 @@ export const DocumentsPage: React.FC = () => {
             <RefreshCw className="h-3.5 w-3.5 mr-1.5" />
             Làm mới
           </Button>
-          <Button variant="outline" size="sm" onClick={() => handleOpenModal("upload")}>
-            <UploadCloud className="h-4 w-4 mr-1.5 text-primary" />
-            Tải lên tệp
-          </Button>
-          <Button variant="primary" size="sm" onClick={() => handleOpenModal("text")}>
-            <Plus className="h-4 w-4 mr-1.5" />
-            Thêm tài liệu
-          </Button>
+          {canEdit && (
+            <>
+              <Button variant="outline" size="sm" onClick={() => handleOpenModal("upload")}>
+                <UploadCloud className="h-4 w-4 mr-1.5 text-primary" />
+                Tải lên tệp
+              </Button>
+              <Button variant="primary" size="sm" onClick={() => handleOpenModal("text")}>
+                <Plus className="h-4 w-4 mr-1.5" />
+                Thêm tài liệu
+              </Button>
+            </>
+          )}
         </div>
       </div>
 
@@ -321,7 +337,7 @@ export const DocumentsPage: React.FC = () => {
                 ? `Không có kết quả nào khớp với "${searchQuery}". Hãy thử từ khóa khác.`
                 : "Hãy tải lên tệp đầu tiên (PDF, DOCX, MD, TXT) hoặc nhập văn bản để kích hoạt tự động hóa RAG."}
             </p>
-            {!searchQuery && (
+            {!searchQuery && canEdit && (
               <div className="mt-5 flex items-center justify-center gap-2">
                 <Button variant="outline" size="sm" onClick={() => handleOpenModal("upload")}>
                   <UploadCloud className="h-4 w-4 mr-1.5" />
@@ -401,27 +417,31 @@ export const DocumentsPage: React.FC = () => {
                             <Eye className="h-3.5 w-3.5" />
                           </Button>
 
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            title="Reprocess Vector Index"
-                            isLoading={isBusy}
-                            disabled={doc.status === "processing"}
-                            onClick={() => handleReprocess(doc.id)}
-                          >
-                            <RotateCcw className="h-3.5 w-3.5" />
-                          </Button>
+                          {canEdit && (
+                            <>
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                title="Reprocess Vector Index"
+                                isLoading={isBusy}
+                                disabled={doc.status === "processing"}
+                                onClick={() => handleReprocess(doc.id)}
+                              >
+                                <RotateCcw className="h-3.5 w-3.5" />
+                              </Button>
 
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            title="Xóa tài liệu"
-                            disabled={isBusy}
-                            onClick={() => handleDelete(doc.id, doc.title)}
-                            className="text-status-failed-text hover:bg-status-failed-bg"
-                          >
-                            <Trash2 className="h-3.5 w-3.5" />
-                          </Button>
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                title="Xóa tài liệu"
+                                disabled={isBusy}
+                                onClick={() => handleDelete(doc.id, doc.title)}
+                                className="text-status-failed-text hover:bg-status-failed-bg"
+                              >
+                                <Trash2 className="h-3.5 w-3.5" />
+                              </Button>
+                            </>
+                          )}
                         </div>
                       </td>
                     </tr>

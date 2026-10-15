@@ -11,9 +11,16 @@ async def create_conversation(
     *,
     user_id: UUID,
     title: str | None = None,
+    workspace_id: UUID | None = None,
 ) -> Conversation:
+    if workspace_id is None:
+        from app.repositories.workspace import resolve_or_create_user_workspace_id
+
+        workspace_id = await resolve_or_create_user_workspace_id(session, user_id)
+
     conversation = Conversation(
         user_id=user_id,
+        workspace_id=workspace_id,
         title=title,
     )
 
@@ -37,6 +44,19 @@ async def list_conversations_by_user(
     return list(result.scalars().all())
 
 
+async def list_conversations_by_workspace(
+    session: AsyncSession,
+    workspace_id: UUID,
+) -> list[Conversation]:
+    result = await session.execute(
+        select(Conversation)
+        .where(Conversation.workspace_id == workspace_id)
+        .order_by(Conversation.updated_at.desc())
+    )
+
+    return list(result.scalars().all())
+
+
 async def get_conversation_by_id_for_user(
     session: AsyncSession,
     *,
@@ -51,6 +71,23 @@ async def get_conversation_by_id_for_user(
     )
 
     return result.scalar_one_or_none()
+
+
+async def get_conversation_by_id_and_workspace(
+    session: AsyncSession,
+    *,
+    conversation_id: UUID,
+    workspace_id: UUID,
+) -> Conversation | None:
+    result = await session.execute(
+        select(Conversation).where(
+            Conversation.id == conversation_id,
+            Conversation.workspace_id == workspace_id,
+        )
+    )
+
+    return result.scalar_one_or_none()
+
 
 async def update_conversation_title(
     session: AsyncSession,

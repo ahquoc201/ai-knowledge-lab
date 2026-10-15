@@ -37,6 +37,7 @@ async def _process_document_task(
     *,
     document_id: UUID,
     user_id: UUID,
+    expected_workspace_id: UUID | None = None,
 ) -> None:
     settings = get_settings()
 
@@ -72,6 +73,12 @@ async def _process_document_task(
             if document is None:
                 raise DocumentNotFoundError(
                     f"Document not found: {document_id}"
+                )
+
+            if expected_workspace_id is not None and document.workspace_id != expected_workspace_id:
+                raise ValueError(
+                    f"Workspace mismatch: document {document_id} belongs to workspace {document.workspace_id}, "
+                    f"expected {expected_workspace_id}. Cross-tenant ingestion attempt blocked."
                 )
 
             processing_run_id = await claim_pending_file_processing(
@@ -169,16 +176,21 @@ def process_document_task(
     self,
     document_id: str,
     user_id: str,
+    expected_workspace_id: str | None = None,
 ) -> None:
     task_id = getattr(getattr(self, "request", None), "id", "local")
     is_direct_call = getattr(getattr(self, "request", None), "called_directly", False)
 
+    task_kwargs = {
+        "document_id": UUID(document_id),
+        "user_id": UUID(user_id),
+    }
+    if expected_workspace_id is not None:
+        task_kwargs["expected_workspace_id"] = UUID(expected_workspace_id)
+
     try:
         asyncio.run(
-            _process_document_task(
-                document_id=UUID(document_id),
-                user_id=UUID(user_id),
-            )
+            _process_document_task(**task_kwargs)
         )
     except DocumentNotFoundError:
         # Document was deleted or rolled back before processing began.

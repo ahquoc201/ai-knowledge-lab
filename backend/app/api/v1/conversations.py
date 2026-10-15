@@ -4,9 +4,11 @@ from uuid import UUID
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.api.deps import get_current_user
+from app.api.deps import get_current_user, require_workspace_permission
+from app.core.workspace_role import AuditOutcome, WorkspacePermission
 from app.db.session import get_session
 from app.models.user import User
+from app.models.workspace_membership import WorkspaceMembership
 from app.schemas.conversation import (
     ConversationCreate,
     ConversationDetailResponse,
@@ -15,13 +17,15 @@ from app.schemas.conversation import (
 )
 from app.schemas.message import MessageResponse
 from app.schemas.message_source import MessageSourceResponse
+from app.services.audit import record_audit_event
 from app.services.conversation import (
     create_user_conversation,
-    delete_user_conversation,
-    get_user_conversation,
-    list_user_conversations,
-    update_user_conversation,
+    delete_workspace_conversation,
+    get_workspace_conversation,
+    list_workspace_conversations,
+    update_workspace_conversation,
 )
+from app.services.message import list_workspace_conversation_messages
 from app.services.message_source import (
     get_message_sources_by_message_ids,
 )
@@ -30,7 +34,6 @@ router = APIRouter(
     prefix="/conversations",
     tags=["Conversations"],
 )
-from app.services.message import list_conversation_messages
 
 
 @router.post(
@@ -41,12 +44,27 @@ from app.services.message import list_conversation_messages
 async def create_conversation(
     data: ConversationCreate,
     current_user: Annotated[User, Depends(get_current_user)],
+    membership: Annotated[
+        WorkspaceMembership,
+        Depends(require_workspace_permission(WorkspacePermission.CHAT_CREATE)),
+    ],
     session: Annotated[AsyncSession, Depends(get_session)],
 ) -> ConversationResponse:
     conversation = await create_user_conversation(
         session,
         user=current_user,
         title=data.title,
+        workspace_id=membership.workspace_id,
+    )
+
+    await record_audit_event(
+        session,
+        workspace_id=membership.workspace_id,
+        action="conversation.create",
+        resource_type="conversation",
+        actor_id=current_user.id,
+        resource_id=conversation.id,
+        outcome=AuditOutcome.SUCCESS,
     )
 
     return ConversationResponse.model_validate(conversation)
@@ -58,11 +76,15 @@ async def create_conversation(
 )
 async def list_conversations(
     current_user: Annotated[User, Depends(get_current_user)],
+    membership: Annotated[
+        WorkspaceMembership,
+        Depends(require_workspace_permission(WorkspacePermission.CHAT_READ)),
+    ],
     session: Annotated[AsyncSession, Depends(get_session)],
 ) -> list[ConversationResponse]:
-    conversations = await list_user_conversations(
+    conversations = await list_workspace_conversations(
         session,
-        user=current_user,
+        workspace_id=membership.workspace_id,
     )
 
     return [
@@ -78,11 +100,15 @@ async def list_conversations(
 async def get_conversation(
     conversation_id: UUID,
     current_user: Annotated[User, Depends(get_current_user)],
+    membership: Annotated[
+        WorkspaceMembership,
+        Depends(require_workspace_permission(WorkspacePermission.CHAT_READ)),
+    ],
     session: Annotated[AsyncSession, Depends(get_session)],
 ) -> ConversationDetailResponse:
-    conversation = await get_user_conversation(
+    conversation = await get_workspace_conversation(
         session,
-        user=current_user,
+        workspace_id=membership.workspace_id,
         conversation_id=conversation_id,
     )
 
@@ -92,9 +118,9 @@ async def get_conversation(
             detail="Conversation not found",
         )
 
-    messages = await list_conversation_messages(
+    messages = await list_workspace_conversation_messages(
         session,
-        user=current_user,
+        workspace_id=membership.workspace_id,
         conversation_id=conversation.id,
     )
 
@@ -129,6 +155,7 @@ async def get_conversation(
         ],
     )
 
+
 @router.patch(
     "/{conversation_id}",
     response_model=ConversationResponse,
@@ -137,11 +164,15 @@ async def update_conversation(
     conversation_id: UUID,
     data: ConversationUpdate,
     current_user: Annotated[User, Depends(get_current_user)],
+    membership: Annotated[
+        WorkspaceMembership,
+        Depends(require_workspace_permission(WorkspacePermission.CHAT_CREATE)),
+    ],
     session: Annotated[AsyncSession, Depends(get_session)],
 ) -> ConversationResponse:
-    conversation = await update_user_conversation(
+    conversation = await update_workspace_conversation(
         session,
-        user=current_user,
+        workspace_id=membership.workspace_id,
         conversation_id=conversation_id,
         title=data.title,
     )
@@ -151,6 +182,16 @@ async def update_conversation(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Conversation not found",
         )
+
+    await record_audit_event(
+        session,
+        workspace_id=membership.workspace_id,
+        action="conversation.update",
+        resource_type="conversation",
+        actor_id=current_user.id,
+        resource_id=conversation.id,
+        outcome=AuditOutcome.SUCCESS,
+    )
 
     return ConversationResponse.model_validate(conversation)
 
@@ -162,11 +203,15 @@ async def update_conversation(
 async def delete_conversation(
     conversation_id: UUID,
     current_user: Annotated[User, Depends(get_current_user)],
+    membership: Annotated[
+        WorkspaceMembership,
+        Depends(require_workspace_permission(WorkspacePermission.CHAT_CREATE)),
+    ],
     session: Annotated[AsyncSession, Depends(get_session)],
 ) -> None:
-    deleted = await delete_user_conversation(
+    deleted = await delete_workspace_conversation(
         session,
-        user=current_user,
+        workspace_id=membership.workspace_id,
         conversation_id=conversation_id,
     )
 
@@ -175,3 +220,13 @@ async def delete_conversation(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Conversation not found",
         )
+
+    await record_audit_event(
+        session,
+        workspace_id=membership.workspace_id,
+        action="conversation.delete",
+        resource_type="conversation",
+        actor_id=current_user.id,
+        resource_id=conversation_id,
+        outcome=AuditOutcome.SUCCESS,
+    )

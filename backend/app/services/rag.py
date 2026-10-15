@@ -22,18 +22,27 @@ class RAGResult:
 async def answer_with_rag(
     session: AsyncSession,
     *,
-    user_id: UUID,
+    user_id: UUID | None = None,
+    workspace_id: UUID | None = None,
     query: str,
     llm: LLMProvider,
     limit: int = 5,
     history: list[LLMMessage] | None = None,
 ) -> RAGResult:
-    context = await retrieve_context(
-        session,
-        user_id=user_id,
-        query=query,
-        limit=limit,
-    )
+    import inspect
+
+    retrieval_kwargs = {
+        "session": session,
+        "query": query,
+        "limit": limit,
+    }
+    if user_id is not None:
+        retrieval_kwargs["user_id"] = user_id
+    if workspace_id is not None and "workspace_id" in inspect.signature(retrieve_context).parameters:
+        retrieval_kwargs["workspace_id"] = workspace_id
+
+    context = await retrieve_context(**retrieval_kwargs)
+
 
     # Only generate an answer when usable evidence exists.
     if not context.sources or not context.text.strip():

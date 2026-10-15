@@ -24,7 +24,8 @@ def _embed_query(text: str) -> list[float]:
 async def semantic_search(
     session: AsyncSession,
     *,
-    user_id: UUID,
+    user_id: UUID | None = None,
+    workspace_id: UUID | None = None,
     query: str,
     limit: int = 5,
 ) -> list[SemanticSearchResult]:
@@ -36,6 +37,7 @@ async def semantic_search(
     matches = await search_similar_chunks(
         session,
         user_id=user_id,
+        workspace_id=workspace_id,
         query_embedding=query_embedding,
         limit=limit,
     )

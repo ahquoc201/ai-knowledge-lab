@@ -83,3 +83,58 @@ async def list_recent_messages_by_conversation_for_user(
     messages.reverse()
 
     return messages
+
+
+async def list_messages_by_conversation_for_workspace(
+    session: AsyncSession,
+    *,
+    conversation_id: UUID,
+    workspace_id: UUID,
+) -> list[Message]:
+    result = await session.execute(
+        select(Message)
+        .join(
+            Conversation,
+            Conversation.id == Message.conversation_id,
+        )
+        .where(
+            Message.conversation_id == conversation_id,
+            Conversation.workspace_id == workspace_id,
+        )
+        .order_by(
+            Message.created_at.asc(),
+            Message.id.asc(),
+        )
+    )
+
+    return list(result.scalars().all())
+
+
+async def list_recent_messages_by_conversation_for_workspace(
+    session: AsyncSession,
+    *,
+    conversation_id: UUID,
+    workspace_id: UUID,
+    limit: int = 10,
+) -> list[Message]:
+    result = await session.execute(
+        select(Message)
+        .join(
+            Conversation,
+            Conversation.id == Message.conversation_id,
+        )
+        .where(
+            Message.conversation_id == conversation_id,
+            Conversation.workspace_id == workspace_id,
+        )
+        .order_by(
+            Message.created_at.desc(),
+            Message.id.desc(),
+        )
+        .limit(limit)
+    )
+
+    messages = list(result.scalars().all())
+    messages.reverse()
+
+    return messages

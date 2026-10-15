@@ -108,3 +108,59 @@ export interface ChatStreamEvent {
   answer?: string;
   error?: string;
 }
+
+export type WorkspaceRole = "owner" | "admin" | "editor" | "viewer";
+
+export interface Workspace {
+  id: string;
+  name: string;
+  slug: string;
+  description?: string | null;
+  is_personal: boolean;
+  created_at: string;
+  updated_at: string;
+  role?: WorkspaceRole;
+  member_count?: number;
+}
+
+export interface WorkspaceMember {
+  id: string;
+  workspace_id: string;
+  user_id: string;
+  user_email: string;
+  role: WorkspaceRole;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface WorkspaceInvitation {
+  id: string;
+  workspace_id: string;
+  email: string;
+  role: WorkspaceRole;
+  inviter_id?: string | null;
+  status: string;
+  expires_at: string;
+  created_at: string;
+  invitation_token?: string;
+}
+
+export interface SecurityAuditEvent {
+  id: string;
+  workspace_id: string;
+  actor_id?: string | null;
+  actor_email?: string | null;
+  action: string;
+  resource_type: string;
+  resource_id?: string | null;
+  details?: Record<string, unknown> | null;
+  ip_address?: string | null;
+  created_at: string;
+}
+
+export interface AuditEventListResponse {
+  items: SecurityAuditEvent[];
+  total: number;
+  limit: number;
+  offset: number;
+}
