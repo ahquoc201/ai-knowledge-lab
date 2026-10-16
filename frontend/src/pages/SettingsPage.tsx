@@ -510,16 +510,21 @@ export const SettingsPage: React.FC = () => {
                   </thead>
                   <tbody className="divide-y divide-border">
                     {members.map((m) => {
-                      const isCurrentUser = m.user_email === userEmail;
+                      const memberEmail = m.user_email || m.email || "";
+                      const isCurrentUser = Boolean(
+                        memberEmail &&
+                          userEmail &&
+                          memberEmail.toLowerCase() === userEmail.toLowerCase()
+                      );
                       return (
                         <tr key={m.id} className="hover:bg-background/40 transition-colors">
                           <td className="py-3.5 px-4 font-medium text-foreground">
                             <div className="flex items-center gap-2.5">
                               <div className="flex h-7 w-7 items-center justify-center rounded-full bg-primary/10 text-primary font-bold text-xs uppercase">
-                                {m.user_email.charAt(0)}
+                                {memberEmail.charAt(0) || "U"}
                               </div>
                               <div>
-                                <span className="font-semibold block">{m.user_email}</span>
+                                <span className="font-semibold block">{memberEmail}</span>
                                 {isCurrentUser && (
                                   <span className="text-[10px] text-primary block font-medium">
                                     (Bạn)
@@ -567,7 +572,7 @@ export const SettingsPage: React.FC = () => {
                                   variant="ghost"
                                   size="sm"
                                   title="Xóa thành viên"
-                                  onClick={() => handleRemoveMember(m.user_id, m.user_email)}
+                                  onClick={() => handleRemoveMember(m.user_id, memberEmail)}
                                   className="text-rose-600 hover:bg-rose-50"
                                 >
                                   <Trash2 className="h-3.5 w-3.5" />

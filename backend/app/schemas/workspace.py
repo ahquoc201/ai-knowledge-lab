@@ -27,6 +27,8 @@ class WorkspaceResponse(BaseModel):
     created_at: datetime
     updated_at: datetime
     current_user_role: str | None = None
+    role: str | None = None
+    is_personal: bool = False
 
     model_config = ConfigDict(from_attributes=True)
 
@@ -35,6 +37,7 @@ class WorkspaceMemberResponse(BaseModel):
     id: UUID
     user_id: UUID
     email: str
+    user_email: str | None = None
     full_name: str | None
     role: str
     created_at: datetime
