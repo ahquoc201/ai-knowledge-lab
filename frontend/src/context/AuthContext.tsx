@@ -34,6 +34,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const login = async (email: string, password: string) => {
     const res = await api.auth.login(email, password);
+    localStorage.setItem("auth_token", res.access_token);
+    localStorage.setItem("auth_user_email", email);
     setToken(res.access_token);
     setUserEmail(email);
   };
@@ -44,10 +46,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const logout = () => {
-    setToken(null);
-    setUserEmail(null);
     localStorage.removeItem("auth_token");
     localStorage.removeItem("auth_user_email");
+    localStorage.removeItem("current_workspace_id");
+    setToken(null);
+    setUserEmail(null);
   };
 
   return (

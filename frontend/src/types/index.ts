@@ -116,21 +116,25 @@ export interface Workspace {
   name: string;
   slug: string;
   description?: string | null;
+  status?: string;
   is_personal: boolean;
   created_at: string;
   updated_at: string;
   role?: WorkspaceRole;
+  current_user_role?: WorkspaceRole;
   member_count?: number;
 }
 
 export interface WorkspaceMember {
   id: string;
-  workspace_id: string;
+  workspace_id?: string;
   user_id: string;
+  email?: string;
   user_email: string;
+  full_name?: string | null;
   role: WorkspaceRole;
   created_at: string;
-  updated_at: string;
+  updated_at?: string;
 }
 
 export interface WorkspaceInvitation {

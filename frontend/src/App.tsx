@@ -60,7 +60,7 @@ export const App: React.FC = () => {
         };
       case "settings":
         return {
-          title: "Cấu hình & Giám sát",
+          title: "Cấu hình & Giám sát hệ thống",
           subtitle: "Thiết lập bảo mật và hạ tầng pgvector",
         };
     }

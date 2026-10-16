@@ -18,6 +18,7 @@ export const Header: React.FC<HeaderProps> = ({ title, subtitle }) => {
     workspaces,
     currentWorkspace,
     currentRole,
+    isInitialized,
     switchWorkspace,
     createWorkspace,
   } = useWorkspace();
@@ -117,8 +118,11 @@ export const Header: React.FC<HeaderProps> = ({ title, subtitle }) => {
               </div>
               <div className="flex flex-col text-left">
                 <span className="font-semibold text-foreground max-w-[130px] truncate">
-                  {currentWorkspace?.name || "Chọn Workspace"}
+                  {currentWorkspace?.name || (isInitialized ? "Chọn Workspace" : "Đang tải...")}
                 </span>
+                {currentWorkspace?.is_personal && (
+                  <span className="text-[9px] text-foreground-subtle font-medium">Personal</span>
+                )}
               </div>
               {currentRole && (
                 <span

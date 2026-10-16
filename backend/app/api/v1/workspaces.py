@@ -75,6 +75,8 @@ async def create_workspace_endpoint(
     )
     res = WorkspaceResponse.model_validate(workspace)
     res.current_user_role = role
+    res.role = role
+    res.is_personal = workspace.slug.startswith("personal-")
     return res
 
 
@@ -94,6 +96,8 @@ async def list_workspaces_endpoint(
     for ws, role in workspaces:
         item = WorkspaceResponse.model_validate(ws)
         item.current_user_role = role
+        item.role = role
+        item.is_personal = ws.slug.startswith("personal-")
         result.append(item)
     return result
 
@@ -124,6 +128,8 @@ async def get_workspace_endpoint(
     ws, role = found
     res = WorkspaceResponse.model_validate(ws)
     res.current_user_role = role
+    res.role = role
+    res.is_personal = ws.slug.startswith("personal-")
     return res
 
 
@@ -154,6 +160,8 @@ async def update_workspace_endpoint(
         )
     res = WorkspaceResponse.model_validate(updated)
     res.current_user_role = membership.role
+    res.role = membership.role
+    res.is_personal = updated.slug.startswith("personal-")
     return res
 
 
@@ -178,6 +186,7 @@ async def list_members_endpoint(
             id=m.id,
             user_id=u.id,
             email=u.email,
+            user_email=u.email,
             full_name=u.full_name,
             role=m.role,
             created_at=m.created_at,

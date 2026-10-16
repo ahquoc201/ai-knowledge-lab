@@ -38,8 +38,8 @@ test.describe("Secure Workspaces & RBAC Management (T260024)", () => {
 
     // 7. Chuyển sang Tab Thành viên & Phân quyền
     await page.getByRole("button", { name: /thành viên & phân quyền/i }).click();
-    await expect(page.getByText(user.email)).toBeVisible();
-    await expect(page.getByText(/owner/i)).toBeVisible();
+    await expect(page.getByRole("table").getByText(user.email)).toBeVisible();
+    await expect(page.getByRole("table").getByText(/owner/i)).toBeVisible();
 
     // 8. Chuyển sang Tab Security Audit Trail
     await page.getByRole("button", { name: /security audit trail/i }).click();
