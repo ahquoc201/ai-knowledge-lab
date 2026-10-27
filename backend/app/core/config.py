@@ -32,6 +32,17 @@ class Settings(BaseSettings):
     ollama_model: str = "qwen3:1.7b"
     ollama_timeout_seconds: float = 60.0
 
+    # Governed agent runtime budgets (T260025)
+    agent_max_steps: int = 8
+    agent_max_tool_calls: int = 5
+    agent_max_denials: int = 3
+    agent_max_active_runs_per_user: int = 3
+    agent_run_timeout_seconds: float = 120.0
+    agent_llm_timeout_seconds: float = 60.0
+    agent_llm_max_retries: int = 2
+    agent_approval_ttl_seconds: int = 900
+    agent_max_result_bytes: int = 16_000
+
     model_config = SettingsConfigDict(
         env_file=PROJECT_ROOT / ".env",
         env_file_encoding="utf-8",
