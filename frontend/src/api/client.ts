@@ -13,6 +13,10 @@ import {
   WorkspaceInvitation,
   WorkspaceMember,
   WorkspaceRole,
+  AgentRun,
+  AgentRunListResponse,
+  AgentRunCreatePayload,
+  AgentExecutionEvent,
 } from "../types";
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL || "/api/v1";
@@ -303,6 +307,46 @@ export const api = {
       const queryStr = searchParams.toString();
       return request<AuditEventListResponse>(`/workspaces/${id}/audit-events${queryStr ? `?${queryStr}` : ""}`);
     },
+  },
+
+  agent: {
+    createRun: (payload: AgentRunCreatePayload, blocking = true): Promise<AgentRun> =>
+      request<AgentRun>(`/agent/runs?blocking=${blocking}`, {
+        method: "POST",
+        body: JSON.stringify(payload),
+      }),
+
+    listRuns: (params?: { limit?: number; offset?: number; mineOnly?: boolean }): Promise<AgentRunListResponse> => {
+      const searchParams = new URLSearchParams();
+      if (params?.limit) searchParams.set("limit", params.limit.toString());
+      if (params?.offset) searchParams.set("offset", params.offset.toString());
+      if (params?.mineOnly) searchParams.set("mine_only", "true");
+      const queryStr = searchParams.toString();
+      return request<AgentRunListResponse>(`/agent/runs${queryStr ? `?${queryStr}` : ""}`);
+    },
+
+    getRun: (runId: string): Promise<AgentRun> =>
+      request<AgentRun>(`/agent/runs/${runId}`),
+
+    cancelRun: (runId: string): Promise<AgentRun> =>
+      request<AgentRun>(`/agent/runs/${runId}/cancel`, {
+        method: "POST",
+      }),
+
+    getEvents: (runId: string, afterSeq = 0): Promise<AgentExecutionEvent[]> =>
+      request<AgentExecutionEvent[]>(`/agent/runs/${runId}/events?after_seq=${afterSeq}`),
+
+    approveAction: (approvalId: string, reason?: string, blocking = true): Promise<AgentRun> =>
+      request<AgentRun>(`/agent/approvals/${approvalId}/approve?blocking=${blocking}`, {
+        method: "POST",
+        body: JSON.stringify({ reason }),
+      }),
+
+    rejectAction: (approvalId: string, reason?: string, blocking = true): Promise<AgentRun> =>
+      request<AgentRun>(`/agent/approvals/${approvalId}/reject?blocking=${blocking}`, {
+        method: "POST",
+        body: JSON.stringify({ reason }),
+      }),
   },
 
   health: {

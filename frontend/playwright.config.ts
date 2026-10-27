@@ -32,10 +32,19 @@ export default defineConfig({
       },
     },
   ],
-  webServer: {
-    command: "npm run dev -- --host 127.0.0.1 --port 5173",
-    url: "http://127.0.0.1:5173",
-    reuseExistingServer: true,
-    timeout: 30000,
-  },
+  webServer: [
+    {
+      command:
+        "cd ../backend && HF_HUB_OFFLINE=1 TRANSFORMERS_OFFLINE=1 DATABASE_URL='postgresql+asyncpg://ailab:local_only_change_me@/ailab?host=/tmp&port=15432' .venv/bin/uvicorn app.main:app --host 127.0.0.1 --port 8000",
+      url: "http://127.0.0.1:8000/api/v1/health",
+      reuseExistingServer: false,
+      timeout: 30000,
+    },
+    {
+      command: "npm run dev -- --host 127.0.0.1 --port 5173",
+      url: "http://127.0.0.1:5173",
+      reuseExistingServer: false,
+      timeout: 30000,
+    },
+  ],
 });
