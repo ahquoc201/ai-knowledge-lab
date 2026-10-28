@@ -1,7 +1,7 @@
 import React from "react";
-import { LayoutDashboard, FileText, MessageSquare, Shield, Sparkles } from "lucide-react";
+import { LayoutDashboard, FileText, MessageSquare, Shield, Sparkles, Bot } from "lucide-react";
 
-export type NavItemKey = "dashboard" | "documents" | "chat" | "settings";
+export type NavItemKey = "dashboard" | "documents" | "chat" | "agent" | "settings";
 
 interface SidebarProps {
   currentTab: NavItemKey;
@@ -27,6 +27,12 @@ export const Sidebar: React.FC<SidebarProps> = ({ currentTab, onTabChange }) => 
       label: "AI Chat / RAG",
       icon: MessageSquare,
       badge: "T260022",
+    },
+    {
+      key: "agent" as NavItemKey,
+      label: "Governed Agent",
+      icon: Bot,
+      badge: "T260025",
     },
     {
       key: "settings" as NavItemKey,
@@ -59,6 +65,8 @@ export const Sidebar: React.FC<SidebarProps> = ({ currentTab, onTabChange }) => 
           return (
             <button
               key={item.key}
+              id={`nav-${item.key}`}
+              data-testid={`nav-${item.key}`}
               onClick={() => onTabChange(item.key)}
               className={`flex w-full items-center justify-between rounded-lg px-3.5 py-2.5 text-xs font-semibold transition-all ${
                 isActive

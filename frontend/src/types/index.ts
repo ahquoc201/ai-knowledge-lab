@@ -168,3 +168,125 @@ export interface AuditEventListResponse {
   limit: number;
   offset: number;
 }
+
+
+// =========================================================================
+// Governed Agent Runtime (T260025)
+// =========================================================================
+
+export type AgentRunStatus =
+  | "created"
+  | "running"
+  | "awaiting_approval"
+  | "completed"
+  | "failed"
+  | "cancelled";
+
+export type AgentStepStatus =
+  | "pending"
+  | "awaiting_approval"
+  | "succeeded"
+  | "failed"
+  | "denied"
+  | "rejected"
+  | "expired"
+  | "cancelled";
+
+export type ApprovalStatus =
+  | "pending"
+  | "approved"
+  | "executing"
+  | "executed"
+  | "rejected"
+  | "expired"
+  | "cancelled"
+  | "failed";
+
+export interface AgentStep {
+  id: string;
+  run_id: string;
+  step_index: number;
+  tool_name: string;
+  side_effect?: string | null;
+  reason?: string | null;
+  arguments?: Record<string, unknown> | null;
+  status: AgentStepStatus;
+  result?: Record<string, unknown> | null;
+  error_code?: string | null;
+  error_message?: string | null;
+  started_at?: string | null;
+  finished_at?: string | null;
+}
+
+export interface AgentApprovalRequest {
+  id: string;
+  run_id: string;
+  step_id: string;
+  workspace_id: string;
+  requested_by: string;
+  tool_name: string;
+  payload: {
+    action?: string;
+    tool?: string;
+    arguments?: Record<string, unknown>;
+    impact?: string;
+    required_permission?: string;
+    [key: string]: unknown;
+  };
+  payload_hash: string;
+  status: ApprovalStatus;
+  decided_by?: string | null;
+  decided_at?: string | null;
+  decision_reason?: string | null;
+  expires_at: string;
+  created_at: string;
+}
+
+export interface AgentExecutionEvent {
+  id: string;
+  run_id: string;
+  seq: number;
+  event_type: string;
+  step_id?: string | null;
+  data?: Record<string, unknown> | null;
+  created_at: string;
+}
+
+export interface AgentRun {
+  id: string;
+  workspace_id: string;
+  initiated_by: string;
+  goal: string;
+  status: AgentRunStatus;
+  status_reason?: string | null;
+  current_step: number;
+  tool_call_count: number;
+  denial_count: number;
+  max_steps: number;
+  max_tool_calls: number;
+  allowed_tools: string[];
+  cancel_requested: boolean;
+  final_answer?: string | null;
+  sources?: Array<{ document_id: string; title?: string }> | null;
+  error_code?: string | null;
+  error_message?: string | null;
+  deadline_at?: string | null;
+  created_at: string;
+  started_at?: string | null;
+  finished_at?: string | null;
+  pending_approval?: AgentApprovalRequest | null;
+  steps?: AgentStep[] | null;
+}
+
+export interface AgentRunListResponse {
+  items: AgentRun[];
+  total: number;
+  limit: number;
+  offset: number;
+}
+
+export interface AgentRunCreatePayload {
+  goal: string;
+  allowed_tools?: string[] | null;
+  correlation_id?: string | null;
+}

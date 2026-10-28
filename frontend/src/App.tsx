@@ -7,6 +7,7 @@ import { DashboardPage } from "./pages/DashboardPage";
 import { DocumentsPage } from "./pages/DocumentsPage";
 import { ChatPage } from "./pages/ChatPage";
 import { SettingsPage } from "./pages/SettingsPage";
+import { AgentWorkspacePage } from "./pages/AgentWorkspacePage";
 
 export const App: React.FC = () => {
   const { isAuthenticated } = useAuth();
@@ -29,6 +30,8 @@ export const App: React.FC = () => {
         return <DocumentsPage />;
       case "chat":
         return <ChatPage onNavigateToDocs={() => setCurrentTab("documents")} />;
+      case "agent":
+        return <AgentWorkspacePage onNavigateToDocs={() => setCurrentTab("documents")} />;
       case "settings":
         return <SettingsPage />;
       default:
@@ -57,6 +60,11 @@ export const App: React.FC = () => {
         return {
           title: "AI RAG Assistant",
           subtitle: "Hỏi đáp bảo mật với trích dẫn bằng chứng chính xác",
+        };
+      case "agent":
+        return {
+          title: "Governed AI Agent Runtime",
+          subtitle: "Vòng lặp thực thi tự chủ với Policy Enforcement & Human Approval",
         };
       case "settings":
         return {
