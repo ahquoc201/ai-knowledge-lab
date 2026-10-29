@@ -57,7 +57,11 @@ async def answer_with_rag(
         history=history,
     )
 
-    answer = await llm.generate(messages)
+    from app.services.inference_governor import get_inference_governor
+
+    governor = get_inference_governor()
+    async with governor.acquire(caller_info=f"rag_ask:{workspace_id}"):
+        answer = await llm.generate(messages)
 
     if answer.strip() == INSUFFICIENT_CONTEXT_ANSWER:
         return RAGResult(

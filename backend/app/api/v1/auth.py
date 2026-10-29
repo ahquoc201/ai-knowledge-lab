@@ -1,9 +1,10 @@
 from typing import Annotated
 
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, Request, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.api.deps import get_current_user
+from app.core.config import get_settings
 from app.db.session import get_session
 from app.models.user import User
 from app.schemas.auth import (
@@ -18,6 +19,7 @@ from app.services.auth import (
     create_user_access_token,
     register_user,
 )
+from app.services.rate_limiter import extract_client_ip, get_rate_limiter
 
 router = APIRouter(
     prefix="/auth",
@@ -32,8 +34,19 @@ router = APIRouter(
 )
 async def register(
     data: RegisterRequest,
+    request: Request,
     session: Annotated[AsyncSession, Depends(get_session)],
 ) -> UserResponse:
+    settings = get_settings()
+    rate_limiter = get_rate_limiter()
+    ip = extract_client_ip(request)
+    rate_limiter.enforce(
+        identifier=ip,
+        limit=settings.rate_limit_auth_per_minute,
+        window_seconds=60,
+        rule_name="auth_register",
+    )
+
     try:
         user = await register_user(session, data)
     except EmailAlreadyRegisteredError as exc:
@@ -51,8 +64,19 @@ async def register(
 )
 async def login(
     data: LoginRequest,
+    request: Request,
     session: Annotated[AsyncSession, Depends(get_session)],
 ) -> TokenResponse:
+    settings = get_settings()
+    rate_limiter = get_rate_limiter()
+    ip = extract_client_ip(request)
+    rate_limiter.enforce(
+        identifier=ip,
+        limit=settings.rate_limit_auth_per_minute,
+        window_seconds=60,
+        rule_name="auth_login",
+    )
+
     user = await authenticate_user(
         session,
         email=str(data.email),

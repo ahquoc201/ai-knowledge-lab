@@ -13,6 +13,7 @@ from app.llm.base import LLMMessage, LLMProvider
 from app.models.user import User
 from app.services.citation_validation import validate_answer_citations
 from app.services.context_builder import ContextSource
+from app.services.inference_governor import get_inference_governor
 from app.services.message import create_conversation_message
 from app.services.message_source import save_assistant_message_sources
 from app.services.model_router import ModelRouter
@@ -160,9 +161,11 @@ async def answer_with_rag_stream(
         yield format_sse("generation_started", {"model_name": routed_model})
 
         accumulated_tokens: list[str] = []
-        async for token in llm.generate_stream(messages):
-            accumulated_tokens.append(token)
-            yield format_sse("token", {"token": token})
+        governor = get_inference_governor()
+        async with governor.acquire(caller_info=f"rag_stream:{conversation_id}"):
+            async for token in llm.generate_stream(messages):
+                accumulated_tokens.append(token)
+                yield format_sse("token", {"token": token})
 
         raw_answer = "".join(accumulated_tokens)
 

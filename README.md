@@ -76,6 +76,14 @@ cd frontend
 npm run dev
 ```
 
+## Key Modules & Platform Features
+
+- **T260020 - T260024:** Enterprise Ingestion, RAG Reliability, Secure Workspaces & RBAC.
+- **T260025:** Governed AI Agent Runtime with Tool Policy Enforcement & Human Approval.
+- **T260026:** AI Agent Evaluation Framework & Reliability Benchmarking.
+- **T260027:** AI Model Registry, Capability Discovery & Adaptive Model Routing.
+- **T260028:** Agent Reliability, Concurrency Governor, Distributed Rate Limiting & Operations Dashboard.
+
 ## Running Tests
 
 Run backend tests:
@@ -83,6 +91,15 @@ Run backend tests:
 ```bash
 cd backend
 .venv/bin/pytest -q --tb=short
+.venv/bin/ruff check app/ tests/
+```
+
+Run frontend build & tests:
+
+```bash
+cd frontend
+npm run build
+npx playwright test --reporter=line
 ```
 
 ## Project Structure
