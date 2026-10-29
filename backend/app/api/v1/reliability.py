@@ -118,7 +118,9 @@ async def trigger_stuck_recovery(
     _ensure_admin_or_owner(membership)
 
     recovery_svc = AgentRecoveryService()
-    recovered = await recovery_svc.scan_and_recover_stuck_runs(session)
+    recovered = await recovery_svc.scan_and_recover_stuck_runs(
+        session, workspace_id=membership.workspace_id
+    )
 
     # Filter to current workspace for audit response
     return {

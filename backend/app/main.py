@@ -1,3 +1,4 @@
+import re
 import time
 from uuid import uuid4
 
@@ -36,9 +37,17 @@ app.add_middleware(
 )
 
 
+REQUEST_ID_REGEX = re.compile(r"^[a-zA-Z0-9_\-]{1,64}$")
+
+
 @app.middleware("http")
 async def correlation_id_and_observability_middleware(request: Request, call_next):
-    request_id = request.headers.get("x-request-id") or uuid4().hex
+    raw_request_id = request.headers.get("x-request-id")
+    if raw_request_id and REQUEST_ID_REGEX.match(raw_request_id.strip()):
+        request_id = raw_request_id.strip()
+    else:
+        request_id = uuid4().hex
+
     start_time = time.time()
     response = await call_next(request)
     duration_ms = (time.time() - start_time) * 1000

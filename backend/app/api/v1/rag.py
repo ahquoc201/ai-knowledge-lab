@@ -57,8 +57,8 @@ async def ask_rag(
 ) -> RAGResponse:
     settings = get_settings()
     limiter = get_rate_limiter()
-    limiter.enforce(str(current_user.id), settings.rate_limit_rag_per_user_per_minute, 60, "rag_ask_user")
-    limiter.enforce(str(membership.workspace_id), settings.rate_limit_rag_per_workspace_per_minute, 60, "rag_ask_workspace")
+    limiter.enforce(str(current_user.id), settings.rate_limit_rag_per_user_per_minute, 60, "rag_chat_user")
+    limiter.enforce(str(membership.workspace_id), settings.rate_limit_rag_per_workspace_per_minute, 60, "rag_chat_workspace")
 
     if payload.conversation_id is None:
         title = payload.query.strip()[:255] or None
@@ -192,8 +192,8 @@ async def ask_rag_stream(
 ) -> StreamingResponse:
     settings = get_settings()
     limiter = get_rate_limiter()
-    limiter.enforce(str(current_user.id), settings.rate_limit_rag_per_user_per_minute, 60, "rag_stream_user")
-    limiter.enforce(str(membership.workspace_id), settings.rate_limit_rag_per_workspace_per_minute, 60, "rag_stream_workspace")
+    limiter.enforce(str(current_user.id), settings.rate_limit_rag_per_user_per_minute, 60, "rag_chat_user")
+    limiter.enforce(str(membership.workspace_id), settings.rate_limit_rag_per_workspace_per_minute, 60, "rag_chat_workspace")
 
     if payload.conversation_id is None:
         title = payload.query.strip()[:255] or None

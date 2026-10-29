@@ -10,7 +10,7 @@ from datetime import UTC, datetime, timedelta
 from typing import Any
 from uuid import UUID
 
-from sqlalchemy import func, select, update
+from sqlalchemy import func, or_, select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.agent_state import (
@@ -139,12 +139,13 @@ async def transition_run(
     deadline_at: datetime | None = None,
     final_answer: str | None = None,
     sources: list[dict[str, Any]] | None = None,
+    lease_token: str | None = None,
 ) -> bool:
     """Atomically move a run ``expected -> target``.
 
     Raises ``InvalidRunTransitionError`` if the edge is illegal in the state
     machine. Returns ``False`` when the run is no longer in ``expected`` (a
-    concurrent writer won), so callers must treat that as "do not proceed".
+    concurrent writer won) or when fencing token mismatches.
     """
     ensure_transition(expected, target)
 
@@ -169,9 +170,13 @@ async def transition_run(
     if target in TERMINAL_RUN_STATUSES:
         values["finished_at"] = utcnow()
 
+    where_clauses = [AgentRun.id == run_id, AgentRun.status == expected.value]
+    if lease_token is not None:
+        where_clauses.append(or_(AgentRun.lease_token == lease_token, AgentRun.lease_token.is_(None)))
+
     result = await session.execute(
         update(AgentRun)
-        .where(AgentRun.id == run_id, AgentRun.status == expected.value)
+        .where(*where_clauses)
         .values(**values)
     )
     await session.commit()
@@ -601,19 +606,21 @@ async def release_run_lease(
 async def list_stuck_runs(
     session: AsyncSession,
     now: datetime,
+    *,
+    workspace_id: UUID | None = None,
 ) -> list[AgentRun]:
     """Find RUNNING runs whose lease has expired or deadline has passed."""
-    result = await session.execute(
-        select(AgentRun)
-        .where(
-            AgentRun.status == AgentRunStatus.RUNNING.value,
-            (
-                (AgentRun.lease_expires_at.is_not(None) & (AgentRun.lease_expires_at < now))
-                | (AgentRun.deadline_at.is_not(None) & (AgentRun.deadline_at < now))
-            ),
-        )
-        .execution_options(populate_existing=True)
+    query = select(AgentRun).where(
+        AgentRun.status == AgentRunStatus.RUNNING.value,
+        (
+            (AgentRun.lease_expires_at.is_not(None) & (AgentRun.lease_expires_at < now))
+            | (AgentRun.deadline_at.is_not(None) & (AgentRun.deadline_at < now))
+        ),
     )
+    if workspace_id is not None:
+        query = query.where(AgentRun.workspace_id == workspace_id)
+
+    result = await session.execute(query.execution_options(populate_existing=True))
     return list(result.scalars().all())
 
 

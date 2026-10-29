@@ -6,6 +6,7 @@ Applies bounded recovery attempts and strictly guards against duplicate side eff
 
 import logging
 from datetime import UTC, datetime
+from uuid import UUID
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -26,9 +27,10 @@ class AgentRecoveryService:
     async def scan_and_recover_stuck_runs(
         self,
         session: AsyncSession,
+        workspace_id: UUID | None = None,
     ) -> list[dict[str, str]]:
         now = datetime.now(UTC)
-        stuck_runs = await agent_repo.list_stuck_runs(session, now)
+        stuck_runs = await agent_repo.list_stuck_runs(session, now, workspace_id=workspace_id)
         recovery_summary = []
 
         for run in stuck_runs:
@@ -46,6 +48,10 @@ class AgentRecoveryService:
         current_time = now or datetime.now(UTC)
         run_id = run.id
         workspace_id = run.workspace_id
+
+        # Guard 0: Only runs in RUNNING state are eligible for recovery
+        if run.status != AgentRunStatus.RUNNING.value:
+            return {"run_id": str(run_id), "action": "ignored_not_running"}
 
         # Guard 1: Deadline timeout check
         if run.deadline_at and current_time >= run.deadline_at:
@@ -110,22 +116,48 @@ class AgentRecoveryService:
                 last_step.status == StepStatus.PENDING.value
                 and last_step.side_effect == "WRITE"
             ):
-                # Strictly prevent duplicate mutation: fail interrupted step
-                    await agent_repo.finish_step(
-                        session,
-                        last_step.id,
-                        status=StepStatus.FAILED,
-                        error_code="execution_interrupted",
-                        error_message="Step execution was interrupted by process failure; safely terminated to prevent duplicate mutation",
-                    )
-                    await agent_repo.append_event(
-                        session,
-                        run_id=run_id,
-                        workspace_id=workspace_id,
-                        event_type="step_failed",
-                        step_id=last_step.id,
-                        data={"reason": "interrupted_write_prevented"},
-                    )
+                # Strictly prevent duplicate mutation: fail interrupted step and fail run closed
+                await agent_repo.finish_step(
+                    session,
+                    last_step.id,
+                    status=StepStatus.FAILED,
+                    error_code="execution_interrupted",
+                    error_message="Step execution was interrupted by process failure; safely terminated to prevent duplicate mutation",
+                )
+                await agent_repo.append_event(
+                    session,
+                    run_id=run_id,
+                    workspace_id=workspace_id,
+                    event_type="step_failed",
+                    step_id=last_step.id,
+                    data={"reason": "interrupted_write_prevented"},
+                )
+                await agent_repo.transition_run(
+                    session,
+                    run_id=run_id,
+                    expected=AgentRunStatus.RUNNING,
+                    target=AgentRunStatus.FAILED,
+                    reason="Cannot safely resume run after unconfirmed mutation",
+                    error_code="unconfirmed_mutation",
+                    error_message="Agent run interrupted during WRITE step; failed closed to prevent duplicate mutation",
+                )
+                await agent_repo.append_event(
+                    session,
+                    run_id=run_id,
+                    workspace_id=workspace_id,
+                    event_type="run_failed",
+                    data={"error_code": "unconfirmed_mutation", "reason": "interrupted_write_prevented"},
+                )
+                await audit_agent_event(
+                    session,
+                    workspace_id=workspace_id,
+                    action="agent.run.recovered_failed",
+                    actor_id=run.initiated_by,
+                    resource_id=run_id,
+                    details={"reason": "interrupted_write_prevented"},
+                )
+                logger.warning("Stuck run %s marked FAILED to prevent duplicate WRITE mutation", run_id)
+                return {"run_id": str(run_id), "action": "failed_unconfirmed_mutation"}
 
         # Increment recovery attempt and release stale lease
         attempts = await agent_repo.increment_recovery_attempt(session, run_id)

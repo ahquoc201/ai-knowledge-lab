@@ -219,19 +219,27 @@ class AgentOrchestrator:
 
                 # Call LLM with bounded retries for structured JSON
                 decision = await self._get_llm_decision(run, history_data)
+
+                # Fencing verification: ensure our lease is still valid after inference
+                fresh_run = await agent_repo.get_run(session, target_run_id)
+                if not fresh_run or (fresh_run.lease_token is not None and fresh_run.lease_token != lease_token):
+                    logger.warning("Fencing guard: worker lease lost during LLM inference for run %s", target_run_id)
+                    return fresh_run or run
+
                 if not decision:
                     await self._terminate_run(
-                        session, run, AgentRunStatus.FAILED, "llm_invalid_output", "LLM output schema could not be validated"
+                        session, run, AgentRunStatus.FAILED, "llm_invalid_output", "LLM output schema could not be validated",
+                        lease_token=lease_token,
                     )
                     return (await agent_repo.get_run(session, run.id))  # Advance step counter
                 await agent_repo.bump_run_counters(session, run.id, steps=1)
 
                 if isinstance(decision, AgentFinalAnswerDecision):
-                    await self._finish_with_answer(session, run, decision)
+                    await self._finish_with_answer(session, run, decision, lease_token=lease_token)
                     return (await agent_repo.get_run(session, run.id))
 
                 if isinstance(decision, AgentToolCallDecision):
-                    should_pause = await self._handle_tool_decision(session, run, decision)
+                    should_pause = await self._handle_tool_decision(session, run, decision, lease_token=lease_token)
                     if should_pause:
                         # Paused for human approval or terminal state reached
                         return (await agent_repo.get_run(session, run.id))
@@ -320,8 +328,15 @@ class AgentOrchestrator:
         session: AsyncSession,
         run: AgentRun,
         decision: AgentToolCallDecision,
+        lease_token: str | None = None,
     ) -> bool:
         """Execute or queue approval for a tool decision. Returns True if execution loop should pause."""
+        if lease_token is not None:
+            fresh = await agent_repo.get_run(session, run.id)
+            if not fresh or (fresh.lease_token is not None and fresh.lease_token != lease_token):
+                logger.warning("Fencing guard: lease lost before tool execution for run %s", run.id)
+                return True
+
         spec = self.registry.get(decision.tool_name)
         step_index = run.current_step + 1
 
@@ -496,6 +511,7 @@ class AgentOrchestrator:
         session: AsyncSession,
         run: AgentRun,
         decision: AgentFinalAnswerDecision,
+        lease_token: str | None = None,
     ) -> None:
         await agent_repo.transition_run(
             session,
@@ -503,6 +519,7 @@ class AgentOrchestrator:
             expected=AgentRunStatus.RUNNING,
             target=AgentRunStatus.COMPLETED,
             final_answer=decision.answer,
+            lease_token=lease_token,
         )
         await agent_repo.append_event(
             session,
@@ -527,6 +544,7 @@ class AgentOrchestrator:
         target_status: AgentRunStatus,
         error_code: str,
         message: str,
+        lease_token: str | None = None,
     ) -> None:
         current_status = AgentRunStatus(run.status)
         await agent_repo.transition_run(
@@ -536,6 +554,7 @@ class AgentOrchestrator:
             target=target_status,
             error_code=error_code,
             error_message=message,
+            lease_token=lease_token,
         )
         await agent_repo.append_event(
             session,

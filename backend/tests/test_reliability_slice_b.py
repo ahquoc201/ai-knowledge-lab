@@ -225,6 +225,11 @@ async def test_recovery_prevents_duplicate_write_side_effect(client: TestClient)
             updated_step = await agent_repo.get_step(session, step.id)
             assert updated_step.status == StepStatus.FAILED.value
             assert updated_step.error_code == "execution_interrupted"
+
+            # Check run status: MUST BE FAILED to strictly prevent duplicate side-effects
+            updated_run = await agent_repo.get_run(session, run.id)
+            assert updated_run.status == AgentRunStatus.FAILED.value
+            assert updated_run.error_code == "unconfirmed_mutation"
     finally:
         await engine.dispose()
 

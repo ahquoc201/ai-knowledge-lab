@@ -88,15 +88,21 @@ async def readiness_check(
         "base_url": settings.ollama_base_url,
     }
 
-    overall_status = "healthy" if ollama_ok else "degraded"
+    if not redis_active or not ollama_ok:
+        overall_status = "degraded"
+        degraded_reasons = []
+        if not redis_active:
+            degraded_reasons.append("Distributed rate limiter offline (using in-memory fallback)")
+        if not ollama_ok:
+            degraded_reasons.append("AI model service unreachable")
+        status_message = "; ".join(degraded_reasons)
+    else:
+        overall_status = "healthy"
+        status_message = "All systems operational"
 
     return {
         "status": overall_status,
         "timestamp": now_str,
         "components": components,
-        "message": (
-            "All systems operational"
-            if overall_status == "healthy"
-            else "AI model service degraded; auth and non-AI operations remain available"
-        ),
+        "message": status_message,
     }
