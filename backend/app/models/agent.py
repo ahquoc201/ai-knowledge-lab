@@ -73,6 +73,7 @@ class AgentRun(Base):
         Integer, default=0, server_default="0", nullable=False
     )
     correlation_id: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    model_name: Mapped[str | None] = mapped_column(String(100), nullable=True)
     final_answer: Mapped[str | None] = mapped_column(Text, nullable=True)
     sources: Mapped[list[dict[str, Any]] | None] = mapped_column(JSON, nullable=True)
     error_code: Mapped[str | None] = mapped_column(String(100), nullable=True)

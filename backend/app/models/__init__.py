@@ -17,6 +17,11 @@ from app.models.model_registry import (
     ModelBenchmarkProfile,
     ModelRegistryEntry,
 )
+from app.models.model_routing import (
+    ModelRoutingDecision,
+    ModelRoutingPolicy,
+    TaskType,
+)
 from app.models.security_audit_event import SecurityAuditEvent
 from app.models.user import User
 from app.models.workspace import Workspace
@@ -37,7 +42,10 @@ __all__ = [
     "MessageSource",
     "ModelBenchmarkProfile",
     "ModelRegistryEntry",
+    "ModelRoutingDecision",
+    "ModelRoutingPolicy",
     "SecurityAuditEvent",
+    "TaskType",
     "User",
     "Workspace",
     "WorkspaceInvitation",

@@ -31,6 +31,8 @@ from app.services.agent_llm_parser import (
 )
 from app.services.agent_prompts import AGENT_SYSTEM_PROMPT, build_agent_prompt
 from app.services.agent_tools import ToolRegistry
+from app.services.model_router import ModelRouter
+from app.services.task_classifier import TaskClassifier
 
 logger = logging.getLogger(__name__)
 
@@ -50,11 +52,13 @@ class AgentOrchestrator:
         executor: ToolExecutor,
         approval_service: AgentApprovalService,
         llm_provider: LLMProvider,
+        model_router: ModelRouter | None = None,
     ) -> None:
         self.registry = registry
         self.executor = executor
         self.approval_service = approval_service
         self.llm_provider = llm_provider
+        self.model_router = model_router or ModelRouter()
         self.settings = get_settings()
 
     async def execute_run(self, session: AsyncSession, run_id: UUID) -> AgentRun:
@@ -93,6 +97,42 @@ class AgentOrchestrator:
                 resource_id=run.id,
                 details={"goal": run.goal[:100]},
             )
+
+            # Adaptive Model Routing for Agent
+            try:
+                classifier = TaskClassifier()
+                is_write = any(w in run.goal.lower() for w in ["tạo", "create", "ghi", "write", "update", "sửa", "xóa", "delete"])
+                task_type = classifier.classify(
+                    prompt=run.goal,
+                    requires_tools=True,
+                    is_write_operation=is_write,
+                )
+                routing = await self.model_router.select_model(
+                    session=session,
+                    task_type=task_type,
+                    workspace_id=run.workspace_id,
+                    manual_model_override=run.model_name,
+                    context_metadata={"goal": run.goal[:100], "run_id": str(run.id)},
+                )
+                run.model_name = routing.selected_model
+                await session.commit()
+                if hasattr(self.llm_provider, "model"):
+                    self.llm_provider.model = routing.selected_model
+
+                await agent_repo.append_event(
+                    session,
+                    run_id=run.id,
+                    workspace_id=run.workspace_id,
+                    event_type="model_routed",
+                    data={
+                        "model": routing.selected_model,
+                        "task_type": routing.task_type,
+                        "reason": routing.selection_reason,
+                        "fallback_occurred": routing.is_fallback,
+                    },
+                )
+            except (RuntimeError, ValueError, KeyError, OSError) as e:
+                logger.warning("Agent model routing non-fatal warning: %s", e)
 
         target_run_id = run.id
         # Main execution loop
