@@ -6,7 +6,7 @@ succeed. Reads that feed authorization decisions use ``populate_existing`` so a
 stale identity-map object is never trusted.
 """
 
-from datetime import UTC, datetime
+from datetime import UTC, datetime, timedelta
 from typing import Any
 from uuid import UUID
 
@@ -513,3 +513,120 @@ async def list_events(
         .execution_options(populate_existing=True)
     )
     return list(result.scalars().all())
+
+
+# ------------------------------------------------------------------ leases & recovery (T260028)
+
+
+async def claim_run_lease(
+    session: AsyncSession,
+    run_id: UUID,
+    *,
+    lease_token: str,
+    ttl_seconds: int = 60,
+) -> bool:
+    """Atomic compare-and-swap to claim an execution lease on an active RUNNING run."""
+    now = utcnow()
+    expires_at = now + timedelta(seconds=ttl_seconds)
+
+    result = await session.execute(
+        update(AgentRun)
+        .where(
+            AgentRun.id == run_id,
+            AgentRun.status == AgentRunStatus.RUNNING.value,
+            (
+                (AgentRun.lease_token.is_(None))
+                | (AgentRun.lease_expires_at < now)
+                | (AgentRun.lease_token == lease_token)
+            ),
+        )
+        .values(
+            lease_token=lease_token,
+            lease_expires_at=expires_at,
+            last_heartbeat_at=now,
+        )
+    )
+    await session.commit()
+    return result.rowcount > 0
+
+
+async def renew_run_lease(
+    session: AsyncSession,
+    run_id: UUID,
+    *,
+    lease_token: str,
+    ttl_seconds: int = 60,
+) -> bool:
+    """Renew active lease heartbeat."""
+    now = utcnow()
+    expires_at = now + timedelta(seconds=ttl_seconds)
+
+    result = await session.execute(
+        update(AgentRun)
+        .where(
+            AgentRun.id == run_id,
+            AgentRun.status == AgentRunStatus.RUNNING.value,
+            AgentRun.lease_token == lease_token,
+        )
+        .values(
+            lease_expires_at=expires_at,
+            last_heartbeat_at=now,
+        )
+    )
+    await session.commit()
+    return result.rowcount > 0
+
+
+async def release_run_lease(
+    session: AsyncSession,
+    run_id: UUID,
+    *,
+    lease_token: str,
+) -> None:
+    """Release lease on completion or pause."""
+    await session.execute(
+        update(AgentRun)
+        .where(
+            AgentRun.id == run_id,
+            AgentRun.lease_token == lease_token,
+        )
+        .values(
+            lease_token=None,
+            lease_expires_at=None,
+        )
+    )
+    await session.commit()
+
+
+async def list_stuck_runs(
+    session: AsyncSession,
+    now: datetime,
+) -> list[AgentRun]:
+    """Find RUNNING runs whose lease has expired or deadline has passed."""
+    result = await session.execute(
+        select(AgentRun)
+        .where(
+            AgentRun.status == AgentRunStatus.RUNNING.value,
+            (
+                (AgentRun.lease_expires_at.is_not(None) & (AgentRun.lease_expires_at < now))
+                | (AgentRun.deadline_at.is_not(None) & (AgentRun.deadline_at < now))
+            ),
+        )
+        .execution_options(populate_existing=True)
+    )
+    return list(result.scalars().all())
+
+
+async def increment_recovery_attempt(
+    session: AsyncSession,
+    run_id: UUID,
+) -> int:
+    """Increment recovery counter and return new attempt count."""
+    result = await session.execute(
+        update(AgentRun)
+        .where(AgentRun.id == run_id)
+        .values(recovery_attempts=AgentRun.recovery_attempts + 1)
+        .returning(AgentRun.recovery_attempts)
+    )
+    await session.commit()
+    return result.scalar_one()

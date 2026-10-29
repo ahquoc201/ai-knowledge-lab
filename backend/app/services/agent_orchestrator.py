@@ -7,7 +7,7 @@ tool execution, and approval pausing.
 import logging
 from datetime import UTC, datetime, timedelta
 from typing import Any
-from uuid import UUID
+from uuid import UUID, uuid4
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -136,78 +136,109 @@ class AgentOrchestrator:
                 logger.warning("Agent model routing non-fatal warning: %s", e)
 
         target_run_id = run.id
-        # Main execution loop
-        while True:
-            # Re-fetch fresh run state
-            run = await agent_repo.get_run(session, target_run_id)
-            if not run or run.status != AgentRunStatus.RUNNING.value:
-                return run  # Paused, cancelled or completed
+        lease_token = uuid4().hex
+        claimed = await agent_repo.claim_run_lease(
+            session,
+            target_run_id,
+            lease_token=lease_token,
+            ttl_seconds=self.settings.agent_run_lease_ttl_seconds,
+        )
+        if not claimed:
+            logger.warning(
+                "Could not claim execution lease on run %s; concurrent execution active",
+                target_run_id,
+            )
+            return run
 
-            # Check budgets & cancellation
-            if run.cancel_requested:
-                await self._terminate_run(
-                    session, run, AgentRunStatus.CANCELLED, "user_cancelled", "Run cancelled by user"
+        try:
+            # Main execution loop
+            while True:
+                # Renew lease heartbeat
+                renewed = await agent_repo.renew_run_lease(
+                    session,
+                    target_run_id,
+                    lease_token=lease_token,
+                    ttl_seconds=self.settings.agent_run_lease_ttl_seconds,
                 )
-                return (await agent_repo.get_run(session, run.id))
+                if not renewed:
+                    logger.warning(
+                        "Execution lease revoked or expired for run %s; aborting loop",
+                        target_run_id,
+                    )
+                    return await agent_repo.get_run(session, target_run_id)  # type: ignore
 
-            now = datetime.now(UTC)
-            if run.deadline_at and now >= run.deadline_at:
-                await self._terminate_run(
-                    session, run, AgentRunStatus.FAILED, "timeout", "Run execution budget timed out"
-                )
-                return (await agent_repo.get_run(session, run.id))
+                # Re-fetch fresh run state
+                run = await agent_repo.get_run(session, target_run_id)
+                if not run or run.status != AgentRunStatus.RUNNING.value:
+                    return run  # Paused, cancelled or completed
 
-            if run.current_step >= run.max_steps:
-                await self._terminate_run(
-                    session, run, AgentRunStatus.FAILED, "step_budget_exceeded", "Maximum execution steps reached"
-                )
-                return (await agent_repo.get_run(session, run.id))
-
-            if run.tool_call_count >= run.max_tool_calls:
-                await self._terminate_run(
-                    session, run, AgentRunStatus.FAILED, "tool_budget_exceeded", "Maximum tool calls reached"
-                )
-                return (await agent_repo.get_run(session, run.id))
-
-            if run.denial_count >= self.settings.agent_max_denials:
-                await self._terminate_run(
-                    session, run, AgentRunStatus.FAILED, "denial_budget_exceeded", "Too many policy denials"
-                )
-                return (await agent_repo.get_run(session, run.id))  # Fetch step history for prompt
-            db_steps = await agent_repo.list_steps(session, run.id)
-            history_data = [
-                {
-                    "step_index": s.step_index,
-                    "tool_name": s.tool_name,
-                    "arguments": s.arguments,
-                    "status": s.status,
-                    "result": s.result,
-                    "error_code": s.error_code,
-                    "error_message": s.error_message,
-                }
-                for s in db_steps
-            ]
-
-            # Call LLM with bounded retries for structured JSON
-            decision = await self._get_llm_decision(run, history_data)
-            if not decision:
-                await self._terminate_run(
-                    session, run, AgentRunStatus.FAILED, "llm_invalid_output", "LLM output schema could not be validated"
-                )
-                return (await agent_repo.get_run(session, run.id))  # Advance step counter
-            await agent_repo.bump_run_counters(session, run.id, steps=1)
-
-            if isinstance(decision, AgentFinalAnswerDecision):
-                await self._finish_with_answer(session, run, decision)
-                return (await agent_repo.get_run(session, run.id))
-
-            if isinstance(decision, AgentToolCallDecision):
-                should_pause = await self._handle_tool_decision(session, run, decision)
-                if should_pause:
-                    # Paused for human approval or terminal state reached
+                # Check budgets & cancellation
+                if run.cancel_requested:
+                    await self._terminate_run(
+                        session, run, AgentRunStatus.CANCELLED, "user_cancelled", "Run cancelled by user"
+                    )
                     return (await agent_repo.get_run(session, run.id))
 
-        return run
+                now = datetime.now(UTC)
+                if run.deadline_at and now >= run.deadline_at:
+                    await self._terminate_run(
+                        session, run, AgentRunStatus.FAILED, "timeout", "Run execution budget timed out"
+                    )
+                    return (await agent_repo.get_run(session, run.id))
+
+                if run.current_step >= run.max_steps:
+                    await self._terminate_run(
+                        session, run, AgentRunStatus.FAILED, "step_budget_exceeded", "Maximum execution steps reached"
+                    )
+                    return (await agent_repo.get_run(session, run.id))
+
+                if run.tool_call_count >= run.max_tool_calls:
+                    await self._terminate_run(
+                        session, run, AgentRunStatus.FAILED, "tool_budget_exceeded", "Maximum tool calls reached"
+                    )
+                    return (await agent_repo.get_run(session, run.id))
+
+                if run.denial_count >= self.settings.agent_max_denials:
+                    await self._terminate_run(
+                        session, run, AgentRunStatus.FAILED, "denial_budget_exceeded", "Too many policy denials"
+                    )
+                    return (await agent_repo.get_run(session, run.id))  # Fetch step history for prompt
+                db_steps = await agent_repo.list_steps(session, run.id)
+                history_data = [
+                    {
+                        "step_index": s.step_index,
+                        "tool_name": s.tool_name,
+                        "arguments": s.arguments,
+                        "status": s.status,
+                        "result": s.result,
+                        "error_code": s.error_code,
+                        "error_message": s.error_message,
+                    }
+                    for s in db_steps
+                ]
+
+                # Call LLM with bounded retries for structured JSON
+                decision = await self._get_llm_decision(run, history_data)
+                if not decision:
+                    await self._terminate_run(
+                        session, run, AgentRunStatus.FAILED, "llm_invalid_output", "LLM output schema could not be validated"
+                    )
+                    return (await agent_repo.get_run(session, run.id))  # Advance step counter
+                await agent_repo.bump_run_counters(session, run.id, steps=1)
+
+                if isinstance(decision, AgentFinalAnswerDecision):
+                    await self._finish_with_answer(session, run, decision)
+                    return (await agent_repo.get_run(session, run.id))
+
+                if isinstance(decision, AgentToolCallDecision):
+                    should_pause = await self._handle_tool_decision(session, run, decision)
+                    if should_pause:
+                        # Paused for human approval or terminal state reached
+                        return (await agent_repo.get_run(session, run.id))
+
+            return run
+        finally:
+            await agent_repo.release_run_lease(session, target_run_id, lease_token=lease_token)
 
     async def resume_after_approval(
         self, session: AsyncSession, run_id: UUID

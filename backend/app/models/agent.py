@@ -81,6 +81,19 @@ class AgentRun(Base):
     deadline_at: Mapped[datetime | None] = mapped_column(
         DateTime(timezone=True), nullable=True
     )
+    lease_token: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    lease_expires_at: Mapped[datetime | None] = mapped_column(
+        DateTime(timezone=True), nullable=True
+    )
+    last_heartbeat_at: Mapped[datetime | None] = mapped_column(
+        DateTime(timezone=True), nullable=True
+    )
+    recovery_attempts: Mapped[int] = mapped_column(
+        Integer, default=0, server_default="0", nullable=False
+    )
+    max_recovery_attempts: Mapped[int] = mapped_column(
+        Integer, default=3, server_default="3", nullable=False
+    )
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), server_default=func.now(), nullable=False
     )

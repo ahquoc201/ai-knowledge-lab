@@ -11,6 +11,7 @@ from fastapi import (
     APIRouter,
     BackgroundTasks,
     Depends,
+    Header,
     HTTPException,
     Query,
     status,
@@ -280,6 +281,7 @@ async def get_run_events(
     ],
     session: Annotated[AsyncSession, Depends(get_session)],
     after_seq: int = Query(default=0, ge=0),
+    last_event_id: Annotated[str | None, Header(alias="Last-Event-ID")] = None,
     stream: bool = Query(default=False),
 ):
     run = await agent_repo.get_run(session, run_id, workspace_id=membership.workspace_id)
@@ -289,13 +291,18 @@ async def get_run_events(
             detail="Agent run not found",
         )
 
+    # Determine starting sequence: explicit query param or SSE reconnect header
+    starting_seq = after_seq
+    if starting_seq == 0 and last_event_id and last_event_id.isdigit():
+        starting_seq = int(last_event_id)
+
     if not stream:
-        events = await agent_repo.list_events(session, run.id, after_seq=after_seq)
+        events = await agent_repo.list_events(session, run.id, after_seq=starting_seq)
         return [AgentEventResponse.model_validate(e) for e in events]
 
-    # SSE Streaming mode
+    # SSE Streaming mode with reconnection resume
     async def event_generator() -> AsyncGenerator[str, None]:
-        last_seq = after_seq
+        last_seq = starting_seq
         while True:
             async with AsyncSessionLocal() as poll_session:
                 fresh_run = await agent_repo.get_run(poll_session, run_id)
@@ -305,7 +312,7 @@ async def get_run_events(
                 for ev in events:
                     last_seq = ev.seq
                     ev_data = AgentEventResponse.model_validate(ev).model_dump(mode="json")
-                    yield f"event: {ev.event_type}\ndata: {json.dumps(ev_data)}\n\n"
+                    yield f"id: {ev.seq}\nevent: {ev.event_type}\ndata: {json.dumps(ev_data)}\n\n"
 
                 # Stop streaming if run is terminal or awaiting approval
                 if fresh_run and fresh_run.status in [
@@ -314,7 +321,7 @@ async def get_run_events(
                     AgentRunStatus.CANCELLED.value,
                     AgentRunStatus.AWAITING_APPROVAL.value,
                 ] and not events:
-                    yield "event: done\ndata: {}\n\n"
+                    yield "id: done\nevent: done\ndata: {}\n\n"
                     break
 
             await asyncio.sleep(0.5)
