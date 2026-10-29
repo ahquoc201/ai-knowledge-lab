@@ -21,6 +21,13 @@ import {
   BenchmarkRunListResponse,
   BenchmarkRunCreatePayload,
   BenchmarkComparisonResponse,
+  ModelRegistryEntry,
+  ModelRegistryListResponse,
+  ModelBenchmarkProfile,
+  ModelRoutingPolicy,
+  ModelRoutingPreviewRequest,
+  ModelRoutingPreviewResponse,
+  ModelRoutingDecision,
 } from "../types";
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL || "/api/v1";
@@ -383,6 +390,51 @@ export const api = {
 
     compareRuns: (runId: string, baselineId: string): Promise<BenchmarkComparisonResponse> =>
       request<BenchmarkComparisonResponse>(`/benchmarks/runs/${runId}/compare/${baselineId}`),
+  },
+
+  models: {
+    list: (): Promise<ModelRegistryListResponse> => request("/models"),
+    refresh: (): Promise<{ message: string; discovered_count: number; updated_count: number }> =>
+      request("/models/refresh", { method: "POST" }),
+    get: (id: string): Promise<ModelRegistryEntry> => request(`/models/${id}`),
+    toggleActive: (id: string, isActive: boolean): Promise<ModelRegistryEntry> =>
+      request(`/models/${id}`, {
+        method: "PATCH",
+        body: JSON.stringify({ is_active: isActive }),
+      }),
+    getBenchmarks: (id: string): Promise<ModelBenchmarkProfile[]> =>
+      request(`/models/${id}/benchmarks`),
+  },
+
+  modelRouting: {
+    getPolicy: (workspaceId?: string): Promise<ModelRoutingPolicy> => {
+      const q = workspaceId ? `?workspace_id=${workspaceId}` : "";
+      return request(`/model-routing/policies${q}`);
+    },
+    updatePolicy: (policyId: string, payload: Partial<ModelRoutingPolicy>): Promise<ModelRoutingPolicy> =>
+      request(`/model-routing/policies/${policyId}`, {
+        method: "PUT",
+        body: JSON.stringify(payload),
+      }),
+    preview: (payload: ModelRoutingPreviewRequest): Promise<ModelRoutingPreviewResponse> =>
+      request("/model-routing/preview", {
+        method: "POST",
+        body: JSON.stringify(payload),
+      }),
+    listDecisions: (params?: {
+      workspaceId?: string;
+      taskType?: string;
+      limit?: number;
+      offset?: number;
+    }): Promise<ModelRoutingDecision[]> => {
+      const searchParams = new URLSearchParams();
+      if (params?.workspaceId) searchParams.set("workspace_id", params.workspaceId);
+      if (params?.taskType) searchParams.set("task_type", params.taskType);
+      if (params?.limit) searchParams.set("limit", params.limit.toString());
+      if (params?.offset) searchParams.set("offset", params.offset.toString());
+      const queryStr = searchParams.toString();
+      return request(`/model-routing/decisions${queryStr ? `?${queryStr}` : ""}`);
+    },
   },
 
   health: {

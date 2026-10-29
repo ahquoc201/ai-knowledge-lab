@@ -69,6 +69,7 @@ class AgentRunResponse(BaseModel):
     workspace_id: UUID
     initiated_by: UUID
     goal: str
+    model_name: str | None = None
     status: str
     status_reason: str | None
     current_step: int

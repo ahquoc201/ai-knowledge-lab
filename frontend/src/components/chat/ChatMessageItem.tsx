@@ -9,6 +9,7 @@ interface ChatMessageItemProps {
     content: string;
     isStreaming?: boolean;
     streamingStatus?: string;
+    model_name?: string;
   };
   sources?: DisplaySource[];
   onSelectSource?: (source: DisplaySource) => void;
@@ -99,9 +100,16 @@ export const ChatMessageItem: React.FC<ChatMessageItemProps> = ({
       {/* Message Body */}
       <div className="flex-1 space-y-2 overflow-hidden">
         <div className="flex items-center justify-between gap-2">
-          <span className="font-semibold text-xs text-foreground">
-            {isUser ? "Bạn" : "AI Knowledge Assistant"}
-          </span>
+          <div className="flex items-center gap-2">
+            <span className="font-semibold text-xs text-foreground">
+              {isUser ? "Bạn" : "AI Knowledge Assistant"}
+            </span>
+            {!isUser && (
+              <span className="px-1.5 py-0.5 rounded text-[10px] font-mono font-medium bg-indigo-50 dark:bg-indigo-950/40 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800">
+                {message.model_name || "qwen3:1.7b"}
+              </span>
+            )}
+          </div>
           {message.created_at && (
             <span className="text-[10px] text-foreground-muted flex items-center gap-1">
               <Clock className="h-2.5 w-2.5" />

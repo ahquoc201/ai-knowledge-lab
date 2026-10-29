@@ -1,7 +1,7 @@
 import React from "react";
-import { LayoutDashboard, FileText, MessageSquare, Shield, Sparkles, Bot, BarChart3 } from "lucide-react";
+import { LayoutDashboard, FileText, MessageSquare, Shield, Sparkles, Bot, BarChart3, Cpu } from "lucide-react";
 
-export type NavItemKey = "dashboard" | "documents" | "chat" | "agent" | "benchmarks" | "settings";
+export type NavItemKey = "dashboard" | "documents" | "chat" | "agent" | "benchmarks" | "models" | "settings";
 
 interface SidebarProps {
   currentTab: NavItemKey;
@@ -39,6 +39,12 @@ export const Sidebar: React.FC<SidebarProps> = ({ currentTab, onTabChange }) => 
       label: "Kiểm chuẩn (Benchmarks)",
       icon: BarChart3,
       badge: "T260026",
+    },
+    {
+      key: "models" as NavItemKey,
+      label: "Mô hình (Models)",
+      icon: Cpu,
+      badge: "T260027",
     },
     {
       key: "settings" as NavItemKey,

@@ -9,6 +9,7 @@ import { ChatPage } from "./pages/ChatPage";
 import { SettingsPage } from "./pages/SettingsPage";
 import { AgentWorkspacePage } from "./pages/AgentWorkspacePage";
 import { BenchmarksPage } from "./pages/BenchmarksPage";
+import { ModelsPage } from "./pages/ModelsPage";
 
 export const App: React.FC = () => {
   const { isAuthenticated } = useAuth();
@@ -35,6 +36,8 @@ export const App: React.FC = () => {
         return <AgentWorkspacePage onNavigateToDocs={() => setCurrentTab("documents")} />;
       case "benchmarks":
         return <BenchmarksPage />;
+      case "models":
+        return <ModelsPage />;
       case "settings":
         return <SettingsPage />;
       default:
@@ -73,6 +76,11 @@ export const App: React.FC = () => {
         return {
           title: "AI Agent Evaluation & Benchmarks",
           subtitle: "Kiểm chuẩn định lượng độ chính xác tool, trích dẫn bằng chứng và an toàn đối kháng",
+        };
+      case "models":
+        return {
+          title: "AI Model Registry & Adaptive Routing",
+          subtitle: "Quản lý năng lực mô hình, đánh giá benchmark và tự động điều phối có dự phòng",
         };
       case "settings":
         return {

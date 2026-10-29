@@ -1,6 +1,7 @@
 """Streaming RAG pipeline with lifecycle events, citation validation, and persistence."""
 
 import json
+import logging
 from collections.abc import AsyncIterator
 from typing import Any
 from uuid import UUID
@@ -14,11 +15,15 @@ from app.services.citation_validation import validate_answer_citations
 from app.services.context_builder import ContextSource
 from app.services.message import create_conversation_message
 from app.services.message_source import save_assistant_message_sources
+from app.services.model_router import ModelRouter
 from app.services.rag_prompt import (
     INSUFFICIENT_CONTEXT_ANSWER,
     build_rag_messages,
 )
 from app.services.retrieval import retrieve_context
+from app.services.task_classifier import TaskClassifier
+
+logger = logging.getLogger(__name__)
 
 UNVERIFIED_CITATION_ANSWER = "Không thể xác minh câu trả lời từ tài liệu được truy xuất."
 
@@ -89,6 +94,39 @@ async def answer_with_rag_stream(
         serialized_sources = [serialize_source(s) for s in context.sources]
         yield format_sse("retrieval_completed", {"sources": serialized_sources})
 
+        # Adaptive Model Routing
+        model_router = ModelRouter()
+        classifier = TaskClassifier()
+        has_ctx = bool(context.sources and context.text.strip())
+        task_type = classifier.classify(
+            prompt=query,
+            has_retrieved_context=has_ctx,
+            context_document_count=len(context.sources),
+        )
+        routed_model = getattr(llm, "model", "default")
+        if session is not None:
+            try:
+                routing = await model_router.select_model(
+                    session=session,
+                    task_type=task_type,
+                    workspace_id=workspace_id,
+                    context_metadata={"query": query[:100], "source_count": len(context.sources)},
+                )
+                routed_model = routing.selected_model
+                if hasattr(llm, "model"):
+                    llm.model = routed_model
+                yield format_sse(
+                    "model_routed",
+                    {
+                        "model": routing.selected_model,
+                        "task_type": routing.task_type,
+                        "reason": routing.selection_reason,
+                        "fallback_occurred": routing.is_fallback,
+                    },
+                )
+            except (RuntimeError, ValueError, KeyError, OSError, AttributeError) as e:
+                logger.warning("RAG model routing non-fatal warning: %s", e)
+
         # Guardrail 1: Refuse when no usable evidence exists
         if not context.sources or not context.text.strip():
             yield format_sse("token", {"token": INSUFFICIENT_CONTEXT_ANSWER})
@@ -108,6 +146,7 @@ async def answer_with_rag_stream(
                     "message_id": str(assistant_message.id) if assistant_message else None,
                     "answer": INSUFFICIENT_CONTEXT_ANSWER,
                     "sources": [],
+                    "model_name": routed_model,
                 },
             )
             return
@@ -118,7 +157,7 @@ async def answer_with_rag_stream(
             history=history,
         )
 
-        yield format_sse("generation_started", {})
+        yield format_sse("generation_started", {"model_name": routed_model})
 
         accumulated_tokens: list[str] = []
         async for token in llm.generate_stream(messages):
@@ -164,6 +203,7 @@ async def answer_with_rag_stream(
                 "message_id": str(assistant_message.id) if assistant_message else None,
                 "answer": final_answer,
                 "sources": [serialize_source(s) for s in final_sources],
+                "model_name": routed_model,
             },
         )
 
