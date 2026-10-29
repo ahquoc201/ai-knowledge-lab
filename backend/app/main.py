@@ -8,6 +8,7 @@ from app.api.v1.conversations import router as conversations_router
 from app.api.v1.document_chunks import router as document_chunks_router
 from app.api.v1.documents import router as documents_router
 from app.api.v1.health import router as health_router
+from app.api.v1.models import router as models_router
 from app.api.v1.rag import router as rag_router
 from app.api.v1.search import router as search_router
 from app.api.v1.workspaces import router as workspaces_router
@@ -76,5 +77,10 @@ app.include_router(
 
 app.include_router(
     benchmarks_router,
+    prefix="/api/v1",
+)
+
+app.include_router(
+    models_router,
     prefix="/api/v1",
 )
