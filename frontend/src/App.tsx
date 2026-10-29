@@ -8,6 +8,7 @@ import { DocumentsPage } from "./pages/DocumentsPage";
 import { ChatPage } from "./pages/ChatPage";
 import { SettingsPage } from "./pages/SettingsPage";
 import { AgentWorkspacePage } from "./pages/AgentWorkspacePage";
+import { BenchmarksPage } from "./pages/BenchmarksPage";
 
 export const App: React.FC = () => {
   const { isAuthenticated } = useAuth();
@@ -32,6 +33,8 @@ export const App: React.FC = () => {
         return <ChatPage onNavigateToDocs={() => setCurrentTab("documents")} />;
       case "agent":
         return <AgentWorkspacePage onNavigateToDocs={() => setCurrentTab("documents")} />;
+      case "benchmarks":
+        return <BenchmarksPage />;
       case "settings":
         return <SettingsPage />;
       default:
@@ -65,6 +68,11 @@ export const App: React.FC = () => {
         return {
           title: "Governed AI Agent Runtime",
           subtitle: "Vòng lặp thực thi tự chủ với Policy Enforcement & Human Approval",
+        };
+      case "benchmarks":
+        return {
+          title: "AI Agent Evaluation & Benchmarks",
+          subtitle: "Kiểm chuẩn định lượng độ chính xác tool, trích dẫn bằng chứng và an toàn đối kháng",
         };
       case "settings":
         return {

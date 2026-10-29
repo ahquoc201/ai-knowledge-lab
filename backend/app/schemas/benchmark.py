@@ -100,3 +100,4 @@ class BenchmarkComparisonResponse(BaseModel):
     security_blocking_rate: MetricDelta | None = None
     newly_failing_cases: list[str] = Field(default_factory=list)
     newly_passing_cases: list[str] = Field(default_factory=list)
+    summary: str = ""

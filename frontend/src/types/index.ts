@@ -290,3 +290,110 @@ export interface AgentRunCreatePayload {
   allowed_tools?: string[] | null;
   correlation_id?: string | null;
 }
+
+export interface BenchmarkCaseResultResponse {
+  id: string;
+  benchmark_run_id: string;
+  case_id: string;
+  case_name: string;
+  category: string;
+  is_adversarial: boolean;
+  passed: boolean;
+  failure_classification: string;
+  score: number;
+  reason: string;
+  tool_accuracy: number;
+  citation_f1: number;
+  grounding_score: number;
+  latency_ms: number;
+  sanitized_trace?: {
+    steps?: Array<{
+      step_index: number;
+      action: string;
+      tool?: string;
+      sanitized_arguments?: Record<string, unknown>;
+      status?: string;
+      reason?: string;
+    }>;
+    [key: string]: unknown;
+  } | null;
+  metrics?: Record<string, unknown> | null;
+  created_at: string;
+}
+
+export interface BenchmarkCategoryScore {
+  total_cases: number;
+  passed_cases: number;
+  success_rate: number;
+  avg_latency_ms: number;
+}
+
+export interface BenchmarkRunResponse {
+  id: string;
+  workspace_id: string;
+  created_by: string;
+  name: string;
+  dataset_id: string;
+  dataset_version: string;
+  execution_mode: "real" | "simulated";
+  model_name: string;
+  embedding_model?: string | null;
+  status: "running" | "completed" | "failed";
+  total_cases: number;
+  passed_cases: number;
+  failed_cases: number;
+  task_success_rate: number;
+  tool_call_accuracy: number;
+  citation_f1: number;
+  security_blocking_rate: number | null;
+  benign_overblock_rate: number;
+  latency_p50_ms: number;
+  latency_p95_ms: number;
+  latency_mean_ms: number;
+  failure_summary?: Record<string, number> | null;
+  category_scores?: Record<string, BenchmarkCategoryScore> | null;
+  runtime_config?: Record<string, unknown> | null;
+  created_at: string;
+  completed_at?: string | null;
+  case_results?: BenchmarkCaseResultResponse[];
+}
+
+export interface BenchmarkRunListResponse {
+  items: BenchmarkRunResponse[];
+  total: number;
+  limit: number;
+  offset: number;
+}
+
+export interface BenchmarkRunCreatePayload {
+  name: string;
+  dataset_id?: string;
+  execution_mode: "real" | "simulated";
+  model_name?: string | null;
+  category_filter?: string | null;
+}
+
+export interface MetricDelta {
+  current: number;
+  baseline: number;
+  delta: number;
+  improved: boolean;
+}
+
+export interface BenchmarkComparisonResponse {
+  current_run_id: string;
+  baseline_run_id: string;
+  current_mode: string;
+  baseline_mode: string;
+  current_model: string;
+  baseline_model: string;
+  task_success_rate: MetricDelta;
+  tool_call_accuracy: MetricDelta;
+  citation_f1: MetricDelta;
+  latency_p50_ms: MetricDelta;
+  security_blocking_rate?: MetricDelta | null;
+  newly_failing_cases?: string[];
+  newly_passing_cases?: string[];
+  summary: string;
+}
+

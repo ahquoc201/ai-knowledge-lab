@@ -1,7 +1,7 @@
 import React from "react";
-import { LayoutDashboard, FileText, MessageSquare, Shield, Sparkles, Bot } from "lucide-react";
+import { LayoutDashboard, FileText, MessageSquare, Shield, Sparkles, Bot, BarChart3 } from "lucide-react";
 
-export type NavItemKey = "dashboard" | "documents" | "chat" | "agent" | "settings";
+export type NavItemKey = "dashboard" | "documents" | "chat" | "agent" | "benchmarks" | "settings";
 
 interface SidebarProps {
   currentTab: NavItemKey;
@@ -33,6 +33,12 @@ export const Sidebar: React.FC<SidebarProps> = ({ currentTab, onTabChange }) => 
       label: "Governed Agent",
       icon: Bot,
       badge: "T260025",
+    },
+    {
+      key: "benchmarks" as NavItemKey,
+      label: "Kiểm chuẩn (Benchmarks)",
+      icon: BarChart3,
+      badge: "T260026",
     },
     {
       key: "settings" as NavItemKey,

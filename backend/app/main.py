@@ -3,6 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from app.api.v1.agent import router as agent_router
 from app.api.v1.auth import router as auth_router
+from app.api.v1.benchmarks import router as benchmarks_router
 from app.api.v1.conversations import router as conversations_router
 from app.api.v1.document_chunks import router as document_chunks_router
 from app.api.v1.documents import router as documents_router
@@ -70,5 +71,10 @@ app.include_router(
 
 app.include_router(
     agent_router,
+    prefix="/api/v1",
+)
+
+app.include_router(
+    benchmarks_router,
     prefix="/api/v1",
 )

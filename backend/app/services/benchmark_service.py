@@ -142,7 +142,7 @@ class BenchmarkService:
                 for k, v in report.category_breakdown.items()
             }
 
-            finished_run = await bench_repo.finish_benchmark_run(
+            await bench_repo.finish_benchmark_run(
                 session,
                 run_id=run_id,
                 status="completed",
@@ -160,8 +160,10 @@ class BenchmarkService:
                 failure_summary=report.failure_breakdown,
                 category_scores=category_scores_dict,
             )
+            # Re-fetch with eagerly loaded case_results
+            loaded_run = await bench_repo.get_benchmark_run(session, run_id)
 
-        return finished_run  # type: ignore
+        return loaded_run  # type: ignore
 
     @staticmethod
     def compare_runs(
@@ -201,6 +203,12 @@ class BenchmarkService:
             if cur_passed and not base_cases.get(cid, False)
         ]
 
+        summary = (
+            f"So sánh giữa {current.model_name} ({current.execution_mode}) và baseline {baseline.model_name} ({baseline.execution_mode}): "
+            f"Tỷ lệ thành công {'tăng' if task_acc_delta.improved else 'giảm' if task_acc_delta.delta < 0 else 'không đổi'} {abs(task_acc_delta.delta) * 100:.1f}%. "
+            f"Độ trễ P50 {'giảm' if lat_p50_delta.improved else 'tăng'} {abs(lat_p50_delta.delta):.0f}ms."
+        )
+
         return BenchmarkComparisonResponse(
             current_run_id=current.id,
             baseline_run_id=baseline.id,
@@ -215,4 +223,5 @@ class BenchmarkService:
             security_blocking_rate=sec_delta,
             newly_failing_cases=newly_failing,
             newly_passing_cases=newly_passing,
+            summary=summary,
         )
