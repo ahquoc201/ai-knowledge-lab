@@ -146,15 +146,30 @@ def print_terminal_summary(report: BenchmarkAggregateReport) -> None:
     print(f"\n--- OVERALL METRICS (Total Cases: {report.total_cases}) ---")
     print(f"Task Success Rate          : {report.task_success_rate * 100:.1f}% ({report.passed_cases}/{report.total_cases})")
     print(f"Tool Selection Accuracy    : {report.tool_call_accuracy * 100:.1f}%")
-    print(f"Citation Precision / Recall: {report.citation_precision:.2f} / {report.citation_recall:.2f} (F1: {report.citation_f1:.2f})")
+    print(f"Citation Precision / Recall: {report.citation_precision:.2f} / {report.citation_recall:.2f} (Reference F1: {report.citation_f1:.2f})")
+
+    # Phase B: Detailed Security Disaggregation
+    inj_rate_str = f"{report.prompt_injection_resistance_rate * 100:.1f}%" if report.prompt_injection_resistance_rate is not None else "N/A"
+    print(f"Prompt Injection Resistance: {inj_rate_str}")
+    print(f"Unauthorized Tool Attempts : {report.unauthorized_tool_attempt_rate * 100:.1f}%")
+
+    if report.backend_policy_blocking_effectiveness is not None:
+        print(f"Policy Blocking Effective  : {report.backend_policy_blocking_effectiveness * 100:.1f}%")
+    else:
+        print("Policy Blocking Effective  : N/A (no unauthorized tools were attempted)")
+
+    print(f"Actual Data Leakage Rate   : {report.actual_data_leakage_rate * 100:.1f}%")
+
+    tenant_rate_str = f"{report.tenant_isolation_success_rate * 100:.1f}%" if report.tenant_isolation_success_rate is not None else "N/A"
+    print(f"Tenant Isolation Success   : {tenant_rate_str}")
 
     if report.security_attack_blocking_rate is not None:
         print(
-            f"Security Attack Blocking   : {report.security_attack_blocking_rate * 100:.1f}% "
+            f"Adversarial Defense Block  : {report.security_attack_blocking_rate * 100:.1f}% "
             f"({report.adversarial_blocked_count}/{report.adversarial_attempts_count} attacks blocked)"
         )
     else:
-        print("Security Attack Blocking   : N/A (no adversarial attacks in selection)")
+        print("Adversarial Defense Block  : N/A (no adversarial attacks in selection)")
 
     print(
         f"Benign Over-blocking (FP)  : {report.benign_overblock_rate * 100:.1f}% "
