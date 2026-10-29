@@ -257,6 +257,7 @@ export interface AgentRun {
   workspace_id: string;
   initiated_by: string;
   goal: string;
+  model_name?: string | null;
   status: AgentRunStatus;
   status_reason?: string | null;
   current_step: number;
@@ -396,4 +397,127 @@ export interface BenchmarkComparisonResponse {
   newly_passing_cases?: string[];
   summary: string;
 }
+
+// ==========================================
+// T260027: AI Model Registry & Adaptive Routing Types
+// ==========================================
+
+export type ModelCapabilityStatus = "verified" | "advertised" | "unknown";
+
+export interface ModelBenchmarkProfile {
+  id: string;
+  model_id: string;
+  model_name: string;
+  model_digest: string;
+  dataset_id: string;
+  dataset_version: string;
+  benchmark_run_id?: string | null;
+  execution_mode: string;
+  task_success_rate: number;
+  tool_call_accuracy: number;
+  citation_reference_f1: number;
+  prompt_injection_resistance?: number | null;
+  tenant_isolation_success?: number | null;
+  policy_blocking_effectiveness?: number | null;
+  actual_data_leakage_rate: number;
+  benign_overblock_rate: number;
+  latency_p50_ms: number;
+  latency_p95_ms: number;
+  sample_size: number;
+  has_sufficient_sample_size: boolean;
+  notes?: string | null;
+  is_stale: boolean;
+  measured_at: string;
+}
+
+export interface ModelRegistryEntry {
+  id: string;
+  name: string;
+  digest: string;
+  family?: string | null;
+  format?: string | null;
+  parameter_size?: string | null;
+  quantization_level?: string | null;
+  size_bytes?: number | null;
+  context_length?: number | null;
+  capabilities: Record<string, ModelCapabilityStatus>;
+  is_installed: boolean;
+  is_loaded: boolean;
+  is_active: boolean;
+  resource_observations?: Record<string, unknown> | null;
+  raw_metadata?: Record<string, unknown> | null;
+  created_at: string;
+  updated_at: string;
+  latest_benchmark_profile?: ModelBenchmarkProfile | null;
+}
+
+export interface ModelRegistryListResponse {
+  items: ModelRegistryEntry[];
+  total: number;
+}
+
+export interface ModelRoutingPolicy {
+  id: string;
+  workspace_id?: string | null;
+  name: string;
+  version: string;
+  is_enabled: boolean;
+  default_model: string;
+  allowed_models: string[];
+  fallback_models: string[];
+  max_fallback_attempts: number;
+  task_rules: Record<string, unknown>;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface CandidateEvaluation {
+  model: string;
+  eligible: boolean;
+  score: number;
+  reason: string;
+}
+
+export interface ModelRoutingPreviewRequest {
+  workspace_id?: string | null;
+  prompt: string;
+  has_retrieved_context?: boolean;
+  context_document_count?: number;
+  requires_tools?: boolean;
+  is_write_operation?: boolean;
+  explicit_task_type?: string | null;
+}
+
+export interface ModelRoutingPreviewResponse {
+  task_type: string;
+  selected_model: string;
+  selection_reason: string;
+  fallback_chain: string[];
+  candidate_evaluations: CandidateEvaluation[];
+  policy_id?: string | null;
+  policy_version: string;
+}
+
+export interface ModelRoutingDecision {
+  id: string;
+  workspace_id?: string | null;
+  task_type: string;
+  policy_id?: string | null;
+  policy_version: string;
+  selected_model: string;
+  candidate_evaluations: Array<{
+    model_name: string;
+    eligible: boolean;
+    score: number;
+    reason: string;
+    is_loaded?: boolean;
+  }>;
+  selection_reason: string;
+  fallback_occurred: boolean;
+  fallback_chain: string[];
+  latency_ms: number;
+  context_metadata: Record<string, unknown>;
+  created_at: string;
+}
+
 

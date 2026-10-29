@@ -28,6 +28,7 @@ interface StreamingMessageState {
   sources?: DisplaySource[];
   isStreaming?: boolean;
   streamingStatus?: string;
+  model_name?: string;
 }
 
 interface ChatPageProps {
@@ -236,7 +237,11 @@ export const ChatPage: React.FC<ChatPageProps> = ({ onNavigateToDocs }) => {
               setMessages((prev) =>
                 prev.map((m, idx) =>
                   idx === prev.length - 1
-                    ? { ...m, streamingStatus: "Mô hình đang sinh câu trả lời..." }
+                    ? {
+                        ...m,
+                        streamingStatus: "Mô hình đang sinh câu trả lời...",
+                        model_name: (event as unknown as Record<string, unknown>).model_name as string || m.model_name,
+                      }
                     : m
                 )
               );
@@ -271,6 +276,7 @@ export const ChatPage: React.FC<ChatPageProps> = ({ onNavigateToDocs }) => {
                         id: event.message_id || undefined,
                         content: event.answer || accumulatedContent,
                         sources: event.sources || currentSources,
+                        model_name: (event as unknown as Record<string, unknown>).model_name as string || m.model_name,
                         isStreaming: false,
                         streamingStatus: undefined,
                       }

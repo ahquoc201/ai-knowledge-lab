@@ -498,6 +498,11 @@ export const AgentWorkspacePage: React.FC<AgentWorkspacePageProps> = ({ onNaviga
                   <span className="text-[11px] text-foreground-subtle font-mono">
                     ID: {selectedRun.id.slice(0, 8)}...
                   </span>
+                  {selectedRun.model_name && (
+                    <span className="px-2 py-0.5 rounded-full text-[10px] font-mono font-semibold bg-indigo-50 dark:bg-indigo-950/40 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800">
+                      Mô hình: {selectedRun.model_name}
+                    </span>
+                  )}
                   <span className="text-[11px] text-foreground-subtle">
                     Bắt đầu: {new Date(selectedRun.created_at).toLocaleString()}
                   </span>
