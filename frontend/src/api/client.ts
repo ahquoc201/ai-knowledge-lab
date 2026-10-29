@@ -17,6 +17,10 @@ import {
   AgentRunListResponse,
   AgentRunCreatePayload,
   AgentExecutionEvent,
+  BenchmarkRunResponse,
+  BenchmarkRunListResponse,
+  BenchmarkRunCreatePayload,
+  BenchmarkComparisonResponse,
 } from "../types";
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL || "/api/v1";
@@ -347,6 +351,38 @@ export const api = {
         method: "POST",
         body: JSON.stringify({ reason }),
       }),
+  },
+
+  benchmarks: {
+    listDatasets: (): Promise<
+      Array<{
+        id: string;
+        name: string;
+        version: string;
+        description: string;
+        case_count: number;
+      }>
+    > => request("/benchmarks/datasets"),
+
+    listRuns: (params?: { limit?: number; offset?: number }): Promise<BenchmarkRunListResponse> => {
+      const searchParams = new URLSearchParams();
+      if (params?.limit) searchParams.set("limit", params.limit.toString());
+      if (params?.offset) searchParams.set("offset", params.offset.toString());
+      const queryStr = searchParams.toString();
+      return request<BenchmarkRunListResponse>(`/benchmarks/runs${queryStr ? `?${queryStr}` : ""}`);
+    },
+
+    getRun: (runId: string): Promise<BenchmarkRunResponse> =>
+      request<BenchmarkRunResponse>(`/benchmarks/runs/${runId}`),
+
+    triggerRun: (payload: BenchmarkRunCreatePayload): Promise<BenchmarkRunResponse> =>
+      request<BenchmarkRunResponse>("/benchmarks/runs", {
+        method: "POST",
+        body: JSON.stringify(payload),
+      }),
+
+    compareRuns: (runId: string, baselineId: string): Promise<BenchmarkComparisonResponse> =>
+      request<BenchmarkComparisonResponse>(`/benchmarks/runs/${runId}/compare/${baselineId}`),
   },
 
   health: {

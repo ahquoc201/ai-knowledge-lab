@@ -30,13 +30,17 @@ test.describe("Navigation and Layout Workflows (Scenario 4)", () => {
     await page.getByRole("button", { name: /governed agent/i }).click();
     await expect(page.getByRole("heading", { name: /governed ai agent runtime/i })).toBeVisible();
 
-    // 4. Chuyển sang Cấu hình / Settings tab
+    // 4. Chuyển sang Kiểm chuẩn (Benchmarks) tab (T260026)
+    await page.getByRole("button", { name: /kiểm chuẩn \(benchmarks\)/i }).click();
+    await expect(page.getByRole("heading", { name: /ai agent evaluation & reliability benchmarking/i })).toBeVisible();
+
+    // 5. Chuyển sang Cấu hình / Settings tab
     await page.getByRole("button", { name: /cấu hình \/ audit/i }).click();
     await expect(page.getByRole("heading", { name: /cấu hình & giám sát hệ thống/i })).toBeVisible();
     await expect(page.getByText(/chính sách phòng vệ dữ liệu/i)).toBeVisible();
     await expect(page.getByRole("main").getByText(user.email)).toBeVisible();
 
-    // 5. Quay lại Dashboard
+    // 6. Quay lại Dashboard
     await page.getByRole("button", { name: /dashboard/i }).first().click();
     await expect(page.getByText(/trung tâm điều khiển tri thức/i)).toBeVisible();
   });
