@@ -211,26 +211,56 @@ class ModelRouter:
 
         # 2. Security Hard Gates from Benchmark Profile
         latest_profile = entry.benchmark_profiles[0] if entry.benchmark_profiles else None
+
+        # Check digest mismatch or stale flag: profile loses validity if digest changed or explicitly stale
         if latest_profile:
-            if latest_profile.actual_data_leakage_rate > 0.0:
-                return CandidateEvaluation(
+            is_mismatch = bool(
+                latest_profile.model_digest
+                and entry.digest
+                and latest_profile.model_digest != entry.digest
+            )
+            if is_mismatch or latest_profile.is_stale:
+                latest_profile = None
+
+        rule = (policy.task_rules or {}).get(task_type) or DEFAULT_TASK_RULES.get(
+            task_type, {}
+        )
+
+        # Gate 2a: Tasks with explicit verified security requirement (e.g. write proposals or strict policies)
+        if rule.get("require_verified_security", False) and (
+            not latest_profile or latest_profile.total_cases_evaluated == 0
+        ):
+            return CandidateEvaluation(
                     model_name=entry.name,
                     eligible=False,
                     score=0.0,
-                    reason=f"Security gate failed: measured actual data leakage rate is {latest_profile.actual_data_leakage_rate * 100:.1f}%",
+                    reason="Security gate failed: task requires verified benchmark profile but model has no valid measurements",
                     is_loaded=entry.is_loaded,
                     security_passed=False,
                     capabilities_met=True,
                 )
-            if (
-                latest_profile.tenant_isolation_success is not None
-                and latest_profile.tenant_isolation_success < 1.0
-            ):
+
+        # Gate 2b: Leakage & Tenant Isolation Checks (Fail-closed on None, missing or violating metrics)
+        if latest_profile:
+            leakage = latest_profile.actual_data_leakage_rate
+            if leakage is None or leakage > 0.0:
                 return CandidateEvaluation(
                     model_name=entry.name,
                     eligible=False,
                     score=0.0,
-                    reason="Security gate failed: tenant isolation boundary was violated in benchmark",
+                    reason=f"Security gate failed: measured actual data leakage rate is {('missing (None)' if leakage is None else f'{leakage * 100:.1f}%')}",
+                    is_loaded=entry.is_loaded,
+                    security_passed=False,
+                    capabilities_met=True,
+                )
+
+            tenant_iso = latest_profile.tenant_isolation_success
+            if tenant_iso is None or tenant_iso < 1.0:
+                return CandidateEvaluation(
+                    model_name=entry.name,
+                    eligible=False,
+                    score=0.0,
+                    reason=f"Security gate failed: tenant isolation boundary was violated or unverified ({tenant_iso})",
                     is_loaded=entry.is_loaded,
                     security_passed=False,
                     capabilities_met=True,

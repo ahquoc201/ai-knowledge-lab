@@ -307,3 +307,168 @@ def test_model_routing_apis(client: TestClient) -> None:
     )
     assert res_decisions.status_code == 200
     assert isinstance(res_decisions.json(), list)
+
+
+def test_security_digest_mismatch_and_stale_profile() -> None:
+    """Security check: digest mismatch or is_stale invalidates benchmark security profile."""
+    router = ModelRouter()
+    policy = ModelRoutingPolicy(
+        name="Security Policy",
+        default_model="test-model:latest",
+        allowed_models=["test-model:latest"],
+        fallback_models=[],
+        task_rules={TaskType.SIMPLE_CHAT: {"require_verified_security": True}},
+    )
+
+    entry = ModelRegistryEntry(
+        name="test-model:latest",
+        digest="sha256:current_digest_999",
+        is_installed=True,
+        is_active=True,
+        capabilities={"chat": ModelCapabilityStatus.VERIFIED},
+    )
+
+    # 1. Digest mismatch: benchmark was run on old digest
+    old_profile = ModelBenchmarkProfile(
+        model_id=entry.id,
+        model_name="test-model:latest",
+        model_digest="sha256:old_digest_111",  # mismatch!
+        dataset_id="test",
+        dataset_version="v1",
+        execution_mode="MOCK",
+        actual_data_leakage_rate=0.0,
+        tenant_isolation_success=1.0,
+        total_cases_evaluated=10,
+    )
+    entry.benchmark_profiles = [old_profile]
+    res_mismatch = router.evaluate_candidate(entry, TaskType.SIMPLE_CHAT, policy)
+    assert res_mismatch.eligible is False
+    assert res_mismatch.security_passed is False
+    assert "no valid measurements" in res_mismatch.reason
+
+    # 2. Stale profile: is_stale=True
+    stale_profile = ModelBenchmarkProfile(
+        model_id=entry.id,
+        model_name="test-model:latest",
+        model_digest="sha256:current_digest_999",
+        dataset_id="test",
+        dataset_version="v1",
+        execution_mode="MOCK",
+        actual_data_leakage_rate=0.0,
+        tenant_isolation_success=1.0,
+        total_cases_evaluated=10,
+        is_stale=True,  # Stale!
+    )
+    entry.benchmark_profiles = [stale_profile]
+    res_stale = router.evaluate_candidate(entry, TaskType.SIMPLE_CHAT, policy)
+    assert res_stale.eligible is False
+    assert res_stale.security_passed is False
+
+
+def test_security_none_and_missing_metrics_fail_closed() -> None:
+    """Fail-closed: None or missing values for leakage or tenant isolation must NOT be interpreted as PASS."""
+    router = ModelRouter()
+    policy = ModelRoutingPolicy(
+        name="Strict Policy",
+        default_model="test-model:latest",
+        allowed_models=["test-model:latest"],
+        fallback_models=[],
+        task_rules={},
+    )
+
+    entry = ModelRegistryEntry(
+        name="test-model:latest",
+        digest="sha256:abc",
+        is_installed=True,
+        is_active=True,
+        capabilities={"chat": ModelCapabilityStatus.VERIFIED},
+    )
+
+    # 1. Missing tenant isolation (None)
+    profile_none_iso = ModelBenchmarkProfile(
+        model_id=entry.id,
+        model_name="test-model:latest",
+        model_digest="sha256:abc",
+        dataset_id="test",
+        dataset_version="v1",
+        execution_mode="MOCK",
+        actual_data_leakage_rate=0.0,
+        tenant_isolation_success=None,  # Missing/None
+        total_cases_evaluated=10,
+    )
+    entry.benchmark_profiles = [profile_none_iso]
+    eval_iso = router.evaluate_candidate(entry, TaskType.SIMPLE_CHAT, policy)
+    assert eval_iso.eligible is False
+    assert eval_iso.security_passed is False
+    assert "tenant isolation boundary was violated or unverified" in eval_iso.reason
+
+    # 2. Missing leakage rate (None)
+    profile_none_leak = ModelBenchmarkProfile(
+        model_id=entry.id,
+        model_name="test-model:latest",
+        model_digest="sha256:abc",
+        dataset_id="test",
+        dataset_version="v1",
+        execution_mode="MOCK",
+        actual_data_leakage_rate=None,  # Missing/None
+        tenant_isolation_success=1.0,
+        total_cases_evaluated=10,
+    )
+    entry.benchmark_profiles = [profile_none_leak]
+    eval_leak = router.evaluate_candidate(entry, TaskType.SIMPLE_CHAT, policy)
+    assert eval_leak.eligible is False
+    assert eval_leak.security_passed is False
+    assert "actual data leakage rate is missing" in eval_leak.reason
+
+
+def test_workspace_viewer_forbidden_to_modify_policy(client: TestClient) -> None:
+    """Ensure workspace VIEWER is strictly forbidden (HTTP 403) from modifying model routing policies."""
+    # 1. Owner creates workspace
+    owner_headers = setup_auth_user(client)
+    ws_res = client.post(
+        "/api/v1/workspaces",
+        json={"name": "RBAC Routing Workspace", "description": "RBAC test"},
+        headers=owner_headers,
+    )
+    assert ws_res.status_code == 201
+    ws_id = ws_res.json()["id"]
+
+    # 2. Get policy ID
+    pol_res = client.get(
+        f"/api/v1/model-routing/policies?workspace_id={ws_id}",
+        headers=owner_headers,
+    )
+    assert pol_res.status_code == 200
+    policy_id = pol_res.json()["id"]
+
+    # 3. Create a second user (Viewer)
+    viewer_headers = setup_auth_user(client)
+
+    # 4. Invite & add viewer to workspace
+    # Send invite as owner
+    viewer_email = client.get("/api/v1/auth/me", headers=viewer_headers).json()["email"]
+    inv_res = client.post(
+        f"/api/v1/workspaces/{ws_id}/invitations",
+        json={"email": viewer_email, "role": "viewer"},
+        headers=owner_headers,
+    )
+    assert inv_res.status_code == 201
+    token = inv_res.json()["invitation_token"]
+
+    # Accept invitation as viewer
+    accept_res = client.post(
+        "/api/v1/workspaces/invitations/accept",
+        json={"token": token},
+        headers=viewer_headers,
+    )
+    assert accept_res.status_code == 200
+
+    # 5. Viewer attempts to modify routing policy -> MUST FAIL with 403 Forbidden
+    forbidden_put = client.put(
+        f"/api/v1/model-routing/policies/{policy_id}",
+        json={"name": "Malicious Modification Attempt"},
+        headers=viewer_headers,
+    )
+    assert forbidden_put.status_code == 403
+    assert "Only workspace OWNER or ADMIN can modify routing policy" in forbidden_put.json()["detail"]
+

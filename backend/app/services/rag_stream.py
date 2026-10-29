@@ -94,40 +94,13 @@ async def answer_with_rag_stream(
         serialized_sources = [serialize_source(s) for s in context.sources]
         yield format_sse("retrieval_completed", {"sources": serialized_sources})
 
-        # Guardrail 1: Refuse when no usable evidence exists
-        if not context.sources or not context.text.strip():
-            yield format_sse("token", {"token": INSUFFICIENT_CONTEXT_ANSWER})
-
-            assistant_message = await create_conversation_message(
-                session,
-                user=user,
-                conversation_id=conversation_id,
-                role=MessageRole.ASSISTANT,
-                content=INSUFFICIENT_CONTEXT_ANSWER,
-            )
-
-            yield format_sse(
-                "answer_completed",
-                {
-                    "conversation_id": str(conversation_id),
-                    "message_id": str(assistant_message.id) if assistant_message else None,
-                    "answer": INSUFFICIENT_CONTEXT_ANSWER,
-                    "sources": [],
-                },
-            )
-            return
-
-        messages = build_rag_messages(
-            query=query,
-            context=context,
-            history=history,
-        )
-
+        # Adaptive Model Routing
         model_router = ModelRouter()
         classifier = TaskClassifier()
+        has_ctx = bool(context.sources and context.text.strip())
         task_type = classifier.classify(
             prompt=query,
-            has_retrieved_context=True,
+            has_retrieved_context=has_ctx,
             context_document_count=len(context.sources),
         )
         routed_model = getattr(llm, "model", "default")
@@ -153,6 +126,36 @@ async def answer_with_rag_stream(
                 )
             except (RuntimeError, ValueError, KeyError, OSError, AttributeError) as e:
                 logger.warning("RAG model routing non-fatal warning: %s", e)
+
+        # Guardrail 1: Refuse when no usable evidence exists
+        if not context.sources or not context.text.strip():
+            yield format_sse("token", {"token": INSUFFICIENT_CONTEXT_ANSWER})
+
+            assistant_message = await create_conversation_message(
+                session,
+                user=user,
+                conversation_id=conversation_id,
+                role=MessageRole.ASSISTANT,
+                content=INSUFFICIENT_CONTEXT_ANSWER,
+            )
+
+            yield format_sse(
+                "answer_completed",
+                {
+                    "conversation_id": str(conversation_id),
+                    "message_id": str(assistant_message.id) if assistant_message else None,
+                    "answer": INSUFFICIENT_CONTEXT_ANSWER,
+                    "sources": [],
+                    "model_name": routed_model,
+                },
+            )
+            return
+
+        messages = build_rag_messages(
+            query=query,
+            context=context,
+            history=history,
+        )
 
         yield format_sse("generation_started", {"model_name": routed_model})
 
