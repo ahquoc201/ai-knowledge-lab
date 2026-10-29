@@ -5,6 +5,15 @@ from fastapi.testclient import TestClient
 
 from app.core.celery_app import celery_app
 from app.main import app
+from app.services.rate_limiter import get_rate_limiter
+
+
+@pytest.fixture(autouse=True)
+def reset_rate_limiter():
+    """Ensure in-memory rate limiter buckets are reset cleanly before each test."""
+    get_rate_limiter().clear()
+    yield
+    get_rate_limiter().clear()
 
 
 @pytest.fixture(scope="session", autouse=True)

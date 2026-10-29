@@ -8,6 +8,7 @@ from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.api.deps import get_current_user
+from app.core.config import get_settings
 from app.db.session import get_session
 from app.models.model_registry import ModelRegistryEntry
 from app.models.user import User
@@ -20,6 +21,7 @@ from app.schemas.model_registry import (
 )
 from app.services.model_registry_service import ModelRegistryService
 from app.services.ollama_discovery import OllamaDiscoveryError
+from app.services.rate_limiter import get_rate_limiter
 
 logger = logging.getLogger(__name__)
 
@@ -124,6 +126,10 @@ async def refresh_models(
     current_user: Annotated[User, Depends(get_current_user)],
 ) -> ModelRefreshResponse:
     """Discover installed models from Ollama and reconcile with registry."""
+    settings = get_settings()
+    limiter = get_rate_limiter()
+    limiter.enforce(str(current_user.id), settings.rate_limit_model_refresh_per_user_per_minute, 60, "model_refresh")
+
     service = ModelRegistryService()
     try:
         sync_result = await service.sync_models_from_ollama(session)

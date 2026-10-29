@@ -5,6 +5,7 @@ from fastapi.responses import StreamingResponse
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.api.deps import get_current_user, require_workspace_permission
+from app.core.config import get_settings
 from app.core.message_role import MessageRole
 from app.core.workspace_role import AuditOutcome, WorkspacePermission
 from app.db.session import get_session
@@ -29,6 +30,7 @@ from app.services.message import create_workspace_conversation_message
 from app.services.message_source import save_assistant_message_sources
 from app.services.rag import answer_with_rag
 from app.services.rag_stream import answer_with_rag_stream
+from app.services.rate_limiter import get_rate_limiter
 
 router = APIRouter(
     prefix="/rag",
@@ -53,6 +55,11 @@ async def ask_rag(
         Depends(get_ollama_llm_provider),
     ],
 ) -> RAGResponse:
+    settings = get_settings()
+    limiter = get_rate_limiter()
+    limiter.enforce(str(current_user.id), settings.rate_limit_rag_per_user_per_minute, 60, "rag_ask_user")
+    limiter.enforce(str(membership.workspace_id), settings.rate_limit_rag_per_workspace_per_minute, 60, "rag_ask_workspace")
+
     if payload.conversation_id is None:
         title = payload.query.strip()[:255] or None
 
@@ -183,6 +190,11 @@ async def ask_rag_stream(
         Depends(get_ollama_llm_provider),
     ],
 ) -> StreamingResponse:
+    settings = get_settings()
+    limiter = get_rate_limiter()
+    limiter.enforce(str(current_user.id), settings.rate_limit_rag_per_user_per_minute, 60, "rag_stream_user")
+    limiter.enforce(str(membership.workspace_id), settings.rate_limit_rag_per_workspace_per_minute, 60, "rag_stream_workspace")
+
     if payload.conversation_id is None:
         title = payload.query.strip()[:255] or None
 

@@ -31,6 +31,7 @@ from app.services.agent_llm_parser import (
 )
 from app.services.agent_prompts import AGENT_SYSTEM_PROMPT, build_agent_prompt
 from app.services.agent_tools import ToolRegistry
+from app.services.inference_governor import get_inference_governor
 from app.services.model_router import ModelRouter
 from app.services.task_classifier import TaskClassifier
 
@@ -264,7 +265,9 @@ class AgentOrchestrator:
                 )
 
             try:
-                raw_response = await self.llm_provider.generate(messages)
+                governor = get_inference_governor()
+                async with governor.acquire(caller_info=f"agent_decision:{run.id}"):
+                    raw_response = await self.llm_provider.generate(messages)
                 decision = parse_agent_decision(raw_response)
                 return decision
             except LLMParseError as exc:

@@ -47,6 +47,7 @@ from app.services.agent_executor import ToolExecutor
 from app.services.agent_orchestrator import AgentOrchestrator
 from app.services.agent_policy import AgentPolicy
 from app.services.agent_tools import ToolRegistry, build_default_registry
+from app.services.rate_limiter import get_rate_limiter
 
 logger = logging.getLogger(__name__)
 
@@ -115,6 +116,9 @@ async def create_agent_run(
     ),
 ) -> AgentRunResponse:
     settings = get_settings()
+    rate_limiter = get_rate_limiter()
+    rate_limiter.enforce(str(current_user.id), settings.rate_limit_agent_runs_per_user_per_minute, 60, "agent_run_user")
+    rate_limiter.enforce(str(membership.workspace_id), settings.rate_limit_agent_runs_per_workspace_per_minute, 60, "agent_run_workspace")
 
     # Enforce active runs budget per user in this workspace
     active_count = await agent_repo.count_active_runs(

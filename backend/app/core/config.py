@@ -43,6 +43,27 @@ class Settings(BaseSettings):
     agent_approval_ttl_seconds: int = 900
     agent_max_result_bytes: int = 16_000
 
+    # Resource Governance & Reliability Hardening (T260028)
+    rate_limit_enabled: bool = True
+    rate_limit_redis_url: str = "redis://127.0.0.1:16379/0"
+    rate_limit_auth_per_minute: int = 60
+    rate_limit_rag_per_user_per_minute: int = 60
+    rate_limit_rag_per_workspace_per_minute: int = 120
+    rate_limit_agent_runs_per_user_per_minute: int = 30
+    rate_limit_agent_runs_per_workspace_per_minute: int = 60
+    rate_limit_benchmarks_per_workspace_per_hour: int = 20
+    rate_limit_model_refresh_per_user_per_minute: int = 30
+
+    # Inference Concurrency Controls (T260028)
+    ollama_max_concurrency: int = 2
+    ollama_max_queue_size: int = 10
+    ollama_queue_timeout_seconds: float = 15.0
+
+    # Agent Recovery & Leases (T260028)
+    agent_tool_timeout_seconds: float = 30.0
+    agent_run_lease_ttl_seconds: int = 60
+    agent_max_recovery_attempts: int = 3
+
     model_config = SettingsConfigDict(
         env_file=PROJECT_ROOT / ".env",
         env_file_encoding="utf-8",

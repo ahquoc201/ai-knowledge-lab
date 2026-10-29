@@ -17,6 +17,7 @@ from app.api.deps import (
     get_session,
     require_workspace_permission,
 )
+from app.core.config import get_settings
 from app.core.workspace_role import WorkspacePermission
 from app.db.session import AsyncSessionLocal
 from app.evaluation.agent_dataset import (
@@ -34,6 +35,7 @@ from app.schemas.benchmark import (
     BenchmarkRunSummary,
 )
 from app.services.benchmark_service import BenchmarkService
+from app.services.rate_limiter import get_rate_limiter
 
 router = APIRouter(
     prefix="/benchmarks",
@@ -102,6 +104,15 @@ async def trigger_benchmark_run(
     ],
 ) -> BenchmarkRunResponse:
     """Trigger a new benchmark run in the workspace."""
+    settings = get_settings()
+    limiter = get_rate_limiter()
+    limiter.enforce(
+        str(membership.workspace_id),
+        settings.rate_limit_benchmarks_per_workspace_per_hour,
+        3600,
+        "benchmark_run",
+    )
+
     service = BenchmarkService(AsyncSessionLocal)
     run = await service.execute_and_record_run(
         workspace_id=membership.workspace_id,
