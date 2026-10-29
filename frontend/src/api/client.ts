@@ -440,4 +440,14 @@ export const api = {
   health: {
     check: (): Promise<{ status: string }> => request<{ status: string }>("/health"),
   },
+
+  reliability: {
+    getReady: (): Promise<any> => request("/health/ready"),
+    getMetrics: (workspaceId?: string): Promise<any> => {
+      const q = workspaceId ? `?workspace_id=${workspaceId}` : "";
+      return request(`/reliability/metrics${q}`);
+    },
+    recoverStuck: (): Promise<any> =>
+      request("/reliability/recover-stuck", { method: "POST" }),
+  },
 };

@@ -10,6 +10,7 @@ import { SettingsPage } from "./pages/SettingsPage";
 import { AgentWorkspacePage } from "./pages/AgentWorkspacePage";
 import { BenchmarksPage } from "./pages/BenchmarksPage";
 import { ModelsPage } from "./pages/ModelsPage";
+import { OperationsPage } from "./pages/OperationsPage";
 
 export const App: React.FC = () => {
   const { isAuthenticated } = useAuth();
@@ -38,6 +39,8 @@ export const App: React.FC = () => {
         return <BenchmarksPage />;
       case "models":
         return <ModelsPage />;
+      case "reliability":
+        return <OperationsPage />;
       case "settings":
         return <SettingsPage />;
       default:
@@ -81,6 +84,11 @@ export const App: React.FC = () => {
         return {
           title: "AI Model Registry & Adaptive Routing",
           subtitle: "Quản lý năng lực mô hình, đánh giá benchmark và tự động điều phối có dự phòng",
+        };
+      case "reliability":
+        return {
+          title: "Vận hành & Giám sát Độ tin cậy (Operations)",
+          subtitle: "Kiểm soát tài nguyên phần cứng, giới hạn tốc độ và tự động phục hồi sự cố",
         };
       case "settings":
         return {
