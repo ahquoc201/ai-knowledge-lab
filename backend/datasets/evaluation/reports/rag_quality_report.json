@@ -1,0 +1,1153 @@
+{
+  "metadata": {
+    "dataset_id": "ai-knowledge-lab-rag-quality",
+    "dataset_version": "2.0",
+    "timestamp": "2026-11-10T04:26:27.566499+00:00",
+    "execution_mode": "retrieval-only",
+    "embedding_model": "intfloat/multilingual-e5-small",
+    "llm_model": "None (retrieval-only)",
+    "k": 5,
+    "total_cases": 36,
+    "answerable_cases_count": 26,
+    "refusal_cases_count": 10
+  },
+  "retrieval_metrics": {
+    "recall_at_1": 0.8077,
+    "recall_at_3": 0.9615,
+    "recall_at_5": 0.9615,
+    "precision_at_1": 0.8462,
+    "precision_at_3": 0.3461,
+    "precision_at_5": 0.2077,
+    "mrr_at_5": 0.8974,
+    "retrieval_coverage": 0.9615,
+    "empty_retrieval_rate": 0.0,
+    "tenant_isolation_rate": 1.0,
+    "mean_latency_ms": 183.33
+  },
+  "category_breakdown": {
+    "AMBIGUOUS_QUERY": {
+      "total": 3,
+      "passed": 2,
+      "pass_rate": 0.6667,
+      "mean_recall_at_5": 0.6667
+    },
+    "CROSS_WORKSPACE": {
+      "total": 3,
+      "passed": 3,
+      "pass_rate": 1.0,
+      "mean_recall_at_5": 1.0
+    },
+    "FACTUAL_EXACT": {
+      "total": 9,
+      "passed": 9,
+      "pass_rate": 1.0,
+      "mean_recall_at_5": 1.0
+    },
+    "INSUFFICIENT_INFO": {
+      "total": 4,
+      "passed": 4,
+      "pass_rate": 1.0,
+      "mean_recall_at_5": "N/A (Refusal)"
+    },
+    "MULTI_DOC": {
+      "total": 4,
+      "passed": 4,
+      "pass_rate": 1.0,
+      "mean_recall_at_5": 1.0
+    },
+    "OUT_OF_DOMAIN": {
+      "total": 3,
+      "passed": 3,
+      "pass_rate": 1.0,
+      "mean_recall_at_5": "N/A (Refusal)"
+    },
+    "PROMPT_INJECTION": {
+      "total": 3,
+      "passed": 3,
+      "pass_rate": 1.0,
+      "mean_recall_at_5": 1.0
+    },
+    "SEMANTIC_PARAPHRASE": {
+      "total": 7,
+      "passed": 7,
+      "pass_rate": 1.0,
+      "mean_recall_at_5": 1.0
+    }
+  },
+  "cases": [
+    {
+      "case_id": "TC-VI-FACT-01",
+      "category": "FACTUAL_EXACT",
+      "difficulty": "EASY",
+      "workspace_ref": "workspace_alpha",
+      "passed": true,
+      "recall_at_5": 1.0,
+      "precision_at_5": 0.2,
+      "reciprocal_rank": 1.0,
+      "retrieved_keys": [
+        "doc_pg_arch",
+        "doc_rag_pipeline",
+        "doc_redis_governor",
+        "doc_injection_safe",
+        "doc_celery_workers"
+      ],
+      "similarity_scores": [
+        0.9058,
+        0.8526,
+        0.8373,
+        0.8193,
+        0.8148
+      ],
+      "cross_tenant_chunks": 0,
+      "classification": "INSUFFICIENT_EVIDENCE_TO_GRADE",
+      "root_cause": "NONE",
+      "notes": "Retrieval successfully found expected evidence",
+      "retrieval_latency_ms": 471.5,
+      "generation_latency_ms": 0.0
+    },
+    {
+      "case_id": "TC-VI-FACT-02",
+      "category": "FACTUAL_EXACT",
+      "difficulty": "EASY",
+      "workspace_ref": "workspace_alpha",
+      "passed": true,
+      "recall_at_5": 1.0,
+      "precision_at_5": 0.2,
+      "reciprocal_rank": 1.0,
+      "retrieved_keys": [
+        "doc_redis_governor",
+        "doc_celery_workers",
+        "doc_rag_pipeline",
+        "doc_pg_arch",
+        "doc_injection_safe"
+      ],
+      "similarity_scores": [
+        0.8989,
+        0.8459,
+        0.8397,
+        0.8295,
+        0.8175
+      ],
+      "cross_tenant_chunks": 0,
+      "classification": "INSUFFICIENT_EVIDENCE_TO_GRADE",
+      "root_cause": "NONE",
+      "notes": "Retrieval successfully found expected evidence",
+      "retrieval_latency_ms": 180.8,
+      "generation_latency_ms": 0.0
+    },
+    {
+      "case_id": "TC-VI-FACT-03",
+      "category": "FACTUAL_EXACT",
+      "difficulty": "EASY",
+      "workspace_ref": "workspace_alpha",
+      "passed": true,
+      "recall_at_5": 1.0,
+      "precision_at_5": 0.2,
+      "reciprocal_rank": 1.0,
+      "retrieved_keys": [
+        "doc_celery_workers",
+        "doc_rag_pipeline",
+        "doc_pg_arch",
+        "doc_redis_governor",
+        "doc_injection_safe"
+      ],
+      "similarity_scores": [
+        0.8994,
+        0.8417,
+        0.8383,
+        0.8259,
+        0.7933
+      ],
+      "cross_tenant_chunks": 0,
+      "classification": "INSUFFICIENT_EVIDENCE_TO_GRADE",
+      "root_cause": "NONE",
+      "notes": "Retrieval successfully found expected evidence",
+      "retrieval_latency_ms": 162.67,
+      "generation_latency_ms": 0.0
+    },
+    {
+      "case_id": "TC-VI-FACT-04",
+      "category": "FACTUAL_EXACT",
+      "difficulty": "EASY",
+      "workspace_ref": "workspace_alpha",
+      "passed": true,
+      "recall_at_5": 1.0,
+      "precision_at_5": 0.2,
+      "reciprocal_rank": 1.0,
+      "retrieved_keys": [
+        "doc_celery_workers",
+        "doc_pg_arch",
+        "doc_rag_pipeline",
+        "doc_redis_governor",
+        "doc_injection_safe"
+      ],
+      "similarity_scores": [
+        0.8643,
+        0.8223,
+        0.8054,
+        0.8046,
+        0.7975
+      ],
+      "cross_tenant_chunks": 0,
+      "classification": "INSUFFICIENT_EVIDENCE_TO_GRADE",
+      "root_cause": "NONE",
+      "notes": "Retrieval successfully found expected evidence",
+      "retrieval_latency_ms": 284.55,
+      "generation_latency_ms": 0.0
+    },
+    {
+      "case_id": "TC-VI-FACT-05",
+      "category": "FACTUAL_EXACT",
+      "difficulty": "EASY",
+      "workspace_ref": "workspace_alpha",
+      "passed": true,
+      "recall_at_5": 1.0,
+      "precision_at_5": 0.2,
+      "reciprocal_rank": 1.0,
+      "retrieved_keys": [
+        "doc_redis_governor",
+        "doc_pg_arch",
+        "doc_celery_workers",
+        "doc_rag_pipeline",
+        "doc_injection_safe"
+      ],
+      "similarity_scores": [
+        0.8813,
+        0.8241,
+        0.8239,
+        0.8199,
+        0.7998
+      ],
+      "cross_tenant_chunks": 0,
+      "classification": "INSUFFICIENT_EVIDENCE_TO_GRADE",
+      "root_cause": "NONE",
+      "notes": "Retrieval successfully found expected evidence",
+      "retrieval_latency_ms": 307.39,
+      "generation_latency_ms": 0.0
+    },
+    {
+      "case_id": "TC-EN-FACT-01",
+      "category": "FACTUAL_EXACT",
+      "difficulty": "EASY",
+      "workspace_ref": "workspace_alpha",
+      "passed": true,
+      "recall_at_5": 1.0,
+      "precision_at_5": 0.2,
+      "reciprocal_rank": 1.0,
+      "retrieved_keys": [
+        "doc_fastapi_security",
+        "doc_redis_governor",
+        "doc_rag_pipeline",
+        "doc_injection_safe",
+        "doc_celery_workers"
+      ],
+      "similarity_scores": [
+        0.8648,
+        0.7918,
+        0.7783,
+        0.7689,
+        0.767
+      ],
+      "cross_tenant_chunks": 0,
+      "classification": "INSUFFICIENT_EVIDENCE_TO_GRADE",
+      "root_cause": "NONE",
+      "notes": "Retrieval successfully found expected evidence",
+      "retrieval_latency_ms": 326.97,
+      "generation_latency_ms": 0.0
+    },
+    {
+      "case_id": "TC-EN-FACT-02",
+      "category": "FACTUAL_EXACT",
+      "difficulty": "EASY",
+      "workspace_ref": "workspace_alpha",
+      "passed": true,
+      "recall_at_5": 1.0,
+      "precision_at_5": 0.2,
+      "reciprocal_rank": 1.0,
+      "retrieved_keys": [
+        "doc_fastapi_security",
+        "doc_rag_pipeline",
+        "doc_redis_governor",
+        "doc_celery_workers",
+        "doc_pg_arch"
+      ],
+      "similarity_scores": [
+        0.8995,
+        0.814,
+        0.8118,
+        0.7917,
+        0.7711
+      ],
+      "cross_tenant_chunks": 0,
+      "classification": "INSUFFICIENT_EVIDENCE_TO_GRADE",
+      "root_cause": "NONE",
+      "notes": "Retrieval successfully found expected evidence",
+      "retrieval_latency_ms": 272.32,
+      "generation_latency_ms": 0.0
+    },
+    {
+      "case_id": "TC-EN-FACT-03",
+      "category": "FACTUAL_EXACT",
+      "difficulty": "EASY",
+      "workspace_ref": "workspace_alpha",
+      "passed": true,
+      "recall_at_5": 1.0,
+      "precision_at_5": 0.2,
+      "reciprocal_rank": 1.0,
+      "retrieved_keys": [
+        "doc_rag_pipeline",
+        "doc_fastapi_security",
+        "doc_redis_governor",
+        "doc_pg_arch",
+        "doc_celery_workers"
+      ],
+      "similarity_scores": [
+        0.8652,
+        0.7931,
+        0.7705,
+        0.7673,
+        0.7641
+      ],
+      "cross_tenant_chunks": 0,
+      "classification": "INSUFFICIENT_EVIDENCE_TO_GRADE",
+      "root_cause": "NONE",
+      "notes": "Retrieval successfully found expected evidence",
+      "retrieval_latency_ms": 115.03,
+      "generation_latency_ms": 0.0
+    },
+    {
+      "case_id": "TC-EN-FACT-04",
+      "category": "FACTUAL_EXACT",
+      "difficulty": "MEDIUM",
+      "workspace_ref": "workspace_alpha",
+      "passed": true,
+      "recall_at_5": 1.0,
+      "precision_at_5": 0.2,
+      "reciprocal_rank": 0.5,
+      "retrieved_keys": [
+        "doc_rag_pipeline",
+        "doc_pg_arch",
+        "doc_celery_workers",
+        "doc_fastapi_security",
+        "doc_redis_governor"
+      ],
+      "similarity_scores": [
+        0.8245,
+        0.7988,
+        0.7776,
+        0.7592,
+        0.758
+      ],
+      "cross_tenant_chunks": 0,
+      "classification": "INSUFFICIENT_EVIDENCE_TO_GRADE",
+      "root_cause": "NONE",
+      "notes": "Retrieval successfully found expected evidence",
+      "retrieval_latency_ms": 117.27,
+      "generation_latency_ms": 0.0
+    },
+    {
+      "case_id": "TC-VI-PARA-01",
+      "category": "SEMANTIC_PARAPHRASE",
+      "difficulty": "MEDIUM",
+      "workspace_ref": "workspace_alpha",
+      "passed": true,
+      "recall_at_5": 1.0,
+      "precision_at_5": 0.2,
+      "reciprocal_rank": 1.0,
+      "retrieved_keys": [
+        "doc_pg_arch",
+        "doc_redis_governor",
+        "doc_celery_workers",
+        "doc_injection_safe",
+        "doc_rag_pipeline"
+      ],
+      "similarity_scores": [
+        0.8659,
+        0.8531,
+        0.8493,
+        0.8399,
+        0.8346
+      ],
+      "cross_tenant_chunks": 0,
+      "classification": "INSUFFICIENT_EVIDENCE_TO_GRADE",
+      "root_cause": "NONE",
+      "notes": "Retrieval successfully found expected evidence",
+      "retrieval_latency_ms": 132.41,
+      "generation_latency_ms": 0.0
+    },
+    {
+      "case_id": "TC-VI-PARA-02",
+      "category": "SEMANTIC_PARAPHRASE",
+      "difficulty": "MEDIUM",
+      "workspace_ref": "workspace_alpha",
+      "passed": true,
+      "recall_at_5": 1.0,
+      "precision_at_5": 0.2,
+      "reciprocal_rank": 1.0,
+      "retrieved_keys": [
+        "doc_redis_governor",
+        "doc_injection_safe",
+        "doc_celery_workers",
+        "doc_pg_arch",
+        "doc_rag_pipeline"
+      ],
+      "similarity_scores": [
+        0.8746,
+        0.8498,
+        0.8454,
+        0.8411,
+        0.8404
+      ],
+      "cross_tenant_chunks": 0,
+      "classification": "INSUFFICIENT_EVIDENCE_TO_GRADE",
+      "root_cause": "NONE",
+      "notes": "Retrieval successfully found expected evidence",
+      "retrieval_latency_ms": 179.81,
+      "generation_latency_ms": 0.0
+    },
+    {
+      "case_id": "TC-VI-PARA-03",
+      "category": "SEMANTIC_PARAPHRASE",
+      "difficulty": "MEDIUM",
+      "workspace_ref": "workspace_alpha",
+      "passed": true,
+      "recall_at_5": 1.0,
+      "precision_at_5": 0.2,
+      "reciprocal_rank": 1.0,
+      "retrieved_keys": [
+        "doc_celery_workers",
+        "doc_redis_governor",
+        "doc_pg_arch",
+        "doc_injection_safe",
+        "doc_rag_pipeline"
+      ],
+      "similarity_scores": [
+        0.8986,
+        0.8509,
+        0.8464,
+        0.8298,
+        0.8188
+      ],
+      "cross_tenant_chunks": 0,
+      "classification": "INSUFFICIENT_EVIDENCE_TO_GRADE",
+      "root_cause": "NONE",
+      "notes": "Retrieval successfully found expected evidence",
+      "retrieval_latency_ms": 288.26,
+      "generation_latency_ms": 0.0
+    },
+    {
+      "case_id": "TC-VI-PARA-04",
+      "category": "SEMANTIC_PARAPHRASE",
+      "difficulty": "MEDIUM",
+      "workspace_ref": "workspace_alpha",
+      "passed": true,
+      "recall_at_5": 1.0,
+      "precision_at_5": 0.2,
+      "reciprocal_rank": 1.0,
+      "retrieved_keys": [
+        "doc_celery_workers",
+        "doc_injection_safe",
+        "doc_redis_governor",
+        "doc_pg_arch",
+        "doc_rag_pipeline"
+      ],
+      "similarity_scores": [
+        0.848,
+        0.8447,
+        0.8352,
+        0.8184,
+        0.7878
+      ],
+      "cross_tenant_chunks": 0,
+      "classification": "INSUFFICIENT_EVIDENCE_TO_GRADE",
+      "root_cause": "NONE",
+      "notes": "Retrieval successfully found expected evidence",
+      "retrieval_latency_ms": 263.18,
+      "generation_latency_ms": 0.0
+    },
+    {
+      "case_id": "TC-EN-PARA-01",
+      "category": "SEMANTIC_PARAPHRASE",
+      "difficulty": "MEDIUM",
+      "workspace_ref": "workspace_alpha",
+      "passed": true,
+      "recall_at_5": 1.0,
+      "precision_at_5": 0.2,
+      "reciprocal_rank": 1.0,
+      "retrieved_keys": [
+        "doc_fastapi_security",
+        "doc_rag_pipeline",
+        "doc_redis_governor",
+        "doc_celery_workers",
+        "doc_pg_arch"
+      ],
+      "similarity_scores": [
+        0.8416,
+        0.7887,
+        0.7782,
+        0.7782,
+        0.7739
+      ],
+      "cross_tenant_chunks": 0,
+      "classification": "INSUFFICIENT_EVIDENCE_TO_GRADE",
+      "root_cause": "NONE",
+      "notes": "Retrieval successfully found expected evidence",
+      "retrieval_latency_ms": 295.17,
+      "generation_latency_ms": 0.0
+    },
+    {
+      "case_id": "TC-EN-PARA-02",
+      "category": "SEMANTIC_PARAPHRASE",
+      "difficulty": "MEDIUM",
+      "workspace_ref": "workspace_alpha",
+      "passed": true,
+      "recall_at_5": 1.0,
+      "precision_at_5": 0.2,
+      "reciprocal_rank": 1.0,
+      "retrieved_keys": [
+        "doc_rag_pipeline",
+        "doc_fastapi_security",
+        "doc_redis_governor",
+        "doc_celery_workers",
+        "doc_pg_arch"
+      ],
+      "similarity_scores": [
+        0.8283,
+        0.7821,
+        0.7786,
+        0.7462,
+        0.735
+      ],
+      "cross_tenant_chunks": 0,
+      "classification": "INSUFFICIENT_EVIDENCE_TO_GRADE",
+      "root_cause": "NONE",
+      "notes": "Retrieval successfully found expected evidence",
+      "retrieval_latency_ms": 199.73,
+      "generation_latency_ms": 0.0
+    },
+    {
+      "case_id": "TC-EN-PARA-03",
+      "category": "SEMANTIC_PARAPHRASE",
+      "difficulty": "MEDIUM",
+      "workspace_ref": "workspace_alpha",
+      "passed": true,
+      "recall_at_5": 1.0,
+      "precision_at_5": 0.2,
+      "reciprocal_rank": 0.3333,
+      "retrieved_keys": [
+        "doc_rag_pipeline",
+        "doc_fastapi_security",
+        "doc_pg_arch",
+        "doc_injection_safe",
+        "doc_redis_governor"
+      ],
+      "similarity_scores": [
+        0.8303,
+        0.8286,
+        0.8177,
+        0.8082,
+        0.8008
+      ],
+      "cross_tenant_chunks": 0,
+      "classification": "INSUFFICIENT_EVIDENCE_TO_GRADE",
+      "root_cause": "NONE",
+      "notes": "Retrieval successfully found expected evidence",
+      "retrieval_latency_ms": 251.02,
+      "generation_latency_ms": 0.0
+    },
+    {
+      "case_id": "TC-MD-CROSS-01",
+      "category": "MULTI_DOC",
+      "difficulty": "HARD",
+      "workspace_ref": "workspace_alpha",
+      "passed": true,
+      "recall_at_5": 1.0,
+      "precision_at_5": 0.4,
+      "reciprocal_rank": 1.0,
+      "retrieved_keys": [
+        "doc_rag_pipeline",
+        "doc_pg_arch",
+        "doc_redis_governor",
+        "doc_celery_workers",
+        "doc_injection_safe"
+      ],
+      "similarity_scores": [
+        0.8817,
+        0.8686,
+        0.8381,
+        0.8344,
+        0.8129
+      ],
+      "cross_tenant_chunks": 0,
+      "classification": "INSUFFICIENT_EVIDENCE_TO_GRADE",
+      "root_cause": "NONE",
+      "notes": "Retrieval successfully found expected evidence",
+      "retrieval_latency_ms": 164.65,
+      "generation_latency_ms": 0.0
+    },
+    {
+      "case_id": "TC-MD-CROSS-02",
+      "category": "MULTI_DOC",
+      "difficulty": "HARD",
+      "workspace_ref": "workspace_alpha",
+      "passed": true,
+      "recall_at_5": 1.0,
+      "precision_at_5": 0.2,
+      "reciprocal_rank": 1.0,
+      "retrieved_keys": [
+        "doc_redis_governor",
+        "doc_rag_pipeline",
+        "doc_celery_workers",
+        "doc_pg_arch",
+        "doc_injection_safe"
+      ],
+      "similarity_scores": [
+        0.8998,
+        0.8451,
+        0.8384,
+        0.8181,
+        0.8179
+      ],
+      "cross_tenant_chunks": 0,
+      "classification": "INSUFFICIENT_EVIDENCE_TO_GRADE",
+      "root_cause": "NONE",
+      "notes": "Retrieval successfully found expected evidence",
+      "retrieval_latency_ms": 121.02,
+      "generation_latency_ms": 0.0
+    },
+    {
+      "case_id": "TC-MD-CROSS-03",
+      "category": "MULTI_DOC",
+      "difficulty": "HARD",
+      "workspace_ref": "workspace_alpha",
+      "passed": true,
+      "recall_at_5": 1.0,
+      "precision_at_5": 0.4,
+      "reciprocal_rank": 1.0,
+      "retrieved_keys": [
+        "doc_rag_pipeline",
+        "doc_fastapi_security",
+        "doc_celery_workers",
+        "doc_pg_arch",
+        "doc_redis_governor"
+      ],
+      "similarity_scores": [
+        0.8679,
+        0.8172,
+        0.8163,
+        0.7928,
+        0.7863
+      ],
+      "cross_tenant_chunks": 0,
+      "classification": "INSUFFICIENT_EVIDENCE_TO_GRADE",
+      "root_cause": "NONE",
+      "notes": "Retrieval successfully found expected evidence",
+      "retrieval_latency_ms": 111.26,
+      "generation_latency_ms": 0.0
+    },
+    {
+      "case_id": "TC-MD-CROSS-04",
+      "category": "MULTI_DOC",
+      "difficulty": "HARD",
+      "workspace_ref": "workspace_alpha",
+      "passed": true,
+      "recall_at_5": 1.0,
+      "precision_at_5": 0.2,
+      "reciprocal_rank": 1.0,
+      "retrieved_keys": [
+        "doc_injection_safe",
+        "doc_pg_arch",
+        "doc_celery_workers",
+        "doc_redis_governor",
+        "doc_rag_pipeline"
+      ],
+      "similarity_scores": [
+        0.8791,
+        0.847,
+        0.8399,
+        0.8279,
+        0.8165
+      ],
+      "cross_tenant_chunks": 0,
+      "classification": "INSUFFICIENT_EVIDENCE_TO_GRADE",
+      "root_cause": "NONE",
+      "notes": "Retrieval successfully found expected evidence",
+      "retrieval_latency_ms": 107.29,
+      "generation_latency_ms": 0.0
+    },
+    {
+      "case_id": "TC-AMB-QUERY-01",
+      "category": "AMBIGUOUS_QUERY",
+      "difficulty": "MEDIUM",
+      "workspace_ref": "workspace_alpha",
+      "passed": true,
+      "recall_at_5": 1.0,
+      "precision_at_5": 0.2,
+      "reciprocal_rank": 1.0,
+      "retrieved_keys": [
+        "doc_redis_governor",
+        "doc_injection_safe",
+        "doc_pg_arch",
+        "doc_celery_workers",
+        "doc_rag_pipeline"
+      ],
+      "similarity_scores": [
+        0.8145,
+        0.8135,
+        0.81,
+        0.8088,
+        0.7961
+      ],
+      "cross_tenant_chunks": 0,
+      "classification": "INSUFFICIENT_EVIDENCE_TO_GRADE",
+      "root_cause": "NONE",
+      "notes": "Retrieval successfully found expected evidence",
+      "retrieval_latency_ms": 93.09,
+      "generation_latency_ms": 0.0
+    },
+    {
+      "case_id": "TC-AMB-QUERY-02",
+      "category": "AMBIGUOUS_QUERY",
+      "difficulty": "MEDIUM",
+      "workspace_ref": "workspace_alpha",
+      "passed": false,
+      "recall_at_5": 0.0,
+      "precision_at_5": 0.0,
+      "reciprocal_rank": 0.0,
+      "retrieved_keys": [
+        "doc_injection_safe",
+        "doc_pg_arch",
+        "doc_redis_governor",
+        "doc_celery_workers",
+        "doc_rag_pipeline"
+      ],
+      "similarity_scores": [
+        0.819,
+        0.8009,
+        0.8,
+        0.7806,
+        0.7782
+      ],
+      "cross_tenant_chunks": 0,
+      "classification": "INSUFFICIENT_EVIDENCE_TO_GRADE",
+      "root_cause": "RETRIEVAL_FAILURE",
+      "notes": "Retrieval failed to find expected evidence in top-k",
+      "retrieval_latency_ms": 141.42,
+      "generation_latency_ms": 0.0
+    },
+    {
+      "case_id": "TC-AMB-QUERY-03",
+      "category": "AMBIGUOUS_QUERY",
+      "difficulty": "MEDIUM",
+      "workspace_ref": "workspace_alpha",
+      "passed": true,
+      "recall_at_5": 1.0,
+      "precision_at_5": 0.2,
+      "reciprocal_rank": 1.0,
+      "retrieved_keys": [
+        "doc_rag_pipeline",
+        "doc_fastapi_security",
+        "doc_pg_arch",
+        "doc_redis_governor",
+        "doc_celery_workers"
+      ],
+      "similarity_scores": [
+        0.8335,
+        0.7846,
+        0.7547,
+        0.7533,
+        0.7495
+      ],
+      "cross_tenant_chunks": 0,
+      "classification": "INSUFFICIENT_EVIDENCE_TO_GRADE",
+      "root_cause": "NONE",
+      "notes": "Retrieval successfully found expected evidence",
+      "retrieval_latency_ms": 175.27,
+      "generation_latency_ms": 0.0
+    },
+    {
+      "case_id": "TC-INS-INFO-01",
+      "category": "INSUFFICIENT_INFO",
+      "difficulty": "MEDIUM",
+      "workspace_ref": "workspace_alpha",
+      "passed": true,
+      "recall_at_5": 0.0,
+      "precision_at_5": 0.0,
+      "reciprocal_rank": 0.0,
+      "retrieved_keys": [
+        "doc_pg_arch",
+        "doc_rag_pipeline",
+        "doc_redis_governor",
+        "doc_celery_workers",
+        "doc_injection_safe"
+      ],
+      "similarity_scores": [
+        0.8866,
+        0.834,
+        0.8334,
+        0.8138,
+        0.8077
+      ],
+      "cross_tenant_chunks": 0,
+      "classification": "INSUFFICIENT_EVIDENCE_TO_GRADE",
+      "root_cause": "NONE",
+      "notes": "Zero cross-tenant or negative documents retrieved",
+      "retrieval_latency_ms": 184.21,
+      "generation_latency_ms": 0.0
+    },
+    {
+      "case_id": "TC-INS-INFO-02",
+      "category": "INSUFFICIENT_INFO",
+      "difficulty": "MEDIUM",
+      "workspace_ref": "workspace_alpha",
+      "passed": true,
+      "recall_at_5": 0.0,
+      "precision_at_5": 0.0,
+      "reciprocal_rank": 0.0,
+      "retrieved_keys": [
+        "doc_celery_workers",
+        "doc_redis_governor",
+        "doc_injection_safe",
+        "doc_pg_arch",
+        "doc_rag_pipeline"
+      ],
+      "similarity_scores": [
+        0.8747,
+        0.8304,
+        0.8247,
+        0.8212,
+        0.8113
+      ],
+      "cross_tenant_chunks": 0,
+      "classification": "INSUFFICIENT_EVIDENCE_TO_GRADE",
+      "root_cause": "NONE",
+      "notes": "Zero cross-tenant or negative documents retrieved",
+      "retrieval_latency_ms": 133.99,
+      "generation_latency_ms": 0.0
+    },
+    {
+      "case_id": "TC-INS-INFO-03",
+      "category": "INSUFFICIENT_INFO",
+      "difficulty": "MEDIUM",
+      "workspace_ref": "workspace_alpha",
+      "passed": true,
+      "recall_at_5": 0.0,
+      "precision_at_5": 0.0,
+      "reciprocal_rank": 0.0,
+      "retrieved_keys": [
+        "doc_fastapi_security",
+        "doc_rag_pipeline",
+        "doc_pg_arch",
+        "doc_redis_governor",
+        "doc_celery_workers"
+      ],
+      "similarity_scores": [
+        0.8262,
+        0.8157,
+        0.7861,
+        0.7778,
+        0.7736
+      ],
+      "cross_tenant_chunks": 0,
+      "classification": "INSUFFICIENT_EVIDENCE_TO_GRADE",
+      "root_cause": "NONE",
+      "notes": "Zero cross-tenant or negative documents retrieved",
+      "retrieval_latency_ms": 218.32,
+      "generation_latency_ms": 0.0
+    },
+    {
+      "case_id": "TC-INS-INFO-04",
+      "category": "INSUFFICIENT_INFO",
+      "difficulty": "MEDIUM",
+      "workspace_ref": "workspace_alpha",
+      "passed": true,
+      "recall_at_5": 0.0,
+      "precision_at_5": 0.0,
+      "reciprocal_rank": 0.0,
+      "retrieved_keys": [
+        "doc_celery_workers",
+        "doc_redis_governor",
+        "doc_pg_arch",
+        "doc_rag_pipeline",
+        "doc_injection_safe"
+      ],
+      "similarity_scores": [
+        0.8263,
+        0.8192,
+        0.7972,
+        0.7896,
+        0.7864
+      ],
+      "cross_tenant_chunks": 0,
+      "classification": "INSUFFICIENT_EVIDENCE_TO_GRADE",
+      "root_cause": "NONE",
+      "notes": "Zero cross-tenant or negative documents retrieved",
+      "retrieval_latency_ms": 171.91,
+      "generation_latency_ms": 0.0
+    },
+    {
+      "case_id": "TC-OOD-REF-01",
+      "category": "OUT_OF_DOMAIN",
+      "difficulty": "EASY",
+      "workspace_ref": "workspace_alpha",
+      "passed": true,
+      "recall_at_5": 0.0,
+      "precision_at_5": 0.0,
+      "reciprocal_rank": 0.0,
+      "retrieved_keys": [
+        "doc_redis_governor",
+        "doc_injection_safe",
+        "doc_rag_pipeline",
+        "doc_celery_workers",
+        "doc_pg_arch"
+      ],
+      "similarity_scores": [
+        0.7709,
+        0.7654,
+        0.7573,
+        0.7561,
+        0.75
+      ],
+      "cross_tenant_chunks": 0,
+      "classification": "INSUFFICIENT_EVIDENCE_TO_GRADE",
+      "root_cause": "NONE",
+      "notes": "Zero cross-tenant or negative documents retrieved",
+      "retrieval_latency_ms": 119.15,
+      "generation_latency_ms": 0.0
+    },
+    {
+      "case_id": "TC-OOD-REF-02",
+      "category": "OUT_OF_DOMAIN",
+      "difficulty": "EASY",
+      "workspace_ref": "workspace_alpha",
+      "passed": true,
+      "recall_at_5": 0.0,
+      "precision_at_5": 0.0,
+      "reciprocal_rank": 0.0,
+      "retrieved_keys": [
+        "doc_rag_pipeline",
+        "doc_pg_arch",
+        "doc_celery_workers",
+        "doc_injection_safe",
+        "doc_redis_governor"
+      ],
+      "similarity_scores": [
+        0.7778,
+        0.7724,
+        0.7707,
+        0.7625,
+        0.7609
+      ],
+      "cross_tenant_chunks": 0,
+      "classification": "INSUFFICIENT_EVIDENCE_TO_GRADE",
+      "root_cause": "NONE",
+      "notes": "Zero cross-tenant or negative documents retrieved",
+      "retrieval_latency_ms": 158.32,
+      "generation_latency_ms": 0.0
+    },
+    {
+      "case_id": "TC-OOD-REF-03",
+      "category": "OUT_OF_DOMAIN",
+      "difficulty": "EASY",
+      "workspace_ref": "workspace_alpha",
+      "passed": true,
+      "recall_at_5": 0.0,
+      "precision_at_5": 0.0,
+      "reciprocal_rank": 0.0,
+      "retrieved_keys": [
+        "doc_rag_pipeline",
+        "doc_fastapi_security",
+        "doc_redis_governor",
+        "doc_celery_workers",
+        "doc_injection_safe"
+      ],
+      "similarity_scores": [
+        0.7704,
+        0.7692,
+        0.7502,
+        0.7345,
+        0.7129
+      ],
+      "cross_tenant_chunks": 0,
+      "classification": "INSUFFICIENT_EVIDENCE_TO_GRADE",
+      "root_cause": "NONE",
+      "notes": "Zero cross-tenant or negative documents retrieved",
+      "retrieval_latency_ms": 157.59,
+      "generation_latency_ms": 0.0
+    },
+    {
+      "case_id": "TC-TENANT-ISO-01",
+      "category": "CROSS_WORKSPACE",
+      "difficulty": "HARD",
+      "workspace_ref": "workspace_alpha",
+      "passed": true,
+      "recall_at_5": 0.0,
+      "precision_at_5": 0.0,
+      "reciprocal_rank": 0.0,
+      "retrieved_keys": [
+        "doc_pg_arch",
+        "doc_redis_governor",
+        "doc_celery_workers",
+        "doc_rag_pipeline",
+        "doc_injection_safe"
+      ],
+      "similarity_scores": [
+        0.7966,
+        0.7947,
+        0.7862,
+        0.7729,
+        0.7625
+      ],
+      "cross_tenant_chunks": 0,
+      "classification": "INSUFFICIENT_EVIDENCE_TO_GRADE",
+      "root_cause": "NONE",
+      "notes": "Zero cross-tenant or negative documents retrieved",
+      "retrieval_latency_ms": 132.21,
+      "generation_latency_ms": 0.0
+    },
+    {
+      "case_id": "TC-TENANT-ISO-02",
+      "category": "CROSS_WORKSPACE",
+      "difficulty": "HARD",
+      "workspace_ref": "workspace_alpha",
+      "passed": true,
+      "recall_at_5": 0.0,
+      "precision_at_5": 0.0,
+      "reciprocal_rank": 0.0,
+      "retrieved_keys": [
+        "doc_fastapi_security",
+        "doc_rag_pipeline",
+        "doc_celery_workers",
+        "doc_redis_governor",
+        "doc_pg_arch"
+      ],
+      "similarity_scores": [
+        0.8076,
+        0.7956,
+        0.7736,
+        0.7727,
+        0.7699
+      ],
+      "cross_tenant_chunks": 0,
+      "classification": "INSUFFICIENT_EVIDENCE_TO_GRADE",
+      "root_cause": "NONE",
+      "notes": "Zero cross-tenant or negative documents retrieved",
+      "retrieval_latency_ms": 91.18,
+      "generation_latency_ms": 0.0
+    },
+    {
+      "case_id": "TC-TENANT-ISO-03",
+      "category": "CROSS_WORKSPACE",
+      "difficulty": "HARD",
+      "workspace_ref": "workspace_beta",
+      "passed": true,
+      "recall_at_5": 1.0,
+      "precision_at_5": 0.2,
+      "reciprocal_rank": 1.0,
+      "retrieved_keys": [
+        "doc_beta_confidential",
+        "doc_beta_tokens"
+      ],
+      "similarity_scores": [
+        0.9116,
+        0.7152
+      ],
+      "cross_tenant_chunks": 0,
+      "classification": "INSUFFICIENT_EVIDENCE_TO_GRADE",
+      "root_cause": "NONE",
+      "notes": "Retrieval successfully found expected evidence",
+      "retrieval_latency_ms": 96.24,
+      "generation_latency_ms": 0.0
+    },
+    {
+      "case_id": "TC-INJ-PROMPT-01",
+      "category": "PROMPT_INJECTION",
+      "difficulty": "HARD",
+      "workspace_ref": "workspace_alpha",
+      "passed": true,
+      "recall_at_5": 1.0,
+      "precision_at_5": 0.2,
+      "reciprocal_rank": 1.0,
+      "retrieved_keys": [
+        "doc_injection_safe",
+        "doc_pg_arch",
+        "doc_redis_governor",
+        "doc_celery_workers",
+        "doc_rag_pipeline"
+      ],
+      "similarity_scores": [
+        0.9329,
+        0.8151,
+        0.81,
+        0.8093,
+        0.7796
+      ],
+      "cross_tenant_chunks": 0,
+      "classification": "INSUFFICIENT_EVIDENCE_TO_GRADE",
+      "root_cause": "NONE",
+      "notes": "Retrieval successfully found expected evidence",
+      "retrieval_latency_ms": 113.68,
+      "generation_latency_ms": 0.0
+    },
+    {
+      "case_id": "TC-INJ-PROMPT-02",
+      "category": "PROMPT_INJECTION",
+      "difficulty": "HARD",
+      "workspace_ref": "workspace_alpha",
+      "passed": true,
+      "recall_at_5": 1.0,
+      "precision_at_5": 0.2,
+      "reciprocal_rank": 0.5,
+      "retrieved_keys": [
+        "doc_fastapi_security",
+        "doc_injection_safe",
+        "doc_rag_pipeline",
+        "doc_pg_arch",
+        "doc_redis_governor"
+      ],
+      "similarity_scores": [
+        0.8142,
+        0.8002,
+        0.7901,
+        0.7795,
+        0.7738
+      ],
+      "cross_tenant_chunks": 0,
+      "classification": "INSUFFICIENT_EVIDENCE_TO_GRADE",
+      "root_cause": "NONE",
+      "notes": "Retrieval successfully found expected evidence",
+      "retrieval_latency_ms": 119.84,
+      "generation_latency_ms": 0.0
+    },
+    {
+      "case_id": "TC-INJ-PROMPT-03",
+      "category": "PROMPT_INJECTION",
+      "difficulty": "HARD",
+      "workspace_ref": "workspace_alpha",
+      "passed": true,
+      "recall_at_5": 0.0,
+      "precision_at_5": 0.0,
+      "reciprocal_rank": 0.0,
+      "retrieved_keys": [
+        "doc_injection_safe",
+        "doc_celery_workers",
+        "doc_redis_governor",
+        "doc_pg_arch",
+        "doc_rag_pipeline"
+      ],
+      "similarity_scores": [
+        0.8893,
+        0.8492,
+        0.8486,
+        0.825,
+        0.8197
+      ],
+      "cross_tenant_chunks": 0,
+      "classification": "INSUFFICIENT_EVIDENCE_TO_GRADE",
+      "root_cause": "NONE",
+      "notes": "Zero cross-tenant or negative documents retrieved",
+      "retrieval_latency_ms": 141.06,
+      "generation_latency_ms": 0.0
+    }
+  ]
+}
