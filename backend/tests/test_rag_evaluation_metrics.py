@@ -1,6 +1,7 @@
 """Unit tests for pure RAG retrieval metrics (T260030)."""
 
 import pytest
+
 from app.evaluation.rag_metrics import (
     empty_retrieval_rate,
     hit_rate_at_k,

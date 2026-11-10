@@ -3,6 +3,8 @@
 from pathlib import Path
 
 import pytest
+from pydantic import ValidationError
+
 from app.evaluation.rag_dataset import (
     Answerability,
     CaseCategory,
@@ -12,7 +14,6 @@ from app.evaluation.rag_dataset import (
     RAGTestCase,
     load_rag_dataset,
 )
-from pydantic import ValidationError
 
 FIXTURE_PATH = (
     Path(__file__).resolve().parents[1]
