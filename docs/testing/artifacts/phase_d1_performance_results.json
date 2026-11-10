@@ -1,0 +1,379 @@
+{
+  "suite": "T260029_PHASE_D1_PERFORMANCE_ASSESSMENT",
+  "timestamp": "2026-11-09T03:45:29.200355+00:00",
+  "environment": {
+    "branch": "feature/T260029",
+    "alembic_version": "e2b3c4d50005",
+    "initial_db_counts": {
+      "users": 166,
+      "docs": 77,
+      "runs": 81
+    },
+    "initial_pg_active_connections": 7,
+    "initial_redis_memory": "1.64M",
+    "ollama_models_loaded": []
+  },
+  "resource_snapshots": {
+    "before": {
+      "timestamp": "2026-11-09T03:45:33.236126+00:00",
+      "load_average_1_5_15": [
+        0.6865234375,
+        0.591796875,
+        0.35009765625
+      ],
+      "memory_mb": {
+        "MemTotal": 11872,
+        "MemFree": 513,
+        "MemAvailable": 7059,
+        "Buffers": 138,
+        "Cached": 6687
+      },
+      "gpu": {
+        "available": true,
+        "name": "NVIDIA GeForce GTX 1650 with Max-Q Design",
+        "gpu_util_percent": 0.0,
+        "memory_used_mb": 0.0,
+        "memory_total_mb": 4096.0,
+        "temperature_c": 65.0
+      }
+    },
+    "during_ingestion": {
+      "timestamp": "2026-11-09T03:46:12.519000+00:00",
+      "load_average_1_5_15": [
+        1.1474609375,
+        0.7236328125,
+        0.4052734375
+      ],
+      "memory_mb": {
+        "MemTotal": 11872,
+        "MemFree": 98,
+        "MemAvailable": 6370,
+        "Buffers": 138,
+        "Cached": 6413
+      },
+      "gpu": {
+        "available": true,
+        "name": "NVIDIA GeForce GTX 1650 with Max-Q Design",
+        "gpu_util_percent": 0.0,
+        "memory_used_mb": 0.0,
+        "memory_total_mb": 4096.0,
+        "temperature_c": 66.0
+      }
+    },
+    "after": {
+      "timestamp": "2026-11-09T03:50:05.295119+00:00",
+      "load_average_1_5_15": [
+        5.95947265625,
+        3.3330078125,
+        1.50439453125
+      ],
+      "memory_mb": {
+        "MemTotal": 11872,
+        "MemFree": 105,
+        "MemAvailable": 4011,
+        "Buffers": 55,
+        "Cached": 4148
+      },
+      "gpu": {
+        "available": true,
+        "name": "NVIDIA GeForce GTX 1650 with Max-Q Design",
+        "gpu_util_percent": 0.0,
+        "memory_used_mb": 0.0,
+        "memory_total_mb": 4096.0,
+        "temperature_c": 66.0
+      }
+    },
+    "final_system_state": {
+      "users": 167,
+      "docs": 80,
+      "runs": 83,
+      "pg_active_connections": 7,
+      "redis_memory": "1.63M",
+      "governor_metrics": {
+        "active_inferences": 0,
+        "queued_requests": 0,
+        "total_admitted": 8,
+        "total_rejected": 0,
+        "total_timeouts": 0,
+        "max_concurrency": 2,
+        "max_queue_size": 10
+      }
+    }
+  },
+  "d1_a_api_performance": {
+    "health_live": {
+      "endpoint": "/api/v1/health",
+      "method": "GET",
+      "total_requests": 15,
+      "success": 15,
+      "failed": 0,
+      "rps": 18.93,
+      "total_time_s": 0.792,
+      "samples": 15,
+      "min": 1.92,
+      "max": 3.89,
+      "avg": 2.65,
+      "p50": 2.51,
+      "p95": 3.89
+    },
+    "health_ready": {
+      "endpoint": "/api/v1/health/ready",
+      "method": "GET",
+      "total_requests": 15,
+      "success": 15,
+      "failed": 0,
+      "rps": 11.1,
+      "total_time_s": 1.352,
+      "samples": 15,
+      "min": 29.36,
+      "max": 49.85,
+      "avg": 39.93,
+      "p50": 39.43,
+      "p95": 49.85
+    },
+    "auth_login": {
+      "endpoint": "/api/v1/auth/login",
+      "method": "POST",
+      "total_requests": 15,
+      "success": 15,
+      "failed": 0,
+      "rps": 7.01,
+      "total_time_s": 2.14,
+      "samples": 15,
+      "min": 79.83,
+      "max": 141.08,
+      "avg": 92.47,
+      "p50": 89.51,
+      "p95": 141.08
+    },
+    "workspaces_list": {
+      "endpoint": "/api/v1/workspaces",
+      "method": "GET",
+      "total_requests": 15,
+      "success": 15,
+      "failed": 0,
+      "rps": 17.17,
+      "total_time_s": 0.873,
+      "samples": 15,
+      "min": 6.68,
+      "max": 10.16,
+      "avg": 8.03,
+      "p50": 7.5,
+      "p95": 10.16
+    },
+    "documents_list": {
+      "endpoint": "/api/v1/documents",
+      "method": "GET",
+      "total_requests": 15,
+      "success": 15,
+      "failed": 0,
+      "rps": 16.85,
+      "total_time_s": 0.89,
+      "samples": 15,
+      "min": 7.43,
+      "max": 18.35,
+      "avg": 9.17,
+      "p50": 8.4,
+      "p95": 18.35
+    },
+    "models_list": {
+      "endpoint": "/api/v1/models",
+      "method": "GET",
+      "total_requests": 15,
+      "success": 15,
+      "failed": 0,
+      "rps": 16.87,
+      "total_time_s": 0.889,
+      "samples": 15,
+      "min": 8.07,
+      "max": 13.71,
+      "avg": 9.06,
+      "p50": 8.65,
+      "p95": 13.71
+    }
+  },
+  "d1_b_document_ingestion": {
+    "TXT": {
+      "document_id": "082107c7-62e8-4bb9-8d59-cf9f8dde7601",
+      "filename": "benchmark_8d6490.txt",
+      "file_size_bytes": 243,
+      "status": "ready",
+      "chunks_count": 1,
+      "upload_api_ms": 28.02,
+      "celery_queue_wait_ms": null,
+      "celery_worker_processing_ms": null,
+      "end_to_end_ingestion_ms": 331.9,
+      "micro_stages": {
+        "text_extraction_ms": 0.04,
+        "chunking_ms": 0.01,
+        "embedding_ms": 60.77,
+        "embedding_dim": 384
+      }
+    },
+    "PDF": {
+      "document_id": "d5437720-1391-4350-aec6-e747af801ca2",
+      "filename": "benchmark_8d6490.pdf",
+      "file_size_bytes": 752,
+      "status": "ready",
+      "chunks_count": 1,
+      "upload_api_ms": 28.85,
+      "celery_queue_wait_ms": null,
+      "celery_worker_processing_ms": null,
+      "end_to_end_ingestion_ms": 431.64,
+      "micro_stages": {
+        "text_extraction_ms": 1.7,
+        "chunking_ms": 0.02,
+        "embedding_ms": 35.95,
+        "embedding_dim": 384
+      }
+    },
+    "DOCX": {
+      "document_id": "67b139ae-021b-4a41-9dfc-c87dcffed377",
+      "filename": "architecture_8d6490.docx",
+      "file_size_bytes": 36806,
+      "status": "ready",
+      "chunks_count": 1,
+      "upload_api_ms": 54.46,
+      "celery_queue_wait_ms": null,
+      "celery_worker_processing_ms": null,
+      "end_to_end_ingestion_ms": 559.75,
+      "micro_stages": {
+        "text_extraction_ms": 14.98,
+        "chunking_ms": 0.02,
+        "embedding_ms": 137.84,
+        "embedding_dim": 384
+      }
+    }
+  },
+  "d1_c_pgvector_rag": {
+    "pgvector_micro": {
+      "query_embedding_ms": {
+        "samples": 3,
+        "min": 27.66,
+        "max": 59.98,
+        "avg": 38.94,
+        "p50": 29.19,
+        "p95": 59.98
+      },
+      "vector_search_ms": {
+        "samples": 3,
+        "min": 1.7,
+        "max": 23.81,
+        "avg": 9.13,
+        "p50": 1.89,
+        "p95": 23.81
+      },
+      "sample_similarity_score": 0.8801
+    },
+    "rag_ask_endpoint": {
+      "stats": {
+        "samples": 3,
+        "min": 6798.86,
+        "max": 34548.05,
+        "avg": 17394.97,
+        "p50": 10838.01,
+        "p95": 34548.05
+      },
+      "samples": [
+        {
+          "query": "What is the Target Latency P99 and high-throughput node allocation?",
+          "latency_ms": 34548.05,
+          "answer_snippet": "Kh\u00f4ng th\u1ec3 x\u00e1c minh c\u00e2u tr\u1ea3 l\u1eddi t\u1eeb t\u00e0i li\u1ec7u \u0111\u01b0\u1ee3c truy xu\u1ea5t.",
+          "sources_count": 0,
+          "has_citations": false
+        },
+        {
+          "query": "What is the consensus heartbeat timeout and failover procedure?",
+          "latency_ms": 10838.01,
+          "answer_snippet": "The consensus heartbeat timeout is configured at 250 milliseconds [Source 1]. The failover procedure is automatic, as th",
+          "sources_count": 3,
+          "has_citations": true
+        },
+        {
+          "query": "Summarize the recovery time objective RTO for the architecture.",
+          "latency_ms": 6798.86,
+          "answer_snippet": "Kh\u00f4ng th\u1ec3 x\u00e1c minh c\u00e2u tr\u1ea3 l\u1eddi t\u1eeb t\u00e0i li\u1ec7u \u0111\u01b0\u1ee3c truy xu\u1ea5t.",
+          "sources_count": 0,
+          "has_citations": false
+        }
+      ]
+    },
+    "rag_stream_metrics": {
+      "query": "What is the Target Latency P99 and high-throughput node allocation?",
+      "total_latency_ms": 2771.42,
+      "ttft_ms": 493.14,
+      "generation_duration_s": 2.278,
+      "tokens_generated": 27,
+      "tokens_per_second": 11.85
+    }
+  },
+  "d1_d_agent_performance": {
+    "read_workflows": [
+      {
+        "run_id": "a6af0bea-c78b-4404-9577-4f15a9b5837d",
+        "goal": "T\u00ecm ki\u1ebfm t\u00e0i li\u1ec7u v\u1ec1 Target Latency P99 v\u00e0 t\u00f3m t\u1eaft ng\u1eafn g\u1ecdn",
+        "status": "completed",
+        "total_api_ms": 68386.65,
+        "model_routing_ms": 4.76,
+        "steps_count": 1,
+        "steps": [
+          {
+            "step_index": 2,
+            "tool": "search_workspace_documents",
+            "status": "succeeded",
+            "duration_ms": 181.5
+          }
+        ]
+      },
+      {
+        "run_id": "5711c490-a401-4f2a-adb1-51c1d2a7fb4c",
+        "goal": "T\u00ecm ki\u1ebfm t\u00e0i li\u1ec7u v\u1ec1 High Availability Architecture v\u00e0 t\u00f3m t\u1eaft RTO",
+        "status": "completed",
+        "total_api_ms": 84876.1,
+        "model_routing_ms": 4.95,
+        "steps_count": 1,
+        "steps": [
+          {
+            "step_index": 2,
+            "tool": "search_workspace_documents",
+            "status": "succeeded",
+            "duration_ms": 88.9
+          }
+        ]
+      }
+    ],
+    "historical_write_approval_traces": []
+  },
+  "identified_bottlenecks": [
+    {
+      "subsystem": "LLM Inference (Ollama CPU)",
+      "observation": "LLM generation takes 2.28s (~11.85 tok/s) on Intel CPU. Dominates ~90%+ of total RAG and Agent latency.",
+      "evidence": "Total RAG latency: 2771.42ms vs Vector Search: 1.89ms.",
+      "severity": "HIGH"
+    },
+    {
+      "subsystem": "Agent Multi-Step Reasoning",
+      "observation": "Agent READ run took 68386.65ms due to two sequential LLM inferences (tool selection + final synthesis).",
+      "evidence": "Routing: 4.76ms, Tool execution: 181.5ms, LLM thinking: remainder.",
+      "severity": "MEDIUM"
+    },
+    {
+      "subsystem": "Celery Ingestion Queue Latency",
+      "observation": "Ingestion queue wait: Nonems, worker execution: Nonems. Ingestion is fast and lightweight.",
+      "evidence": "Total E2E ingestion: 331.9ms.",
+      "severity": "LOW"
+    },
+    {
+      "subsystem": "pgvector Cosine Search",
+      "observation": "Vector search in PostgreSQL executes in 1.89ms for 384-dim dense embeddings.",
+      "evidence": "P50: 1.89ms, P95: 23.81ms.",
+      "severity": "LOW"
+    }
+  ],
+  "performance_risks": [
+    "CPU-bound LLM inference becomes a major bottleneck under concurrent requests without GPU acceleration.",
+    "Process-local Inference Governor protects local CPU from crash, but limits cluster-wide scaling until migrated to distributed locks.",
+    "Rate limiter per-user sliding window protects system stability, but clients need exponential backoff on HTTP 429."
+  ],
+  "summary_metrics": []
+}
