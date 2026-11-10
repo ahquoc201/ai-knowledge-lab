@@ -18,6 +18,25 @@ def _validate_k(k: int) -> None:
         raise ValueError("k must be a positive integer")
 
 
+def hit_rate_at_k(
+    retrieved_keys: Sequence[str],
+    expected_keys: Collection[str],
+    k: int,
+) -> float:
+    """Calculate Hit Rate@K: binary indicator (1.0 or 0.0) if at least one expected item is in top-k.
+
+    Formula: 1.0 if |Retrieved[:k] ∩ Expected| > 0 else 0.0
+    Raises ValueError if expected_keys is empty.
+    """
+    _validate_k(k)
+    if not expected_keys:
+        raise ValueError("expected_keys must not be empty for hit rate calculation")
+
+    top_k = retrieved_keys[:k]
+    expected_set = set(expected_keys)
+    return 1.0 if any(item in expected_set for item in top_k) else 0.0
+
+
 def precision_at_k(
     retrieved_keys: Sequence[str],
     expected_keys: Collection[str],

@@ -1,7 +1,7 @@
 # BÁO CÁO ĐÁNH GIÁ CHẤT LƯỢNG RAG & TRUY VẤN NGỮ NGHĨA (AI-KNOWLEDGE-LAB-RAG-QUALITY)
 
 - **Phiên bản Dataset:** `2.0`
-- **Thời điểm đánh giá:** `2026-11-10T04:26:27.566499+00:00`
+- **Thời điểm đánh giá:** `2026-11-10T06:53:38.754494+00:00`
 - **Chế độ thực thi:** `retrieval-only`
 - **Mô hình nhúng (Embedding):** `intfloat/multilingual-e5-small` (384 dims)
 - **Mô hình LLM:** `None (retrieval-only)`
@@ -13,15 +13,18 @@
 
 | Chỉ số đo lường | Giá trị | Định nghĩa toán học & Mẫu số | Đánh giá |
 | :--- | :---: | :--- | :---: |
-| **Recall@1** | `80.8%` | |Top-1 ∩ Expected| / |Expected| (trên 26 ca có đáp án) | Tốt |
-| **Recall@3** | `96.2%` | |Top-3 ∩ Expected| / |Expected| (trên 26 ca có đáp án) | Rất tốt |
-| **Recall@5** | `96.2%` | |Top-5 ∩ Expected| / |Expected| (trên 26 ca có đáp án) | Xuất sắc |
-| **Precision@5** | `20.8%` | |Top-5 ∩ Expected| / 5 | Đo lường mật độ tài liệu phù hợp |
-| **Mean Reciprocal Rank (MRR@5)** | `0.8974` | 1/|Q| * Σ (1/Rank) của tài liệu đúng đầu tiên | Rất cao |
-| **Retrieval Coverage** | `96.2%` | Tỷ lệ câu hỏi tìm thấy ít nhất 1 tài liệu đúng trong Top-5 | Toàn diện |
-| **Empty Retrieval Rate** | `0.0%` | Tỷ lệ truy vấn trả về 0 chunk | Lý tưởng |
-| **Tenant Isolation Rate** | `100.0%` | Tỷ lệ truy vấn hoàn toàn không rò rỉ dữ liệu chéo workspace | **BẢO MẬT TUYỆT ĐỐI** |
-| **Độ trễ trung bình truy xuất** | `183.33 ms` | Thời gian tính vector embedding + cosine ranking | Siêu tốc (In-memory / HNSW) |
+| **Hit Rate@1** | `84.6%` | Tỷ lệ câu hỏi có ít nhất 1 tài liệu đúng trong Top-1 (mẫu số: 26 ca) | Rất tốt |
+| **Hit Rate@3** | `96.2%` | Tỷ lệ câu hỏi có ít nhất 1 tài liệu đúng trong Top-3 (mẫu số: 26 ca) | Xuất sắc |
+| **Hit Rate@5** | `96.2%` | Tỷ lệ câu hỏi có ít nhất 1 tài liệu đúng trong Top-5 (mẫu số: 26 ca) | Xuất sắc |
+| **Recall@1** | `80.8%` | Macro-average: \|Top-1 ∩ Expected\| / \|Expected\| (chia đều theo câu hỏi) | Tốt |
+| **Recall@3** | `96.2%` | Macro-average: \|Top-3 ∩ Expected\| / \|Expected\| (chia đều theo câu hỏi) | Rất tốt |
+| **Recall@5** | `96.2%` | Macro-average: \|Top-5 ∩ Expected\| / \|Expected\| (chia đều theo câu hỏi) | Xuất sắc |
+| **Precision@5** | `20.8%` | \|Top-5 ∩ Expected\| / 5 (Đạt 96.4% trần lý thuyết 21.54%) | Mật độ tối ưu trong Top-5 |
+| **Mean Reciprocal Rank (MRR@5)** | `0.8974` | 1/\|Q\| * Σ (1/Rank_1) = 23.3333 / 26 (Khớp tuyệt đối phân bố Rank) | Rất cao |
+| **Retrieval Coverage** | `96.2%` | Tỷ lệ câu hỏi tìm thấy ít nhất 1 tài liệu đúng trong Top-5 (Coverage@5) | Toàn diện |
+| **Empty Retrieval Rate** | `0.0%` | Tỷ lệ truy vấn trả về 0 chunk (0/36) | Lý tưởng |
+| **Tenant Isolation Rate** | `100.0%` | Tỷ lệ truy vấn hoàn toàn không rò rỉ dữ liệu chéo workspace (In-memory) | **BẢO MẬT TUYỆT ĐỐI (100%)** |
+| **Độ trễ trung bình truy xuất** | `31.55 ms` | Thời gian tính vector embedding + cosine ranking (In-memory) | Siêu tốc (In-memory) |
 
 ---
 

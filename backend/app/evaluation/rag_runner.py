@@ -27,6 +27,7 @@ from app.evaluation.rag_diagnostics import (
     grade_rag_response,
 )
 from app.evaluation.rag_metrics import (
+    hit_rate_at_k,
     precision_at_k,
     recall_at_k,
     reciprocal_rank_at_k,
@@ -233,11 +234,14 @@ async def evaluate_single_case(
             source_workspace_refs[source.source_index] = ws
 
     # Compute per-case retrieval metrics
-    # Only calculate recall if expected documents exist
+    # Only calculate recall and hit rate if expected documents exist
     if case.expected_document_keys:
         rec_1 = recall_at_k(retrieved_doc_keys, case.expected_document_keys, 1)
         rec_3 = recall_at_k(retrieved_doc_keys, case.expected_document_keys, 3)
         rec_5 = recall_at_k(retrieved_doc_keys, case.expected_document_keys, config.k)
+        hit_1 = hit_rate_at_k(retrieved_doc_keys, case.expected_document_keys, 1)
+        hit_3 = hit_rate_at_k(retrieved_doc_keys, case.expected_document_keys, 3)
+        hit_5 = hit_rate_at_k(retrieved_doc_keys, case.expected_document_keys, config.k)
         prec_1 = precision_at_k(retrieved_doc_keys, case.expected_document_keys, 1)
         prec_3 = precision_at_k(retrieved_doc_keys, case.expected_document_keys, 3)
         prec_5 = precision_at_k(
@@ -248,12 +252,9 @@ async def evaluate_single_case(
         )
     else:
         # Refusal cases: no relevant document expected in corpus
-        rec_1 = 0.0
-        rec_3 = 0.0
-        rec_5 = 0.0
-        prec_1 = 0.0
-        prec_3 = 0.0
-        prec_5 = 0.0
+        rec_1 = rec_3 = rec_5 = 0.0
+        hit_1 = hit_3 = hit_5 = 0.0
+        prec_1 = prec_3 = prec_5 = 0.0
         rr = 0.0
 
     sim_scores = tuple(round(m.similarity, 4) for m in matches)
@@ -277,6 +278,9 @@ async def evaluate_single_case(
         precision_at_3=round(prec_3, 4),
         precision_at_5=round(prec_5, 4),
         reciprocal_rank=round(rr, 4),
+        hit_at_1=round(hit_1, 4),
+        hit_at_3=round(hit_3, 4),
+        hit_at_5=round(hit_5, 4),
     )
 
     # Retrieval-only mode completes here

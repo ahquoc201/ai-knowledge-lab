@@ -69,6 +69,9 @@ def test_build_and_render_report():
             precision_at_3=0.33,
             precision_at_5=0.2,
             reciprocal_rank=1.0,
+            hit_at_1=1.0,
+            hit_at_3=1.0,
+            hit_at_5=1.0,
             classification=AnswerClassification.CORRECT_ANSWER,
             root_cause=FailureRootCause.NONE,
             passed=True,
@@ -106,6 +109,8 @@ def test_build_and_render_report():
     )
 
     assert report["metadata"]["total_cases"] == 2
+    assert report["retrieval_metrics"]["hit_rate_at_1"] == 1.0
+    assert report["retrieval_metrics"]["hit_rate_at_5"] == 1.0
     assert report["retrieval_metrics"]["recall_at_5"] == 1.0
     assert report["retrieval_metrics"]["tenant_isolation_rate"] == 1.0
     assert "generation_metrics" in report

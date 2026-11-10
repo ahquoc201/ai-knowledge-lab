@@ -2,7 +2,7 @@
   "metadata": {
     "dataset_id": "ai-knowledge-lab-rag-quality",
     "dataset_version": "2.0",
-    "timestamp": "2026-11-10T04:26:27.566499+00:00",
+    "timestamp": "2026-11-10T06:53:38.754494+00:00",
     "execution_mode": "retrieval-only",
     "embedding_model": "intfloat/multilingual-e5-small",
     "llm_model": "None (retrieval-only)",
@@ -12,6 +12,9 @@
     "refusal_cases_count": 10
   },
   "retrieval_metrics": {
+    "hit_rate_at_1": 0.8462,
+    "hit_rate_at_3": 0.9615,
+    "hit_rate_at_5": 0.9615,
     "recall_at_1": 0.8077,
     "recall_at_3": 0.9615,
     "recall_at_5": 0.9615,
@@ -22,7 +25,7 @@
     "retrieval_coverage": 0.9615,
     "empty_retrieval_rate": 0.0,
     "tenant_isolation_rate": 1.0,
-    "mean_latency_ms": 183.33
+    "mean_latency_ms": 31.55
   },
   "category_breakdown": {
     "AMBIGUOUS_QUERY": {
@@ -81,6 +84,8 @@
       "difficulty": "EASY",
       "workspace_ref": "workspace_alpha",
       "passed": true,
+      "hit_at_1": 1.0,
+      "hit_at_5": 1.0,
       "recall_at_5": 1.0,
       "precision_at_5": 0.2,
       "reciprocal_rank": 1.0,
@@ -102,7 +107,7 @@
       "classification": "INSUFFICIENT_EVIDENCE_TO_GRADE",
       "root_cause": "NONE",
       "notes": "Retrieval successfully found expected evidence",
-      "retrieval_latency_ms": 471.5,
+      "retrieval_latency_ms": 54.46,
       "generation_latency_ms": 0.0
     },
     {
@@ -111,6 +116,8 @@
       "difficulty": "EASY",
       "workspace_ref": "workspace_alpha",
       "passed": true,
+      "hit_at_1": 1.0,
+      "hit_at_5": 1.0,
       "recall_at_5": 1.0,
       "precision_at_5": 0.2,
       "reciprocal_rank": 1.0,
@@ -132,7 +139,7 @@
       "classification": "INSUFFICIENT_EVIDENCE_TO_GRADE",
       "root_cause": "NONE",
       "notes": "Retrieval successfully found expected evidence",
-      "retrieval_latency_ms": 180.8,
+      "retrieval_latency_ms": 23.61,
       "generation_latency_ms": 0.0
     },
     {
@@ -141,6 +148,8 @@
       "difficulty": "EASY",
       "workspace_ref": "workspace_alpha",
       "passed": true,
+      "hit_at_1": 1.0,
+      "hit_at_5": 1.0,
       "recall_at_5": 1.0,
       "precision_at_5": 0.2,
       "reciprocal_rank": 1.0,
@@ -162,7 +171,7 @@
       "classification": "INSUFFICIENT_EVIDENCE_TO_GRADE",
       "root_cause": "NONE",
       "notes": "Retrieval successfully found expected evidence",
-      "retrieval_latency_ms": 162.67,
+      "retrieval_latency_ms": 31.04,
       "generation_latency_ms": 0.0
     },
     {
@@ -171,6 +180,8 @@
       "difficulty": "EASY",
       "workspace_ref": "workspace_alpha",
       "passed": true,
+      "hit_at_1": 1.0,
+      "hit_at_5": 1.0,
       "recall_at_5": 1.0,
       "precision_at_5": 0.2,
       "reciprocal_rank": 1.0,
@@ -192,7 +203,7 @@
       "classification": "INSUFFICIENT_EVIDENCE_TO_GRADE",
       "root_cause": "NONE",
       "notes": "Retrieval successfully found expected evidence",
-      "retrieval_latency_ms": 284.55,
+      "retrieval_latency_ms": 32.34,
       "generation_latency_ms": 0.0
     },
     {
@@ -201,6 +212,8 @@
       "difficulty": "EASY",
       "workspace_ref": "workspace_alpha",
       "passed": true,
+      "hit_at_1": 1.0,
+      "hit_at_5": 1.0,
       "recall_at_5": 1.0,
       "precision_at_5": 0.2,
       "reciprocal_rank": 1.0,
@@ -222,7 +235,7 @@
       "classification": "INSUFFICIENT_EVIDENCE_TO_GRADE",
       "root_cause": "NONE",
       "notes": "Retrieval successfully found expected evidence",
-      "retrieval_latency_ms": 307.39,
+      "retrieval_latency_ms": 38.23,
       "generation_latency_ms": 0.0
     },
     {
@@ -231,6 +244,8 @@
       "difficulty": "EASY",
       "workspace_ref": "workspace_alpha",
       "passed": true,
+      "hit_at_1": 1.0,
+      "hit_at_5": 1.0,
       "recall_at_5": 1.0,
       "precision_at_5": 0.2,
       "reciprocal_rank": 1.0,
@@ -252,7 +267,7 @@
       "classification": "INSUFFICIENT_EVIDENCE_TO_GRADE",
       "root_cause": "NONE",
       "notes": "Retrieval successfully found expected evidence",
-      "retrieval_latency_ms": 326.97,
+      "retrieval_latency_ms": 44.14,
       "generation_latency_ms": 0.0
     },
     {
@@ -261,6 +276,8 @@
       "difficulty": "EASY",
       "workspace_ref": "workspace_alpha",
       "passed": true,
+      "hit_at_1": 1.0,
+      "hit_at_5": 1.0,
       "recall_at_5": 1.0,
       "precision_at_5": 0.2,
       "reciprocal_rank": 1.0,
@@ -282,7 +299,7 @@
       "classification": "INSUFFICIENT_EVIDENCE_TO_GRADE",
       "root_cause": "NONE",
       "notes": "Retrieval successfully found expected evidence",
-      "retrieval_latency_ms": 272.32,
+      "retrieval_latency_ms": 31.05,
       "generation_latency_ms": 0.0
     },
     {
@@ -291,6 +308,8 @@
       "difficulty": "EASY",
       "workspace_ref": "workspace_alpha",
       "passed": true,
+      "hit_at_1": 1.0,
+      "hit_at_5": 1.0,
       "recall_at_5": 1.0,
       "precision_at_5": 0.2,
       "reciprocal_rank": 1.0,
@@ -312,7 +331,7 @@
       "classification": "INSUFFICIENT_EVIDENCE_TO_GRADE",
       "root_cause": "NONE",
       "notes": "Retrieval successfully found expected evidence",
-      "retrieval_latency_ms": 115.03,
+      "retrieval_latency_ms": 26.68,
       "generation_latency_ms": 0.0
     },
     {
@@ -321,6 +340,8 @@
       "difficulty": "MEDIUM",
       "workspace_ref": "workspace_alpha",
       "passed": true,
+      "hit_at_1": 0.0,
+      "hit_at_5": 1.0,
       "recall_at_5": 1.0,
       "precision_at_5": 0.2,
       "reciprocal_rank": 0.5,
@@ -342,7 +363,7 @@
       "classification": "INSUFFICIENT_EVIDENCE_TO_GRADE",
       "root_cause": "NONE",
       "notes": "Retrieval successfully found expected evidence",
-      "retrieval_latency_ms": 117.27,
+      "retrieval_latency_ms": 29.8,
       "generation_latency_ms": 0.0
     },
     {
@@ -351,6 +372,8 @@
       "difficulty": "MEDIUM",
       "workspace_ref": "workspace_alpha",
       "passed": true,
+      "hit_at_1": 1.0,
+      "hit_at_5": 1.0,
       "recall_at_5": 1.0,
       "precision_at_5": 0.2,
       "reciprocal_rank": 1.0,
@@ -372,7 +395,7 @@
       "classification": "INSUFFICIENT_EVIDENCE_TO_GRADE",
       "root_cause": "NONE",
       "notes": "Retrieval successfully found expected evidence",
-      "retrieval_latency_ms": 132.41,
+      "retrieval_latency_ms": 37.88,
       "generation_latency_ms": 0.0
     },
     {
@@ -381,6 +404,8 @@
       "difficulty": "MEDIUM",
       "workspace_ref": "workspace_alpha",
       "passed": true,
+      "hit_at_1": 1.0,
+      "hit_at_5": 1.0,
       "recall_at_5": 1.0,
       "precision_at_5": 0.2,
       "reciprocal_rank": 1.0,
@@ -402,7 +427,7 @@
       "classification": "INSUFFICIENT_EVIDENCE_TO_GRADE",
       "root_cause": "NONE",
       "notes": "Retrieval successfully found expected evidence",
-      "retrieval_latency_ms": 179.81,
+      "retrieval_latency_ms": 31.16,
       "generation_latency_ms": 0.0
     },
     {
@@ -411,6 +436,8 @@
       "difficulty": "MEDIUM",
       "workspace_ref": "workspace_alpha",
       "passed": true,
+      "hit_at_1": 1.0,
+      "hit_at_5": 1.0,
       "recall_at_5": 1.0,
       "precision_at_5": 0.2,
       "reciprocal_rank": 1.0,
@@ -432,7 +459,7 @@
       "classification": "INSUFFICIENT_EVIDENCE_TO_GRADE",
       "root_cause": "NONE",
       "notes": "Retrieval successfully found expected evidence",
-      "retrieval_latency_ms": 288.26,
+      "retrieval_latency_ms": 30.17,
       "generation_latency_ms": 0.0
     },
     {
@@ -441,6 +468,8 @@
       "difficulty": "MEDIUM",
       "workspace_ref": "workspace_alpha",
       "passed": true,
+      "hit_at_1": 1.0,
+      "hit_at_5": 1.0,
       "recall_at_5": 1.0,
       "precision_at_5": 0.2,
       "reciprocal_rank": 1.0,
@@ -462,7 +491,7 @@
       "classification": "INSUFFICIENT_EVIDENCE_TO_GRADE",
       "root_cause": "NONE",
       "notes": "Retrieval successfully found expected evidence",
-      "retrieval_latency_ms": 263.18,
+      "retrieval_latency_ms": 28.52,
       "generation_latency_ms": 0.0
     },
     {
@@ -471,6 +500,8 @@
       "difficulty": "MEDIUM",
       "workspace_ref": "workspace_alpha",
       "passed": true,
+      "hit_at_1": 1.0,
+      "hit_at_5": 1.0,
       "recall_at_5": 1.0,
       "precision_at_5": 0.2,
       "reciprocal_rank": 1.0,
@@ -492,7 +523,7 @@
       "classification": "INSUFFICIENT_EVIDENCE_TO_GRADE",
       "root_cause": "NONE",
       "notes": "Retrieval successfully found expected evidence",
-      "retrieval_latency_ms": 295.17,
+      "retrieval_latency_ms": 30.37,
       "generation_latency_ms": 0.0
     },
     {
@@ -501,6 +532,8 @@
       "difficulty": "MEDIUM",
       "workspace_ref": "workspace_alpha",
       "passed": true,
+      "hit_at_1": 1.0,
+      "hit_at_5": 1.0,
       "recall_at_5": 1.0,
       "precision_at_5": 0.2,
       "reciprocal_rank": 1.0,
@@ -522,7 +555,7 @@
       "classification": "INSUFFICIENT_EVIDENCE_TO_GRADE",
       "root_cause": "NONE",
       "notes": "Retrieval successfully found expected evidence",
-      "retrieval_latency_ms": 199.73,
+      "retrieval_latency_ms": 32.99,
       "generation_latency_ms": 0.0
     },
     {
@@ -531,6 +564,8 @@
       "difficulty": "MEDIUM",
       "workspace_ref": "workspace_alpha",
       "passed": true,
+      "hit_at_1": 0.0,
+      "hit_at_5": 1.0,
       "recall_at_5": 1.0,
       "precision_at_5": 0.2,
       "reciprocal_rank": 0.3333,
@@ -552,7 +587,7 @@
       "classification": "INSUFFICIENT_EVIDENCE_TO_GRADE",
       "root_cause": "NONE",
       "notes": "Retrieval successfully found expected evidence",
-      "retrieval_latency_ms": 251.02,
+      "retrieval_latency_ms": 33.11,
       "generation_latency_ms": 0.0
     },
     {
@@ -561,6 +596,8 @@
       "difficulty": "HARD",
       "workspace_ref": "workspace_alpha",
       "passed": true,
+      "hit_at_1": 1.0,
+      "hit_at_5": 1.0,
       "recall_at_5": 1.0,
       "precision_at_5": 0.4,
       "reciprocal_rank": 1.0,
@@ -582,7 +619,7 @@
       "classification": "INSUFFICIENT_EVIDENCE_TO_GRADE",
       "root_cause": "NONE",
       "notes": "Retrieval successfully found expected evidence",
-      "retrieval_latency_ms": 164.65,
+      "retrieval_latency_ms": 35.11,
       "generation_latency_ms": 0.0
     },
     {
@@ -591,6 +628,8 @@
       "difficulty": "HARD",
       "workspace_ref": "workspace_alpha",
       "passed": true,
+      "hit_at_1": 1.0,
+      "hit_at_5": 1.0,
       "recall_at_5": 1.0,
       "precision_at_5": 0.2,
       "reciprocal_rank": 1.0,
@@ -612,7 +651,7 @@
       "classification": "INSUFFICIENT_EVIDENCE_TO_GRADE",
       "root_cause": "NONE",
       "notes": "Retrieval successfully found expected evidence",
-      "retrieval_latency_ms": 121.02,
+      "retrieval_latency_ms": 34.23,
       "generation_latency_ms": 0.0
     },
     {
@@ -621,6 +660,8 @@
       "difficulty": "HARD",
       "workspace_ref": "workspace_alpha",
       "passed": true,
+      "hit_at_1": 1.0,
+      "hit_at_5": 1.0,
       "recall_at_5": 1.0,
       "precision_at_5": 0.4,
       "reciprocal_rank": 1.0,
@@ -642,7 +683,7 @@
       "classification": "INSUFFICIENT_EVIDENCE_TO_GRADE",
       "root_cause": "NONE",
       "notes": "Retrieval successfully found expected evidence",
-      "retrieval_latency_ms": 111.26,
+      "retrieval_latency_ms": 35.89,
       "generation_latency_ms": 0.0
     },
     {
@@ -651,6 +692,8 @@
       "difficulty": "HARD",
       "workspace_ref": "workspace_alpha",
       "passed": true,
+      "hit_at_1": 1.0,
+      "hit_at_5": 1.0,
       "recall_at_5": 1.0,
       "precision_at_5": 0.2,
       "reciprocal_rank": 1.0,
@@ -672,7 +715,7 @@
       "classification": "INSUFFICIENT_EVIDENCE_TO_GRADE",
       "root_cause": "NONE",
       "notes": "Retrieval successfully found expected evidence",
-      "retrieval_latency_ms": 107.29,
+      "retrieval_latency_ms": 33.33,
       "generation_latency_ms": 0.0
     },
     {
@@ -681,6 +724,8 @@
       "difficulty": "MEDIUM",
       "workspace_ref": "workspace_alpha",
       "passed": true,
+      "hit_at_1": 1.0,
+      "hit_at_5": 1.0,
       "recall_at_5": 1.0,
       "precision_at_5": 0.2,
       "reciprocal_rank": 1.0,
@@ -702,7 +747,7 @@
       "classification": "INSUFFICIENT_EVIDENCE_TO_GRADE",
       "root_cause": "NONE",
       "notes": "Retrieval successfully found expected evidence",
-      "retrieval_latency_ms": 93.09,
+      "retrieval_latency_ms": 26.8,
       "generation_latency_ms": 0.0
     },
     {
@@ -711,6 +756,8 @@
       "difficulty": "MEDIUM",
       "workspace_ref": "workspace_alpha",
       "passed": false,
+      "hit_at_1": 0.0,
+      "hit_at_5": 0.0,
       "recall_at_5": 0.0,
       "precision_at_5": 0.0,
       "reciprocal_rank": 0.0,
@@ -732,7 +779,7 @@
       "classification": "INSUFFICIENT_EVIDENCE_TO_GRADE",
       "root_cause": "RETRIEVAL_FAILURE",
       "notes": "Retrieval failed to find expected evidence in top-k",
-      "retrieval_latency_ms": 141.42,
+      "retrieval_latency_ms": 22.17,
       "generation_latency_ms": 0.0
     },
     {
@@ -741,6 +788,8 @@
       "difficulty": "MEDIUM",
       "workspace_ref": "workspace_alpha",
       "passed": true,
+      "hit_at_1": 1.0,
+      "hit_at_5": 1.0,
       "recall_at_5": 1.0,
       "precision_at_5": 0.2,
       "reciprocal_rank": 1.0,
@@ -762,7 +811,7 @@
       "classification": "INSUFFICIENT_EVIDENCE_TO_GRADE",
       "root_cause": "NONE",
       "notes": "Retrieval successfully found expected evidence",
-      "retrieval_latency_ms": 175.27,
+      "retrieval_latency_ms": 25.04,
       "generation_latency_ms": 0.0
     },
     {
@@ -771,6 +820,8 @@
       "difficulty": "MEDIUM",
       "workspace_ref": "workspace_alpha",
       "passed": true,
+      "hit_at_1": 0.0,
+      "hit_at_5": 0.0,
       "recall_at_5": 0.0,
       "precision_at_5": 0.0,
       "reciprocal_rank": 0.0,
@@ -792,7 +843,7 @@
       "classification": "INSUFFICIENT_EVIDENCE_TO_GRADE",
       "root_cause": "NONE",
       "notes": "Zero cross-tenant or negative documents retrieved",
-      "retrieval_latency_ms": 184.21,
+      "retrieval_latency_ms": 34.42,
       "generation_latency_ms": 0.0
     },
     {
@@ -801,6 +852,8 @@
       "difficulty": "MEDIUM",
       "workspace_ref": "workspace_alpha",
       "passed": true,
+      "hit_at_1": 0.0,
+      "hit_at_5": 0.0,
       "recall_at_5": 0.0,
       "precision_at_5": 0.0,
       "reciprocal_rank": 0.0,
@@ -822,7 +875,7 @@
       "classification": "INSUFFICIENT_EVIDENCE_TO_GRADE",
       "root_cause": "NONE",
       "notes": "Zero cross-tenant or negative documents retrieved",
-      "retrieval_latency_ms": 133.99,
+      "retrieval_latency_ms": 33.89,
       "generation_latency_ms": 0.0
     },
     {
@@ -831,6 +884,8 @@
       "difficulty": "MEDIUM",
       "workspace_ref": "workspace_alpha",
       "passed": true,
+      "hit_at_1": 0.0,
+      "hit_at_5": 0.0,
       "recall_at_5": 0.0,
       "precision_at_5": 0.0,
       "reciprocal_rank": 0.0,
@@ -852,7 +907,7 @@
       "classification": "INSUFFICIENT_EVIDENCE_TO_GRADE",
       "root_cause": "NONE",
       "notes": "Zero cross-tenant or negative documents retrieved",
-      "retrieval_latency_ms": 218.32,
+      "retrieval_latency_ms": 28.9,
       "generation_latency_ms": 0.0
     },
     {
@@ -861,6 +916,8 @@
       "difficulty": "MEDIUM",
       "workspace_ref": "workspace_alpha",
       "passed": true,
+      "hit_at_1": 0.0,
+      "hit_at_5": 0.0,
       "recall_at_5": 0.0,
       "precision_at_5": 0.0,
       "reciprocal_rank": 0.0,
@@ -882,7 +939,7 @@
       "classification": "INSUFFICIENT_EVIDENCE_TO_GRADE",
       "root_cause": "NONE",
       "notes": "Zero cross-tenant or negative documents retrieved",
-      "retrieval_latency_ms": 171.91,
+      "retrieval_latency_ms": 27.96,
       "generation_latency_ms": 0.0
     },
     {
@@ -891,6 +948,8 @@
       "difficulty": "EASY",
       "workspace_ref": "workspace_alpha",
       "passed": true,
+      "hit_at_1": 0.0,
+      "hit_at_5": 0.0,
       "recall_at_5": 0.0,
       "precision_at_5": 0.0,
       "reciprocal_rank": 0.0,
@@ -912,7 +971,7 @@
       "classification": "INSUFFICIENT_EVIDENCE_TO_GRADE",
       "root_cause": "NONE",
       "notes": "Zero cross-tenant or negative documents retrieved",
-      "retrieval_latency_ms": 119.15,
+      "retrieval_latency_ms": 31.31,
       "generation_latency_ms": 0.0
     },
     {
@@ -921,6 +980,8 @@
       "difficulty": "EASY",
       "workspace_ref": "workspace_alpha",
       "passed": true,
+      "hit_at_1": 0.0,
+      "hit_at_5": 0.0,
       "recall_at_5": 0.0,
       "precision_at_5": 0.0,
       "reciprocal_rank": 0.0,
@@ -942,7 +1003,7 @@
       "classification": "INSUFFICIENT_EVIDENCE_TO_GRADE",
       "root_cause": "NONE",
       "notes": "Zero cross-tenant or negative documents retrieved",
-      "retrieval_latency_ms": 158.32,
+      "retrieval_latency_ms": 29.88,
       "generation_latency_ms": 0.0
     },
     {
@@ -951,6 +1012,8 @@
       "difficulty": "EASY",
       "workspace_ref": "workspace_alpha",
       "passed": true,
+      "hit_at_1": 0.0,
+      "hit_at_5": 0.0,
       "recall_at_5": 0.0,
       "precision_at_5": 0.0,
       "reciprocal_rank": 0.0,
@@ -972,7 +1035,7 @@
       "classification": "INSUFFICIENT_EVIDENCE_TO_GRADE",
       "root_cause": "NONE",
       "notes": "Zero cross-tenant or negative documents retrieved",
-      "retrieval_latency_ms": 157.59,
+      "retrieval_latency_ms": 28.59,
       "generation_latency_ms": 0.0
     },
     {
@@ -981,6 +1044,8 @@
       "difficulty": "HARD",
       "workspace_ref": "workspace_alpha",
       "passed": true,
+      "hit_at_1": 0.0,
+      "hit_at_5": 0.0,
       "recall_at_5": 0.0,
       "precision_at_5": 0.0,
       "reciprocal_rank": 0.0,
@@ -1002,7 +1067,7 @@
       "classification": "INSUFFICIENT_EVIDENCE_TO_GRADE",
       "root_cause": "NONE",
       "notes": "Zero cross-tenant or negative documents retrieved",
-      "retrieval_latency_ms": 132.21,
+      "retrieval_latency_ms": 31.88,
       "generation_latency_ms": 0.0
     },
     {
@@ -1011,6 +1076,8 @@
       "difficulty": "HARD",
       "workspace_ref": "workspace_alpha",
       "passed": true,
+      "hit_at_1": 0.0,
+      "hit_at_5": 0.0,
       "recall_at_5": 0.0,
       "precision_at_5": 0.0,
       "reciprocal_rank": 0.0,
@@ -1032,7 +1099,7 @@
       "classification": "INSUFFICIENT_EVIDENCE_TO_GRADE",
       "root_cause": "NONE",
       "notes": "Zero cross-tenant or negative documents retrieved",
-      "retrieval_latency_ms": 91.18,
+      "retrieval_latency_ms": 28.43,
       "generation_latency_ms": 0.0
     },
     {
@@ -1041,6 +1108,8 @@
       "difficulty": "HARD",
       "workspace_ref": "workspace_beta",
       "passed": true,
+      "hit_at_1": 1.0,
+      "hit_at_5": 1.0,
       "recall_at_5": 1.0,
       "precision_at_5": 0.2,
       "reciprocal_rank": 1.0,
@@ -1056,7 +1125,7 @@
       "classification": "INSUFFICIENT_EVIDENCE_TO_GRADE",
       "root_cause": "NONE",
       "notes": "Retrieval successfully found expected evidence",
-      "retrieval_latency_ms": 96.24,
+      "retrieval_latency_ms": 25.53,
       "generation_latency_ms": 0.0
     },
     {
@@ -1065,6 +1134,8 @@
       "difficulty": "HARD",
       "workspace_ref": "workspace_alpha",
       "passed": true,
+      "hit_at_1": 1.0,
+      "hit_at_5": 1.0,
       "recall_at_5": 1.0,
       "precision_at_5": 0.2,
       "reciprocal_rank": 1.0,
@@ -1086,7 +1157,7 @@
       "classification": "INSUFFICIENT_EVIDENCE_TO_GRADE",
       "root_cause": "NONE",
       "notes": "Retrieval successfully found expected evidence",
-      "retrieval_latency_ms": 113.68,
+      "retrieval_latency_ms": 30.19,
       "generation_latency_ms": 0.0
     },
     {
@@ -1095,6 +1166,8 @@
       "difficulty": "HARD",
       "workspace_ref": "workspace_alpha",
       "passed": true,
+      "hit_at_1": 0.0,
+      "hit_at_5": 1.0,
       "recall_at_5": 1.0,
       "precision_at_5": 0.2,
       "reciprocal_rank": 0.5,
@@ -1116,7 +1189,7 @@
       "classification": "INSUFFICIENT_EVIDENCE_TO_GRADE",
       "root_cause": "NONE",
       "notes": "Retrieval successfully found expected evidence",
-      "retrieval_latency_ms": 119.84,
+      "retrieval_latency_ms": 28.44,
       "generation_latency_ms": 0.0
     },
     {
@@ -1125,6 +1198,8 @@
       "difficulty": "HARD",
       "workspace_ref": "workspace_alpha",
       "passed": true,
+      "hit_at_1": 0.0,
+      "hit_at_5": 0.0,
       "recall_at_5": 0.0,
       "precision_at_5": 0.0,
       "reciprocal_rank": 0.0,
@@ -1146,7 +1221,7 @@
       "classification": "INSUFFICIENT_EVIDENCE_TO_GRADE",
       "root_cause": "NONE",
       "notes": "Zero cross-tenant or negative documents retrieved",
-      "retrieval_latency_ms": 141.06,
+      "retrieval_latency_ms": 28.23,
       "generation_latency_ms": 0.0
     }
   ]

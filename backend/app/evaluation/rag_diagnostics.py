@@ -84,6 +84,9 @@ class RAGCaseDiagnostic:
     precision_at_3: float
     precision_at_5: float
     reciprocal_rank: float
+    hit_at_1: float = 0.0
+    hit_at_3: float = 0.0
+    hit_at_5: float = 0.0
 
     # Generation trace (for full-rag mode, optional in retrieval-only)
     answer: str | None = None

@@ -3,6 +3,7 @@
 import pytest
 from app.evaluation.rag_metrics import (
     empty_retrieval_rate,
+    hit_rate_at_k,
     mean_reciprocal_rank,
     precision_at_k,
     recall_at_k,
@@ -42,6 +43,31 @@ def test_recall_at_k_normal():
 def test_recall_at_k_empty_expected_raises():
     with pytest.raises(ValueError, match="expected_keys must not be empty"):
         recall_at_k(["a"], set(), 1)
+
+
+def test_hit_rate_at_k_normal():
+    retrieved = ["doc_a", "doc_b", "doc_c", "doc_d"]
+    expected = {"doc_a", "doc_x"}
+    assert hit_rate_at_k(retrieved, expected, 1) == 1.0
+    assert hit_rate_at_k(retrieved, expected, 4) == 1.0
+    assert hit_rate_at_k(retrieved, {"doc_x"}, 1) == 0.0
+    assert hit_rate_at_k(retrieved, {"doc_c"}, 2) == 0.0
+    assert hit_rate_at_k(retrieved, {"doc_c"}, 3) == 1.0
+
+
+def test_hit_rate_at_k_empty_expected_raises():
+    with pytest.raises(ValueError, match="expected_keys must not be empty"):
+        hit_rate_at_k(["a"], set(), 1)
+
+
+def test_hit_rate_vs_recall_multi_doc_partial():
+    # Multi-doc query needing doc_a AND doc_b
+    retrieved = ["doc_a", "doc_other1", "doc_other2"]
+    expected = {"doc_a", "doc_b"}
+    # Hit rate at 1 is 1.0 because at least 1 relevant doc was retrieved
+    assert hit_rate_at_k(retrieved, expected, 1) == 1.0
+    # Recall at 1 is 0.5 because only 1 of 2 relevant docs was retrieved
+    assert recall_at_k(retrieved, expected, 1) == 0.5
 
 
 def test_reciprocal_rank_at_k():
