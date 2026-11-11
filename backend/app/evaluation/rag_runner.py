@@ -22,6 +22,7 @@ from app.evaluation.rag_dataset import (
     RAGTestCase,
 )
 from app.evaluation.rag_diagnostics import (
+    AnswerClassification,
     FailureRootCause,
     RAGCaseDiagnostic,
     grade_rag_response,
@@ -191,7 +192,7 @@ class EvaluationRunConfig:
     k: int = 5
     concurrency_limit: int = 2
     max_context_chars: int = 8000
-    llm_timeout_seconds: float = 60.0
+    llm_timeout_seconds: float = 180.0
 
 
 async def evaluate_single_case(
@@ -227,7 +228,19 @@ async def evaluate_single_case(
             negative_retrieved = True
 
     # Assemble retrieval context
+    t0_ctx = time.perf_counter()
     context = build_retrieval_context(matches, max_chars=config.max_context_chars)
+    context_latency_ms = (time.perf_counter() - t0_ctx) * 1000.0
+
+    candidates_count = len(matches)
+    accepted_evidence_count = len(context.sources)
+    filtered_chunks_count = max(0, candidates_count - accepted_evidence_count)
+
+    embedding_latency_ms = getattr(retriever, "last_embedding_latency_ms", 0.0)
+    vector_latency_ms = getattr(
+        retriever, "last_vector_latency_ms", retrieval_latency_ms
+    )
+
     for source in context.sources:
         ws = retriever.get_workspace_ref_for_chunk(source.chunk_id)
         if ws:
@@ -281,22 +294,45 @@ async def evaluate_single_case(
         hit_at_1=round(hit_1, 4),
         hit_at_3=round(hit_3, 4),
         hit_at_5=round(hit_5, 4),
+        candidates_count=candidates_count,
+        accepted_evidence_count=accepted_evidence_count,
+        filtered_chunks_count=filtered_chunks_count,
+        embedding_latency_ms=round(embedding_latency_ms, 2),
+        vector_latency_ms=round(vector_latency_ms, 2),
+        context_latency_ms=round(context_latency_ms, 2),
+        doc_recall_at_1=round(rec_1, 4),
+        doc_recall_at_3=round(rec_3, 4),
+        doc_recall_at_5=round(rec_5, 4),
+        chunk_recall_at_1=round(rec_1, 4),
+        chunk_recall_at_3=round(rec_3, 4),
+        chunk_recall_at_5=round(rec_5, 4),
     )
 
-    # Retrieval-only mode completes here
-    if config.mode == "retrieval-only" or llm is None:
+    # Retrieval-only / pgvector mode completes here
+    if (
+        config.mode in ("retrieval-only", "synthetic-in-memory", "real-pgvector")
+        or llm is None
+    ):
         # Determine retrieval pass/fail
         if case.expected_answerability == Answerability.ANSWERABLE:
             diagnostic.passed = rec_5 > 0.0 and not negative_retrieved
             if not diagnostic.passed:
-                diagnostic.root_cause = FailureRootCause.RETRIEVAL_FAILURE
+                if len(matches) == 0:
+                    diagnostic.root_cause = FailureRootCause.VECTOR_RETRIEVAL_FAILURE
+                else:
+                    diagnostic.root_cause = FailureRootCause.WRONG_DOCUMENT_RANKING
                 diagnostic.notes = "Retrieval failed to find expected evidence in top-k"
             else:
                 diagnostic.notes = "Retrieval successfully found expected evidence"
         else:
             # For refusal cases, retrieval pass means no negative/forbidden documents leaked
             diagnostic.passed = not negative_retrieved and cross_tenant_chunks == 0
-            diagnostic.notes = "Zero cross-tenant or negative documents retrieved"
+            if diagnostic.passed:
+                diagnostic.root_cause = FailureRootCause.CORRECT_GUARDRAIL_REFUSAL
+                diagnostic.notes = "Zero cross-tenant or negative documents retrieved"
+            else:
+                diagnostic.root_cause = FailureRootCause.VECTOR_RETRIEVAL_FAILURE
+                diagnostic.notes = "Negative or cross-tenant document leaked in top-k"
         return diagnostic
 
     # Full-RAG mode: execute generation under concurrency semaphore
@@ -307,12 +343,32 @@ async def evaluate_single_case(
     else:
         messages = build_rag_messages(query=case.query, context=context)
         sem = semaphore or asyncio.Semaphore(1)
-        async with sem:
-            answer = await asyncio.wait_for(
-                llm.generate(messages),
-                timeout=config.llm_timeout_seconds,
-            )
+        gen_error: str | None = None
+        try:
+            async with sem:
+                answer = await asyncio.wait_for(
+                    llm.generate(messages),
+                    timeout=config.llm_timeout_seconds,
+                )
+        except TimeoutError:
+            gen_error = f"LLM generation timed out after {config.llm_timeout_seconds}s"
+            answer = ""
+        except Exception as exc:  # noqa: BLE001
+            gen_error = f"LLM generation failed: {exc}"
+            answer = ""
         gen_latency_ms = (time.perf_counter() - t0_gen) * 1000.0
+
+        if gen_error:
+            diagnostic.answer = None
+            diagnostic.is_refusal = False
+            diagnostic.classification = (
+                AnswerClassification.INSUFFICIENT_EVIDENCE_TO_GRADE
+            )
+            diagnostic.root_cause = FailureRootCause.LLM_GENERATION_FAILURE
+            diagnostic.generation_latency_ms = round(gen_latency_ms, 2)
+            diagnostic.passed = False
+            diagnostic.notes = gen_error
+            return diagnostic
 
     classification, root_cause, cit_diag, passed, notes = grade_rag_response(
         case=case,
