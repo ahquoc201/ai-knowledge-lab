@@ -38,6 +38,7 @@ from app.evaluation.real_fixture_provisioner import (
     provision_real_rag_fixtures,
     verify_database_safety,
 )
+from app.evaluation.real_hybrid_retriever import RealHybridCorpusRetriever
 from app.evaluation.real_pgvector_retriever import RealPgVectorCorpusRetriever
 from app.llm.ollama import OllamaLLMProvider
 
@@ -71,7 +72,11 @@ DEFAULT_OUTPUT_MD = (
 
 DEFAULT_DATABASE_URL = os.getenv(
     "EVAL_DATABASE_URL",
-    "postgresql+asyncpg://ailab:local_only_change_me@127.0.0.1:15432/ailab_eval_test",
+    (
+        "postgresql+asyncpg://ailab:local_only_change_me@/ailab_eval_test?host=/tmp&port=15432"
+        if os.path.exists("/tmp/.s.PGSQL.15432")
+        else "postgresql+asyncpg://ailab:local_only_change_me@127.0.0.1:15432/ailab_eval_test"
+    ),
 )
 
 
@@ -87,13 +92,20 @@ def parse_args() -> argparse.Namespace:
     )
     parser.add_argument(
         "--mode",
-        choices=["synthetic-in-memory", "retrieval-only", "real-pgvector", "full-rag"],
+        choices=["synthetic-in-memory", "retrieval-only", "real-pgvector", "real-hybrid", "full-rag"],
         default="real-pgvector",
         help=(
             "Evaluation mode: 'synthetic-in-memory'/'retrieval-only' (in-memory embeddings), "
-            "'real-pgvector' (production PostgreSQL pgvector retrieval), or "
+            "'real-pgvector' (production PostgreSQL pgvector retrieval), "
+            "'real-hybrid' (PostgreSQL pgvector + FTS + RRF hybrid retrieval), or "
             "'full-rag' (real pgvector retrieval + context assembly + LLM generation)"
         ),
+    )
+    parser.add_argument(
+        "--rrf-k",
+        type=int,
+        default=60,
+        help="RRF constant k for hybrid retrieval fusion (default: 60)",
     )
     parser.add_argument(
         "--database-url",
@@ -184,7 +196,7 @@ async def main() -> None:
         llm = OllamaLLMProvider(timeout_seconds=180.0)
         llm_name = getattr(llm, "model", "qwen3:1.7b")
 
-    is_real_stack = args.mode in ("real-pgvector", "full-rag")
+    is_real_stack = args.mode in ("real-pgvector", "real-hybrid", "full-rag")
 
     if is_real_stack:
         db_name = verify_database_safety(args.database_url)
@@ -205,13 +217,23 @@ async def main() -> None:
                 allow_fixture_writes=True,
             ) as env:
                 logger.info(
-                    f"Fixtures provisioned: {env.total_documents} docs, {env.total_chunks} chunks. "
-                    "Instantiating RealPgVectorCorpusRetriever..."
+                    f"Fixtures provisioned: {env.total_documents} docs, {env.total_chunks} chunks."
                 )
-                retriever = RealPgVectorCorpusRetriever(
-                    session_factory=session_factory,
-                    env=env,
-                )
+                if args.mode == "real-hybrid":
+                    logger.info(
+                        f"Instantiating RealHybridCorpusRetriever (rrf_k={args.rrf_k})..."
+                    )
+                    retriever = RealHybridCorpusRetriever(
+                        session_factory=session_factory,
+                        env=env,
+                        rrf_k=args.rrf_k,
+                    )
+                else:
+                    logger.info("Instantiating RealPgVectorCorpusRetriever...")
+                    retriever = RealPgVectorCorpusRetriever(
+                        session_factory=session_factory,
+                        env=env,
+                    )
 
                 logger.info(
                     f"Starting real-stack evaluation in '{args.mode}' mode "
