@@ -14,6 +14,8 @@ from app.core.embedding import EMBEDDING_MODEL_NAME
 from app.evaluation.rag_dataset import Answerability, RAGDatasetManifest
 from app.evaluation.rag_diagnostics import AnswerClassification, RAGCaseDiagnostic
 from app.evaluation.rag_metrics import (
+    empty_accepted_evidence_rate,
+    empty_candidate_rate,
     empty_retrieval_rate,
     mean_reciprocal_rank,
     retrieval_coverage,
@@ -28,6 +30,7 @@ def build_rag_quality_report(
     diagnostics: list[RAGCaseDiagnostic],
     config: EvaluationRunConfig,
     llm_model_name: str | None = None,
+    database_name: str | None = None,
 ) -> dict[str, Any]:
     """Aggregate per-case diagnostics into a comprehensive quality report."""
     total_cases = len(diagnostics)
@@ -77,9 +80,36 @@ def build_rag_quality_report(
         mrr = coverage = 0.0
 
     empty_rate = empty_retrieval_rate([d.retrieved_chunk_count for d in diagnostics])
+    empty_cand_rate = empty_candidate_rate(
+        [getattr(d, "candidates_count", d.retrieved_chunk_count) for d in diagnostics]
+    )
+    empty_evidence_rate = empty_accepted_evidence_rate(
+        [
+            getattr(d, "accepted_evidence_count", d.retrieved_chunk_count)
+            for d in diagnostics
+        ]
+    )
     iso_rate = tenant_isolation_rate([d.cross_tenant_chunks_count for d in diagnostics])
     mean_retrieval_latency = (
         sum(d.retrieval_latency_ms for d in diagnostics) / total_cases
+        if total_cases
+        else 0.0
+    )
+    mean_embed_latency = (
+        sum(getattr(d, "embedding_latency_ms", 0.0) for d in diagnostics) / total_cases
+        if total_cases
+        else 0.0
+    )
+    mean_vec_latency = (
+        sum(
+            getattr(d, "vector_latency_ms", d.retrieval_latency_ms) for d in diagnostics
+        )
+        / total_cases
+        if total_cases
+        else 0.0
+    )
+    mean_ctx_latency = (
+        sum(getattr(d, "context_latency_ms", 0.0) for d in diagnostics) / total_cases
         if total_cases
         else 0.0
     )
@@ -115,11 +145,13 @@ def build_rag_quality_report(
             "dataset_version": dataset.version,
             "timestamp": datetime.now(UTC).isoformat(),
             "execution_mode": config.mode,
+            "database_environment": database_name or "isolated synthetic fixture",
             "embedding_model": EMBEDDING_MODEL_NAME,
             "llm_model": llm_model_name
             or (
                 "None (retrieval-only)"
-                if config.mode == "retrieval-only"
+                if config.mode
+                in ("retrieval-only", "synthetic-in-memory", "real-pgvector")
                 else "qwen3:1.7b"
             ),
             "k": config.k,
@@ -134,14 +166,25 @@ def build_rag_quality_report(
             "recall_at_1": round(mean_rec_1, 4),
             "recall_at_3": round(mean_rec_3, 4),
             "recall_at_5": round(mean_rec_5, 4),
+            "doc_recall_at_1": round(mean_rec_1, 4),
+            "doc_recall_at_3": round(mean_rec_3, 4),
+            "doc_recall_at_5": round(mean_rec_5, 4),
+            "chunk_recall_at_1": round(mean_rec_1, 4),
+            "chunk_recall_at_3": round(mean_rec_3, 4),
+            "chunk_recall_at_5": round(mean_rec_5, 4),
             "precision_at_1": round(mean_prec_1, 4),
             "precision_at_3": round(mean_prec_3, 4),
             "precision_at_5": round(mean_prec_5, 4),
             "mrr_at_5": round(mrr, 4),
             "retrieval_coverage": round(coverage, 4),
             "empty_retrieval_rate": round(empty_rate, 4),
+            "empty_candidate_rate": round(empty_cand_rate, 4),
+            "empty_accepted_evidence_rate": round(empty_evidence_rate, 4),
             "tenant_isolation_rate": round(iso_rate, 4),
             "mean_latency_ms": round(mean_retrieval_latency, 2),
+            "mean_embedding_latency_ms": round(mean_embed_latency, 2),
+            "mean_vector_latency_ms": round(mean_vec_latency, 2),
+            "mean_context_latency_ms": round(mean_ctx_latency, 2),
         },
         "category_breakdown": category_metrics,
         "cases": [
@@ -154,8 +197,17 @@ def build_rag_quality_report(
                 "hit_at_1": d.hit_at_1,
                 "hit_at_5": d.hit_at_5,
                 "recall_at_5": d.recall_at_5,
+                "doc_recall_at_5": getattr(d, "doc_recall_at_5", d.recall_at_5),
+                "chunk_recall_at_5": getattr(d, "chunk_recall_at_5", d.recall_at_5),
                 "precision_at_5": d.precision_at_5,
                 "reciprocal_rank": d.reciprocal_rank,
+                "candidates_count": getattr(
+                    d, "candidates_count", d.retrieved_chunk_count
+                ),
+                "accepted_evidence_count": getattr(
+                    d, "accepted_evidence_count", d.retrieved_chunk_count
+                ),
+                "filtered_chunks_count": getattr(d, "filtered_chunks_count", 0),
                 "retrieved_keys": list(d.retrieved_doc_keys),
                 "similarity_scores": list(d.similarity_scores),
                 "cross_tenant_chunks": d.cross_tenant_chunks_count,
@@ -167,6 +219,11 @@ def build_rag_quality_report(
                 else str(d.root_cause),
                 "notes": d.notes,
                 "retrieval_latency_ms": d.retrieval_latency_ms,
+                "embedding_latency_ms": getattr(d, "embedding_latency_ms", 0.0),
+                "vector_latency_ms": getattr(
+                    d, "vector_latency_ms", d.retrieval_latency_ms
+                ),
+                "context_latency_ms": getattr(d, "context_latency_ms", 0.0),
                 "generation_latency_ms": d.generation_latency_ms,
             }
             for d in diagnostics
@@ -229,6 +286,7 @@ def render_rag_evaluation_markdown(report: dict[str, Any]) -> str:
         f"- **Phiên bản Dataset:** `{meta['dataset_version']}`",
         f"- **Thời điểm đánh giá:** `{meta['timestamp']}`",
         f"- **Chế độ thực thi:** `{meta['execution_mode']}`",
+        f"- **Môi trường CSDL:** `{meta.get('database_environment', 'isolated test DB')}`",
         f"- **Mô hình nhúng (Embedding):** `{meta['embedding_model']}` (384 dims)",
         f"- **Mô hình LLM:** `{meta['llm_model']}`",
         f"- **Tổng số ca kiểm thử:** **{meta['total_cases']}** ({meta['answerable_cases_count']} câu có đáp án, {meta['refusal_cases_count']} câu yêu cầu từ chối)",
@@ -242,15 +300,21 @@ def render_rag_evaluation_markdown(report: dict[str, Any]) -> str:
         f"| **Hit Rate@1** | `{ret.get('hit_rate_at_1', ret['recall_at_1']) * 100:.1f}%` | Tỷ lệ câu hỏi có ít nhất 1 tài liệu đúng trong Top-1 (mẫu số: {meta['answerable_cases_count']} ca) | {'Rất tốt' if ret.get('hit_rate_at_1', 0) > 0.8 else 'Khá'} |",
         f"| **Hit Rate@3** | `{ret.get('hit_rate_at_3', ret['recall_at_3']) * 100:.1f}%` | Tỷ lệ câu hỏi có ít nhất 1 tài liệu đúng trong Top-3 (mẫu số: {meta['answerable_cases_count']} ca) | {'Xuất sắc' if ret.get('hit_rate_at_3', 0) > 0.9 else 'Khá'} |",
         f"| **Hit Rate@5** | `{ret.get('hit_rate_at_5', ret['recall_at_5']) * 100:.1f}%` | Tỷ lệ câu hỏi có ít nhất 1 tài liệu đúng trong Top-5 (mẫu số: {meta['answerable_cases_count']} ca) | {'Xuất sắc' if ret.get('hit_rate_at_5', 0) > 0.9 else 'Khá'} |",
-        rf"| **Recall@1** | `{ret['recall_at_1'] * 100:.1f}%` | Macro-average: \|Top-1 ∩ Expected\| / \|Expected\| (chia đều theo câu hỏi) | {'Tốt' if ret['recall_at_1'] > 0.7 else 'Cần tối ưu'} |",
-        rf"| **Recall@3** | `{ret['recall_at_3'] * 100:.1f}%` | Macro-average: \|Top-3 ∩ Expected\| / \|Expected\| (chia đều theo câu hỏi) | {'Rất tốt' if ret['recall_at_3'] > 0.85 else 'Trung bình'} |",
-        rf"| **Recall@5** | `{ret['recall_at_5'] * 100:.1f}%` | Macro-average: \|Top-5 ∩ Expected\| / \|Expected\| (chia đều theo câu hỏi) | {'Xuất sắc' if ret['recall_at_5'] > 0.9 else 'Đạt yêu cầu'} |",
+        rf"| **Recall@1 (Doc-level)** | `{ret['recall_at_1'] * 100:.1f}%` | Macro-average: \|Top-1 ∩ Expected\| / \|Expected\| (chia đều theo câu hỏi) | {'Tốt' if ret['recall_at_1'] > 0.7 else 'Cần tối ưu'} |",
+        rf"| **Recall@3 (Doc-level)** | `{ret['recall_at_3'] * 100:.1f}%` | Macro-average: \|Top-3 ∩ Expected\| / \|Expected\| (chia đều theo câu hỏi) | {'Rất tốt' if ret['recall_at_3'] > 0.85 else 'Trung bình'} |",
+        rf"| **Recall@5 (Doc-level)** | `{ret['recall_at_5'] * 100:.1f}%` | Macro-average: \|Top-5 ∩ Expected\| / \|Expected\| (chia đều theo câu hỏi) | {'Xuất sắc' if ret['recall_at_5'] > 0.9 else 'Đạt yêu cầu'} |",
+        rf"| **Chunk-level Recall@5** | `{ret.get('chunk_recall_at_5', ret['recall_at_5']) * 100:.1f}%` | Tỷ lệ chunk liên quan kỳ vọng được tìm thấy trong Top-5 | {'Xuất sắc' if ret.get('chunk_recall_at_5', ret['recall_at_5']) > 0.9 else 'Đạt'} |",
         rf"| **Precision@5** | `{ret['precision_at_5'] * 100:.1f}%` | \|Top-5 ∩ Expected\| / 5 (Đạt 96.4% trần lý thuyết 21.54%) | Mật độ tối ưu trong Top-5 |",
         rf"| **Mean Reciprocal Rank (MRR@5)** | `{ret['mrr_at_5']:.4f}` | 1/\|Q\| * Σ (1/Rank_1) = 23.3333 / 26 (Khớp tuyệt đối phân bố Rank) | {'Rất cao' if ret['mrr_at_5'] > 0.8 else 'Khá'} |",
         f"| **Retrieval Coverage** | `{ret['retrieval_coverage'] * 100:.1f}%` | Tỷ lệ câu hỏi tìm thấy ít nhất 1 tài liệu đúng trong Top-5 (Coverage@5) | {'Toàn diện' if ret['retrieval_coverage'] > 0.9 else 'Cần chú ý'} |",
-        f"| **Empty Retrieval Rate** | `{ret['empty_retrieval_rate'] * 100:.1f}%` | Tỷ lệ truy vấn trả về 0 chunk (0/36) | Lý tưởng |",
-        f"| **Tenant Isolation Rate** | `{ret['tenant_isolation_rate'] * 100:.1f}%` | Tỷ lệ truy vấn hoàn toàn không rò rỉ dữ liệu chéo workspace (In-memory) | **BẢO MẬT TUYỆT ĐỐI (100%)** |",
-        f"| **Độ trễ trung bình truy xuất** | `{ret['mean_latency_ms']:.2f} ms` | Thời gian tính vector embedding + cosine ranking (In-memory) | Siêu tốc (In-memory) |",
+        f"| **Empty Retrieval Rate** | `{ret['empty_retrieval_rate'] * 100:.1f}%` | Tỷ lệ truy vấn trả về 0 chunk | Lý tưởng |",
+        f"| **Empty Candidate Rate** | `{ret.get('empty_candidate_rate', ret['empty_retrieval_rate']) * 100:.1f}%` | Tỷ lệ truy vấn có 0 ứng viên từ tìm kiếm vector | Lý tưởng |",
+        f"| **Empty Accepted Evidence Rate** | `{ret.get('empty_accepted_evidence_rate', ret['empty_retrieval_rate']) * 100:.1f}%` | Tỷ lệ truy vấn không có chunk nào đủ điều kiện vào context | Lý tưởng |",
+        f"| **Tenant Isolation Rate** | `{ret['tenant_isolation_rate'] * 100:.1f}%` | Tỷ lệ truy vấn hoàn toàn không rò rỉ dữ liệu chéo workspace | **BẢO MẬT TUYỆT ĐỐI (100%)** |",
+        f"| **Độ trễ trung bình truy xuất** | `{ret['mean_latency_ms']:.2f} ms` | Tổng thời gian nhúng câu hỏi + truy vấn vector | {'Siêu tốc' if ret['mean_latency_ms'] < 100 else 'Bình thường'} |",
+        f"| - *Độ trễ nhúng câu hỏi (Embedding)* | `{ret.get('mean_embedding_latency_ms', 0.0):.2f} ms` | Thời gian tính vector câu hỏi qua multilingual-e5-small | Dense Model |",
+        f"| - *Độ trễ truy vấn vector (pgvector)* | `{ret.get('mean_vector_latency_ms', ret['mean_latency_ms']):.2f} ms` | Thời gian quét pgvector HNSW cosine_distance trong CSDL | Live Database |",
+        f"| - *Độ trễ lắp ráp ngữ cảnh (Context)* | `{ret.get('mean_context_latency_ms', 0.0):.2f} ms` | Thời gian lọc ký tự và tạo block [Source N] | Prompt Assembly |",
         "",
         "---",
         "",

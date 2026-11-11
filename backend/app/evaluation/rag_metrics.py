@@ -143,6 +143,34 @@ def empty_retrieval_rate(
     return empty_count / len(retrieved_counts)
 
 
+def empty_candidate_rate(
+    candidate_counts: Sequence[int],
+) -> float:
+    """Calculate Empty Candidate Rate: fraction of queries returning 0 candidates from vector search.
+
+    Formula: Count(candidates == 0) / Total Queries
+    """
+    if not candidate_counts:
+        return 0.0
+
+    empty_count = sum(1 for count in candidate_counts if count == 0)
+    return empty_count / len(candidate_counts)
+
+
+def empty_accepted_evidence_rate(
+    accepted_counts: Sequence[int],
+) -> float:
+    """Calculate Empty Accepted Evidence Rate: fraction of queries where 0 evidence chunks fit into context.
+
+    Formula: Count(accepted == 0) / Total Queries
+    """
+    if not accepted_counts:
+        return 0.0
+
+    empty_count = sum(1 for count in accepted_counts if count == 0)
+    return empty_count / len(accepted_counts)
+
+
 def tenant_isolation_rate(
     cross_tenant_violation_counts: Sequence[int],
 ) -> float:

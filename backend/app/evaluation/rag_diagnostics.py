@@ -37,9 +37,18 @@ class AnswerClassification(StrEnum):
 
 class FailureRootCause(StrEnum):
     NONE = "NONE"
+    QUERY_EMBEDDING_FAILURE = "QUERY_EMBEDDING_FAILURE"
+    VECTOR_RETRIEVAL_FAILURE = "VECTOR_RETRIEVAL_FAILURE"
+    WRONG_DOCUMENT_RANKING = "WRONG_DOCUMENT_RANKING"
+    SIMILARITY_FILTER_REJECTION = "SIMILARITY_FILTER_REJECTION"
+    CONTEXT_ASSEMBLY_FAILURE = "CONTEXT_ASSEMBLY_FAILURE"
+    LLM_GENERATION_FAILURE = "LLM_GENERATION_FAILURE"
+    CITATION_VALIDATION_FAILURE = "CITATION_VALIDATION_FAILURE"
+    CORRECT_GUARDRAIL_REFUSAL = "CORRECT_GUARDRAIL_REFUSAL"
+    UNKNOWN_ROOT_CAUSE = "UNKNOWN_ROOT_CAUSE"
+    # Legacy aliases to maintain full backwards compatibility with T260030
     RETRIEVAL_FAILURE = "RETRIEVAL_FAILURE"
     EVIDENCE_FILTERING_FAILURE = "EVIDENCE_FILTERING_FAILURE"
-    CONTEXT_ASSEMBLY_FAILURE = "CONTEXT_ASSEMBLY_FAILURE"
     GENERATION_FAILURE = "GENERATION_FAILURE"
     CORRECT_REFUSAL = "CORRECT_REFUSAL"
 
@@ -87,6 +96,20 @@ class RAGCaseDiagnostic:
     hit_at_1: float = 0.0
     hit_at_3: float = 0.0
     hit_at_5: float = 0.0
+
+    # Extended granular diagnostic traces (T260031 real-stack)
+    candidates_count: int = 0
+    accepted_evidence_count: int = 0
+    filtered_chunks_count: int = 0
+    embedding_latency_ms: float = 0.0
+    vector_latency_ms: float = 0.0
+    context_latency_ms: float = 0.0
+    doc_recall_at_1: float = 0.0
+    doc_recall_at_3: float = 0.0
+    doc_recall_at_5: float = 0.0
+    chunk_recall_at_1: float = 0.0
+    chunk_recall_at_3: float = 0.0
+    chunk_recall_at_5: float = 0.0
 
     # Generation trace (for full-rag mode, optional in retrieval-only)
     answer: str | None = None
