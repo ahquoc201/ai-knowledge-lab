@@ -111,6 +111,21 @@ class RAGCaseDiagnostic:
     chunk_recall_at_3: float = 0.0
     chunk_recall_at_5: float = 0.0
 
+    # Ranking / granularity diagnostics (T260033)
+    # retrieved_doc_keys keeps the raw per-chunk order; metrics use the deduplicated
+    # document ranking. chunk_* metrics are real only when chunk_labeled is True
+    # (otherwise chunk_recall_* mirrors doc recall, valid for 1-chunk documents).
+    retrieved_chunk_ids: tuple[str, ...] = ()
+    retrieval_provenance: tuple[str, ...] = ()
+    first_relevant_doc_rank: int | None = None
+    first_relevant_chunk_rank: int | None = None
+    chunk_labeled: bool = False
+    chunk_hit_at_1: float = 0.0
+    chunk_hit_at_3: float = 0.0
+    chunk_hit_at_5: float = 0.0
+    chunk_precision_at_5: float = 0.0
+    chunk_reciprocal_rank: float = 0.0
+
     # Generation trace (for full-rag mode, optional in retrieval-only)
     answer: str | None = None
     is_refusal: bool = False

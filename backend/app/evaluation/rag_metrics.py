@@ -64,17 +64,41 @@ def recall_at_k(
 ) -> float:
     """Calculate Recall@K: fraction of expected relevant items found in top-k.
 
-    Formula: |Retrieved[:k] ∩ Expected| / |Expected|
+    Formula: |set(Retrieved[:k]) ∩ Expected| / |Expected|
+    Duplicates in the retrieved list (e.g. several chunks of one document) are counted
+    once, so recall can never exceed 1.0.
     Raises ValueError if expected_keys is empty because denominator is undefined.
     """
     _validate_k(k)
     if not expected_keys:
         raise ValueError("expected_keys must not be empty for recall calculation")
 
-    top_k = retrieved_keys[:k]
     expected_set = set(expected_keys)
-    hits = sum(1 for item in top_k if item in expected_set)
+    hits = len(set(retrieved_keys[:k]) & expected_set)
     return hits / len(expected_set)
+
+
+def dedupe_preserving_order(keys: Sequence[str]) -> list[str]:
+    """Collapse a ranked list to first occurrences (chunk ranking -> document ranking)."""
+    seen: set[str] = set()
+    ordered: list[str] = []
+    for key in keys:
+        if key not in seen:
+            seen.add(key)
+            ordered.append(key)
+    return ordered
+
+
+def first_relevant_rank(
+    retrieved_keys: Sequence[str],
+    expected_keys: Collection[str],
+) -> int | None:
+    """1-based rank of the first relevant item, or None if no relevant item was retrieved."""
+    expected_set = set(expected_keys)
+    for rank, key in enumerate(retrieved_keys, start=1):
+        if key in expected_set:
+            return rank
+    return None
 
 
 def reciprocal_rank_at_k(

@@ -24,6 +24,69 @@ from app.evaluation.rag_metrics import (
 from app.evaluation.rag_runner import EvaluationRunConfig
 
 
+def _mean(values: list[float]) -> float | None:
+    return round(sum(values) / len(values), 4) if values else None
+
+
+def _group_metrics(
+    diags: list[RAGCaseDiagnostic],
+    case_map: dict[str, Any],
+) -> dict[str, Any]:
+    """Metrics for one slice (category / language / tag).
+
+    Answerable and refusal cases have separate denominators: retrieval quality metrics
+    use answerable cases only, leak-free rate uses refusal cases only.
+    """
+    answerable = [
+        d
+        for d in diags
+        if case_map[d.case_id].expected_answerability == Answerability.ANSWERABLE
+    ]
+    refusal = [d for d in diags if d not in answerable]
+    passed = sum(1 for d in diags if d.passed)
+    chunk_labeled = [d for d in answerable if d.chunk_labeled]
+    return {
+        "total": len(diags),
+        "answerable": len(answerable),
+        "refusal": len(refusal),
+        "passed": passed,
+        "pass_rate": round(passed / len(diags), 4) if diags else 0.0,
+        "hit_rate_at_1": _mean([d.hit_at_1 for d in answerable]),
+        "hit_rate_at_3": _mean([d.hit_at_3 for d in answerable]),
+        "hit_rate_at_5": _mean([d.hit_at_5 for d in answerable]),
+        "recall_at_1": _mean([d.recall_at_1 for d in answerable]),
+        "recall_at_3": _mean([d.recall_at_3 for d in answerable]),
+        "recall_at_5": _mean([d.recall_at_5 for d in answerable]),
+        "precision_at_5": _mean([d.precision_at_5 for d in answerable]),
+        "mrr_at_5": _mean([d.reciprocal_rank for d in answerable]),
+        "chunk_labeled_cases": len(chunk_labeled),
+        "chunk_recall_at_5": _mean([d.chunk_recall_at_5 for d in chunk_labeled]),
+        "refusal_leak_free_rate": _mean(
+            [
+                1.0
+                if (not d.negative_doc_retrieved and d.cross_tenant_chunks_count == 0)
+                else 0.0
+                for d in refusal
+            ]
+        ),
+        "tenant_isolation_rate": _mean(
+            [1.0 if d.cross_tenant_chunks_count == 0 else 0.0 for d in diags]
+        ),
+    }
+
+
+def _breakdown(
+    diagnostics: list[RAGCaseDiagnostic],
+    case_map: dict[str, Any],
+    key_fn: Any,
+) -> dict[str, Any]:
+    groups: dict[str, list[RAGCaseDiagnostic]] = {}
+    for d in diagnostics:
+        for key in key_fn(d):
+            groups.setdefault(key, []).append(d)
+    return {k: _group_metrics(v, case_map) for k, v in sorted(groups.items())}
+
+
 def build_rag_quality_report(
     *,
     dataset: RAGDatasetManifest,
@@ -31,6 +94,8 @@ def build_rag_quality_report(
     config: EvaluationRunConfig,
     llm_model_name: str | None = None,
     database_name: str | None = None,
+    retrieval_strategy: str | None = None,
+    timestamp: str | None = None,
 ) -> dict[str, Any]:
     """Aggregate per-case diagnostics into a comprehensive quality report."""
     total_cases = len(diagnostics)
@@ -78,6 +143,39 @@ def build_rag_quality_report(
         mean_rec_1 = mean_rec_3 = mean_rec_5 = 0.0
         mean_prec_1 = mean_prec_3 = mean_prec_5 = 0.0
         mrr = coverage = 0.0
+
+    chunk_labeled_cases = [d for d in answerable_cases if d.chunk_labeled]
+    if chunk_labeled_cases:
+        n_chunk = len(chunk_labeled_cases)
+        chunk_rec_1 = sum(d.chunk_recall_at_1 for d in chunk_labeled_cases) / n_chunk
+        chunk_rec_3 = sum(d.chunk_recall_at_3 for d in chunk_labeled_cases) / n_chunk
+        chunk_rec_5 = sum(d.chunk_recall_at_5 for d in chunk_labeled_cases) / n_chunk
+        chunk_extra: dict[str, float | None] = {
+            "chunk_hit_rate_at_1": round(
+                sum(d.chunk_hit_at_1 for d in chunk_labeled_cases) / n_chunk, 4
+            ),
+            "chunk_hit_rate_at_3": round(
+                sum(d.chunk_hit_at_3 for d in chunk_labeled_cases) / n_chunk, 4
+            ),
+            "chunk_hit_rate_at_5": round(
+                sum(d.chunk_hit_at_5 for d in chunk_labeled_cases) / n_chunk, 4
+            ),
+            "chunk_precision_at_5": round(
+                sum(d.chunk_precision_at_5 for d in chunk_labeled_cases) / n_chunk, 4
+            ),
+            "chunk_mrr_at_5": round(
+                sum(d.chunk_reciprocal_rank for d in chunk_labeled_cases) / n_chunk, 4
+            ),
+        }
+    else:
+        chunk_rec_1, chunk_rec_3, chunk_rec_5 = mean_rec_1, mean_rec_3, mean_rec_5
+        chunk_extra = {
+            "chunk_hit_rate_at_1": None,
+            "chunk_hit_rate_at_3": None,
+            "chunk_hit_rate_at_5": None,
+            "chunk_precision_at_5": None,
+            "chunk_mrr_at_5": None,
+        }
 
     empty_rate = empty_retrieval_rate([d.retrieved_chunk_count for d in diagnostics])
     empty_cand_rate = empty_candidate_rate(
@@ -137,14 +235,26 @@ def build_rag_quality_report(
             "mean_recall_at_5": round(cat_recall, 4)
             if cat_recall is not None
             else "N/A (Refusal)",
+            **{
+                k: v
+                for k, v in _group_metrics(cat_diags, case_map).items()
+                if k not in ("total", "passed", "pass_rate")
+            },
         }
 
     report: dict[str, Any] = {
         "metadata": {
             "dataset_id": dataset.dataset_id,
             "dataset_version": dataset.version,
-            "timestamp": datetime.now(UTC).isoformat(),
+            "timestamp": timestamp or datetime.now(UTC).isoformat(),
             "execution_mode": config.mode,
+            "retrieval_strategy": retrieval_strategy or "unspecified",
+            "chunk_labeled_cases_count": len(chunk_labeled_cases),
+            "chunk_metrics_scope": (
+                "chunk-labeled answerable cases only"
+                if chunk_labeled_cases
+                else "no chunk labels: chunk_recall mirrors doc recall (1 chunk/doc corpus)"
+            ),
             "database_environment": database_name or "isolated synthetic fixture",
             "embedding_model": EMBEDDING_MODEL_NAME,
             "llm_model": llm_model_name
@@ -169,9 +279,10 @@ def build_rag_quality_report(
             "doc_recall_at_1": round(mean_rec_1, 4),
             "doc_recall_at_3": round(mean_rec_3, 4),
             "doc_recall_at_5": round(mean_rec_5, 4),
-            "chunk_recall_at_1": round(mean_rec_1, 4),
-            "chunk_recall_at_3": round(mean_rec_3, 4),
-            "chunk_recall_at_5": round(mean_rec_5, 4),
+            "chunk_recall_at_1": round(chunk_rec_1, 4),
+            "chunk_recall_at_3": round(chunk_rec_3, 4),
+            "chunk_recall_at_5": round(chunk_rec_5, 4),
+            **chunk_extra,
             "precision_at_1": round(mean_prec_1, 4),
             "precision_at_3": round(mean_prec_3, 4),
             "precision_at_5": round(mean_prec_5, 4),
@@ -187,9 +298,38 @@ def build_rag_quality_report(
             "mean_context_latency_ms": round(mean_ctx_latency, 2),
         },
         "category_breakdown": category_metrics,
+        "language_breakdown": _breakdown(
+            diagnostics, case_map, lambda d: [case_map[d.case_id].language]
+        ),
+        "tag_breakdown": _breakdown(
+            diagnostics, case_map, lambda d: case_map[d.case_id].tags
+        ),
+        "refusal_metrics": {
+            "refusal_cases": len(refusal_cases),
+            "leak_free_rate": _group_metrics(refusal_cases, case_map)[
+                "refusal_leak_free_rate"
+            ]
+            if refusal_cases
+            else None,
+            "note": (
+                "Retrieval-level refusal check only: a refusal case passes when no "
+                "cross-tenant or negative document is retrieved. Generation-level "
+                "correct refusal requires full-rag mode."
+            ),
+        },
         "cases": [
             {
                 "case_id": d.case_id,
+                "query": d.query,
+                "language": case_map[d.case_id].language,
+                "tags": list(case_map[d.case_id].tags),
+                "expected_documents": list(case_map[d.case_id].expected_document_keys),
+                "expected_chunk_ids": list(case_map[d.case_id].expected_chunk_ids),
+                "first_relevant_doc_rank": d.first_relevant_doc_rank,
+                "first_relevant_chunk_rank": d.first_relevant_chunk_rank,
+                "chunk_labeled": d.chunk_labeled,
+                "retrieved_chunk_ids": list(d.retrieved_chunk_ids),
+                "retrieval_provenance": list(d.retrieval_provenance),
                 "category": d.category,
                 "difficulty": d.difficulty,
                 "workspace_ref": d.workspace_ref,
@@ -286,6 +426,7 @@ def render_rag_evaluation_markdown(report: dict[str, Any]) -> str:
         f"- **Phiên bản Dataset:** `{meta['dataset_version']}`",
         f"- **Thời điểm đánh giá:** `{meta['timestamp']}`",
         f"- **Chế độ thực thi:** `{meta['execution_mode']}`",
+        f"- **Chiến lược truy xuất:** `{meta.get('retrieval_strategy', 'unspecified')}`",
         f"- **Môi trường CSDL:** `{meta.get('database_environment', 'isolated test DB')}`",
         f"- **Mô hình nhúng (Embedding):** `{meta['embedding_model']}` (384 dims)",
         f"- **Mô hình LLM:** `{meta['llm_model']}`",
@@ -304,8 +445,8 @@ def render_rag_evaluation_markdown(report: dict[str, Any]) -> str:
         rf"| **Recall@3 (Doc-level)** | `{ret['recall_at_3'] * 100:.1f}%` | Macro-average: \|Top-3 ∩ Expected\| / \|Expected\| (chia đều theo câu hỏi) | {'Rất tốt' if ret['recall_at_3'] > 0.85 else 'Trung bình'} |",
         rf"| **Recall@5 (Doc-level)** | `{ret['recall_at_5'] * 100:.1f}%` | Macro-average: \|Top-5 ∩ Expected\| / \|Expected\| (chia đều theo câu hỏi) | {'Xuất sắc' if ret['recall_at_5'] > 0.9 else 'Đạt yêu cầu'} |",
         rf"| **Chunk-level Recall@5** | `{ret.get('chunk_recall_at_5', ret['recall_at_5']) * 100:.1f}%` | Tỷ lệ chunk liên quan kỳ vọng được tìm thấy trong Top-5 | {'Xuất sắc' if ret.get('chunk_recall_at_5', ret['recall_at_5']) > 0.9 else 'Đạt'} |",
-        rf"| **Precision@5** | `{ret['precision_at_5'] * 100:.1f}%` | \|Top-5 ∩ Expected\| / 5 (Đạt 96.4% trần lý thuyết 21.54%) | Mật độ tối ưu trong Top-5 |",
-        rf"| **Mean Reciprocal Rank (MRR@5)** | `{ret['mrr_at_5']:.4f}` | 1/\|Q\| * Σ (1/Rank_1) = 23.3333 / 26 (Khớp tuyệt đối phân bố Rank) | {'Rất cao' if ret['mrr_at_5'] > 0.8 else 'Khá'} |",
+        rf"| **Precision@5** | `{ret['precision_at_5'] * 100:.1f}%` | \|Top-5 ∩ Expected\| / 5 (trần lý thuyết = số tài liệu kỳ vọng / 5) | Mật độ trong Top-5 |",
+        rf"| **Mean Reciprocal Rank (MRR@5)** | `{ret['mrr_at_5']:.4f}` | 1/\|Q\| * Σ (1/Rank_1) = {ret['mrr_at_5'] * meta['answerable_cases_count']:.4f} / {meta['answerable_cases_count']} | {'Rất cao' if ret['mrr_at_5'] > 0.8 else 'Khá'} |",
         f"| **Retrieval Coverage** | `{ret['retrieval_coverage'] * 100:.1f}%` | Tỷ lệ câu hỏi tìm thấy ít nhất 1 tài liệu đúng trong Top-5 (Coverage@5) | {'Toàn diện' if ret['retrieval_coverage'] > 0.9 else 'Cần chú ý'} |",
         f"| **Empty Retrieval Rate** | `{ret['empty_retrieval_rate'] * 100:.1f}%` | Tỷ lệ truy vấn trả về 0 chunk | Lý tưởng |",
         f"| **Empty Candidate Rate** | `{ret.get('empty_candidate_rate', ret['empty_retrieval_rate']) * 100:.1f}%` | Tỷ lệ truy vấn có 0 ứng viên từ tìm kiếm vector | Lý tưởng |",
@@ -333,6 +474,32 @@ def render_rag_evaluation_markdown(report: dict[str, Any]) -> str:
         lines.append(
             f"| `{cat}` | {data['total']} | {data['passed']} | **{data['pass_rate'] * 100:.1f}%** | {rec_str} |"
         )
+
+    def _pct(value: Any) -> str:
+        return f"{value * 100:.1f}%" if isinstance(value, (int, float)) else "N/A"
+
+    for title, key in (
+        ("PHÂN TÍCH THEO NGÔN NGỮ TRUY VẤN (LANGUAGE BREAKDOWN)", "language_breakdown"),
+        ("PHÂN TÍCH THEO THẺ KỊCH BẢN (TAG BREAKDOWN)", "tag_breakdown"),
+    ):
+        groups = report.get(key) or {}
+        if not groups:
+            continue
+        lines.extend(
+            [
+                "",
+                f"### {title}",
+                "",
+                "| Nhóm | Số ca | Có đáp án | Hit@1 | Hit@5 | Recall@5 | MRR@5 |",
+                "| :--- | :---: | :---: | :---: | :---: | :---: | :---: |",
+            ]
+        )
+        for name, g in groups.items():
+            lines.append(
+                f"| `{name}` | {g['total']} | {g['answerable']} | {_pct(g['hit_rate_at_1'])} "
+                f"| {_pct(g['hit_rate_at_5'])} | {_pct(g['recall_at_5'])} "
+                f"| {g['mrr_at_5'] if g['mrr_at_5'] is not None else 'N/A'} |"
+            )
 
     if gen:
         lines.extend(

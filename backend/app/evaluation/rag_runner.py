@@ -20,6 +20,7 @@ from app.evaluation.rag_dataset import (
     RAGDatasetManifest,
     RAGFixtureDocument,
     RAGTestCase,
+    make_chunk_id,
 )
 from app.evaluation.rag_diagnostics import (
     AnswerClassification,
@@ -28,6 +29,8 @@ from app.evaluation.rag_diagnostics import (
     grade_rag_response,
 )
 from app.evaluation.rag_metrics import (
+    dedupe_preserving_order,
+    first_relevant_rank,
     hit_rate_at_k,
     precision_at_k,
     recall_at_k,
@@ -213,6 +216,7 @@ async def evaluate_single_case(
     retrieval_latency_ms = (time.perf_counter() - t0_retrieval) * 1000.0
 
     retrieved_doc_keys: list[str] = []
+    retrieved_chunk_ids: list[str] = []
     source_workspace_refs: dict[int, str] = {}
     cross_tenant_chunks = 0
     negative_retrieved = False
@@ -221,6 +225,7 @@ async def evaluate_single_case(
         doc_key = retriever.get_document_key_for_chunk(match.chunk.id) or "unknown"
         chunk_ws = retriever.get_workspace_ref_for_chunk(match.chunk.id) or "unknown"
         retrieved_doc_keys.append(doc_key)
+        retrieved_chunk_ids.append(make_chunk_id(doc_key, match.chunk.chunk_index))
 
         if chunk_ws != case.workspace_ref:
             cross_tenant_chunks += 1
@@ -246,29 +251,53 @@ async def evaluate_single_case(
         if ws:
             source_workspace_refs[source.source_index] = ws
 
-    # Compute per-case retrieval metrics
-    # Only calculate recall and hit rate if expected documents exist
-    if case.expected_document_keys:
-        rec_1 = recall_at_k(retrieved_doc_keys, case.expected_document_keys, 1)
-        rec_3 = recall_at_k(retrieved_doc_keys, case.expected_document_keys, 3)
-        rec_5 = recall_at_k(retrieved_doc_keys, case.expected_document_keys, config.k)
-        hit_1 = hit_rate_at_k(retrieved_doc_keys, case.expected_document_keys, 1)
-        hit_3 = hit_rate_at_k(retrieved_doc_keys, case.expected_document_keys, 3)
-        hit_5 = hit_rate_at_k(retrieved_doc_keys, case.expected_document_keys, config.k)
-        prec_1 = precision_at_k(retrieved_doc_keys, case.expected_document_keys, 1)
-        prec_3 = precision_at_k(retrieved_doc_keys, case.expected_document_keys, 3)
-        prec_5 = precision_at_k(
-            retrieved_doc_keys, case.expected_document_keys, config.k
-        )
-        rr = reciprocal_rank_at_k(
-            retrieved_doc_keys, case.expected_document_keys, config.k
-        )
+    # Compute per-case retrieval metrics.
+    # Document-level metrics use the document ranking (first occurrence of each
+    # document in the chunk ranking) so multi-chunk documents are not double counted.
+    # Only calculate recall and hit rate if expected documents exist.
+    doc_ranking = dedupe_preserving_order(retrieved_doc_keys)
+    expected_docs = case.expected_document_keys
+    first_doc_rank: int | None = None
+    if expected_docs:
+        rec_1 = recall_at_k(doc_ranking, expected_docs, 1)
+        rec_3 = recall_at_k(doc_ranking, expected_docs, 3)
+        rec_5 = recall_at_k(doc_ranking, expected_docs, config.k)
+        hit_1 = hit_rate_at_k(doc_ranking, expected_docs, 1)
+        hit_3 = hit_rate_at_k(doc_ranking, expected_docs, 3)
+        hit_5 = hit_rate_at_k(doc_ranking, expected_docs, config.k)
+        prec_1 = precision_at_k(doc_ranking, expected_docs, 1)
+        prec_3 = precision_at_k(doc_ranking, expected_docs, 3)
+        prec_5 = precision_at_k(doc_ranking, expected_docs, config.k)
+        rr = reciprocal_rank_at_k(doc_ranking, expected_docs, config.k)
+        first_doc_rank = first_relevant_rank(doc_ranking[: config.k], expected_docs)
     else:
         # Refusal cases: no relevant document expected in corpus
         rec_1 = rec_3 = rec_5 = 0.0
         hit_1 = hit_3 = hit_5 = 0.0
         prec_1 = prec_3 = prec_5 = 0.0
         rr = 0.0
+
+    # Chunk-level metrics (only for cases with explicit chunk ground truth).
+    chunk_labeled = bool(case.expected_chunk_ids) and bool(expected_docs)
+    first_chunk_rank: int | None = None
+    if chunk_labeled:
+        exp_chunks = case.expected_chunk_ids
+        c_rec_1 = recall_at_k(retrieved_chunk_ids, exp_chunks, 1)
+        c_rec_3 = recall_at_k(retrieved_chunk_ids, exp_chunks, 3)
+        c_rec_5 = recall_at_k(retrieved_chunk_ids, exp_chunks, config.k)
+        c_hit_1 = hit_rate_at_k(retrieved_chunk_ids, exp_chunks, 1)
+        c_hit_3 = hit_rate_at_k(retrieved_chunk_ids, exp_chunks, 3)
+        c_hit_5 = hit_rate_at_k(retrieved_chunk_ids, exp_chunks, config.k)
+        c_prec_5 = precision_at_k(retrieved_chunk_ids, exp_chunks, config.k)
+        c_rr = reciprocal_rank_at_k(retrieved_chunk_ids, exp_chunks, config.k)
+        first_chunk_rank = first_relevant_rank(
+            retrieved_chunk_ids[: config.k], exp_chunks
+        )
+    else:
+        # Legacy behaviour: documents are single-chunk, chunk metrics mirror doc metrics.
+        c_rec_1, c_rec_3, c_rec_5 = rec_1, rec_3, rec_5
+        c_hit_1 = c_hit_3 = c_hit_5 = 0.0
+        c_prec_5 = c_rr = 0.0
 
     sim_scores = tuple(round(m.similarity, 4) for m in matches)
 
@@ -303,9 +332,22 @@ async def evaluate_single_case(
         doc_recall_at_1=round(rec_1, 4),
         doc_recall_at_3=round(rec_3, 4),
         doc_recall_at_5=round(rec_5, 4),
-        chunk_recall_at_1=round(rec_1, 4),
-        chunk_recall_at_3=round(rec_3, 4),
-        chunk_recall_at_5=round(rec_5, 4),
+        chunk_recall_at_1=round(c_rec_1, 4),
+        chunk_recall_at_3=round(c_rec_3, 4),
+        chunk_recall_at_5=round(c_rec_5, 4),
+        retrieved_chunk_ids=tuple(retrieved_chunk_ids),
+        retrieval_provenance=tuple(
+            str(getattr(getattr(m, "provenance", None), "value", "dense"))
+            for m in matches
+        ),
+        first_relevant_doc_rank=first_doc_rank,
+        first_relevant_chunk_rank=first_chunk_rank,
+        chunk_labeled=chunk_labeled,
+        chunk_hit_at_1=round(c_hit_1, 4),
+        chunk_hit_at_3=round(c_hit_3, 4),
+        chunk_hit_at_5=round(c_hit_5, 4),
+        chunk_precision_at_5=round(c_prec_5, 4),
+        chunk_reciprocal_rank=round(c_rr, 4),
     )
 
     # Retrieval-only / pgvector mode completes here

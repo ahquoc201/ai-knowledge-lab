@@ -24,6 +24,7 @@ from sqlalchemy.pool import NullPool
 os.environ.setdefault("HF_HUB_OFFLINE", "1")
 os.environ.setdefault("TRANSFORMERS_OFFLINE", "1")
 
+from app.evaluation.rag_comparison import compare_reports, render_comparison_markdown
 from app.evaluation.rag_dataset import RAGDatasetManifest, load_rag_dataset
 from app.evaluation.rag_reporting import (
     build_rag_quality_report,
@@ -92,12 +93,21 @@ def parse_args() -> argparse.Namespace:
     )
     parser.add_argument(
         "--mode",
-        choices=["synthetic-in-memory", "retrieval-only", "real-pgvector", "real-hybrid", "full-rag"],
+        choices=[
+            "synthetic-in-memory",
+            "retrieval-only",
+            "real-pgvector",
+            "real-hybrid",
+            "real-compare",
+            "full-rag",
+        ],
         default="real-pgvector",
         help=(
             "Evaluation mode: 'synthetic-in-memory'/'retrieval-only' (in-memory embeddings), "
             "'real-pgvector' (production PostgreSQL pgvector retrieval), "
-            "'real-hybrid' (PostgreSQL pgvector + FTS + RRF hybrid retrieval), or "
+            "'real-hybrid' (PostgreSQL pgvector + FTS + RRF hybrid retrieval), "
+            "'real-compare' (Dense then Hybrid on the same provisioned fixtures, with "
+            "comparison report), or "
             "'full-rag' (real pgvector retrieval + context assembly + LLM generation)"
         ),
     )
@@ -144,12 +154,119 @@ def parse_args() -> argparse.Namespace:
         help="Destination path for Markdown summary",
     )
     parser.add_argument(
+        "--output-dir",
+        type=Path,
+        default=None,
+        help="real-compare only: directory for dense/hybrid/comparison reports",
+    )
+    parser.add_argument(
+        "--report-prefix",
+        type=str,
+        default="rag_eval",
+        help="real-compare only: file name prefix for generated reports",
+    )
+    parser.add_argument(
         "--max-concurrency",
         type=int,
         default=1,
         help="Maximum concurrent LLM requests (default: 1 for local CPU safety)",
     )
     return parser.parse_args()
+
+
+async def run_real_comparison(
+    *,
+    args: argparse.Namespace,
+    dataset: RAGDatasetManifest,
+    config: EvaluationRunConfig,
+) -> None:
+    """Run Dense then Hybrid on one provisioned fixture set and write a comparison.
+
+    Both strategies see identical fixtures, embedding model, process and warm-up policy
+    (one unscored warm-up query each). Writes <prefix>_dense/_hybrid reports and a
+    <prefix>_comparison report into --output-dir.
+    """
+    if args.output_dir is None:
+        raise SystemExit("--output-dir is required for --mode real-compare")
+
+    db_name = verify_database_safety(args.database_url)
+    logger.info(f"Pre-flight safety check passed for database '{db_name}'.")
+    engine = create_async_engine(args.database_url, poolclass=NullPool)
+    session_factory = async_sessionmaker(engine, expire_on_commit=False)
+    reports: dict[str, dict] = {}
+
+    try:
+        async with provision_real_rag_fixtures(
+            engine=engine, manifest=dataset, allow_fixture_writes=True
+        ) as env:
+            logger.info(
+                f"Fixtures provisioned: {env.total_documents} docs, {env.total_chunks} chunks."
+            )
+            strategies = (
+                (
+                    "dense",
+                    "dense (pgvector cosine)",
+                    RealPgVectorCorpusRetriever(session_factory=session_factory, env=env),
+                ),
+                (
+                    "hybrid",
+                    f"hybrid (pgvector + FTS + RRF k={args.rrf_k})",
+                    RealHybridCorpusRetriever(
+                        session_factory=session_factory, env=env, rrf_k=args.rrf_k
+                    ),
+                ),
+            )
+            warmup_case = dataset.cases[0]
+            for label, strategy_name, retriever in strategies:
+                await retriever.search(
+                    warmup_case.query, warmup_case.workspace_ref, args.k
+                )  # unscored warm-up
+                logger.info(f"Evaluating strategy '{strategy_name}'...")
+                diagnostics = await run_rag_evaluation(
+                    dataset=dataset, retriever=retriever, config=config
+                )
+                reports[label] = build_rag_quality_report(
+                    dataset=dataset,
+                    diagnostics=diagnostics,
+                    config=config,
+                    database_name=env.database_name,
+                    retrieval_strategy=strategy_name,
+                )
+    finally:
+        await engine.dispose()
+
+    args.output_dir.mkdir(parents=True, exist_ok=True)
+    prefix = args.report_prefix
+    for label, report in reports.items():
+        if prefix.startswith("rag_quality_extended"):
+            report_json_path = args.output_dir / f"rag_quality_report_extended_{label}.json"
+            summary_md_path = args.output_dir / f"rag_quality_summary_extended_{label}.md"
+        else:
+            report_json_path = args.output_dir / f"{prefix}_{label}_report.json"
+            summary_md_path = args.output_dir / f"{prefix}_{label}_summary.md"
+
+        report_json_path.write_text(
+            json.dumps(report, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
+        )
+        summary_md_path.write_text(
+            render_rag_evaluation_markdown(report) + "\n", encoding="utf-8"
+        )
+
+    comparison = compare_reports(reports["dense"], reports["hybrid"])
+    if prefix.startswith("rag_quality_extended"):
+        comp_json_path = args.output_dir / "rag_quality_comparison_extended.json"
+        comp_md_path = args.output_dir / "rag_quality_comparison_extended.md"
+    else:
+        comp_json_path = args.output_dir / f"{prefix}_comparison.json"
+        comp_md_path = args.output_dir / f"{prefix}_comparison.md"
+
+    comp_json_path.write_text(
+        json.dumps(comparison, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
+    )
+    comp_md_path.write_text(
+        render_comparison_markdown(comparison), encoding="utf-8"
+    )
+    logger.info(f"Comparison reports written to {args.output_dir}")
 
 
 async def main() -> None:
@@ -195,6 +312,10 @@ async def main() -> None:
         logger.info("Connecting to local Ollama provider for full-RAG evaluation...")
         llm = OllamaLLMProvider(timeout_seconds=180.0)
         llm_name = getattr(llm, "model", "qwen3:1.7b")
+
+    if args.mode == "real-compare":
+        await run_real_comparison(args=args, dataset=dataset, config=config)
+        return
 
     is_real_stack = args.mode in ("real-pgvector", "real-hybrid", "full-rag")
 
@@ -253,6 +374,7 @@ async def main() -> None:
                     config=config,
                     llm_model_name=llm_name,
                     database_name=env.database_name,
+                    retrieval_strategy=args.mode,
                 )
         finally:
             await engine.dispose()
@@ -278,6 +400,7 @@ async def main() -> None:
             config=config,
             llm_model_name=llm_name,
             database_name="synthetic-in-memory",
+            retrieval_strategy=args.mode,
         )
 
     # Save JSON report

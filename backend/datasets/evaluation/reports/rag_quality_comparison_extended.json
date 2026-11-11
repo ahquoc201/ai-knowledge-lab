@@ -1,0 +1,3075 @@
+{
+  "metadata": {
+    "dataset_id": "ai-knowledge-lab-rag-quality-extended",
+    "dataset_version": "1.0",
+    "dense_strategy": "dense (pgvector cosine)",
+    "hybrid_strategy": "hybrid (pgvector + FTS + RRF k=60)",
+    "embedding_model": "intfloat/multilingual-e5-small",
+    "k": 5,
+    "database_environment": "ailab_eval_test"
+  },
+  "aggregate": {
+    "hit_rate_at_1": {
+      "dense": 0.7812,
+      "hybrid": 0.7188,
+      "delta": -0.0624
+    },
+    "hit_rate_at_3": {
+      "dense": 0.8125,
+      "hybrid": 0.75,
+      "delta": -0.0625
+    },
+    "hit_rate_at_5": {
+      "dense": 0.9062,
+      "hybrid": 0.7812,
+      "delta": -0.125
+    },
+    "recall_at_1": {
+      "dense": 0.7031,
+      "hybrid": 0.6406,
+      "delta": -0.0625
+    },
+    "recall_at_3": {
+      "dense": 0.7656,
+      "hybrid": 0.6875,
+      "delta": -0.0781
+    },
+    "recall_at_5": {
+      "dense": 0.8594,
+      "hybrid": 0.7188,
+      "delta": -0.1406
+    },
+    "precision_at_5": {
+      "dense": 0.2,
+      "hybrid": 0.1625,
+      "delta": -0.0375
+    },
+    "mrr_at_5": {
+      "dense": 0.8187,
+      "hybrid": 0.7422,
+      "delta": -0.0765
+    },
+    "retrieval_coverage": {
+      "dense": 0.9062,
+      "hybrid": 0.7812,
+      "delta": -0.125
+    },
+    "chunk_recall_at_5": {
+      "dense": 0.8594,
+      "hybrid": 0.7188,
+      "delta": -0.1406
+    },
+    "chunk_mrr_at_5": {
+      "dense": 0.8031,
+      "hybrid": 0.7422,
+      "delta": -0.0609
+    },
+    "tenant_isolation_rate": {
+      "dense": 1.0,
+      "hybrid": 1.0,
+      "delta": 0.0
+    },
+    "empty_candidate_rate": {
+      "dense": 0.0,
+      "hybrid": 0.0,
+      "delta": 0.0
+    },
+    "empty_accepted_evidence_rate": {
+      "dense": 0.0,
+      "hybrid": 0.0,
+      "delta": 0.0
+    }
+  },
+  "by_category": {
+    "AMBIGUOUS_QUERY": {
+      "total": 5,
+      "answerable": 5,
+      "refusal": 0,
+      "hit_rate_at_1": {
+        "dense": 0.6,
+        "hybrid": 0.6,
+        "delta": 0.0
+      },
+      "hit_rate_at_5": {
+        "dense": 0.8,
+        "hybrid": 0.6,
+        "delta": -0.2
+      },
+      "recall_at_5": {
+        "dense": 0.7,
+        "hybrid": 0.4,
+        "delta": -0.3
+      },
+      "mrr_at_5": {
+        "dense": 0.7,
+        "hybrid": 0.6,
+        "delta": -0.1
+      },
+      "chunk_recall_at_5": {
+        "dense": 0.7,
+        "hybrid": 0.4,
+        "delta": -0.3
+      },
+      "refusal_leak_free_rate": {
+        "dense": null,
+        "hybrid": null,
+        "delta": null
+      }
+    },
+    "CROSS_LINGUAL": {
+      "total": 9,
+      "answerable": 9,
+      "refusal": 0,
+      "hit_rate_at_1": {
+        "dense": 0.4444,
+        "hybrid": 0.2222,
+        "delta": -0.2222
+      },
+      "hit_rate_at_5": {
+        "dense": 0.7778,
+        "hybrid": 0.4444,
+        "delta": -0.3334
+      },
+      "recall_at_5": {
+        "dense": 0.7778,
+        "hybrid": 0.4444,
+        "delta": -0.3334
+      },
+      "mrr_at_5": {
+        "dense": 0.5222,
+        "hybrid": 0.3056,
+        "delta": -0.2166
+      },
+      "chunk_recall_at_5": {
+        "dense": 0.7778,
+        "hybrid": 0.4444,
+        "delta": -0.3334
+      },
+      "refusal_leak_free_rate": {
+        "dense": null,
+        "hybrid": null,
+        "delta": null
+      }
+    },
+    "CROSS_WORKSPACE": {
+      "total": 5,
+      "answerable": 2,
+      "refusal": 3,
+      "hit_rate_at_1": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      },
+      "hit_rate_at_5": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      },
+      "recall_at_5": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      },
+      "mrr_at_5": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      },
+      "chunk_recall_at_5": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      },
+      "refusal_leak_free_rate": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      }
+    },
+    "EXACT_IDENTIFIER": {
+      "total": 9,
+      "answerable": 9,
+      "refusal": 0,
+      "hit_rate_at_1": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      },
+      "hit_rate_at_5": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      },
+      "recall_at_5": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      },
+      "mrr_at_5": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      },
+      "chunk_recall_at_5": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      },
+      "refusal_leak_free_rate": {
+        "dense": null,
+        "hybrid": null,
+        "delta": null
+      }
+    },
+    "INSUFFICIENT_INFO": {
+      "total": 1,
+      "answerable": 0,
+      "refusal": 1,
+      "hit_rate_at_1": {
+        "dense": null,
+        "hybrid": null,
+        "delta": null
+      },
+      "hit_rate_at_5": {
+        "dense": null,
+        "hybrid": null,
+        "delta": null
+      },
+      "recall_at_5": {
+        "dense": null,
+        "hybrid": null,
+        "delta": null
+      },
+      "mrr_at_5": {
+        "dense": null,
+        "hybrid": null,
+        "delta": null
+      },
+      "chunk_recall_at_5": {
+        "dense": null,
+        "hybrid": null,
+        "delta": null
+      },
+      "refusal_leak_free_rate": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      }
+    },
+    "MALICIOUS_QUERY": {
+      "total": 2,
+      "answerable": 0,
+      "refusal": 2,
+      "hit_rate_at_1": {
+        "dense": null,
+        "hybrid": null,
+        "delta": null
+      },
+      "hit_rate_at_5": {
+        "dense": null,
+        "hybrid": null,
+        "delta": null
+      },
+      "recall_at_5": {
+        "dense": null,
+        "hybrid": null,
+        "delta": null
+      },
+      "mrr_at_5": {
+        "dense": null,
+        "hybrid": null,
+        "delta": null
+      },
+      "chunk_recall_at_5": {
+        "dense": null,
+        "hybrid": null,
+        "delta": null
+      },
+      "refusal_leak_free_rate": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      }
+    },
+    "MULTI_CHUNK": {
+      "total": 4,
+      "answerable": 4,
+      "refusal": 0,
+      "hit_rate_at_1": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      },
+      "hit_rate_at_5": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      },
+      "recall_at_5": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      },
+      "mrr_at_5": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      },
+      "chunk_recall_at_5": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      },
+      "refusal_leak_free_rate": {
+        "dense": null,
+        "hybrid": null,
+        "delta": null
+      }
+    },
+    "MULTI_DOC": {
+      "total": 2,
+      "answerable": 2,
+      "refusal": 0,
+      "hit_rate_at_1": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      },
+      "hit_rate_at_5": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      },
+      "recall_at_5": {
+        "dense": 0.5,
+        "hybrid": 0.5,
+        "delta": 0.0
+      },
+      "mrr_at_5": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      },
+      "chunk_recall_at_5": {
+        "dense": 0.5,
+        "hybrid": 0.5,
+        "delta": 0.0
+      },
+      "refusal_leak_free_rate": {
+        "dense": null,
+        "hybrid": null,
+        "delta": null
+      }
+    },
+    "OUT_OF_DOMAIN": {
+      "total": 2,
+      "answerable": 0,
+      "refusal": 2,
+      "hit_rate_at_1": {
+        "dense": null,
+        "hybrid": null,
+        "delta": null
+      },
+      "hit_rate_at_5": {
+        "dense": null,
+        "hybrid": null,
+        "delta": null
+      },
+      "recall_at_5": {
+        "dense": null,
+        "hybrid": null,
+        "delta": null
+      },
+      "mrr_at_5": {
+        "dense": null,
+        "hybrid": null,
+        "delta": null
+      },
+      "chunk_recall_at_5": {
+        "dense": null,
+        "hybrid": null,
+        "delta": null
+      },
+      "refusal_leak_free_rate": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      }
+    },
+    "PROMPT_INJECTION": {
+      "total": 2,
+      "answerable": 1,
+      "refusal": 1,
+      "hit_rate_at_1": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      },
+      "hit_rate_at_5": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      },
+      "recall_at_5": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      },
+      "mrr_at_5": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      },
+      "chunk_recall_at_5": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      },
+      "refusal_leak_free_rate": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      }
+    }
+  },
+  "by_language": {
+    "en": {
+      "total": 32,
+      "answerable": 24,
+      "refusal": 8,
+      "hit_rate_at_1": {
+        "dense": 0.8333,
+        "hybrid": 0.75,
+        "delta": -0.0833
+      },
+      "hit_rate_at_5": {
+        "dense": 0.9583,
+        "hybrid": 0.7917,
+        "delta": -0.1666
+      },
+      "recall_at_5": {
+        "dense": 0.9167,
+        "hybrid": 0.7292,
+        "delta": -0.1875
+      },
+      "mrr_at_5": {
+        "dense": 0.8729,
+        "hybrid": 0.7604,
+        "delta": -0.1125
+      },
+      "chunk_recall_at_5": {
+        "dense": 0.9167,
+        "hybrid": 0.7292,
+        "delta": -0.1875
+      },
+      "refusal_leak_free_rate": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      }
+    },
+    "vi": {
+      "total": 9,
+      "answerable": 8,
+      "refusal": 1,
+      "hit_rate_at_1": {
+        "dense": 0.625,
+        "hybrid": 0.625,
+        "delta": 0.0
+      },
+      "hit_rate_at_5": {
+        "dense": 0.75,
+        "hybrid": 0.75,
+        "delta": 0.0
+      },
+      "recall_at_5": {
+        "dense": 0.6875,
+        "hybrid": 0.6875,
+        "delta": 0.0
+      },
+      "mrr_at_5": {
+        "dense": 0.6562,
+        "hybrid": 0.6875,
+        "delta": 0.0313
+      },
+      "chunk_recall_at_5": {
+        "dense": 0.6875,
+        "hybrid": 0.6875,
+        "delta": 0.0
+      },
+      "refusal_leak_free_rate": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      }
+    }
+  },
+  "by_tag": {
+    "beta_positive": {
+      "total": 2,
+      "answerable": 2,
+      "refusal": 0,
+      "hit_rate_at_1": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      },
+      "hit_rate_at_5": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      },
+      "recall_at_5": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      },
+      "mrr_at_5": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      },
+      "chunk_recall_at_5": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      },
+      "refusal_leak_free_rate": {
+        "dense": null,
+        "hybrid": null,
+        "delta": null
+      }
+    },
+    "bilingual_term": {
+      "total": 1,
+      "answerable": 1,
+      "refusal": 0,
+      "hit_rate_at_1": {
+        "dense": 1.0,
+        "hybrid": 0.0,
+        "delta": -1.0
+      },
+      "hit_rate_at_5": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      },
+      "recall_at_5": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      },
+      "mrr_at_5": {
+        "dense": 1.0,
+        "hybrid": 0.25,
+        "delta": -0.75
+      },
+      "chunk_recall_at_5": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      },
+      "refusal_leak_free_rate": {
+        "dense": null,
+        "hybrid": null,
+        "delta": null
+      }
+    },
+    "control": {
+      "total": 1,
+      "answerable": 1,
+      "refusal": 0,
+      "hit_rate_at_1": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      },
+      "hit_rate_at_5": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      },
+      "recall_at_5": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      },
+      "mrr_at_5": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      },
+      "chunk_recall_at_5": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      },
+      "refusal_leak_free_rate": {
+        "dense": null,
+        "hybrid": null,
+        "delta": null
+      }
+    },
+    "distractor_chunks": {
+      "total": 2,
+      "answerable": 2,
+      "refusal": 0,
+      "hit_rate_at_1": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      },
+      "hit_rate_at_5": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      },
+      "recall_at_5": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      },
+      "mrr_at_5": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      },
+      "chunk_recall_at_5": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      },
+      "refusal_leak_free_rate": {
+        "dense": null,
+        "hybrid": null,
+        "delta": null
+      }
+    },
+    "evidence_in_multiple_chunks": {
+      "total": 1,
+      "answerable": 1,
+      "refusal": 0,
+      "hit_rate_at_1": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      },
+      "hit_rate_at_5": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      },
+      "recall_at_5": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      },
+      "mrr_at_5": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      },
+      "chunk_recall_at_5": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      },
+      "refusal_leak_free_rate": {
+        "dense": null,
+        "hybrid": null,
+        "delta": null
+      }
+    },
+    "identifier:abbreviation": {
+      "total": 2,
+      "answerable": 2,
+      "refusal": 0,
+      "hit_rate_at_1": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      },
+      "hit_rate_at_5": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      },
+      "recall_at_5": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      },
+      "mrr_at_5": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      },
+      "chunk_recall_at_5": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      },
+      "refusal_leak_free_rate": {
+        "dense": null,
+        "hybrid": null,
+        "delta": null
+      }
+    },
+    "identifier:api_endpoint": {
+      "total": 1,
+      "answerable": 1,
+      "refusal": 0,
+      "hit_rate_at_1": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      },
+      "hit_rate_at_5": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      },
+      "recall_at_5": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      },
+      "mrr_at_5": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      },
+      "chunk_recall_at_5": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      },
+      "refusal_leak_free_rate": {
+        "dense": null,
+        "hybrid": null,
+        "delta": null
+      }
+    },
+    "identifier:db_column": {
+      "total": 1,
+      "answerable": 1,
+      "refusal": 0,
+      "hit_rate_at_1": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      },
+      "hit_rate_at_5": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      },
+      "recall_at_5": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      },
+      "mrr_at_5": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      },
+      "chunk_recall_at_5": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      },
+      "refusal_leak_free_rate": {
+        "dense": null,
+        "hybrid": null,
+        "delta": null
+      }
+    },
+    "identifier:error_code": {
+      "total": 3,
+      "answerable": 3,
+      "refusal": 0,
+      "hit_rate_at_1": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      },
+      "hit_rate_at_5": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      },
+      "recall_at_5": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      },
+      "mrr_at_5": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      },
+      "chunk_recall_at_5": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      },
+      "refusal_leak_free_rate": {
+        "dense": null,
+        "hybrid": null,
+        "delta": null
+      }
+    },
+    "identifier:python_symbol": {
+      "total": 1,
+      "answerable": 1,
+      "refusal": 0,
+      "hit_rate_at_1": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      },
+      "hit_rate_at_5": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      },
+      "recall_at_5": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      },
+      "mrr_at_5": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      },
+      "chunk_recall_at_5": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      },
+      "refusal_leak_free_rate": {
+        "dense": null,
+        "hybrid": null,
+        "delta": null
+      }
+    },
+    "identifier:sql_expression": {
+      "total": 1,
+      "answerable": 1,
+      "refusal": 0,
+      "hit_rate_at_1": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      },
+      "hit_rate_at_5": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      },
+      "recall_at_5": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      },
+      "mrr_at_5": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      },
+      "chunk_recall_at_5": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      },
+      "refusal_leak_free_rate": {
+        "dense": null,
+        "hybrid": null,
+        "delta": null
+      }
+    },
+    "identifier_collision": {
+      "total": 2,
+      "answerable": 1,
+      "refusal": 1,
+      "hit_rate_at_1": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      },
+      "hit_rate_at_5": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      },
+      "recall_at_5": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      },
+      "mrr_at_5": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      },
+      "chunk_recall_at_5": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      },
+      "refusal_leak_free_rate": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      }
+    },
+    "lexical_overlap:abbreviation_only": {
+      "total": 1,
+      "answerable": 1,
+      "refusal": 0,
+      "hit_rate_at_1": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      },
+      "hit_rate_at_5": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      },
+      "recall_at_5": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      },
+      "mrr_at_5": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      },
+      "chunk_recall_at_5": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      },
+      "refusal_leak_free_rate": {
+        "dense": null,
+        "hybrid": null,
+        "delta": null
+      }
+    },
+    "lexical_overlap:exact": {
+      "total": 8,
+      "answerable": 8,
+      "refusal": 0,
+      "hit_rate_at_1": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      },
+      "hit_rate_at_5": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      },
+      "recall_at_5": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      },
+      "mrr_at_5": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      },
+      "chunk_recall_at_5": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      },
+      "refusal_leak_free_rate": {
+        "dense": null,
+        "hybrid": null,
+        "delta": null
+      }
+    },
+    "lexical_overlap:high": {
+      "total": 1,
+      "answerable": 1,
+      "refusal": 0,
+      "hit_rate_at_1": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      },
+      "hit_rate_at_5": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      },
+      "recall_at_5": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      },
+      "mrr_at_5": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      },
+      "chunk_recall_at_5": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      },
+      "refusal_leak_free_rate": {
+        "dense": null,
+        "hybrid": null,
+        "delta": null
+      }
+    },
+    "lexical_overlap:none": {
+      "total": 4,
+      "answerable": 4,
+      "refusal": 0,
+      "hit_rate_at_1": {
+        "dense": 0.0,
+        "hybrid": 0.0,
+        "delta": 0.0
+      },
+      "hit_rate_at_5": {
+        "dense": 0.5,
+        "hybrid": 0.0,
+        "delta": -0.5
+      },
+      "recall_at_5": {
+        "dense": 0.5,
+        "hybrid": 0.0,
+        "delta": -0.5
+      },
+      "mrr_at_5": {
+        "dense": 0.1125,
+        "hybrid": 0.0,
+        "delta": -0.1125
+      },
+      "chunk_recall_at_5": {
+        "dense": 0.5,
+        "hybrid": 0.0,
+        "delta": -0.5
+      },
+      "refusal_leak_free_rate": {
+        "dense": null,
+        "hybrid": null,
+        "delta": null
+      }
+    },
+    "lexical_overlap:term_only": {
+      "total": 4,
+      "answerable": 4,
+      "refusal": 0,
+      "hit_rate_at_1": {
+        "dense": 0.75,
+        "hybrid": 0.25,
+        "delta": -0.5
+      },
+      "hit_rate_at_5": {
+        "dense": 1.0,
+        "hybrid": 0.75,
+        "delta": -0.25
+      },
+      "recall_at_5": {
+        "dense": 1.0,
+        "hybrid": 0.75,
+        "delta": -0.25
+      },
+      "mrr_at_5": {
+        "dense": 0.8125,
+        "hybrid": 0.4375,
+        "delta": -0.375
+      },
+      "chunk_recall_at_5": {
+        "dense": 1.0,
+        "hybrid": 0.75,
+        "delta": -0.25
+      },
+      "refusal_leak_free_rate": {
+        "dense": null,
+        "hybrid": null,
+        "delta": null
+      }
+    },
+    "monolingual:vi": {
+      "total": 2,
+      "answerable": 2,
+      "refusal": 0,
+      "hit_rate_at_1": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      },
+      "hit_rate_at_5": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      },
+      "recall_at_5": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      },
+      "mrr_at_5": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      },
+      "chunk_recall_at_5": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      },
+      "refusal_leak_free_rate": {
+        "dense": null,
+        "hybrid": null,
+        "delta": null
+      }
+    },
+    "multi_chunk_doc": {
+      "total": 8,
+      "answerable": 8,
+      "refusal": 0,
+      "hit_rate_at_1": {
+        "dense": 0.625,
+        "hybrid": 0.75,
+        "delta": 0.125
+      },
+      "hit_rate_at_5": {
+        "dense": 1.0,
+        "hybrid": 0.875,
+        "delta": -0.125
+      },
+      "recall_at_5": {
+        "dense": 0.875,
+        "hybrid": 0.75,
+        "delta": -0.125
+      },
+      "mrr_at_5": {
+        "dense": 0.75,
+        "hybrid": 0.8125,
+        "delta": 0.0625
+      },
+      "chunk_recall_at_5": {
+        "dense": 0.875,
+        "hybrid": 0.75,
+        "delta": -0.125
+      },
+      "refusal_leak_free_rate": {
+        "dense": null,
+        "hybrid": null,
+        "delta": null
+      }
+    },
+    "multi_doc": {
+      "total": 2,
+      "answerable": 2,
+      "refusal": 0,
+      "hit_rate_at_1": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      },
+      "hit_rate_at_5": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      },
+      "recall_at_5": {
+        "dense": 0.5,
+        "hybrid": 0.5,
+        "delta": 0.0
+      },
+      "mrr_at_5": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      },
+      "chunk_recall_at_5": {
+        "dense": 0.5,
+        "hybrid": 0.5,
+        "delta": 0.0
+      },
+      "refusal_leak_free_rate": {
+        "dense": null,
+        "hybrid": null,
+        "delta": null
+      }
+    },
+    "multiple_plausible_documents": {
+      "total": 4,
+      "answerable": 4,
+      "refusal": 0,
+      "hit_rate_at_1": {
+        "dense": 0.75,
+        "hybrid": 0.5,
+        "delta": -0.25
+      },
+      "hit_rate_at_5": {
+        "dense": 0.75,
+        "hybrid": 0.5,
+        "delta": -0.25
+      },
+      "recall_at_5": {
+        "dense": 0.75,
+        "hybrid": 0.375,
+        "delta": -0.375
+      },
+      "mrr_at_5": {
+        "dense": 0.75,
+        "hybrid": 0.5,
+        "delta": -0.25
+      },
+      "chunk_recall_at_5": {
+        "dense": 0.75,
+        "hybrid": 0.375,
+        "delta": -0.375
+      },
+      "refusal_leak_free_rate": {
+        "dense": null,
+        "hybrid": null,
+        "delta": null
+      }
+    },
+    "out_of_domain": {
+      "total": 2,
+      "answerable": 0,
+      "refusal": 2,
+      "hit_rate_at_1": {
+        "dense": null,
+        "hybrid": null,
+        "delta": null
+      },
+      "hit_rate_at_5": {
+        "dense": null,
+        "hybrid": null,
+        "delta": null
+      },
+      "recall_at_5": {
+        "dense": null,
+        "hybrid": null,
+        "delta": null
+      },
+      "mrr_at_5": {
+        "dense": null,
+        "hybrid": null,
+        "delta": null
+      },
+      "chunk_recall_at_5": {
+        "dense": null,
+        "hybrid": null,
+        "delta": null
+      },
+      "refusal_leak_free_rate": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      }
+    },
+    "prompt_injection_in_document": {
+      "total": 1,
+      "answerable": 1,
+      "refusal": 0,
+      "hit_rate_at_1": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      },
+      "hit_rate_at_5": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      },
+      "recall_at_5": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      },
+      "mrr_at_5": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      },
+      "chunk_recall_at_5": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      },
+      "refusal_leak_free_rate": {
+        "dense": null,
+        "hybrid": null,
+        "delta": null
+      }
+    },
+    "prompt_injection_in_query": {
+      "total": 1,
+      "answerable": 0,
+      "refusal": 1,
+      "hit_rate_at_1": {
+        "dense": null,
+        "hybrid": null,
+        "delta": null
+      },
+      "hit_rate_at_5": {
+        "dense": null,
+        "hybrid": null,
+        "delta": null
+      },
+      "recall_at_5": {
+        "dense": null,
+        "hybrid": null,
+        "delta": null
+      },
+      "mrr_at_5": {
+        "dense": null,
+        "hybrid": null,
+        "delta": null
+      },
+      "chunk_recall_at_5": {
+        "dense": null,
+        "hybrid": null,
+        "delta": null
+      },
+      "refusal_leak_free_rate": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      }
+    },
+    "requires_two_sources": {
+      "total": 2,
+      "answerable": 2,
+      "refusal": 0,
+      "hit_rate_at_1": {
+        "dense": 0.5,
+        "hybrid": 1.0,
+        "delta": 0.5
+      },
+      "hit_rate_at_5": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      },
+      "recall_at_5": {
+        "dense": 0.5,
+        "hybrid": 0.5,
+        "delta": 0.0
+      },
+      "mrr_at_5": {
+        "dense": 0.75,
+        "hybrid": 1.0,
+        "delta": 0.25
+      },
+      "chunk_recall_at_5": {
+        "dense": 0.5,
+        "hybrid": 0.5,
+        "delta": 0.0
+      },
+      "refusal_leak_free_rate": {
+        "dense": null,
+        "hybrid": null,
+        "delta": null
+      }
+    },
+    "short_query": {
+      "total": 4,
+      "answerable": 4,
+      "refusal": 0,
+      "hit_rate_at_1": {
+        "dense": 0.75,
+        "hybrid": 0.75,
+        "delta": 0.0
+      },
+      "hit_rate_at_5": {
+        "dense": 0.75,
+        "hybrid": 0.75,
+        "delta": 0.0
+      },
+      "recall_at_5": {
+        "dense": 0.75,
+        "hybrid": 0.75,
+        "delta": 0.0
+      },
+      "mrr_at_5": {
+        "dense": 0.75,
+        "hybrid": 0.75,
+        "delta": 0.0
+      },
+      "chunk_recall_at_5": {
+        "dense": 0.75,
+        "hybrid": 0.75,
+        "delta": 0.0
+      },
+      "refusal_leak_free_rate": {
+        "dense": null,
+        "hybrid": null,
+        "delta": null
+      }
+    },
+    "sql_injection_pattern": {
+      "total": 2,
+      "answerable": 0,
+      "refusal": 2,
+      "hit_rate_at_1": {
+        "dense": null,
+        "hybrid": null,
+        "delta": null
+      },
+      "hit_rate_at_5": {
+        "dense": null,
+        "hybrid": null,
+        "delta": null
+      },
+      "recall_at_5": {
+        "dense": null,
+        "hybrid": null,
+        "delta": null
+      },
+      "mrr_at_5": {
+        "dense": null,
+        "hybrid": null,
+        "delta": null
+      },
+      "chunk_recall_at_5": {
+        "dense": null,
+        "hybrid": null,
+        "delta": null
+      },
+      "refusal_leak_free_rate": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      }
+    },
+    "sql_syntax_in_query": {
+      "total": 1,
+      "answerable": 1,
+      "refusal": 0,
+      "hit_rate_at_1": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      },
+      "hit_rate_at_5": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      },
+      "recall_at_5": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      },
+      "mrr_at_5": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      },
+      "chunk_recall_at_5": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      },
+      "refusal_leak_free_rate": {
+        "dense": null,
+        "hybrid": null,
+        "delta": null
+      }
+    },
+    "tenant_decoy": {
+      "total": 1,
+      "answerable": 1,
+      "refusal": 0,
+      "hit_rate_at_1": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      },
+      "hit_rate_at_5": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      },
+      "recall_at_5": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      },
+      "mrr_at_5": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      },
+      "chunk_recall_at_5": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      },
+      "refusal_leak_free_rate": {
+        "dense": null,
+        "hybrid": null,
+        "delta": null
+      }
+    },
+    "tenant_isolation": {
+      "total": 6,
+      "answerable": 2,
+      "refusal": 4,
+      "hit_rate_at_1": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      },
+      "hit_rate_at_5": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      },
+      "recall_at_5": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      },
+      "mrr_at_5": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      },
+      "chunk_recall_at_5": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      },
+      "refusal_leak_free_rate": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      }
+    },
+    "unanswerable_in_domain": {
+      "total": 1,
+      "answerable": 0,
+      "refusal": 1,
+      "hit_rate_at_1": {
+        "dense": null,
+        "hybrid": null,
+        "delta": null
+      },
+      "hit_rate_at_5": {
+        "dense": null,
+        "hybrid": null,
+        "delta": null
+      },
+      "recall_at_5": {
+        "dense": null,
+        "hybrid": null,
+        "delta": null
+      },
+      "mrr_at_5": {
+        "dense": null,
+        "hybrid": null,
+        "delta": null
+      },
+      "chunk_recall_at_5": {
+        "dense": null,
+        "hybrid": null,
+        "delta": null
+      },
+      "refusal_leak_free_rate": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      }
+    },
+    "unauthorized_document": {
+      "total": 3,
+      "answerable": 0,
+      "refusal": 3,
+      "hit_rate_at_1": {
+        "dense": null,
+        "hybrid": null,
+        "delta": null
+      },
+      "hit_rate_at_5": {
+        "dense": null,
+        "hybrid": null,
+        "delta": null
+      },
+      "recall_at_5": {
+        "dense": null,
+        "hybrid": null,
+        "delta": null
+      },
+      "mrr_at_5": {
+        "dense": null,
+        "hybrid": null,
+        "delta": null
+      },
+      "chunk_recall_at_5": {
+        "dense": null,
+        "hybrid": null,
+        "delta": null
+      },
+      "refusal_leak_free_rate": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      }
+    },
+    "underspecified": {
+      "total": 4,
+      "answerable": 4,
+      "refusal": 0,
+      "hit_rate_at_1": {
+        "dense": 0.75,
+        "hybrid": 0.5,
+        "delta": -0.25
+      },
+      "hit_rate_at_5": {
+        "dense": 0.75,
+        "hybrid": 0.5,
+        "delta": -0.25
+      },
+      "recall_at_5": {
+        "dense": 0.75,
+        "hybrid": 0.375,
+        "delta": -0.375
+      },
+      "mrr_at_5": {
+        "dense": 0.75,
+        "hybrid": 0.5,
+        "delta": -0.25
+      },
+      "chunk_recall_at_5": {
+        "dense": 0.75,
+        "hybrid": 0.375,
+        "delta": -0.375
+      },
+      "refusal_leak_free_rate": {
+        "dense": null,
+        "hybrid": null,
+        "delta": null
+      }
+    },
+    "xling:en->vi": {
+      "total": 8,
+      "answerable": 8,
+      "refusal": 0,
+      "hit_rate_at_1": {
+        "dense": 0.5,
+        "hybrid": 0.375,
+        "delta": -0.125
+      },
+      "hit_rate_at_5": {
+        "dense": 0.875,
+        "hybrid": 0.5,
+        "delta": -0.375
+      },
+      "recall_at_5": {
+        "dense": 0.75,
+        "hybrid": 0.3125,
+        "delta": -0.4375
+      },
+      "mrr_at_5": {
+        "dense": 0.6188,
+        "hybrid": 0.4062,
+        "delta": -0.2126
+      },
+      "chunk_recall_at_5": {
+        "dense": 0.75,
+        "hybrid": 0.3125,
+        "delta": -0.4375
+      },
+      "refusal_leak_free_rate": {
+        "dense": null,
+        "hybrid": null,
+        "delta": null
+      }
+    },
+    "xling:vi->en": {
+      "total": 6,
+      "answerable": 6,
+      "refusal": 0,
+      "hit_rate_at_1": {
+        "dense": 0.5,
+        "hybrid": 0.5,
+        "delta": 0.0
+      },
+      "hit_rate_at_5": {
+        "dense": 0.6667,
+        "hybrid": 0.6667,
+        "delta": 0.0
+      },
+      "recall_at_5": {
+        "dense": 0.5833,
+        "hybrid": 0.5833,
+        "delta": 0.0
+      },
+      "mrr_at_5": {
+        "dense": 0.5417,
+        "hybrid": 0.5833,
+        "delta": 0.0416
+      },
+      "chunk_recall_at_5": {
+        "dense": 0.5833,
+        "hybrid": 0.5833,
+        "delta": 0.0
+      },
+      "refusal_leak_free_rate": {
+        "dense": null,
+        "hybrid": null,
+        "delta": null
+      }
+    }
+  },
+  "summary": {
+    "answerable_cases": 32,
+    "doc_rank_improved": [
+      "X-XL-09",
+      "X-AMB-05"
+    ],
+    "doc_rank_regressed": [
+      "X-XL-04",
+      "X-XL-05",
+      "X-XL-06",
+      "X-XL-07",
+      "X-AMB-01"
+    ],
+    "doc_rank_unchanged_count": 25,
+    "chunk_labeled_cases": 32,
+    "chunk_rank_improved": [
+      "X-XL-09",
+      "X-MC-01",
+      "X-AMB-05"
+    ],
+    "chunk_rank_regressed": [
+      "X-XL-04",
+      "X-XL-05",
+      "X-XL-06",
+      "X-XL-07",
+      "X-AMB-01"
+    ],
+    "hybrid_only_hits_at_5": [],
+    "hybrid_lost_hits_at_5": [
+      "X-XL-04",
+      "X-XL-06",
+      "X-XL-07",
+      "X-AMB-01"
+    ],
+    "lexical_supported_cases": [
+      "X-ID-01",
+      "X-ID-02",
+      "X-ID-03",
+      "X-ID-04",
+      "X-ID-05",
+      "X-ID-06",
+      "X-ID-07",
+      "X-ID-08",
+      "X-ID-09",
+      "X-XL-03",
+      "X-XL-05",
+      "X-XL-08",
+      "X-XL-09",
+      "X-MC-01",
+      "X-MC-02",
+      "X-MC-03",
+      "X-MC-04",
+      "X-MD-01",
+      "X-MD-02",
+      "X-AMB-02",
+      "X-AMB-03",
+      "X-AMB-05",
+      "X-SEC-04",
+      "X-SEC-05",
+      "X-SEC-06"
+    ],
+    "top5_order_changed_cases": 39,
+    "total_cases": 41
+  },
+  "cases": [
+    {
+      "case_id": "X-ID-01",
+      "category": "EXACT_IDENTIFIER",
+      "language": "en",
+      "tags": [
+        "identifier:error_code",
+        "lexical_overlap:exact"
+      ],
+      "answerable": true,
+      "dense_retrieved_keys": [
+        "ext_error_codes",
+        "ext_error_codes",
+        "ext_long_runbook",
+        "ext_error_codes",
+        "ext_long_runbook"
+      ],
+      "hybrid_retrieved_keys": [
+        "ext_error_codes",
+        "ext_error_codes",
+        "ext_long_runbook",
+        "ext_error_codes",
+        "ext_long_runbook"
+      ],
+      "top5_order_changed": false,
+      "dense_doc_rank": 1,
+      "hybrid_doc_rank": 1,
+      "doc_rank_status": "unchanged",
+      "lexical_supported": true,
+      "dense_chunk_rank": 1,
+      "hybrid_chunk_rank": 1,
+      "chunk_rank_status": "unchanged"
+    },
+    {
+      "case_id": "X-ID-02",
+      "category": "EXACT_IDENTIFIER",
+      "language": "en",
+      "tags": [
+        "identifier:error_code",
+        "lexical_overlap:exact",
+        "tenant_decoy"
+      ],
+      "answerable": true,
+      "dense_retrieved_keys": [
+        "ext_error_codes",
+        "ext_rate_limit_policy",
+        "ext_long_runbook",
+        "ext_error_codes",
+        "ext_inference_queue"
+      ],
+      "hybrid_retrieved_keys": [
+        "ext_error_codes",
+        "ext_rate_limit_policy",
+        "ext_long_runbook",
+        "ext_error_codes",
+        "ext_long_security_policy"
+      ],
+      "top5_order_changed": true,
+      "dense_doc_rank": 1,
+      "hybrid_doc_rank": 1,
+      "doc_rank_status": "unchanged",
+      "lexical_supported": true,
+      "dense_chunk_rank": 1,
+      "hybrid_chunk_rank": 1,
+      "chunk_rank_status": "unchanged"
+    },
+    {
+      "case_id": "X-ID-03",
+      "category": "EXACT_IDENTIFIER",
+      "language": "en",
+      "tags": [
+        "identifier:error_code",
+        "lexical_overlap:exact",
+        "short_query"
+      ],
+      "answerable": true,
+      "dense_retrieved_keys": [
+        "ext_error_codes",
+        "ext_error_codes",
+        "ext_error_codes",
+        "ext_long_runbook",
+        "ext_long_security_policy"
+      ],
+      "hybrid_retrieved_keys": [
+        "ext_error_codes",
+        "ext_error_codes",
+        "ext_long_runbook",
+        "ext_error_codes",
+        "ext_long_runbook"
+      ],
+      "top5_order_changed": true,
+      "dense_doc_rank": 1,
+      "hybrid_doc_rank": 1,
+      "doc_rank_status": "unchanged",
+      "lexical_supported": true,
+      "dense_chunk_rank": 1,
+      "hybrid_chunk_rank": 1,
+      "chunk_rank_status": "unchanged"
+    },
+    {
+      "case_id": "X-ID-04",
+      "category": "EXACT_IDENTIFIER",
+      "language": "en",
+      "tags": [
+        "identifier:api_endpoint",
+        "lexical_overlap:exact"
+      ],
+      "answerable": true,
+      "dense_retrieved_keys": [
+        "ext_api_endpoints",
+        "ext_python_symbols",
+        "ext_long_runbook",
+        "ext_inference_queue",
+        "ext_rate_limit_policy"
+      ],
+      "hybrid_retrieved_keys": [
+        "ext_api_endpoints",
+        "ext_rate_limit_policy",
+        "ext_inference_queue",
+        "ext_abbreviations",
+        "ext_error_codes"
+      ],
+      "top5_order_changed": true,
+      "dense_doc_rank": 1,
+      "hybrid_doc_rank": 1,
+      "doc_rank_status": "unchanged",
+      "lexical_supported": true,
+      "dense_chunk_rank": 1,
+      "hybrid_chunk_rank": 1,
+      "chunk_rank_status": "unchanged"
+    },
+    {
+      "case_id": "X-ID-05",
+      "category": "EXACT_IDENTIFIER",
+      "language": "en",
+      "tags": [
+        "identifier:python_symbol",
+        "lexical_overlap:exact"
+      ],
+      "answerable": true,
+      "dense_retrieved_keys": [
+        "ext_python_symbols",
+        "ext_abbreviations",
+        "ext_api_endpoints",
+        "ext_error_codes",
+        "ext_celery_concurrency"
+      ],
+      "hybrid_retrieved_keys": [
+        "ext_python_symbols",
+        "ext_abbreviations",
+        "ext_error_codes",
+        "ext_error_codes",
+        "ext_long_runbook"
+      ],
+      "top5_order_changed": true,
+      "dense_doc_rank": 1,
+      "hybrid_doc_rank": 1,
+      "doc_rank_status": "unchanged",
+      "lexical_supported": true,
+      "dense_chunk_rank": 1,
+      "hybrid_chunk_rank": 1,
+      "chunk_rank_status": "unchanged"
+    },
+    {
+      "case_id": "X-ID-06",
+      "category": "EXACT_IDENTIFIER",
+      "language": "en",
+      "tags": [
+        "identifier:db_column",
+        "lexical_overlap:exact"
+      ],
+      "answerable": true,
+      "dense_retrieved_keys": [
+        "ext_db_columns",
+        "ext_error_codes",
+        "ext_fts_index",
+        "ext_long_security_policy",
+        "ext_long_runbook"
+      ],
+      "hybrid_retrieved_keys": [
+        "ext_db_columns",
+        "ext_error_codes",
+        "ext_error_codes",
+        "ext_long_runbook",
+        "ext_long_runbook"
+      ],
+      "top5_order_changed": true,
+      "dense_doc_rank": 1,
+      "hybrid_doc_rank": 1,
+      "doc_rank_status": "unchanged",
+      "lexical_supported": true,
+      "dense_chunk_rank": 1,
+      "hybrid_chunk_rank": 1,
+      "chunk_rank_status": "unchanged"
+    },
+    {
+      "case_id": "X-ID-07",
+      "category": "EXACT_IDENTIFIER",
+      "language": "en",
+      "tags": [
+        "identifier:abbreviation",
+        "lexical_overlap:exact",
+        "short_query"
+      ],
+      "answerable": true,
+      "dense_retrieved_keys": [
+        "ext_abbreviations",
+        "ext_vi_long_guide",
+        "ext_error_codes",
+        "ext_long_runbook",
+        "ext_long_security_policy"
+      ],
+      "hybrid_retrieved_keys": [
+        "ext_abbreviations",
+        "ext_error_codes",
+        "ext_vi_long_guide",
+        "ext_api_endpoints",
+        "ext_error_codes"
+      ],
+      "top5_order_changed": true,
+      "dense_doc_rank": 1,
+      "hybrid_doc_rank": 1,
+      "doc_rank_status": "unchanged",
+      "lexical_supported": true,
+      "dense_chunk_rank": 1,
+      "hybrid_chunk_rank": 1,
+      "chunk_rank_status": "unchanged"
+    },
+    {
+      "case_id": "X-ID-08",
+      "category": "EXACT_IDENTIFIER",
+      "language": "vi",
+      "tags": [
+        "identifier:abbreviation",
+        "xling:vi->en",
+        "lexical_overlap:abbreviation_only",
+        "short_query"
+      ],
+      "answerable": true,
+      "dense_retrieved_keys": [
+        "ext_abbreviations",
+        "ext_vi_long_guide",
+        "ext_vi_long_guide",
+        "ext_vi_long_guide",
+        "ext_vi_sec_roles"
+      ],
+      "hybrid_retrieved_keys": [
+        "ext_abbreviations",
+        "ext_api_endpoints",
+        "ext_vi_cache",
+        "ext_vi_long_guide",
+        "ext_vi_long_guide"
+      ],
+      "top5_order_changed": true,
+      "dense_doc_rank": 1,
+      "hybrid_doc_rank": 1,
+      "doc_rank_status": "unchanged",
+      "lexical_supported": true,
+      "dense_chunk_rank": 1,
+      "hybrid_chunk_rank": 1,
+      "chunk_rank_status": "unchanged"
+    },
+    {
+      "case_id": "X-ID-09",
+      "category": "EXACT_IDENTIFIER",
+      "language": "en",
+      "tags": [
+        "identifier:sql_expression",
+        "lexical_overlap:exact",
+        "sql_syntax_in_query"
+      ],
+      "answerable": true,
+      "dense_retrieved_keys": [
+        "ext_fts_index",
+        "ext_en_cdn_cache",
+        "ext_en_embedding",
+        "ext_abbreviations",
+        "ext_error_codes"
+      ],
+      "hybrid_retrieved_keys": [
+        "ext_fts_index",
+        "ext_en_cdn_cache",
+        "ext_error_codes",
+        "ext_abbreviations",
+        "ext_long_runbook"
+      ],
+      "top5_order_changed": true,
+      "dense_doc_rank": 1,
+      "hybrid_doc_rank": 1,
+      "doc_rank_status": "unchanged",
+      "lexical_supported": true,
+      "dense_chunk_rank": 1,
+      "hybrid_chunk_rank": 1,
+      "chunk_rank_status": "unchanged"
+    },
+    {
+      "case_id": "X-XL-01",
+      "category": "CROSS_LINGUAL",
+      "language": "vi",
+      "tags": [
+        "xling:vi->en",
+        "lexical_overlap:none"
+      ],
+      "answerable": true,
+      "dense_retrieved_keys": [
+        "ext_vi_long_guide",
+        "ext_vi_long_guide",
+        "ext_vi_long_guide",
+        "ext_vi_sec_roles",
+        "ext_vi_cache"
+      ],
+      "hybrid_retrieved_keys": [
+        "ext_vi_long_guide",
+        "ext_vi_backup",
+        "ext_vi_incident",
+        "ext_vi_long_guide",
+        "ext_vi_long_guide"
+      ],
+      "top5_order_changed": true,
+      "dense_doc_rank": null,
+      "hybrid_doc_rank": null,
+      "doc_rank_status": "unchanged",
+      "lexical_supported": false,
+      "dense_chunk_rank": null,
+      "hybrid_chunk_rank": null,
+      "chunk_rank_status": "unchanged"
+    },
+    {
+      "case_id": "X-XL-02",
+      "category": "CROSS_LINGUAL",
+      "language": "vi",
+      "tags": [
+        "xling:vi->en",
+        "lexical_overlap:none"
+      ],
+      "answerable": true,
+      "dense_retrieved_keys": [
+        "ext_vi_long_guide",
+        "ext_vi_incident",
+        "ext_vi_long_guide",
+        "ext_vi_long_guide",
+        "ext_vi_sec_roles"
+      ],
+      "hybrid_retrieved_keys": [
+        "ext_vi_incident",
+        "ext_vi_long_guide",
+        "ext_vi_long_guide",
+        "ext_vi_backup",
+        "ext_vi_long_guide"
+      ],
+      "top5_order_changed": true,
+      "dense_doc_rank": null,
+      "hybrid_doc_rank": null,
+      "doc_rank_status": "unchanged",
+      "lexical_supported": false,
+      "dense_chunk_rank": null,
+      "hybrid_chunk_rank": null,
+      "chunk_rank_status": "unchanged"
+    },
+    {
+      "case_id": "X-XL-03",
+      "category": "CROSS_LINGUAL",
+      "language": "vi",
+      "tags": [
+        "xling:vi->en",
+        "lexical_overlap:term_only"
+      ],
+      "answerable": true,
+      "dense_retrieved_keys": [
+        "ext_en_embedding",
+        "ext_vi_long_guide",
+        "ext_vi_long_guide",
+        "ext_vi_long_guide",
+        "ext_fts_index"
+      ],
+      "hybrid_retrieved_keys": [
+        "ext_en_embedding",
+        "ext_vi_long_guide",
+        "ext_vi_long_guide",
+        "ext_vi_long_guide",
+        "ext_vi_incident"
+      ],
+      "top5_order_changed": true,
+      "dense_doc_rank": 1,
+      "hybrid_doc_rank": 1,
+      "doc_rank_status": "unchanged",
+      "lexical_supported": true,
+      "dense_chunk_rank": 1,
+      "hybrid_chunk_rank": 1,
+      "chunk_rank_status": "unchanged"
+    },
+    {
+      "case_id": "X-XL-04",
+      "category": "CROSS_LINGUAL",
+      "language": "en",
+      "tags": [
+        "xling:en->vi",
+        "lexical_overlap:term_only"
+      ],
+      "answerable": true,
+      "dense_retrieved_keys": [
+        "ext_vi_backup",
+        "ext_en_log_retention",
+        "ext_rate_limit_policy",
+        "ext_celery_concurrency",
+        "ext_long_runbook"
+      ],
+      "hybrid_retrieved_keys": [
+        "ext_long_runbook",
+        "ext_long_security_policy",
+        "ext_rate_limit_policy",
+        "ext_long_security_policy",
+        "ext_long_runbook"
+      ],
+      "top5_order_changed": true,
+      "dense_doc_rank": 1,
+      "hybrid_doc_rank": null,
+      "doc_rank_status": "regressed",
+      "lexical_supported": false,
+      "dense_chunk_rank": 1,
+      "hybrid_chunk_rank": null,
+      "chunk_rank_status": "regressed"
+    },
+    {
+      "case_id": "X-XL-05",
+      "category": "CROSS_LINGUAL",
+      "language": "en",
+      "tags": [
+        "xling:en->vi",
+        "lexical_overlap:term_only",
+        "bilingual_term"
+      ],
+      "answerable": true,
+      "dense_retrieved_keys": [
+        "ext_vi_incident",
+        "ext_en_onboarding",
+        "ext_error_codes",
+        "ext_long_runbook",
+        "ext_inference_queue"
+      ],
+      "hybrid_retrieved_keys": [
+        "ext_en_onboarding",
+        "ext_long_runbook",
+        "ext_error_codes",
+        "ext_vi_incident",
+        "ext_long_runbook"
+      ],
+      "top5_order_changed": true,
+      "dense_doc_rank": 1,
+      "hybrid_doc_rank": 4,
+      "doc_rank_status": "regressed",
+      "lexical_supported": true,
+      "dense_chunk_rank": 1,
+      "hybrid_chunk_rank": 4,
+      "chunk_rank_status": "regressed"
+    },
+    {
+      "case_id": "X-XL-06",
+      "category": "CROSS_LINGUAL",
+      "language": "en",
+      "tags": [
+        "xling:en->vi",
+        "lexical_overlap:none"
+      ],
+      "answerable": true,
+      "dense_retrieved_keys": [
+        "ext_en_onboarding",
+        "ext_api_endpoints",
+        "ext_long_security_policy",
+        "ext_error_codes",
+        "ext_vi_sec_roles"
+      ],
+      "hybrid_retrieved_keys": [
+        "ext_en_onboarding",
+        "ext_error_codes",
+        "ext_en_log_retention",
+        "ext_python_symbols",
+        "ext_long_security_policy"
+      ],
+      "top5_order_changed": true,
+      "dense_doc_rank": 5,
+      "hybrid_doc_rank": null,
+      "doc_rank_status": "regressed",
+      "lexical_supported": false,
+      "dense_chunk_rank": 5,
+      "hybrid_chunk_rank": null,
+      "chunk_rank_status": "regressed"
+    },
+    {
+      "case_id": "X-XL-07",
+      "category": "CROSS_LINGUAL",
+      "language": "en",
+      "tags": [
+        "xling:en->vi",
+        "lexical_overlap:none",
+        "multi_chunk_doc"
+      ],
+      "answerable": true,
+      "dense_retrieved_keys": [
+        "ext_error_codes",
+        "ext_fts_index",
+        "ext_long_runbook",
+        "ext_vi_long_guide",
+        "ext_long_security_policy"
+      ],
+      "hybrid_retrieved_keys": [
+        "ext_error_codes",
+        "ext_fts_index",
+        "ext_long_security_policy",
+        "ext_long_runbook",
+        "ext_long_runbook"
+      ],
+      "top5_order_changed": true,
+      "dense_doc_rank": 4,
+      "hybrid_doc_rank": null,
+      "doc_rank_status": "regressed",
+      "lexical_supported": false,
+      "dense_chunk_rank": 4,
+      "hybrid_chunk_rank": null,
+      "chunk_rank_status": "regressed"
+    },
+    {
+      "case_id": "X-XL-08",
+      "category": "CROSS_LINGUAL",
+      "language": "vi",
+      "tags": [
+        "monolingual:vi",
+        "lexical_overlap:high",
+        "control"
+      ],
+      "answerable": true,
+      "dense_retrieved_keys": [
+        "ext_vi_backup",
+        "ext_vi_cache",
+        "ext_vi_long_guide",
+        "ext_vi_long_guide",
+        "ext_vi_long_guide"
+      ],
+      "hybrid_retrieved_keys": [
+        "ext_vi_backup",
+        "ext_vi_long_guide",
+        "ext_vi_long_guide",
+        "ext_vi_cache",
+        "ext_vi_long_guide"
+      ],
+      "top5_order_changed": true,
+      "dense_doc_rank": 1,
+      "hybrid_doc_rank": 1,
+      "doc_rank_status": "unchanged",
+      "lexical_supported": true,
+      "dense_chunk_rank": 1,
+      "hybrid_chunk_rank": 1,
+      "chunk_rank_status": "unchanged"
+    },
+    {
+      "case_id": "X-XL-09",
+      "category": "CROSS_LINGUAL",
+      "language": "vi",
+      "tags": [
+        "xling:vi->en",
+        "lexical_overlap:term_only",
+        "multi_chunk_doc"
+      ],
+      "answerable": true,
+      "dense_retrieved_keys": [
+        "ext_vi_incident",
+        "ext_vi_cache",
+        "ext_vi_long_guide",
+        "ext_long_security_policy",
+        "ext_vi_backup"
+      ],
+      "hybrid_retrieved_keys": [
+        "ext_vi_cache",
+        "ext_long_security_policy",
+        "ext_vi_long_guide",
+        "ext_vi_backup",
+        "ext_long_security_policy"
+      ],
+      "top5_order_changed": true,
+      "dense_doc_rank": 4,
+      "hybrid_doc_rank": 2,
+      "doc_rank_status": "improved",
+      "lexical_supported": true,
+      "dense_chunk_rank": 4,
+      "hybrid_chunk_rank": 2,
+      "chunk_rank_status": "improved"
+    },
+    {
+      "case_id": "X-MC-01",
+      "category": "MULTI_CHUNK",
+      "language": "en",
+      "tags": [
+        "multi_chunk_doc",
+        "distractor_chunks"
+      ],
+      "answerable": true,
+      "dense_retrieved_keys": [
+        "ext_long_runbook",
+        "ext_long_runbook",
+        "ext_long_runbook",
+        "ext_error_codes",
+        "ext_en_onboarding"
+      ],
+      "hybrid_retrieved_keys": [
+        "ext_long_runbook",
+        "ext_long_runbook",
+        "ext_long_runbook",
+        "ext_celery_concurrency",
+        "ext_en_onboarding"
+      ],
+      "top5_order_changed": true,
+      "dense_doc_rank": 1,
+      "hybrid_doc_rank": 1,
+      "doc_rank_status": "unchanged",
+      "lexical_supported": true,
+      "dense_chunk_rank": 2,
+      "hybrid_chunk_rank": 1,
+      "chunk_rank_status": "improved"
+    },
+    {
+      "case_id": "X-MC-02",
+      "category": "MULTI_CHUNK",
+      "language": "en",
+      "tags": [
+        "multi_chunk_doc",
+        "distractor_chunks"
+      ],
+      "answerable": true,
+      "dense_retrieved_keys": [
+        "ext_long_runbook",
+        "ext_long_runbook",
+        "ext_en_onboarding",
+        "ext_long_runbook",
+        "ext_long_runbook"
+      ],
+      "hybrid_retrieved_keys": [
+        "ext_long_runbook",
+        "ext_long_runbook",
+        "ext_long_runbook",
+        "ext_error_codes",
+        "ext_long_runbook"
+      ],
+      "top5_order_changed": true,
+      "dense_doc_rank": 1,
+      "hybrid_doc_rank": 1,
+      "doc_rank_status": "unchanged",
+      "lexical_supported": true,
+      "dense_chunk_rank": 1,
+      "hybrid_chunk_rank": 1,
+      "chunk_rank_status": "unchanged"
+    },
+    {
+      "case_id": "X-MC-03",
+      "category": "MULTI_CHUNK",
+      "language": "en",
+      "tags": [
+        "multi_chunk_doc",
+        "evidence_in_multiple_chunks"
+      ],
+      "answerable": true,
+      "dense_retrieved_keys": [
+        "ext_long_security_policy",
+        "ext_long_security_policy",
+        "ext_en_log_retention",
+        "ext_rate_limit_policy",
+        "ext_inference_queue"
+      ],
+      "hybrid_retrieved_keys": [
+        "ext_long_security_policy",
+        "ext_long_security_policy",
+        "ext_long_runbook",
+        "ext_long_security_policy",
+        "ext_error_codes"
+      ],
+      "top5_order_changed": true,
+      "dense_doc_rank": 1,
+      "hybrid_doc_rank": 1,
+      "doc_rank_status": "unchanged",
+      "lexical_supported": true,
+      "dense_chunk_rank": 1,
+      "hybrid_chunk_rank": 1,
+      "chunk_rank_status": "unchanged"
+    },
+    {
+      "case_id": "X-MC-04",
+      "category": "MULTI_CHUNK",
+      "language": "vi",
+      "tags": [
+        "multi_chunk_doc",
+        "monolingual:vi"
+      ],
+      "answerable": true,
+      "dense_retrieved_keys": [
+        "ext_vi_long_guide",
+        "ext_vi_sec_roles",
+        "ext_vi_long_guide",
+        "ext_vi_long_guide",
+        "ext_vi_cache"
+      ],
+      "hybrid_retrieved_keys": [
+        "ext_vi_long_guide",
+        "ext_vi_long_guide",
+        "ext_vi_sec_roles",
+        "ext_vi_long_guide",
+        "ext_vi_cache"
+      ],
+      "top5_order_changed": true,
+      "dense_doc_rank": 1,
+      "hybrid_doc_rank": 1,
+      "doc_rank_status": "unchanged",
+      "lexical_supported": true,
+      "dense_chunk_rank": 1,
+      "hybrid_chunk_rank": 1,
+      "chunk_rank_status": "unchanged"
+    },
+    {
+      "case_id": "X-MD-01",
+      "category": "MULTI_DOC",
+      "language": "en",
+      "tags": [
+        "multi_doc",
+        "xling:en->vi",
+        "requires_two_sources"
+      ],
+      "answerable": true,
+      "dense_retrieved_keys": [
+        "ext_en_log_retention",
+        "ext_long_security_policy",
+        "ext_rate_limit_policy",
+        "ext_long_runbook",
+        "ext_api_endpoints"
+      ],
+      "hybrid_retrieved_keys": [
+        "ext_en_log_retention",
+        "ext_long_security_policy",
+        "ext_long_runbook",
+        "ext_rate_limit_policy",
+        "ext_long_security_policy"
+      ],
+      "top5_order_changed": true,
+      "dense_doc_rank": 1,
+      "hybrid_doc_rank": 1,
+      "doc_rank_status": "unchanged",
+      "lexical_supported": true,
+      "dense_chunk_rank": 1,
+      "hybrid_chunk_rank": 1,
+      "chunk_rank_status": "unchanged"
+    },
+    {
+      "case_id": "X-MD-02",
+      "category": "MULTI_DOC",
+      "language": "vi",
+      "tags": [
+        "multi_doc",
+        "multi_chunk_doc",
+        "xling:vi->en"
+      ],
+      "answerable": true,
+      "dense_retrieved_keys": [
+        "ext_vi_long_guide",
+        "ext_vi_long_guide",
+        "ext_vi_long_guide",
+        "ext_vi_sec_roles",
+        "ext_vi_incident"
+      ],
+      "hybrid_retrieved_keys": [
+        "ext_vi_long_guide",
+        "ext_vi_long_guide",
+        "ext_vi_long_guide",
+        "ext_vi_sec_roles",
+        "ext_vi_backup"
+      ],
+      "top5_order_changed": true,
+      "dense_doc_rank": 1,
+      "hybrid_doc_rank": 1,
+      "doc_rank_status": "unchanged",
+      "lexical_supported": true,
+      "dense_chunk_rank": 1,
+      "hybrid_chunk_rank": 1,
+      "chunk_rank_status": "unchanged"
+    },
+    {
+      "case_id": "X-AMB-01",
+      "category": "AMBIGUOUS_QUERY",
+      "language": "en",
+      "tags": [
+        "underspecified",
+        "multiple_plausible_documents"
+      ],
+      "answerable": true,
+      "dense_retrieved_keys": [
+        "ext_celery_concurrency",
+        "ext_inference_queue",
+        "ext_rate_limit_policy",
+        "ext_error_codes",
+        "ext_python_symbols"
+      ],
+      "hybrid_retrieved_keys": [
+        "ext_long_runbook",
+        "ext_error_codes",
+        "ext_error_codes",
+        "ext_long_runbook",
+        "ext_abbreviations"
+      ],
+      "top5_order_changed": true,
+      "dense_doc_rank": 1,
+      "hybrid_doc_rank": null,
+      "doc_rank_status": "regressed",
+      "lexical_supported": false,
+      "dense_chunk_rank": 1,
+      "hybrid_chunk_rank": null,
+      "chunk_rank_status": "regressed"
+    },
+    {
+      "case_id": "X-AMB-02",
+      "category": "AMBIGUOUS_QUERY",
+      "language": "en",
+      "tags": [
+        "underspecified",
+        "multiple_plausible_documents",
+        "xling:en->vi"
+      ],
+      "answerable": true,
+      "dense_retrieved_keys": [
+        "ext_en_cdn_cache",
+        "ext_vi_cache",
+        "ext_error_codes",
+        "ext_error_codes",
+        "ext_long_runbook"
+      ],
+      "hybrid_retrieved_keys": [
+        "ext_en_cdn_cache",
+        "ext_long_runbook",
+        "ext_error_codes",
+        "ext_error_codes",
+        "ext_error_codes"
+      ],
+      "top5_order_changed": true,
+      "dense_doc_rank": 1,
+      "hybrid_doc_rank": 1,
+      "doc_rank_status": "unchanged",
+      "lexical_supported": true,
+      "dense_chunk_rank": 1,
+      "hybrid_chunk_rank": 1,
+      "chunk_rank_status": "unchanged"
+    },
+    {
+      "case_id": "X-AMB-03",
+      "category": "AMBIGUOUS_QUERY",
+      "language": "en",
+      "tags": [
+        "underspecified",
+        "multiple_plausible_documents"
+      ],
+      "answerable": true,
+      "dense_retrieved_keys": [
+        "ext_en_worker_maintenance",
+        "ext_en_pg_maintenance",
+        "ext_long_security_policy",
+        "ext_en_onboarding",
+        "ext_en_log_retention"
+      ],
+      "hybrid_retrieved_keys": [
+        "ext_en_pg_maintenance",
+        "ext_en_worker_maintenance",
+        "ext_error_codes",
+        "ext_long_runbook",
+        "ext_long_security_policy"
+      ],
+      "top5_order_changed": true,
+      "dense_doc_rank": 1,
+      "hybrid_doc_rank": 1,
+      "doc_rank_status": "unchanged",
+      "lexical_supported": true,
+      "dense_chunk_rank": 1,
+      "hybrid_chunk_rank": 1,
+      "chunk_rank_status": "unchanged"
+    },
+    {
+      "case_id": "X-AMB-04",
+      "category": "AMBIGUOUS_QUERY",
+      "language": "en",
+      "tags": [
+        "underspecified",
+        "short_query",
+        "multiple_plausible_documents",
+        "xling:en->vi"
+      ],
+      "answerable": true,
+      "dense_retrieved_keys": [
+        "ext_en_worker_maintenance",
+        "ext_rate_limit_policy",
+        "ext_error_codes",
+        "ext_celery_concurrency",
+        "ext_en_onboarding"
+      ],
+      "hybrid_retrieved_keys": [
+        "ext_error_codes",
+        "ext_long_security_policy",
+        "ext_rate_limit_policy",
+        "ext_error_codes",
+        "ext_long_runbook"
+      ],
+      "top5_order_changed": true,
+      "dense_doc_rank": null,
+      "hybrid_doc_rank": null,
+      "doc_rank_status": "unchanged",
+      "lexical_supported": false,
+      "dense_chunk_rank": null,
+      "hybrid_chunk_rank": null,
+      "chunk_rank_status": "unchanged"
+    },
+    {
+      "case_id": "X-AMB-05",
+      "category": "AMBIGUOUS_QUERY",
+      "language": "en",
+      "tags": [
+        "requires_two_sources",
+        "multi_chunk_doc",
+        "xling:en->vi"
+      ],
+      "answerable": true,
+      "dense_retrieved_keys": [
+        "ext_en_log_retention",
+        "ext_long_security_policy",
+        "ext_api_endpoints",
+        "ext_long_security_policy",
+        "ext_long_security_policy"
+      ],
+      "hybrid_retrieved_keys": [
+        "ext_long_security_policy",
+        "ext_long_security_policy",
+        "ext_long_security_policy",
+        "ext_long_runbook",
+        "ext_en_log_retention"
+      ],
+      "top5_order_changed": true,
+      "dense_doc_rank": 2,
+      "hybrid_doc_rank": 1,
+      "doc_rank_status": "improved",
+      "lexical_supported": true,
+      "dense_chunk_rank": 2,
+      "hybrid_chunk_rank": 1,
+      "chunk_rank_status": "improved"
+    },
+    {
+      "case_id": "X-SEC-01",
+      "category": "CROSS_WORKSPACE",
+      "language": "en",
+      "tags": [
+        "tenant_isolation",
+        "unauthorized_document"
+      ],
+      "answerable": false,
+      "dense_retrieved_keys": [
+        "ext_en_onboarding",
+        "ext_error_codes",
+        "ext_long_security_policy",
+        "ext_long_runbook",
+        "ext_en_log_retention"
+      ],
+      "hybrid_retrieved_keys": [
+        "ext_long_runbook",
+        "ext_error_codes",
+        "ext_long_security_policy",
+        "ext_en_onboarding",
+        "ext_error_codes"
+      ],
+      "top5_order_changed": true,
+      "dense_cross_tenant_chunks": 0,
+      "hybrid_cross_tenant_chunks": 0
+    },
+    {
+      "case_id": "X-SEC-02",
+      "category": "CROSS_WORKSPACE",
+      "language": "en",
+      "tags": [
+        "tenant_isolation",
+        "unauthorized_document"
+      ],
+      "answerable": false,
+      "dense_retrieved_keys": [
+        "ext_long_security_policy",
+        "ext_long_security_policy",
+        "ext_en_embedding",
+        "ext_rate_limit_policy",
+        "ext_long_runbook"
+      ],
+      "hybrid_retrieved_keys": [
+        "ext_error_codes",
+        "ext_rate_limit_policy",
+        "ext_long_security_policy",
+        "ext_long_security_policy",
+        "ext_long_runbook"
+      ],
+      "top5_order_changed": true,
+      "dense_cross_tenant_chunks": 0,
+      "hybrid_cross_tenant_chunks": 0
+    },
+    {
+      "case_id": "X-SEC-03",
+      "category": "CROSS_WORKSPACE",
+      "language": "en",
+      "tags": [
+        "tenant_isolation",
+        "identifier_collision",
+        "unauthorized_document"
+      ],
+      "answerable": false,
+      "dense_retrieved_keys": [
+        "ext_error_codes",
+        "ext_rate_limit_policy",
+        "ext_inference_queue",
+        "ext_celery_concurrency",
+        "ext_api_endpoints"
+      ],
+      "hybrid_retrieved_keys": [
+        "ext_error_codes",
+        "ext_rate_limit_policy",
+        "ext_celery_concurrency",
+        "ext_long_runbook",
+        "ext_error_codes"
+      ],
+      "top5_order_changed": true,
+      "dense_cross_tenant_chunks": 0,
+      "hybrid_cross_tenant_chunks": 0
+    },
+    {
+      "case_id": "X-SEC-04",
+      "category": "CROSS_WORKSPACE",
+      "language": "en",
+      "tags": [
+        "tenant_isolation",
+        "beta_positive"
+      ],
+      "answerable": true,
+      "dense_retrieved_keys": [
+        "ext_beta_backup",
+        "ext_beta_error_codes",
+        "ext_beta_payroll",
+        "ext_beta_orion"
+      ],
+      "hybrid_retrieved_keys": [
+        "ext_beta_backup",
+        "ext_beta_payroll",
+        "ext_beta_orion",
+        "ext_beta_error_codes"
+      ],
+      "top5_order_changed": true,
+      "dense_doc_rank": 1,
+      "hybrid_doc_rank": 1,
+      "doc_rank_status": "unchanged",
+      "lexical_supported": true,
+      "dense_chunk_rank": 1,
+      "hybrid_chunk_rank": 1,
+      "chunk_rank_status": "unchanged"
+    },
+    {
+      "case_id": "X-SEC-05",
+      "category": "CROSS_WORKSPACE",
+      "language": "en",
+      "tags": [
+        "tenant_isolation",
+        "identifier_collision",
+        "beta_positive"
+      ],
+      "answerable": true,
+      "dense_retrieved_keys": [
+        "ext_beta_error_codes",
+        "ext_beta_payroll",
+        "ext_beta_backup",
+        "ext_beta_orion"
+      ],
+      "hybrid_retrieved_keys": [
+        "ext_beta_error_codes",
+        "ext_beta_payroll",
+        "ext_beta_backup",
+        "ext_beta_orion"
+      ],
+      "top5_order_changed": false,
+      "dense_doc_rank": 1,
+      "hybrid_doc_rank": 1,
+      "doc_rank_status": "unchanged",
+      "lexical_supported": true,
+      "dense_chunk_rank": 1,
+      "hybrid_chunk_rank": 1,
+      "chunk_rank_status": "unchanged"
+    },
+    {
+      "case_id": "X-SEC-06",
+      "category": "PROMPT_INJECTION",
+      "language": "en",
+      "tags": [
+        "prompt_injection_in_document"
+      ],
+      "answerable": true,
+      "dense_retrieved_keys": [
+        "ext_en_holiday",
+        "ext_en_log_retention",
+        "ext_en_worker_maintenance",
+        "ext_rate_limit_policy",
+        "ext_celery_concurrency"
+      ],
+      "hybrid_retrieved_keys": [
+        "ext_en_holiday",
+        "ext_rate_limit_policy",
+        "ext_db_columns",
+        "ext_error_codes",
+        "ext_error_codes"
+      ],
+      "top5_order_changed": true,
+      "dense_doc_rank": 1,
+      "hybrid_doc_rank": 1,
+      "doc_rank_status": "unchanged",
+      "lexical_supported": true,
+      "dense_chunk_rank": 1,
+      "hybrid_chunk_rank": 1,
+      "chunk_rank_status": "unchanged"
+    },
+    {
+      "case_id": "X-SEC-07",
+      "category": "PROMPT_INJECTION",
+      "language": "en",
+      "tags": [
+        "prompt_injection_in_query",
+        "tenant_isolation"
+      ],
+      "answerable": false,
+      "dense_retrieved_keys": [
+        "ext_celery_concurrency",
+        "ext_db_columns",
+        "ext_en_onboarding",
+        "ext_error_codes",
+        "ext_inference_queue"
+      ],
+      "hybrid_retrieved_keys": [
+        "ext_error_codes",
+        "ext_long_runbook",
+        "ext_error_codes",
+        "ext_db_columns",
+        "ext_long_security_policy"
+      ],
+      "top5_order_changed": true,
+      "dense_cross_tenant_chunks": 0,
+      "hybrid_cross_tenant_chunks": 0
+    },
+    {
+      "case_id": "X-SEC-08",
+      "category": "INSUFFICIENT_INFO",
+      "language": "en",
+      "tags": [
+        "unanswerable_in_domain"
+      ],
+      "answerable": false,
+      "dense_retrieved_keys": [
+        "ext_python_symbols",
+        "ext_api_endpoints",
+        "ext_long_runbook",
+        "ext_long_runbook",
+        "ext_error_codes"
+      ],
+      "hybrid_retrieved_keys": [
+        "ext_error_codes",
+        "ext_long_runbook",
+        "ext_long_runbook",
+        "ext_python_symbols",
+        "ext_error_codes"
+      ],
+      "top5_order_changed": true,
+      "dense_cross_tenant_chunks": 0,
+      "hybrid_cross_tenant_chunks": 0
+    },
+    {
+      "case_id": "X-SEC-09",
+      "category": "OUT_OF_DOMAIN",
+      "language": "en",
+      "tags": [
+        "out_of_domain"
+      ],
+      "answerable": false,
+      "dense_retrieved_keys": [
+        "ext_long_runbook",
+        "ext_error_codes",
+        "ext_abbreviations",
+        "ext_api_endpoints",
+        "ext_en_cdn_cache"
+      ],
+      "hybrid_retrieved_keys": [
+        "ext_long_runbook",
+        "ext_error_codes",
+        "ext_long_runbook",
+        "ext_en_cdn_cache",
+        "ext_error_codes"
+      ],
+      "top5_order_changed": true,
+      "dense_cross_tenant_chunks": 0,
+      "hybrid_cross_tenant_chunks": 0
+    },
+    {
+      "case_id": "X-SEC-10",
+      "category": "OUT_OF_DOMAIN",
+      "language": "vi",
+      "tags": [
+        "out_of_domain"
+      ],
+      "answerable": false,
+      "dense_retrieved_keys": [
+        "ext_vi_long_guide",
+        "ext_vi_long_guide",
+        "ext_fts_index",
+        "ext_vi_cache",
+        "ext_vi_sec_roles"
+      ],
+      "hybrid_retrieved_keys": [
+        "ext_vi_cache",
+        "ext_vi_long_guide",
+        "ext_vi_long_guide",
+        "ext_fts_index",
+        "ext_vi_sec_roles"
+      ],
+      "top5_order_changed": true,
+      "dense_cross_tenant_chunks": 0,
+      "hybrid_cross_tenant_chunks": 0
+    },
+    {
+      "case_id": "X-SEC-11",
+      "category": "MALICIOUS_QUERY",
+      "language": "en",
+      "tags": [
+        "sql_injection_pattern"
+      ],
+      "answerable": false,
+      "dense_retrieved_keys": [
+        "ext_db_columns",
+        "ext_fts_index",
+        "ext_python_symbols",
+        "ext_error_codes",
+        "ext_long_runbook"
+      ],
+      "hybrid_retrieved_keys": [
+        "ext_fts_index",
+        "ext_db_columns",
+        "ext_python_symbols",
+        "ext_error_codes",
+        "ext_long_runbook"
+      ],
+      "top5_order_changed": true,
+      "dense_cross_tenant_chunks": 0,
+      "hybrid_cross_tenant_chunks": 0
+    },
+    {
+      "case_id": "X-SEC-12",
+      "category": "MALICIOUS_QUERY",
+      "language": "en",
+      "tags": [
+        "sql_injection_pattern"
+      ],
+      "answerable": false,
+      "dense_retrieved_keys": [
+        "ext_long_security_policy",
+        "ext_api_endpoints",
+        "ext_python_symbols",
+        "ext_db_columns",
+        "ext_rate_limit_policy"
+      ],
+      "hybrid_retrieved_keys": [
+        "ext_long_security_policy",
+        "ext_en_holiday",
+        "ext_api_endpoints",
+        "ext_python_symbols",
+        "ext_db_columns"
+      ],
+      "top5_order_changed": true,
+      "dense_cross_tenant_chunks": 0,
+      "hybrid_cross_tenant_chunks": 0
+    }
+  ]
+}
