@@ -1,7 +1,7 @@
 
 from uuid import UUID
 
-from sqlalchemy import delete, select
+from sqlalchemy import delete, func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.document_status import DocumentStatus
@@ -312,4 +312,99 @@ async def search_similar_chunks(
         (chunk, float(chunk_distance), str(title))
         for chunk, chunk_distance, title in result.all()
     ]
+
+
+async def search_keyword_chunks(
+    session: AsyncSession,
+    *,
+    user_id: UUID | None = None,
+    workspace_id: UUID | None = None,
+    query: str,
+    limit: int = 5,
+) -> list[tuple[DocumentChunk, float, str]]:
+    """Search chunks using PostgreSQL Full-Text Search with mandatory workspace isolation.
+
+    Uses `to_tsvector('simple', content)` matching `websearch_to_tsquery('simple', query)`.
+    Results are ordered deterministically by rank descending, then chunk id ascending.
+    """
+    clean_query = query.strip() if query else ""
+    if not clean_query:
+        return []
+
+    tsv = func.to_tsvector("simple", DocumentChunk.content)
+    ts_query = func.websearch_to_tsquery("simple", clean_query)
+    rank = func.ts_rank(tsv, ts_query).label("rank")
+
+    stmt = (
+        select(
+            DocumentChunk,
+            rank,
+            Document.title,
+        )
+        .join(
+            Document,
+            Document.id == DocumentChunk.document_id,
+        )
+        .where(
+            tsv.op("@@")(ts_query)
+        )
+    )
+
+    if workspace_id is not None:
+        stmt = stmt.where(
+            Document.workspace_id == workspace_id,
+        )
+    elif user_id is not None:
+        stmt = stmt.where(
+            Document.user_id == user_id,
+        )
+    else:
+        raise ValueError("Either workspace_id or user_id must be provided")
+
+    # 1. Try strict matching first (AND semantics)
+    strict_stmt = (
+        stmt.where(tsv.op("@@")(ts_query))
+        .order_by(rank.desc(), DocumentChunk.id.asc())
+        .limit(limit)
+    )
+
+    result = await session.execute(strict_stmt)
+    rows = result.all()
+
+    # 2. If strict matching yields 0 rows and query has multiple words, relax to OR semantics
+    if not rows and " " in clean_query:
+        or_query_str = " or ".join(w for w in clean_query.split() if w.strip())
+        ts_or_query = func.websearch_to_tsquery("simple", or_query_str)
+        rank_or = func.ts_rank(tsv, ts_or_query).label("rank")
+
+        or_stmt = (
+            select(
+                DocumentChunk,
+                rank_or,
+                Document.title,
+            )
+            .join(
+                Document,
+                Document.id == DocumentChunk.document_id,
+            )
+            .where(tsv.op("@@")(ts_or_query))
+        )
+
+        if workspace_id is not None:
+            or_stmt = or_stmt.where(Document.workspace_id == workspace_id)
+        else:
+            or_stmt = or_stmt.where(Document.user_id == user_id)
+
+        or_stmt = or_stmt.order_by(
+            rank_or.desc(), DocumentChunk.id.asc()
+        ).limit(limit)
+
+        result = await session.execute(or_stmt)
+        rows = result.all()
+
+    return [
+        (chunk, float(chunk_rank), str(title))
+        for chunk, chunk_rank, title in rows
+    ]
+
 

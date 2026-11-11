@@ -28,6 +28,7 @@ async def answer_with_rag(
     llm: LLMProvider,
     limit: int = 5,
     history: list[LLMMessage] | None = None,
+    retrieval_mode: str = "dense",
 ) -> RAGResult:
     import inspect
 
@@ -40,6 +41,8 @@ async def answer_with_rag(
         retrieval_kwargs["user_id"] = user_id
     if workspace_id is not None and "workspace_id" in inspect.signature(retrieve_context).parameters:
         retrieval_kwargs["workspace_id"] = workspace_id
+    if "mode" in inspect.signature(retrieve_context).parameters:
+        retrieval_kwargs["mode"] = retrieval_mode
 
     context = await retrieve_context(**retrieval_kwargs)
 

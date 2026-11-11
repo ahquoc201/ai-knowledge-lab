@@ -50,4 +50,5 @@ jobs:
             tests/test_evaluation_regression.py \
             tests/test_evaluation_reporting.py \
             tests/test_evaluation_compare_cli.py \
-            tests/test_evaluation_adapters.py
+            tests/test_evaluation_adapters.py \
+            tests/test_fusion.py

@@ -59,6 +59,7 @@ async def answer_with_rag_stream(
     llm: LLMProvider,
     limit: int = 5,
     history: list[LLMMessage] | None = None,
+    retrieval_mode: str = "dense",
 ) -> AsyncIterator[str]:
     """Execute streaming RAG workflow with guardrails and persistence.
 
@@ -89,6 +90,8 @@ async def answer_with_rag_stream(
         }
         if workspace_id is not None and "workspace_id" in inspect.signature(retrieve_context).parameters:
             retrieval_kwargs["workspace_id"] = workspace_id
+        if "mode" in inspect.signature(retrieve_context).parameters:
+            retrieval_kwargs["mode"] = retrieval_mode
 
         context = await retrieve_context(**retrieval_kwargs)
 

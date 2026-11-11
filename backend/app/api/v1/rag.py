@@ -121,6 +121,7 @@ async def ask_rag(
         llm=llm,
         limit=payload.limit,
         history=history,
+        retrieval_mode=payload.retrieval_mode,
     )
 
     assistant_message = await create_workspace_conversation_message(
@@ -267,6 +268,7 @@ async def ask_rag_stream(
         llm=llm,
         limit=payload.limit,
         history=history,
+        retrieval_mode=payload.retrieval_mode,
     )
 
     return StreamingResponse(

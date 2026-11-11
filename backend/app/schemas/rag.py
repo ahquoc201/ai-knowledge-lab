@@ -14,6 +14,10 @@ class RAGRequest(BaseModel):
         le=20,
     )
     conversation_id: UUID | None = None
+    retrieval_mode: str = Field(
+        default="dense",
+        description="Retrieval mode: dense, keyword, or hybrid",
+    )
 
 
 class RAGSourceResponse(BaseModel):
