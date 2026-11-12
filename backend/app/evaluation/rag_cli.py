@@ -258,6 +258,9 @@ async def run_real_comparison(
         if prefix.startswith("rag_quality_extended"):
             report_json_path = args.output_dir / f"rag_quality_report_extended_{label}.json"
             summary_md_path = args.output_dir / f"rag_quality_summary_extended_{label}.md"
+        elif prefix.startswith("rag_quality_holdout"):
+            report_json_path = args.output_dir / f"rag_quality_report_holdout_{label}.json"
+            summary_md_path = args.output_dir / f"rag_quality_summary_holdout_{label}.md"
         else:
             report_json_path = args.output_dir / f"{prefix}_{label}_report.json"
             summary_md_path = args.output_dir / f"{prefix}_{label}_summary.md"
@@ -273,6 +276,9 @@ async def run_real_comparison(
     if prefix.startswith("rag_quality_extended"):
         comp_json_path = args.output_dir / "rag_quality_comparison_extended.json"
         comp_md_path = args.output_dir / "rag_quality_comparison_extended.md"
+    elif prefix.startswith("rag_quality_holdout"):
+        comp_json_path = args.output_dir / "rag_quality_comparison_holdout.json"
+        comp_md_path = args.output_dir / "rag_quality_comparison_holdout.md"
     else:
         comp_json_path = args.output_dir / f"{prefix}_comparison.json"
         comp_md_path = args.output_dir / f"{prefix}_comparison.md"
