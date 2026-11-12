@@ -1,0 +1,844 @@
+{
+  "model_metadata": {
+    "model_name": "cross-encoder/mmarco-mMiniLMv2-L12-H384-v1",
+    "architecture": "MiniLMv2-L12-H384 (XLM-RoBERTa / mMARCO)",
+    "license": "Apache-2.0",
+    "load_time_seconds": 6.37,
+    "memory_overhead_mb": 443.5,
+    "supported_languages": [
+      "vi",
+      "en",
+      "zh",
+      "es",
+      "fr",
+      "de",
+      "id",
+      "ru",
+      "ja",
+      "ko",
+      "it",
+      "nl"
+    ],
+    "max_seq_length": 512
+  },
+  "experiments": {
+    "standard_14_chunks": {
+      "total_cases": 35,
+      "answerable_cases": 30,
+      "baseline_hybrid": {
+        "hit@1": 0.6333,
+        "hit@5": 0.8667,
+        "recall@5": 0.85,
+        "mrr@5": 0.7206
+      },
+      "rerank_pool_10": {
+        "hit@1": 0.8,
+        "hit@3": 0.9333,
+        "hit@5": 0.9667,
+        "recall@5": 0.95,
+        "mrr@5": 0.8678,
+        "latency_ms": {
+          "mean": 1286.73,
+          "p50": 1359.84,
+          "p95": 1658.51
+        }
+      },
+      "rerank_pool_20": {
+        "hit@1": 0.8,
+        "hit@3": 0.9333,
+        "hit@5": 0.9667,
+        "recall@5": 0.95,
+        "mrr@5": 0.875,
+        "latency_ms": {
+          "mean": 1696.78,
+          "p50": 1637.79,
+          "p95": 2364.5
+        }
+      },
+      "cross_lingual_subset": {
+        "cases_count": 10,
+        "baseline_hybrid_hit1": 0.2,
+        "rerank_20_hit1": 0.9,
+        "baseline_hybrid_mrr5": 0.3783,
+        "rerank_20_mrr5": 0.95
+      },
+      "case_details": [
+        {
+          "case_id": "H-XL-01",
+          "category": "CROSS_LINGUAL",
+          "language": "vi",
+          "query": "Thuật toán nào được dùng để giới hạn tốc độ truy cập trong Redis?",
+          "expected": [
+            "holdout_en_rate_limiting"
+          ],
+          "baseline_hyb_rank": 1,
+          "rerank_20_rank": 1,
+          "delta": "UNCHANGED"
+        },
+        {
+          "case_id": "H-XL-02",
+          "category": "CROSS_LINGUAL",
+          "language": "vi",
+          "query": "Độ sâu tìm kiếm trong đồ thị vector được điều khiển bởi tham số nào?",
+          "expected": [
+            "holdout_en_vector_indexing"
+          ],
+          "baseline_hyb_rank": 6,
+          "rerank_20_rank": 2,
+          "delta": "PROMOTED"
+        },
+        {
+          "case_id": "H-XL-03",
+          "category": "CROSS_LINGUAL",
+          "language": "vi",
+          "query": "Cơ chế bảo vệ chống sập khi nhà cung cấp LLM gặp sự cố hoạt động ra sao?",
+          "expected": [
+            "holdout_en_circuit_breaker"
+          ],
+          "baseline_hyb_rank": 8,
+          "rerank_20_rank": 1,
+          "delta": "PROMOTED"
+        },
+        {
+          "case_id": "H-XL-04",
+          "category": "CROSS_LINGUAL",
+          "language": "vi",
+          "query": "Số lượng bản sao tối đa của triton inference server là bao nhiêu?",
+          "expected": [
+            "holdout_en_k8s_autoscaling"
+          ],
+          "baseline_hyb_rank": 2,
+          "rerank_20_rank": 1,
+          "delta": "PROMOTED"
+        },
+        {
+          "case_id": "H-XL-05",
+          "category": "CROSS_LINGUAL",
+          "language": "vi",
+          "query": "Kích thước lô tối đa để đẩy nhật ký ghi trước vào Kafka là bao nhiêu?",
+          "expected": [
+            "holdout_en_cdc_pipeline"
+          ],
+          "baseline_hyb_rank": 4,
+          "rerank_20_rank": 1,
+          "delta": "PROMOTED"
+        },
+        {
+          "case_id": "H-XL-06",
+          "category": "CROSS_LINGUAL",
+          "language": "en",
+          "query": "How does the system protect core services during traffic congestion?",
+          "expected": [
+            "holdout_vi_rate_limiting"
+          ],
+          "baseline_hyb_rank": 5,
+          "rerank_20_rank": 1,
+          "delta": "PROMOTED"
+        },
+        {
+          "case_id": "H-XL-07",
+          "category": "CROSS_LINGUAL",
+          "language": "en",
+          "query": "What technique is used to save memory when vector records scale into millions?",
+          "expected": [
+            "holdout_vi_vector_indexing"
+          ],
+          "baseline_hyb_rank": 2,
+          "rerank_20_rank": 1,
+          "delta": "PROMOTED"
+        },
+        {
+          "case_id": "H-XL-08",
+          "category": "CROSS_LINGUAL",
+          "language": "en",
+          "query": "How are database mutations packaged into events without blocking users?",
+          "expected": [
+            "holdout_vi_cdc_pipeline"
+          ],
+          "baseline_hyb_rank": 7,
+          "rerank_20_rank": 1,
+          "delta": "PROMOTED"
+        },
+        {
+          "case_id": "H-XL-09",
+          "category": "CROSS_LINGUAL",
+          "language": "en",
+          "query": "What temporary measure is deployed when the external language model provider fails?",
+          "expected": [
+            "holdout_vi_circuit_breaker"
+          ],
+          "baseline_hyb_rank": 3,
+          "rerank_20_rank": 1,
+          "delta": "PROMOTED"
+        },
+        {
+          "case_id": "H-XL-10",
+          "category": "CROSS_LINGUAL",
+          "language": "en",
+          "query": "What metric triggers the initialization of additional GPU computing nodes?",
+          "expected": [
+            "holdout_vi_k8s_autoscaling"
+          ],
+          "baseline_hyb_rank": 1,
+          "rerank_20_rank": 1,
+          "delta": "UNCHANGED"
+        },
+        {
+          "case_id": "H-ID-01",
+          "category": "EXACT_IDENTIFIER",
+          "language": "en",
+          "query": "What causes error code ERR_RATE_LIMIT_EXCEEDED?",
+          "expected": [
+            "holdout_en_error_catalog"
+          ],
+          "baseline_hyb_rank": 1,
+          "rerank_20_rank": 1,
+          "delta": "UNCHANGED"
+        },
+        {
+          "case_id": "H-ID-02",
+          "category": "EXACT_IDENTIFIER",
+          "language": "vi",
+          "query": "Làm thế nào để khắc phục lỗi ERR_HNSW_GRAPH_CORRUPT trong hệ thống?",
+          "expected": [
+            "holdout_en_error_catalog"
+          ],
+          "baseline_hyb_rank": 1,
+          "rerank_20_rank": 1,
+          "delta": "UNCHANGED"
+        },
+        {
+          "case_id": "H-ID-03",
+          "category": "EXACT_IDENTIFIER",
+          "language": "en",
+          "query": "What is the critical threshold for ERR_CDC_REPLICATION_STALL?",
+          "expected": [
+            "holdout_en_error_catalog"
+          ],
+          "baseline_hyb_rank": 1,
+          "rerank_20_rank": 1,
+          "delta": "UNCHANGED"
+        },
+        {
+          "case_id": "H-ID-04",
+          "category": "EXACT_IDENTIFIER",
+          "language": "en",
+          "query": "Which interceptor halts execution when token bucket limit is breached: LeakyBucketFilter?",
+          "expected": [
+            "holdout_en_rate_limiting"
+          ],
+          "baseline_hyb_rank": 1,
+          "rerank_20_rank": 1,
+          "delta": "UNCHANGED"
+        },
+        {
+          "case_id": "H-ID-05",
+          "category": "EXACT_IDENTIFIER",
+          "language": "vi",
+          "query": "Giá trị mặc định của tham số phiên hnsw.ef_search trong pgvector là bao nhiêu?",
+          "expected": [
+            "holdout_en_vector_indexing"
+          ],
+          "baseline_hyb_rank": 1,
+          "rerank_20_rank": 1,
+          "delta": "UNCHANGED"
+        },
+        {
+          "case_id": "H-ID-06",
+          "category": "EXACT_IDENTIFIER",
+          "language": "en",
+          "query": "When does the gateway transition to CircuitBreakerState.HALF_OPEN?",
+          "expected": [
+            "holdout_en_circuit_breaker"
+          ],
+          "baseline_hyb_rank": 1,
+          "rerank_20_rank": 1,
+          "delta": "UNCHANGED"
+        },
+        {
+          "case_id": "H-PARA-01",
+          "category": "SEMANTIC_PARAPHRASE",
+          "language": "en",
+          "query": "What happens when an enterprise customer sends an enormous burst of requests?",
+          "expected": [
+            "holdout_en_rate_limiting"
+          ],
+          "baseline_hyb_rank": 1,
+          "rerank_20_rank": 2,
+          "delta": "DEMOTED"
+        },
+        {
+          "case_id": "H-PARA-02",
+          "category": "SEMANTIC_PARAPHRASE",
+          "language": "vi",
+          "query": "Làm sao để đồ thị vector lưu trữ được nhiều nút hơn mà không cạn kiệt bộ nhớ chính?",
+          "expected": [
+            "holdout_vi_vector_indexing"
+          ],
+          "baseline_hyb_rank": 1,
+          "rerank_20_rank": 2,
+          "delta": "DEMOTED"
+        },
+        {
+          "case_id": "H-PARA-03",
+          "category": "SEMANTIC_PARAPHRASE",
+          "language": "en",
+          "query": "How does the system maintain chronological fidelity during chunk document updates?",
+          "expected": [
+            "holdout_en_cdc_pipeline"
+          ],
+          "baseline_hyb_rank": 1,
+          "rerank_20_rank": 7,
+          "delta": "DEMOTED"
+        },
+        {
+          "case_id": "H-PARA-04",
+          "category": "SEMANTIC_PARAPHRASE",
+          "language": "vi",
+          "query": "Thời gian tối thiểu cần duy trì trước khi co cụm các máy chủ GPU sau khi tải giảm là bao lâu?",
+          "expected": [
+            "holdout_en_k8s_autoscaling"
+          ],
+          "baseline_hyb_rank": 12,
+          "rerank_20_rank": 2,
+          "delta": "PROMOTED"
+        },
+        {
+          "case_id": "H-AMB-01",
+          "category": "AMBIGUOUS_QUERY",
+          "language": "en",
+          "query": "What is the throttling threshold?",
+          "expected": [
+            "holdout_en_rate_limiting",
+            "holdout_vi_rate_limiting"
+          ],
+          "baseline_hyb_rank": 3,
+          "rerank_20_rank": 1,
+          "delta": "PROMOTED"
+        },
+        {
+          "case_id": "H-AMB-02",
+          "category": "AMBIGUOUS_QUERY",
+          "language": "vi",
+          "query": "Cấu hình độ trễ và độ sâu tìm kiếm HNSW?",
+          "expected": [
+            "holdout_en_vector_indexing",
+            "holdout_vi_vector_indexing"
+          ],
+          "baseline_hyb_rank": 1,
+          "rerank_20_rank": 1,
+          "delta": "UNCHANGED"
+        },
+        {
+          "case_id": "H-AMB-03",
+          "category": "AMBIGUOUS_QUERY",
+          "language": "en",
+          "query": "When is traffic redirected to fallback?",
+          "expected": [
+            "holdout_en_circuit_breaker",
+            "holdout_vi_circuit_breaker"
+          ],
+          "baseline_hyb_rank": 2,
+          "rerank_20_rank": 4,
+          "delta": "DEMOTED"
+        },
+        {
+          "case_id": "H-MD-01",
+          "category": "MULTI_DOC",
+          "language": "en",
+          "query": "Compare the rate limiting quota policy between standard tier and Vietnamese 60-second window",
+          "expected": [
+            "holdout_en_rate_limiting",
+            "holdout_vi_rate_limiting"
+          ],
+          "baseline_hyb_rank": 1,
+          "rerank_20_rank": 1,
+          "delta": "UNCHANGED"
+        },
+        {
+          "case_id": "H-MD-02",
+          "category": "MULTI_DOC",
+          "language": "vi",
+          "query": "So sánh chiến lược giảm tải bộ nhớ vector giữa halfvec và lượng tử hóa",
+          "expected": [
+            "holdout_en_vector_indexing",
+            "holdout_vi_vector_indexing"
+          ],
+          "baseline_hyb_rank": 1,
+          "rerank_20_rank": 1,
+          "delta": "UNCHANGED"
+        },
+        {
+          "case_id": "H-MD-03",
+          "category": "MULTI_DOC",
+          "language": "en",
+          "query": "How does the circuit breaker policy correlate with error codes ERR_RATE_LIMIT_EXCEEDED and provider outages?",
+          "expected": [
+            "holdout_en_circuit_breaker",
+            "holdout_en_error_catalog"
+          ],
+          "baseline_hyb_rank": 1,
+          "rerank_20_rank": 1,
+          "delta": "UNCHANGED"
+        },
+        {
+          "case_id": "H-MC-01",
+          "category": "MULTI_CHUNK",
+          "language": "vi",
+          "query": "Thời gian phản hồi tối đa của kỹ sư trực vận hành khi có cảnh báo PagerDuty là bao lâu?",
+          "expected": [
+            "holdout_vi_incident_runbook"
+          ],
+          "baseline_hyb_rank": 1,
+          "rerank_20_rank": 1,
+          "delta": "UNCHANGED"
+        },
+        {
+          "case_id": "H-MC-02",
+          "category": "MULTI_CHUNK",
+          "language": "vi",
+          "query": "Ai có thẩm quyền phê duyệt lệnh khôi phục khẩn cấp khi sự cố kéo dài quá 2 giờ?",
+          "expected": [
+            "holdout_vi_incident_runbook"
+          ],
+          "baseline_hyb_rank": 1,
+          "rerank_20_rank": 1,
+          "delta": "UNCHANGED"
+        },
+        {
+          "case_id": "H-MC-03",
+          "category": "MULTI_CHUNK",
+          "language": "vi",
+          "query": "Làm thế nào để kích hoạt chế độ suy luận ngoại tuyến trong sự cố khẩn cấp?",
+          "expected": [
+            "holdout_vi_incident_runbook"
+          ],
+          "baseline_hyb_rank": 1,
+          "rerank_20_rank": 1,
+          "delta": "UNCHANGED"
+        },
+        {
+          "case_id": "H-SEC-03",
+          "category": "CROSS_WORKSPACE",
+          "language": "en",
+          "query": "What is the audit finding number for reserved instance restructuring in workspace beta?",
+          "expected": [
+            "holdout_beta_billing_audit"
+          ],
+          "baseline_hyb_rank": 1,
+          "rerank_20_rank": 1,
+          "delta": "UNCHANGED"
+        }
+      ]
+    },
+    "augmented_74_chunks": {
+      "total_cases": 35,
+      "answerable_cases": 30,
+      "baseline_hybrid": {
+        "hit@1": 0.6333,
+        "hit@5": 0.8,
+        "recall@5": 0.75,
+        "mrr@5": 0.7
+      },
+      "rerank_pool_10": {
+        "hit@1": 0.8333,
+        "hit@3": 0.9,
+        "hit@5": 0.9,
+        "recall@5": 0.85,
+        "mrr@5": 0.8667,
+        "latency_ms": {
+          "mean": 1267.62,
+          "p50": 1358.0,
+          "p95": 1868.43
+        }
+      },
+      "rerank_pool_20": {
+        "hit@1": 0.8667,
+        "hit@3": 0.9333,
+        "hit@5": 0.9333,
+        "recall@5": 0.9,
+        "mrr@5": 0.9,
+        "latency_ms": {
+          "mean": 2704.42,
+          "p50": 2856.77,
+          "p95": 4556.42
+        }
+      },
+      "cross_lingual_subset": {
+        "cases_count": 10,
+        "baseline_hybrid_hit1": 0.2,
+        "rerank_20_hit1": 0.8,
+        "baseline_hybrid_mrr5": 0.3167,
+        "rerank_20_mrr5": 0.85
+      },
+      "case_details": [
+        {
+          "case_id": "H-XL-01",
+          "category": "CROSS_LINGUAL",
+          "language": "vi",
+          "query": "Thuật toán nào được dùng để giới hạn tốc độ truy cập trong Redis?",
+          "expected": [
+            "holdout_en_rate_limiting"
+          ],
+          "baseline_hyb_rank": 3,
+          "rerank_20_rank": 1,
+          "delta": "PROMOTED"
+        },
+        {
+          "case_id": "H-XL-02",
+          "category": "CROSS_LINGUAL",
+          "language": "vi",
+          "query": "Độ sâu tìm kiếm trong đồ thị vector được điều khiển bởi tham số nào?",
+          "expected": [
+            "holdout_en_vector_indexing"
+          ],
+          "baseline_hyb_rank": 6,
+          "rerank_20_rank": 2,
+          "delta": "PROMOTED"
+        },
+        {
+          "case_id": "H-XL-03",
+          "category": "CROSS_LINGUAL",
+          "language": "vi",
+          "query": "Cơ chế bảo vệ chống sập khi nhà cung cấp LLM gặp sự cố hoạt động ra sao?",
+          "expected": [
+            "holdout_en_circuit_breaker"
+          ],
+          "baseline_hyb_rank": null,
+          "rerank_20_rank": null,
+          "delta": "UNCHANGED"
+        },
+        {
+          "case_id": "H-XL-04",
+          "category": "CROSS_LINGUAL",
+          "language": "vi",
+          "query": "Số lượng bản sao tối đa của triton inference server là bao nhiêu?",
+          "expected": [
+            "holdout_en_k8s_autoscaling"
+          ],
+          "baseline_hyb_rank": 1,
+          "rerank_20_rank": 1,
+          "delta": "UNCHANGED"
+        },
+        {
+          "case_id": "H-XL-05",
+          "category": "CROSS_LINGUAL",
+          "language": "vi",
+          "query": "Kích thước lô tối đa để đẩy nhật ký ghi trước vào Kafka là bao nhiêu?",
+          "expected": [
+            "holdout_en_cdc_pipeline"
+          ],
+          "baseline_hyb_rank": 10,
+          "rerank_20_rank": 1,
+          "delta": "PROMOTED"
+        },
+        {
+          "case_id": "H-XL-06",
+          "category": "CROSS_LINGUAL",
+          "language": "en",
+          "query": "How does the system protect core services during traffic congestion?",
+          "expected": [
+            "holdout_vi_rate_limiting"
+          ],
+          "baseline_hyb_rank": 7,
+          "rerank_20_rank": 1,
+          "delta": "PROMOTED"
+        },
+        {
+          "case_id": "H-XL-07",
+          "category": "CROSS_LINGUAL",
+          "language": "en",
+          "query": "What technique is used to save memory when vector records scale into millions?",
+          "expected": [
+            "holdout_vi_vector_indexing"
+          ],
+          "baseline_hyb_rank": 2,
+          "rerank_20_rank": 1,
+          "delta": "PROMOTED"
+        },
+        {
+          "case_id": "H-XL-08",
+          "category": "CROSS_LINGUAL",
+          "language": "en",
+          "query": "How are database mutations packaged into events without blocking users?",
+          "expected": [
+            "holdout_vi_cdc_pipeline"
+          ],
+          "baseline_hyb_rank": 19,
+          "rerank_20_rank": 1,
+          "delta": "PROMOTED"
+        },
+        {
+          "case_id": "H-XL-09",
+          "category": "CROSS_LINGUAL",
+          "language": "en",
+          "query": "What temporary measure is deployed when the external language model provider fails?",
+          "expected": [
+            "holdout_vi_circuit_breaker"
+          ],
+          "baseline_hyb_rank": 3,
+          "rerank_20_rank": 1,
+          "delta": "PROMOTED"
+        },
+        {
+          "case_id": "H-XL-10",
+          "category": "CROSS_LINGUAL",
+          "language": "en",
+          "query": "What metric triggers the initialization of additional GPU computing nodes?",
+          "expected": [
+            "holdout_vi_k8s_autoscaling"
+          ],
+          "baseline_hyb_rank": 1,
+          "rerank_20_rank": 1,
+          "delta": "UNCHANGED"
+        },
+        {
+          "case_id": "H-ID-01",
+          "category": "EXACT_IDENTIFIER",
+          "language": "en",
+          "query": "What causes error code ERR_RATE_LIMIT_EXCEEDED?",
+          "expected": [
+            "holdout_en_error_catalog"
+          ],
+          "baseline_hyb_rank": 1,
+          "rerank_20_rank": 1,
+          "delta": "UNCHANGED"
+        },
+        {
+          "case_id": "H-ID-02",
+          "category": "EXACT_IDENTIFIER",
+          "language": "vi",
+          "query": "Làm thế nào để khắc phục lỗi ERR_HNSW_GRAPH_CORRUPT trong hệ thống?",
+          "expected": [
+            "holdout_en_error_catalog"
+          ],
+          "baseline_hyb_rank": 1,
+          "rerank_20_rank": 1,
+          "delta": "UNCHANGED"
+        },
+        {
+          "case_id": "H-ID-03",
+          "category": "EXACT_IDENTIFIER",
+          "language": "en",
+          "query": "What is the critical threshold for ERR_CDC_REPLICATION_STALL?",
+          "expected": [
+            "holdout_en_error_catalog"
+          ],
+          "baseline_hyb_rank": 1,
+          "rerank_20_rank": 1,
+          "delta": "UNCHANGED"
+        },
+        {
+          "case_id": "H-ID-04",
+          "category": "EXACT_IDENTIFIER",
+          "language": "en",
+          "query": "Which interceptor halts execution when token bucket limit is breached: LeakyBucketFilter?",
+          "expected": [
+            "holdout_en_rate_limiting"
+          ],
+          "baseline_hyb_rank": 1,
+          "rerank_20_rank": 1,
+          "delta": "UNCHANGED"
+        },
+        {
+          "case_id": "H-ID-05",
+          "category": "EXACT_IDENTIFIER",
+          "language": "vi",
+          "query": "Giá trị mặc định của tham số phiên hnsw.ef_search trong pgvector là bao nhiêu?",
+          "expected": [
+            "holdout_en_vector_indexing"
+          ],
+          "baseline_hyb_rank": 1,
+          "rerank_20_rank": 1,
+          "delta": "UNCHANGED"
+        },
+        {
+          "case_id": "H-ID-06",
+          "category": "EXACT_IDENTIFIER",
+          "language": "en",
+          "query": "When does the gateway transition to CircuitBreakerState.HALF_OPEN?",
+          "expected": [
+            "holdout_en_circuit_breaker"
+          ],
+          "baseline_hyb_rank": 1,
+          "rerank_20_rank": 1,
+          "delta": "UNCHANGED"
+        },
+        {
+          "case_id": "H-PARA-01",
+          "category": "SEMANTIC_PARAPHRASE",
+          "language": "en",
+          "query": "What happens when an enterprise customer sends an enormous burst of requests?",
+          "expected": [
+            "holdout_en_rate_limiting"
+          ],
+          "baseline_hyb_rank": 1,
+          "rerank_20_rank": 1,
+          "delta": "UNCHANGED"
+        },
+        {
+          "case_id": "H-PARA-02",
+          "category": "SEMANTIC_PARAPHRASE",
+          "language": "vi",
+          "query": "Làm sao để đồ thị vector lưu trữ được nhiều nút hơn mà không cạn kiệt bộ nhớ chính?",
+          "expected": [
+            "holdout_vi_vector_indexing"
+          ],
+          "baseline_hyb_rank": 1,
+          "rerank_20_rank": 2,
+          "delta": "DEMOTED"
+        },
+        {
+          "case_id": "H-PARA-03",
+          "category": "SEMANTIC_PARAPHRASE",
+          "language": "en",
+          "query": "How does the system maintain chronological fidelity during chunk document updates?",
+          "expected": [
+            "holdout_en_cdc_pipeline"
+          ],
+          "baseline_hyb_rank": 1,
+          "rerank_20_rank": 1,
+          "delta": "UNCHANGED"
+        },
+        {
+          "case_id": "H-PARA-04",
+          "category": "SEMANTIC_PARAPHRASE",
+          "language": "vi",
+          "query": "Thời gian tối thiểu cần duy trì trước khi co cụm các máy chủ GPU sau khi tải giảm là bao lâu?",
+          "expected": [
+            "holdout_en_k8s_autoscaling"
+          ],
+          "baseline_hyb_rank": null,
+          "rerank_20_rank": null,
+          "delta": "UNCHANGED"
+        },
+        {
+          "case_id": "H-AMB-01",
+          "category": "AMBIGUOUS_QUERY",
+          "language": "en",
+          "query": "What is the throttling threshold?",
+          "expected": [
+            "holdout_en_rate_limiting",
+            "holdout_vi_rate_limiting"
+          ],
+          "baseline_hyb_rank": 3,
+          "rerank_20_rank": 1,
+          "delta": "PROMOTED"
+        },
+        {
+          "case_id": "H-AMB-02",
+          "category": "AMBIGUOUS_QUERY",
+          "language": "vi",
+          "query": "Cấu hình độ trễ và độ sâu tìm kiếm HNSW?",
+          "expected": [
+            "holdout_en_vector_indexing",
+            "holdout_vi_vector_indexing"
+          ],
+          "baseline_hyb_rank": 1,
+          "rerank_20_rank": 1,
+          "delta": "UNCHANGED"
+        },
+        {
+          "case_id": "H-AMB-03",
+          "category": "AMBIGUOUS_QUERY",
+          "language": "en",
+          "query": "When is traffic redirected to fallback?",
+          "expected": [
+            "holdout_en_circuit_breaker",
+            "holdout_vi_circuit_breaker"
+          ],
+          "baseline_hyb_rank": 2,
+          "rerank_20_rank": 1,
+          "delta": "PROMOTED"
+        },
+        {
+          "case_id": "H-MD-01",
+          "category": "MULTI_DOC",
+          "language": "en",
+          "query": "Compare the rate limiting quota policy between standard tier and Vietnamese 60-second window",
+          "expected": [
+            "holdout_en_rate_limiting",
+            "holdout_vi_rate_limiting"
+          ],
+          "baseline_hyb_rank": 1,
+          "rerank_20_rank": 1,
+          "delta": "UNCHANGED"
+        },
+        {
+          "case_id": "H-MD-02",
+          "category": "MULTI_DOC",
+          "language": "vi",
+          "query": "So sánh chiến lược giảm tải bộ nhớ vector giữa halfvec và lượng tử hóa",
+          "expected": [
+            "holdout_en_vector_indexing",
+            "holdout_vi_vector_indexing"
+          ],
+          "baseline_hyb_rank": 1,
+          "rerank_20_rank": 1,
+          "delta": "UNCHANGED"
+        },
+        {
+          "case_id": "H-MD-03",
+          "category": "MULTI_DOC",
+          "language": "en",
+          "query": "How does the circuit breaker policy correlate with error codes ERR_RATE_LIMIT_EXCEEDED and provider outages?",
+          "expected": [
+            "holdout_en_circuit_breaker",
+            "holdout_en_error_catalog"
+          ],
+          "baseline_hyb_rank": 1,
+          "rerank_20_rank": 1,
+          "delta": "UNCHANGED"
+        },
+        {
+          "case_id": "H-MC-01",
+          "category": "MULTI_CHUNK",
+          "language": "vi",
+          "query": "Thời gian phản hồi tối đa của kỹ sư trực vận hành khi có cảnh báo PagerDuty là bao lâu?",
+          "expected": [
+            "holdout_vi_incident_runbook"
+          ],
+          "baseline_hyb_rank": 1,
+          "rerank_20_rank": 1,
+          "delta": "UNCHANGED"
+        },
+        {
+          "case_id": "H-MC-02",
+          "category": "MULTI_CHUNK",
+          "language": "vi",
+          "query": "Ai có thẩm quyền phê duyệt lệnh khôi phục khẩn cấp khi sự cố kéo dài quá 2 giờ?",
+          "expected": [
+            "holdout_vi_incident_runbook"
+          ],
+          "baseline_hyb_rank": 1,
+          "rerank_20_rank": 1,
+          "delta": "UNCHANGED"
+        },
+        {
+          "case_id": "H-MC-03",
+          "category": "MULTI_CHUNK",
+          "language": "vi",
+          "query": "Làm thế nào để kích hoạt chế độ suy luận ngoại tuyến trong sự cố khẩn cấp?",
+          "expected": [
+            "holdout_vi_incident_runbook"
+          ],
+          "baseline_hyb_rank": 1,
+          "rerank_20_rank": 1,
+          "delta": "UNCHANGED"
+        },
+        {
+          "case_id": "H-SEC-03",
+          "category": "CROSS_WORKSPACE",
+          "language": "en",
+          "query": "What is the audit finding number for reserved instance restructuring in workspace beta?",
+          "expected": [
+            "holdout_beta_billing_audit"
+          ],
+          "baseline_hyb_rank": 1,
+          "rerank_20_rank": 1,
+          "delta": "UNCHANGED"
+        }
+      ]
+    }
+  }
+}
