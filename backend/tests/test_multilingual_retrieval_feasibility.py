@@ -48,9 +48,12 @@ def test_candidate_recall_diagnostics_report_integrity():
 
 def test_reranker_feasibility_report_integrity():
     report_path = REPO_ROOT / "datasets/evaluation/reports/reranker_feasibility_report.json"
+    diag_path = REPO_ROOT / "datasets/evaluation/reports/candidate_recall_diagnostics.json"
     assert report_path.is_file(), "reranker_feasibility_report.json must exist"
+    assert diag_path.is_file(), "candidate_recall_diagnostics.json must exist"
 
     data = json.loads(report_path.read_text(encoding="utf-8"))
+    diag_data = json.loads(diag_path.read_text(encoding="utf-8"))
     assert "model_metadata" in data
     assert "experiments" in data
 
@@ -63,13 +66,28 @@ def test_reranker_feasibility_report_integrity():
 
     for exp_key in ["standard_14_chunks", "augmented_74_chunks"]:
         exp = data["experiments"][exp_key]
+        diag_summary = diag_data[exp_key]["summary"]["hybrid"]
         assert exp["answerable_cases"] == 30
 
-        # Latency validation
-        lat_10 = exp["rerank_pool_10"]["latency_ms"]
-        lat_20 = exp["rerank_pool_20"]["latency_ms"]
-        assert lat_10["mean"] > 0 and lat_10["p50"] > 0 and lat_10["p95"] >= lat_10["p50"]
-        assert lat_20["mean"] > 0 and lat_20["p50"] > 0 and lat_20["p95"] >= lat_20["p50"]
+        # Baseline consistency between reports
+        assert exp["baseline_hybrid"]["hit@1"] == diag_summary["hit@1"]
+        assert exp["baseline_hybrid"]["hit@5"] == diag_summary["hit@5"]
+        assert exp["baseline_hybrid"]["recall@5"] == diag_summary["recall@5"]
+
+        # Latency validation (separated first-stage vs cross-encoder inference)
+        lat_10 = exp["rerank_pool_10"]["latency_breakdown_ms"]
+        lat_20 = exp["rerank_pool_20"]["latency_breakdown_ms"]
+        for lat in [lat_10, lat_20]:
+            assert lat["first_stage_retrieval"]["p50"] > 0
+            assert lat["cross_encoder_inference"]["p50"] > 0
+            assert lat["total_end_to_end"]["p50"] >= lat["cross_encoder_inference"]["p50"]
+
+        # Candidate pool upper bound invariant: Reranked Hit@5 <= Candidate Pool Hit@K
+        bounds = exp["candidate_pool_upper_bounds"]
+        assert exp["rerank_pool_10"]["hit@5"] <= bounds["pool_10"]["candidate_hit@10"]
+        assert exp["rerank_pool_10"]["upper_bound_satisfied"] is True
+        assert exp["rerank_pool_20"]["hit@5"] <= bounds["pool_20"]["candidate_hit@20"]
+        assert exp["rerank_pool_20"]["upper_bound_satisfied"] is True
 
         # Reranker accuracy vs baseline
         base_mrr = exp["baseline_hybrid"]["mrr@5"]
@@ -81,6 +99,13 @@ def test_reranker_feasibility_report_integrity():
         assert xl_stats["cases_count"] == 10
         assert xl_stats["rerank_20_hit1"] >= xl_stats["baseline_hybrid_hit1"]
         assert xl_stats["rerank_20_mrr5"] > xl_stats["baseline_hybrid_mrr5"]
+
+    # Specific mathematical upper bounds for augmented distractor corpus
+    aug_exp = data["experiments"]["augmented_74_chunks"]
+    assert aug_exp["candidate_pool_upper_bounds"]["pool_10"]["candidate_hit@10"] == 0.8667
+    assert aug_exp["rerank_pool_10"]["hit@5"] == 0.8667
+    assert aug_exp["candidate_pool_upper_bounds"]["pool_20"]["candidate_hit@20"] == 0.9333
+    assert aug_exp["rerank_pool_20"]["hit@5"] == 0.9333
 
 
 def test_reranking_tenant_isolation_logic():

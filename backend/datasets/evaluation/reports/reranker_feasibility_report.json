@@ -3,8 +3,8 @@
     "model_name": "cross-encoder/mmarco-mMiniLMv2-L12-H384-v1",
     "architecture": "MiniLMv2-L12-H384 (XLM-RoBERTa / mMARCO)",
     "license": "Apache-2.0",
-    "load_time_seconds": 6.37,
-    "memory_overhead_mb": 443.5,
+    "load_time_seconds": 4.36,
+    "memory_overhead_mb": 373.9,
     "supported_languages": [
       "vi",
       "en",
@@ -26,10 +26,20 @@
       "total_cases": 35,
       "answerable_cases": 30,
       "baseline_hybrid": {
-        "hit@1": 0.6333,
+        "hit@1": 0.6,
         "hit@5": 0.8667,
         "recall@5": 0.85,
-        "mrr@5": 0.7206
+        "mrr@5": 0.7039
+      },
+      "candidate_pool_upper_bounds": {
+        "pool_10": {
+          "candidate_hit@10": 0.9667,
+          "candidate_recall@10": 0.9667
+        },
+        "pool_20": {
+          "candidate_hit@20": 1.0,
+          "candidate_recall@20": 1.0
+        }
       },
       "rerank_pool_10": {
         "hit@1": 0.8,
@@ -37,10 +47,25 @@
         "hit@5": 0.9667,
         "recall@5": 0.95,
         "mrr@5": 0.8678,
-        "latency_ms": {
-          "mean": 1286.73,
-          "p50": 1359.84,
-          "p95": 1658.51
+        "upper_bound_hit10": 0.9667,
+        "upper_bound_recall10": 0.9667,
+        "upper_bound_satisfied": true,
+        "latency_breakdown_ms": {
+          "first_stage_retrieval": {
+            "mean": 217.97,
+            "p50": 174.03,
+            "p95": 515.56
+          },
+          "cross_encoder_inference": {
+            "mean": 1529.77,
+            "p50": 1509.82,
+            "p95": 2555.33
+          },
+          "total_end_to_end": {
+            "mean": 1747.74,
+            "p50": 1730.53,
+            "p95": 2850.49
+          }
         }
       },
       "rerank_pool_20": {
@@ -49,17 +74,32 @@
         "hit@5": 0.9667,
         "recall@5": 0.95,
         "mrr@5": 0.875,
-        "latency_ms": {
-          "mean": 1696.78,
-          "p50": 1637.79,
-          "p95": 2364.5
+        "upper_bound_hit20": 1.0,
+        "upper_bound_recall20": 1.0,
+        "upper_bound_satisfied": true,
+        "latency_breakdown_ms": {
+          "first_stage_retrieval": {
+            "mean": 217.97,
+            "p50": 174.03,
+            "p95": 515.56
+          },
+          "cross_encoder_inference": {
+            "mean": 1895.36,
+            "p50": 1820.34,
+            "p95": 2898.25
+          },
+          "total_end_to_end": {
+            "mean": 2113.33,
+            "p50": 1995.86,
+            "p95": 3193.41
+          }
         }
       },
       "cross_lingual_subset": {
         "cases_count": 10,
-        "baseline_hybrid_hit1": 0.2,
+        "baseline_hybrid_hit1": 0.1,
         "rerank_20_hit1": 0.9,
-        "baseline_hybrid_mrr5": 0.3783,
+        "baseline_hybrid_mrr5": 0.3283,
         "rerank_20_mrr5": 0.95
       },
       "case_details": [
@@ -71,9 +111,11 @@
           "expected": [
             "holdout_en_rate_limiting"
           ],
-          "baseline_hyb_rank": 1,
+          "baseline_hyb_rank": 2,
           "rerank_20_rank": 1,
-          "delta": "UNCHANGED"
+          "in_pool_10": true,
+          "in_pool_20": true,
+          "delta": "PROMOTED"
         },
         {
           "case_id": "H-XL-02",
@@ -85,6 +127,8 @@
           ],
           "baseline_hyb_rank": 6,
           "rerank_20_rank": 2,
+          "in_pool_10": true,
+          "in_pool_20": true,
           "delta": "PROMOTED"
         },
         {
@@ -97,6 +141,8 @@
           ],
           "baseline_hyb_rank": 8,
           "rerank_20_rank": 1,
+          "in_pool_10": true,
+          "in_pool_20": true,
           "delta": "PROMOTED"
         },
         {
@@ -109,6 +155,8 @@
           ],
           "baseline_hyb_rank": 2,
           "rerank_20_rank": 1,
+          "in_pool_10": true,
+          "in_pool_20": true,
           "delta": "PROMOTED"
         },
         {
@@ -121,6 +169,8 @@
           ],
           "baseline_hyb_rank": 4,
           "rerank_20_rank": 1,
+          "in_pool_10": true,
+          "in_pool_20": true,
           "delta": "PROMOTED"
         },
         {
@@ -133,6 +183,8 @@
           ],
           "baseline_hyb_rank": 5,
           "rerank_20_rank": 1,
+          "in_pool_10": true,
+          "in_pool_20": true,
           "delta": "PROMOTED"
         },
         {
@@ -145,6 +197,8 @@
           ],
           "baseline_hyb_rank": 2,
           "rerank_20_rank": 1,
+          "in_pool_10": true,
+          "in_pool_20": true,
           "delta": "PROMOTED"
         },
         {
@@ -157,6 +211,8 @@
           ],
           "baseline_hyb_rank": 7,
           "rerank_20_rank": 1,
+          "in_pool_10": true,
+          "in_pool_20": true,
           "delta": "PROMOTED"
         },
         {
@@ -169,6 +225,8 @@
           ],
           "baseline_hyb_rank": 3,
           "rerank_20_rank": 1,
+          "in_pool_10": true,
+          "in_pool_20": true,
           "delta": "PROMOTED"
         },
         {
@@ -181,6 +239,8 @@
           ],
           "baseline_hyb_rank": 1,
           "rerank_20_rank": 1,
+          "in_pool_10": true,
+          "in_pool_20": true,
           "delta": "UNCHANGED"
         },
         {
@@ -193,6 +253,8 @@
           ],
           "baseline_hyb_rank": 1,
           "rerank_20_rank": 1,
+          "in_pool_10": true,
+          "in_pool_20": true,
           "delta": "UNCHANGED"
         },
         {
@@ -205,6 +267,8 @@
           ],
           "baseline_hyb_rank": 1,
           "rerank_20_rank": 1,
+          "in_pool_10": true,
+          "in_pool_20": true,
           "delta": "UNCHANGED"
         },
         {
@@ -217,6 +281,8 @@
           ],
           "baseline_hyb_rank": 1,
           "rerank_20_rank": 1,
+          "in_pool_10": true,
+          "in_pool_20": true,
           "delta": "UNCHANGED"
         },
         {
@@ -229,6 +295,8 @@
           ],
           "baseline_hyb_rank": 1,
           "rerank_20_rank": 1,
+          "in_pool_10": true,
+          "in_pool_20": true,
           "delta": "UNCHANGED"
         },
         {
@@ -241,6 +309,8 @@
           ],
           "baseline_hyb_rank": 1,
           "rerank_20_rank": 1,
+          "in_pool_10": true,
+          "in_pool_20": true,
           "delta": "UNCHANGED"
         },
         {
@@ -253,6 +323,8 @@
           ],
           "baseline_hyb_rank": 1,
           "rerank_20_rank": 1,
+          "in_pool_10": true,
+          "in_pool_20": true,
           "delta": "UNCHANGED"
         },
         {
@@ -265,6 +337,8 @@
           ],
           "baseline_hyb_rank": 1,
           "rerank_20_rank": 2,
+          "in_pool_10": true,
+          "in_pool_20": true,
           "delta": "DEMOTED"
         },
         {
@@ -277,6 +351,8 @@
           ],
           "baseline_hyb_rank": 1,
           "rerank_20_rank": 2,
+          "in_pool_10": true,
+          "in_pool_20": true,
           "delta": "DEMOTED"
         },
         {
@@ -289,6 +365,8 @@
           ],
           "baseline_hyb_rank": 1,
           "rerank_20_rank": 7,
+          "in_pool_10": true,
+          "in_pool_20": true,
           "delta": "DEMOTED"
         },
         {
@@ -301,6 +379,8 @@
           ],
           "baseline_hyb_rank": 12,
           "rerank_20_rank": 2,
+          "in_pool_10": false,
+          "in_pool_20": true,
           "delta": "PROMOTED"
         },
         {
@@ -309,11 +389,13 @@
           "language": "en",
           "query": "What is the throttling threshold?",
           "expected": [
-            "holdout_en_rate_limiting",
-            "holdout_vi_rate_limiting"
+            "holdout_vi_rate_limiting",
+            "holdout_en_rate_limiting"
           ],
           "baseline_hyb_rank": 3,
           "rerank_20_rank": 1,
+          "in_pool_10": true,
+          "in_pool_20": true,
           "delta": "PROMOTED"
         },
         {
@@ -322,11 +404,13 @@
           "language": "vi",
           "query": "Cấu hình độ trễ và độ sâu tìm kiếm HNSW?",
           "expected": [
-            "holdout_en_vector_indexing",
-            "holdout_vi_vector_indexing"
+            "holdout_vi_vector_indexing",
+            "holdout_en_vector_indexing"
           ],
           "baseline_hyb_rank": 1,
           "rerank_20_rank": 1,
+          "in_pool_10": true,
+          "in_pool_20": true,
           "delta": "UNCHANGED"
         },
         {
@@ -335,11 +419,13 @@
           "language": "en",
           "query": "When is traffic redirected to fallback?",
           "expected": [
-            "holdout_en_circuit_breaker",
-            "holdout_vi_circuit_breaker"
+            "holdout_vi_circuit_breaker",
+            "holdout_en_circuit_breaker"
           ],
           "baseline_hyb_rank": 2,
           "rerank_20_rank": 4,
+          "in_pool_10": true,
+          "in_pool_20": true,
           "delta": "DEMOTED"
         },
         {
@@ -348,11 +434,13 @@
           "language": "en",
           "query": "Compare the rate limiting quota policy between standard tier and Vietnamese 60-second window",
           "expected": [
-            "holdout_en_rate_limiting",
-            "holdout_vi_rate_limiting"
+            "holdout_vi_rate_limiting",
+            "holdout_en_rate_limiting"
           ],
           "baseline_hyb_rank": 1,
           "rerank_20_rank": 1,
+          "in_pool_10": true,
+          "in_pool_20": true,
           "delta": "UNCHANGED"
         },
         {
@@ -361,11 +449,13 @@
           "language": "vi",
           "query": "So sánh chiến lược giảm tải bộ nhớ vector giữa halfvec và lượng tử hóa",
           "expected": [
-            "holdout_en_vector_indexing",
-            "holdout_vi_vector_indexing"
+            "holdout_vi_vector_indexing",
+            "holdout_en_vector_indexing"
           ],
           "baseline_hyb_rank": 1,
           "rerank_20_rank": 1,
+          "in_pool_10": true,
+          "in_pool_20": true,
           "delta": "UNCHANGED"
         },
         {
@@ -379,6 +469,8 @@
           ],
           "baseline_hyb_rank": 1,
           "rerank_20_rank": 1,
+          "in_pool_10": true,
+          "in_pool_20": true,
           "delta": "UNCHANGED"
         },
         {
@@ -391,6 +483,8 @@
           ],
           "baseline_hyb_rank": 1,
           "rerank_20_rank": 1,
+          "in_pool_10": true,
+          "in_pool_20": true,
           "delta": "UNCHANGED"
         },
         {
@@ -403,6 +497,8 @@
           ],
           "baseline_hyb_rank": 1,
           "rerank_20_rank": 1,
+          "in_pool_10": true,
+          "in_pool_20": true,
           "delta": "UNCHANGED"
         },
         {
@@ -415,6 +511,8 @@
           ],
           "baseline_hyb_rank": 1,
           "rerank_20_rank": 1,
+          "in_pool_10": true,
+          "in_pool_20": true,
           "delta": "UNCHANGED"
         },
         {
@@ -427,6 +525,8 @@
           ],
           "baseline_hyb_rank": 1,
           "rerank_20_rank": 1,
+          "in_pool_10": true,
+          "in_pool_20": true,
           "delta": "UNCHANGED"
         }
       ]
@@ -436,20 +536,45 @@
       "answerable_cases": 30,
       "baseline_hybrid": {
         "hit@1": 0.6333,
-        "hit@5": 0.8,
-        "recall@5": 0.75,
-        "mrr@5": 0.7
+        "hit@5": 0.7667,
+        "recall@5": 0.7167,
+        "mrr@5": 0.6889
+      },
+      "candidate_pool_upper_bounds": {
+        "pool_10": {
+          "candidate_hit@10": 0.8667,
+          "candidate_recall@10": 0.85
+        },
+        "pool_20": {
+          "candidate_hit@20": 0.9333,
+          "candidate_recall@20": 0.9167
+        }
       },
       "rerank_pool_10": {
-        "hit@1": 0.8333,
-        "hit@3": 0.9,
-        "hit@5": 0.9,
-        "recall@5": 0.85,
-        "mrr@5": 0.8667,
-        "latency_ms": {
-          "mean": 1267.62,
-          "p50": 1358.0,
-          "p95": 1868.43
+        "hit@1": 0.8,
+        "hit@3": 0.8667,
+        "hit@5": 0.8667,
+        "recall@5": 0.8333,
+        "mrr@5": 0.8333,
+        "upper_bound_hit10": 0.8667,
+        "upper_bound_recall10": 0.85,
+        "upper_bound_satisfied": true,
+        "latency_breakdown_ms": {
+          "first_stage_retrieval": {
+            "mean": 170.89,
+            "p50": 149.62,
+            "p95": 360.5
+          },
+          "cross_encoder_inference": {
+            "mean": 1012.27,
+            "p50": 859.98,
+            "p95": 1984.36
+          },
+          "total_end_to_end": {
+            "mean": 1183.15,
+            "p50": 986.49,
+            "p95": 2271.23
+          }
         }
       },
       "rerank_pool_20": {
@@ -458,17 +583,32 @@
         "hit@5": 0.9333,
         "recall@5": 0.9,
         "mrr@5": 0.9,
-        "latency_ms": {
-          "mean": 2704.42,
-          "p50": 2856.77,
-          "p95": 4556.42
+        "upper_bound_hit20": 0.9333,
+        "upper_bound_recall20": 0.9167,
+        "upper_bound_satisfied": true,
+        "latency_breakdown_ms": {
+          "first_stage_retrieval": {
+            "mean": 170.89,
+            "p50": 149.62,
+            "p95": 360.5
+          },
+          "cross_encoder_inference": {
+            "mean": 2206.54,
+            "p50": 2390.77,
+            "p95": 3553.31
+          },
+          "total_end_to_end": {
+            "mean": 2377.43,
+            "p50": 2516.05,
+            "p95": 3806.16
+          }
         }
       },
       "cross_lingual_subset": {
         "cases_count": 10,
         "baseline_hybrid_hit1": 0.2,
         "rerank_20_hit1": 0.8,
-        "baseline_hybrid_mrr5": 0.3167,
+        "baseline_hybrid_mrr5": 0.2833,
         "rerank_20_mrr5": 0.85
       },
       "case_details": [
@@ -480,8 +620,10 @@
           "expected": [
             "holdout_en_rate_limiting"
           ],
-          "baseline_hyb_rank": 3,
+          "baseline_hyb_rank": 15,
           "rerank_20_rank": 1,
+          "in_pool_10": false,
+          "in_pool_20": true,
           "delta": "PROMOTED"
         },
         {
@@ -492,8 +634,10 @@
           "expected": [
             "holdout_en_vector_indexing"
           ],
-          "baseline_hyb_rank": 6,
+          "baseline_hyb_rank": 7,
           "rerank_20_rank": 2,
+          "in_pool_10": true,
+          "in_pool_20": true,
           "delta": "PROMOTED"
         },
         {
@@ -506,6 +650,8 @@
           ],
           "baseline_hyb_rank": null,
           "rerank_20_rank": null,
+          "in_pool_10": false,
+          "in_pool_20": false,
           "delta": "UNCHANGED"
         },
         {
@@ -518,6 +664,8 @@
           ],
           "baseline_hyb_rank": 1,
           "rerank_20_rank": 1,
+          "in_pool_10": true,
+          "in_pool_20": true,
           "delta": "UNCHANGED"
         },
         {
@@ -530,6 +678,8 @@
           ],
           "baseline_hyb_rank": 10,
           "rerank_20_rank": 1,
+          "in_pool_10": true,
+          "in_pool_20": true,
           "delta": "PROMOTED"
         },
         {
@@ -542,6 +692,8 @@
           ],
           "baseline_hyb_rank": 7,
           "rerank_20_rank": 1,
+          "in_pool_10": true,
+          "in_pool_20": true,
           "delta": "PROMOTED"
         },
         {
@@ -554,6 +706,8 @@
           ],
           "baseline_hyb_rank": 2,
           "rerank_20_rank": 1,
+          "in_pool_10": true,
+          "in_pool_20": true,
           "delta": "PROMOTED"
         },
         {
@@ -566,6 +720,8 @@
           ],
           "baseline_hyb_rank": 19,
           "rerank_20_rank": 1,
+          "in_pool_10": false,
+          "in_pool_20": true,
           "delta": "PROMOTED"
         },
         {
@@ -578,6 +734,8 @@
           ],
           "baseline_hyb_rank": 3,
           "rerank_20_rank": 1,
+          "in_pool_10": true,
+          "in_pool_20": true,
           "delta": "PROMOTED"
         },
         {
@@ -590,6 +748,8 @@
           ],
           "baseline_hyb_rank": 1,
           "rerank_20_rank": 1,
+          "in_pool_10": true,
+          "in_pool_20": true,
           "delta": "UNCHANGED"
         },
         {
@@ -602,6 +762,8 @@
           ],
           "baseline_hyb_rank": 1,
           "rerank_20_rank": 1,
+          "in_pool_10": true,
+          "in_pool_20": true,
           "delta": "UNCHANGED"
         },
         {
@@ -614,6 +776,8 @@
           ],
           "baseline_hyb_rank": 1,
           "rerank_20_rank": 1,
+          "in_pool_10": true,
+          "in_pool_20": true,
           "delta": "UNCHANGED"
         },
         {
@@ -626,6 +790,8 @@
           ],
           "baseline_hyb_rank": 1,
           "rerank_20_rank": 1,
+          "in_pool_10": true,
+          "in_pool_20": true,
           "delta": "UNCHANGED"
         },
         {
@@ -638,6 +804,8 @@
           ],
           "baseline_hyb_rank": 1,
           "rerank_20_rank": 1,
+          "in_pool_10": true,
+          "in_pool_20": true,
           "delta": "UNCHANGED"
         },
         {
@@ -650,6 +818,8 @@
           ],
           "baseline_hyb_rank": 1,
           "rerank_20_rank": 1,
+          "in_pool_10": true,
+          "in_pool_20": true,
           "delta": "UNCHANGED"
         },
         {
@@ -662,6 +832,8 @@
           ],
           "baseline_hyb_rank": 1,
           "rerank_20_rank": 1,
+          "in_pool_10": true,
+          "in_pool_20": true,
           "delta": "UNCHANGED"
         },
         {
@@ -674,6 +846,8 @@
           ],
           "baseline_hyb_rank": 1,
           "rerank_20_rank": 1,
+          "in_pool_10": true,
+          "in_pool_20": true,
           "delta": "UNCHANGED"
         },
         {
@@ -686,6 +860,8 @@
           ],
           "baseline_hyb_rank": 1,
           "rerank_20_rank": 2,
+          "in_pool_10": true,
+          "in_pool_20": true,
           "delta": "DEMOTED"
         },
         {
@@ -698,6 +874,8 @@
           ],
           "baseline_hyb_rank": 1,
           "rerank_20_rank": 1,
+          "in_pool_10": true,
+          "in_pool_20": true,
           "delta": "UNCHANGED"
         },
         {
@@ -710,6 +888,8 @@
           ],
           "baseline_hyb_rank": null,
           "rerank_20_rank": null,
+          "in_pool_10": false,
+          "in_pool_20": false,
           "delta": "UNCHANGED"
         },
         {
@@ -718,11 +898,13 @@
           "language": "en",
           "query": "What is the throttling threshold?",
           "expected": [
-            "holdout_en_rate_limiting",
-            "holdout_vi_rate_limiting"
+            "holdout_vi_rate_limiting",
+            "holdout_en_rate_limiting"
           ],
           "baseline_hyb_rank": 3,
           "rerank_20_rank": 1,
+          "in_pool_10": true,
+          "in_pool_20": true,
           "delta": "PROMOTED"
         },
         {
@@ -731,11 +913,13 @@
           "language": "vi",
           "query": "Cấu hình độ trễ và độ sâu tìm kiếm HNSW?",
           "expected": [
-            "holdout_en_vector_indexing",
-            "holdout_vi_vector_indexing"
+            "holdout_vi_vector_indexing",
+            "holdout_en_vector_indexing"
           ],
           "baseline_hyb_rank": 1,
           "rerank_20_rank": 1,
+          "in_pool_10": true,
+          "in_pool_20": true,
           "delta": "UNCHANGED"
         },
         {
@@ -744,11 +928,13 @@
           "language": "en",
           "query": "When is traffic redirected to fallback?",
           "expected": [
-            "holdout_en_circuit_breaker",
-            "holdout_vi_circuit_breaker"
+            "holdout_vi_circuit_breaker",
+            "holdout_en_circuit_breaker"
           ],
           "baseline_hyb_rank": 2,
           "rerank_20_rank": 1,
+          "in_pool_10": true,
+          "in_pool_20": true,
           "delta": "PROMOTED"
         },
         {
@@ -757,11 +943,13 @@
           "language": "en",
           "query": "Compare the rate limiting quota policy between standard tier and Vietnamese 60-second window",
           "expected": [
-            "holdout_en_rate_limiting",
-            "holdout_vi_rate_limiting"
+            "holdout_vi_rate_limiting",
+            "holdout_en_rate_limiting"
           ],
           "baseline_hyb_rank": 1,
           "rerank_20_rank": 1,
+          "in_pool_10": true,
+          "in_pool_20": true,
           "delta": "UNCHANGED"
         },
         {
@@ -770,11 +958,13 @@
           "language": "vi",
           "query": "So sánh chiến lược giảm tải bộ nhớ vector giữa halfvec và lượng tử hóa",
           "expected": [
-            "holdout_en_vector_indexing",
-            "holdout_vi_vector_indexing"
+            "holdout_vi_vector_indexing",
+            "holdout_en_vector_indexing"
           ],
           "baseline_hyb_rank": 1,
           "rerank_20_rank": 1,
+          "in_pool_10": true,
+          "in_pool_20": true,
           "delta": "UNCHANGED"
         },
         {
@@ -788,6 +978,8 @@
           ],
           "baseline_hyb_rank": 1,
           "rerank_20_rank": 1,
+          "in_pool_10": true,
+          "in_pool_20": true,
           "delta": "UNCHANGED"
         },
         {
@@ -800,6 +992,8 @@
           ],
           "baseline_hyb_rank": 1,
           "rerank_20_rank": 1,
+          "in_pool_10": true,
+          "in_pool_20": true,
           "delta": "UNCHANGED"
         },
         {
@@ -812,6 +1006,8 @@
           ],
           "baseline_hyb_rank": 1,
           "rerank_20_rank": 1,
+          "in_pool_10": true,
+          "in_pool_20": true,
           "delta": "UNCHANGED"
         },
         {
@@ -824,6 +1020,8 @@
           ],
           "baseline_hyb_rank": 1,
           "rerank_20_rank": 1,
+          "in_pool_10": true,
+          "in_pool_20": true,
           "delta": "UNCHANGED"
         },
         {
@@ -836,6 +1034,8 @@
           ],
           "baseline_hyb_rank": 1,
           "rerank_20_rank": 1,
+          "in_pool_10": true,
+          "in_pool_20": true,
           "delta": "UNCHANGED"
         }
       ]
