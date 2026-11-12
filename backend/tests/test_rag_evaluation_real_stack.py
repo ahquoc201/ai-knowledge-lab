@@ -9,6 +9,8 @@ Tests:
 6. Partial recall calculation on multi-document expected cases.
 """
 
+import os
+
 import pytest
 from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
 from sqlalchemy.pool import NullPool
@@ -34,8 +36,13 @@ from app.evaluation.real_fixture_provisioner import (
 )
 from app.evaluation.real_pgvector_retriever import RealPgVectorCorpusRetriever
 
-TEST_DATABASE_URL = (
-    "postgresql+asyncpg://ailab:local_only_change_me@127.0.0.1:15432/ailab_eval_test"
+TEST_DATABASE_URL = os.environ.get(
+    "EVAL_TEST_DATABASE_URL",
+    (
+        "postgresql+asyncpg://ailab:local_only_change_me@/ailab_eval_test?host=/tmp&port=15432"
+        if os.path.exists("/tmp/.s.PGSQL.15432")
+        else "postgresql+asyncpg://ailab:local_only_change_me@127.0.0.1:15432/ailab_eval_test"
+    ),
 )
 
 

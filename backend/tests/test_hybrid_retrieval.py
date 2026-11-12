@@ -279,3 +279,30 @@ async def test_hybrid_search_api_endpoint(db_session: AsyncSession, seeded_hybri
             assert top_item["rrf_score"] > 0.0
     finally:
         app.dependency_overrides.pop(get_session, None)
+
+
+@pytest.mark.anyio
+async def test_search_keyword_chunks_stopword_filtering(
+    db_session: AsyncSession, seeded_hybrid_corpus
+):
+    from app.repositories.document_chunk import search_keyword_chunks
+
+    ws_a_id = seeded_hybrid_corpus["ws_a"].id
+
+    # 1. Query with only stopwords and punctuation should not produce noisy fallback matches
+    empty_res = await search_keyword_chunks(
+        db_session,
+        workspace_id=ws_a_id,
+        query="What is the and of in?",
+    )
+    assert empty_res == []
+
+    # 2. Natural language question with question stopwords + keyword
+    kw_res = await search_keyword_chunks(
+        db_session,
+        workspace_id=ws_a_id,
+        query="What is the ERR_HYBRID_RRF_9981 error code?",
+    )
+    assert len(kw_res) >= 1
+    assert kw_res[0][0].id == seeded_hybrid_corpus["chunk_kw"].id
+

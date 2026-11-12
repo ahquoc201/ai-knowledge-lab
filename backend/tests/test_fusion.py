@@ -33,6 +33,12 @@ def test_rrf_empty_inputs():
     with pytest.raises(ValueError, match="RRF constant k must be positive"):
         reciprocal_rank_fusion([], [], k=0)
 
+    with pytest.raises(ValueError, match="Fusion weights must be non-negative"):
+        reciprocal_rank_fusion([], [], dense_weight=-0.1)
+
+    with pytest.raises(ValueError, match="Fusion weights must be non-negative"):
+        reciprocal_rank_fusion([], [], keyword_weight=-0.5)
+
 
 def test_rrf_formula_and_deduplication():
     c1 = make_chunk(uuid4(), "Chunk 1")
@@ -49,10 +55,10 @@ def test_rrf_formula_and_deduplication():
         (c1, 0.5, "Doc 1"),
     ]
 
-    # For k=60:
-    # c1 score: 1/(60+1) + 1/(60+2) = 1/61 + 1/62 = 0.0163934 + 0.0161290 = 0.032522
-    # c2 score: 1/(60+2) + 1/(60+1) = 1/62 + 1/61 = 0.032522
-    # Tie broken by dense_rank (c1 has dense_rank=1 < c2 dense_rank=2) -> c1 ranks first!
+    # Test with default weights (dense_weight=1.0, keyword_weight=0.4):
+    # c1 score: 1.0/(60+1) + 0.4/(60+2) = 1/61 + 0.4/62 = 0.0163934 + 0.0064516 = 0.022845
+    # c2 score: 1.0/(60+2) + 0.4/(60+1) = 1/62 + 0.4/61 = 0.0161290 + 0.0065574 = 0.022686
+    # c1 has higher weighted score -> c1 ranks first!
     results = reciprocal_rank_fusion(dense, keyword, k=60, limit=2)
     assert len(results) == 2
 
@@ -65,11 +71,20 @@ def test_rrf_formula_and_deduplication():
     assert r1.provenance == RetrievalBranch.HYBRID
     assert r1.dense_similarity == 0.9
     assert r1.similarity == 0.9
-    assert r1.rrf_score == round(1 / 61 + 1 / 62, 6)
+    assert r1.rrf_score == round(1.0 / 61 + 0.4 / 62, 6)
 
     assert r2.dense_rank == 2
     assert r2.keyword_rank == 1
     assert r2.provenance == RetrievalBranch.HYBRID
+    assert r2.rrf_score == round(1.0 / 62 + 0.4 / 61, 6)
+
+    # Test with unweighted (1.0, 1.0) where scores are equal and tie-broken by dense_rank:
+    unweighted = reciprocal_rank_fusion(
+        dense, keyword, k=60, dense_weight=1.0, keyword_weight=1.0, limit=2
+    )
+    assert unweighted[0].chunk.id == c1.id
+    assert unweighted[0].rrf_score == round(1 / 61 + 1 / 62, 6)
+    assert unweighted[1].rrf_score == round(1 / 61 + 1 / 62, 6)
 
 
 def test_rrf_single_branch_candidates():
@@ -86,28 +101,38 @@ def test_rrf_single_branch_candidates():
         (c_both, 0.4, "Doc Both"),
     ]
 
-    results = reciprocal_rank_fusion(dense, keyword, k=60, limit=5)
-    assert len(results) == 3
+    # With unweighted (1.0, 1.0):
+    # c_both: 1/61 + 1/62 = 0.032522
+    # c_kw_only: 1/61 = 0.016393
+    # c_dense_only: 1/62 = 0.016129
+    res_unweighted = reciprocal_rank_fusion(
+        dense, keyword, k=60, dense_weight=1.0, keyword_weight=1.0, limit=5
+    )
+    assert res_unweighted[0].chunk.id == c_both.id
+    assert res_unweighted[1].chunk.id == c_kw_only.id
+    assert res_unweighted[2].chunk.id == c_dense_only.id
 
-    # c_both is in both (rank 1 dense + rank 2 kw) -> score: 1/61 + 1/62 = 0.032522
-    # c_kw_only is rank 1 kw only -> score: 1/61 = 0.016393
-    # c_dense_only is rank 2 dense only -> score: 1/62 = 0.016129
-    assert results[0].chunk.id == c_both.id
-    assert results[0].provenance == RetrievalBranch.HYBRID
+    # With default dense-biased weights (1.0, 0.4):
+    # c_both: 1.0/61 + 0.4/62 = 0.022845
+    # c_dense_only: 1.0/62 = 0.016129
+    # c_kw_only: 0.4/61 = 0.006557
+    # Dense rank 2 legitimately beats keyword rank 1, preventing spurious keyword displacement
+    res_weighted = reciprocal_rank_fusion(dense, keyword, k=60, limit=5)
+    assert res_weighted[0].chunk.id == c_both.id
+    assert res_weighted[0].provenance == RetrievalBranch.HYBRID
 
-    assert results[1].chunk.id == c_kw_only.id
-    assert results[1].provenance == RetrievalBranch.KEYWORD
-    assert results[1].dense_rank is None
-    assert results[1].keyword_rank == 1
-    assert results[1].dense_similarity is None
-    assert results[1].similarity == 0.0  # Does not invent cosine similarity
+    assert res_weighted[1].chunk.id == c_dense_only.id
+    assert res_weighted[1].provenance == RetrievalBranch.DENSE
+    assert res_weighted[1].dense_rank == 2
+    assert res_weighted[1].keyword_rank is None
+    assert res_weighted[1].dense_similarity == 0.85
 
-    assert results[2].chunk.id == c_dense_only.id
-    assert results[2].provenance == RetrievalBranch.DENSE
-    assert results[2].dense_rank == 2
-    assert results[2].keyword_rank is None
-    assert results[2].dense_similarity == 0.85
-    assert results[2].similarity == 0.85
+    assert res_weighted[2].chunk.id == c_kw_only.id
+    assert res_weighted[2].provenance == RetrievalBranch.KEYWORD
+    assert res_weighted[2].dense_rank is None
+    assert res_weighted[2].keyword_rank == 1
+    assert res_weighted[2].dense_similarity is None
+    assert res_weighted[2].similarity == 0.0
 
 
 def test_rrf_deterministic_tie_breaking_by_uuid():
@@ -148,3 +173,53 @@ def test_rrf_configurable_k_and_limit():
     assert len(res_k20) == 2
     assert res_k20[0].rrf_score == round(1 / 21, 6)
     assert res_k20[1].rrf_score == round(1 / 22, 6)
+
+
+def test_weighted_rrf_dense_bias_prevents_displacement():
+    # Dense rank 1 result without keyword match (e.g. cross-lingual query)
+    c_dense_top = make_chunk(uuid4(), "Dense Top Match")
+    # Irrelevant document with incidental keyword match (rank 1 keyword)
+    c_noisy_kw = make_chunk(uuid4(), "Noisy Keyword Match")
+
+    dense = [
+        SemanticSearchResult(chunk=c_dense_top, similarity=0.88, document_title="True Doc"),
+    ]
+    keyword = [
+        (c_noisy_kw, 0.95, "Irrelevant Long Doc"),
+    ]
+
+    # Under unweighted RRF (1.0, 1.0): both have score 1/61 = 0.016393
+    # Under dense-biased RRF (1.0, 0.4):
+    # c_dense_top score: 1.0 / 61 = 0.016393
+    # c_noisy_kw score: 0.4 / 61 = 0.006557
+    res = reciprocal_rank_fusion(dense, keyword, k=60, dense_weight=1.0, keyword_weight=0.4, limit=2)
+    assert res[0].chunk.id == c_dense_top.id
+    assert res[0].rrf_score > res[1].rrf_score
+    assert res[0].provenance == RetrievalBranch.DENSE
+    assert res[1].chunk.id == c_noisy_kw.id
+
+
+def test_weighted_rrf_exact_keyword_boost():
+    # An exact identifier match appears in keyword search (rank 1)
+    # and also in dense search (rank 3)
+    c_exact = make_chunk(uuid4(), "ERR_AUTH_001 exact error code")
+    c_dense_1 = make_chunk(uuid4(), "Generic Auth Chunk 1")
+    c_dense_2 = make_chunk(uuid4(), "Generic Auth Chunk 2")
+
+    dense = [
+        SemanticSearchResult(chunk=c_dense_1, similarity=0.92, document_title="Doc 1"),
+        SemanticSearchResult(chunk=c_dense_2, similarity=0.90, document_title="Doc 2"),
+        SemanticSearchResult(chunk=c_exact, similarity=0.85, document_title="Doc Error"),
+    ]
+    keyword = [
+        (c_exact, 1.0, "Doc Error"),
+    ]
+
+    # c_dense_1: 1.0 / 61 = 0.016393
+    # c_dense_2: 1.0 / 62 = 0.016129
+    # c_exact: 1.0 / 63 + 0.4 / 61 = 0.015873 + 0.006557 = 0.022430 -> BOOSTED TO RANK 1!
+    res = reciprocal_rank_fusion(dense, keyword, k=60, dense_weight=1.0, keyword_weight=0.4, limit=3)
+    assert res[0].chunk.id == c_exact.id
+    assert res[0].provenance == RetrievalBranch.HYBRID
+    assert res[0].rrf_score == round(1.0 / 63 + 0.4 / 61, 6)
+

@@ -1,7 +1,7 @@
 # BÁO CÁO ĐÁNH GIÁ CHẤT LƯỢNG RAG & TRUY VẤN NGỮ NGHĨA (AI-KNOWLEDGE-LAB-RAG-QUALITY-EXTENDED)
 
 - **Phiên bản Dataset:** `1.0`
-- **Thời điểm đánh giá:** `2026-11-11T07:40:38.742979+00:00`
+- **Thời điểm đánh giá:** `2026-11-12T02:40:04.199802+00:00`
 - **Chế độ thực thi:** `retrieval-only`
 - **Chiến lược truy xuất:** `dense (pgvector cosine)`
 - **Môi trường CSDL:** `ailab_eval_test`
@@ -29,10 +29,10 @@
 | **Empty Candidate Rate** | `0.0%` | Tỷ lệ truy vấn có 0 ứng viên từ tìm kiếm vector | Lý tưởng |
 | **Empty Accepted Evidence Rate** | `0.0%` | Tỷ lệ truy vấn không có chunk nào đủ điều kiện vào context | Lý tưởng |
 | **Tenant Isolation Rate** | `100.0%` | Tỷ lệ truy vấn hoàn toàn không rò rỉ dữ liệu chéo workspace | **BẢO MẬT TUYỆT ĐỐI (100%)** |
-| **Độ trễ trung bình truy xuất** | `155.38 ms` | Tổng thời gian nhúng câu hỏi + truy vấn vector | Bình thường |
-| - *Độ trễ nhúng câu hỏi (Embedding)* | `56.91 ms` | Thời gian tính vector câu hỏi qua multilingual-e5-small | Dense Model |
-| - *Độ trễ truy vấn vector (pgvector)* | `98.42 ms` | Thời gian quét pgvector HNSW cosine_distance trong CSDL | Live Database |
-| - *Độ trễ lắp ráp ngữ cảnh (Context)* | `0.08 ms` | Thời gian lọc ký tự và tạo block [Source N] | Prompt Assembly |
+| **Độ trễ trung bình truy xuất** | `189.27 ms` | Tổng thời gian nhúng câu hỏi + truy vấn vector | Bình thường |
+| - *Độ trễ nhúng câu hỏi (Embedding)* | `57.07 ms` | Thời gian tính vector câu hỏi qua multilingual-e5-small | Dense Model |
+| - *Độ trễ truy vấn vector (pgvector)* | `132.13 ms` | Thời gian quét pgvector HNSW cosine_distance trong CSDL | Live Database |
+| - *Độ trễ lắp ráp ngữ cảnh (Context)* | `0.09 ms` | Thời gian lọc ký tự và tạo block [Source N] | Prompt Assembly |
 
 ---
 

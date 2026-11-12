@@ -13,6 +13,8 @@ from app.models.document_chunk import DocumentChunk
 from app.services.semantic_search import SemanticSearchResult
 
 DEFAULT_RRF_K = 60
+DEFAULT_DENSE_WEIGHT = 1.0
+DEFAULT_KEYWORD_WEIGHT = 0.4
 
 
 class RetrievalBranch(str, Enum):
@@ -66,12 +68,14 @@ def reciprocal_rank_fusion(
     keyword_results: Sequence[tuple[DocumentChunk, float, str]],
     *,
     k: int = DEFAULT_RRF_K,
+    dense_weight: float = DEFAULT_DENSE_WEIGHT,
+    keyword_weight: float = DEFAULT_KEYWORD_WEIGHT,
     limit: int = 5,
 ) -> list[FusedSearchResult]:
     """Fuse dense and keyword search candidate lists using Reciprocal Rank Fusion (RRF).
 
     Formula:
-        RRF_Score(d) = sum_{m in {dense, keyword}} (1 / (k + rank_m(d)))
+        RRF_Score(d) = (dense_weight / (k + rank_dense(d))) + (keyword_weight / (k + rank_keyword(d)))
 
     Tie-breaking:
         1. rrf_score (descending)
@@ -81,6 +85,8 @@ def reciprocal_rank_fusion(
     """
     if k <= 0:
         raise ValueError("RRF constant k must be positive")
+    if dense_weight < 0 or keyword_weight < 0:
+        raise ValueError("Fusion weights must be non-negative")
     if limit <= 0:
         return []
 
@@ -141,9 +147,9 @@ def reciprocal_rank_fusion(
     for data in candidates.values():
         score = 0.0
         if data["dense_rank"] is not None:
-            score += 1.0 / (k + data["dense_rank"])
+            score += dense_weight / (k + data["dense_rank"])
         if data["keyword_rank"] is not None:
-            score += 1.0 / (k + data["keyword_rank"])
+            score += keyword_weight / (k + data["keyword_rank"])
 
         fused.append(
             FusedSearchResult(
