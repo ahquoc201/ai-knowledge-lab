@@ -1,0 +1,2515 @@
+{
+  "metadata": {
+    "dataset_id": "ai-knowledge-lab-rag-quality-holdout",
+    "dataset_version": "1.0",
+    "dense_strategy": "dense (pgvector cosine)",
+    "hybrid_strategy": "hybrid (pgvector + FTS + RRF k=60 w_d=1.0 w_k=0.4)",
+    "embedding_model": "intfloat/multilingual-e5-small",
+    "k": 5,
+    "database_environment": "ailab_eval_test"
+  },
+  "aggregate": {
+    "hit_rate_at_1": {
+      "dense": 0.6333,
+      "hybrid": 0.6,
+      "delta": -0.0333
+    },
+    "hit_rate_at_3": {
+      "dense": 0.7667,
+      "hybrid": 0.8,
+      "delta": 0.0333
+    },
+    "hit_rate_at_5": {
+      "dense": 0.9,
+      "hybrid": 0.8667,
+      "delta": -0.0333
+    },
+    "recall_at_1": {
+      "dense": 0.55,
+      "hybrid": 0.5333,
+      "delta": -0.0167
+    },
+    "recall_at_3": {
+      "dense": 0.7333,
+      "hybrid": 0.75,
+      "delta": 0.0167
+    },
+    "recall_at_5": {
+      "dense": 0.8833,
+      "hybrid": 0.85,
+      "delta": -0.0333
+    },
+    "precision_at_5": {
+      "dense": 0.2133,
+      "hybrid": 0.2067,
+      "delta": -0.0066
+    },
+    "mrr_at_5": {
+      "dense": 0.73,
+      "hybrid": 0.7022,
+      "delta": -0.0278
+    },
+    "retrieval_coverage": {
+      "dense": 0.9,
+      "hybrid": 0.8667,
+      "delta": -0.0333
+    },
+    "chunk_recall_at_5": {
+      "dense": 0.875,
+      "hybrid": 0.8333,
+      "delta": -0.0417
+    },
+    "chunk_mrr_at_5": {
+      "dense": 0.6937,
+      "hybrid": 0.6764,
+      "delta": -0.0173
+    },
+    "tenant_isolation_rate": {
+      "dense": 1.0,
+      "hybrid": 1.0,
+      "delta": 0.0
+    },
+    "empty_candidate_rate": {
+      "dense": 0.0,
+      "hybrid": 0.0,
+      "delta": 0.0
+    },
+    "empty_accepted_evidence_rate": {
+      "dense": 0.0,
+      "hybrid": 0.0,
+      "delta": 0.0
+    }
+  },
+  "by_category": {
+    "AMBIGUOUS_QUERY": {
+      "total": 3,
+      "answerable": 3,
+      "refusal": 0,
+      "hit_rate_at_1": {
+        "dense": 0.6667,
+        "hybrid": 0.3333,
+        "delta": -0.3334
+      },
+      "hit_rate_at_5": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      },
+      "recall_at_5": {
+        "dense": 0.8333,
+        "hybrid": 0.8333,
+        "delta": 0.0
+      },
+      "mrr_at_5": {
+        "dense": 0.75,
+        "hybrid": 0.6111,
+        "delta": -0.1389
+      },
+      "chunk_recall_at_5": {
+        "dense": null,
+        "hybrid": null,
+        "delta": null
+      },
+      "refusal_leak_free_rate": {
+        "dense": null,
+        "hybrid": null,
+        "delta": null
+      }
+    },
+    "CROSS_LINGUAL": {
+      "total": 10,
+      "answerable": 10,
+      "refusal": 0,
+      "hit_rate_at_1": {
+        "dense": 0.1,
+        "hybrid": 0.1,
+        "delta": 0.0
+      },
+      "hit_rate_at_5": {
+        "dense": 0.8,
+        "hybrid": 0.7,
+        "delta": -0.1
+      },
+      "recall_at_5": {
+        "dense": 0.8,
+        "hybrid": 0.7,
+        "delta": -0.1
+      },
+      "mrr_at_5": {
+        "dense": 0.365,
+        "hybrid": 0.3233,
+        "delta": -0.0417
+      },
+      "chunk_recall_at_5": {
+        "dense": 0.8,
+        "hybrid": 0.7,
+        "delta": -0.1
+      },
+      "refusal_leak_free_rate": {
+        "dense": null,
+        "hybrid": null,
+        "delta": null
+      }
+    },
+    "CROSS_WORKSPACE": {
+      "total": 3,
+      "answerable": 1,
+      "refusal": 2,
+      "hit_rate_at_1": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      },
+      "hit_rate_at_5": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      },
+      "recall_at_5": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      },
+      "mrr_at_5": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      },
+      "chunk_recall_at_5": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      },
+      "refusal_leak_free_rate": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      }
+    },
+    "EXACT_IDENTIFIER": {
+      "total": 6,
+      "answerable": 6,
+      "refusal": 0,
+      "hit_rate_at_1": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      },
+      "hit_rate_at_5": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      },
+      "recall_at_5": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      },
+      "mrr_at_5": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      },
+      "chunk_recall_at_5": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      },
+      "refusal_leak_free_rate": {
+        "dense": null,
+        "hybrid": null,
+        "delta": null
+      }
+    },
+    "INSUFFICIENT_INFO": {
+      "total": 1,
+      "answerable": 0,
+      "refusal": 1,
+      "hit_rate_at_1": {
+        "dense": null,
+        "hybrid": null,
+        "delta": null
+      },
+      "hit_rate_at_5": {
+        "dense": null,
+        "hybrid": null,
+        "delta": null
+      },
+      "recall_at_5": {
+        "dense": null,
+        "hybrid": null,
+        "delta": null
+      },
+      "mrr_at_5": {
+        "dense": null,
+        "hybrid": null,
+        "delta": null
+      },
+      "chunk_recall_at_5": {
+        "dense": null,
+        "hybrid": null,
+        "delta": null
+      },
+      "refusal_leak_free_rate": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      }
+    },
+    "MULTI_CHUNK": {
+      "total": 3,
+      "answerable": 3,
+      "refusal": 0,
+      "hit_rate_at_1": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      },
+      "hit_rate_at_5": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      },
+      "recall_at_5": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      },
+      "mrr_at_5": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      },
+      "chunk_recall_at_5": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      },
+      "refusal_leak_free_rate": {
+        "dense": null,
+        "hybrid": null,
+        "delta": null
+      }
+    },
+    "MULTI_DOC": {
+      "total": 3,
+      "answerable": 3,
+      "refusal": 0,
+      "hit_rate_at_1": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      },
+      "hit_rate_at_5": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      },
+      "recall_at_5": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      },
+      "mrr_at_5": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      },
+      "chunk_recall_at_5": {
+        "dense": null,
+        "hybrid": null,
+        "delta": null
+      },
+      "refusal_leak_free_rate": {
+        "dense": null,
+        "hybrid": null,
+        "delta": null
+      }
+    },
+    "OUT_OF_DOMAIN": {
+      "total": 1,
+      "answerable": 0,
+      "refusal": 1,
+      "hit_rate_at_1": {
+        "dense": null,
+        "hybrid": null,
+        "delta": null
+      },
+      "hit_rate_at_5": {
+        "dense": null,
+        "hybrid": null,
+        "delta": null
+      },
+      "recall_at_5": {
+        "dense": null,
+        "hybrid": null,
+        "delta": null
+      },
+      "mrr_at_5": {
+        "dense": null,
+        "hybrid": null,
+        "delta": null
+      },
+      "chunk_recall_at_5": {
+        "dense": null,
+        "hybrid": null,
+        "delta": null
+      },
+      "refusal_leak_free_rate": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      }
+    },
+    "PROMPT_INJECTION": {
+      "total": 1,
+      "answerable": 0,
+      "refusal": 1,
+      "hit_rate_at_1": {
+        "dense": null,
+        "hybrid": null,
+        "delta": null
+      },
+      "hit_rate_at_5": {
+        "dense": null,
+        "hybrid": null,
+        "delta": null
+      },
+      "recall_at_5": {
+        "dense": null,
+        "hybrid": null,
+        "delta": null
+      },
+      "mrr_at_5": {
+        "dense": null,
+        "hybrid": null,
+        "delta": null
+      },
+      "chunk_recall_at_5": {
+        "dense": null,
+        "hybrid": null,
+        "delta": null
+      },
+      "refusal_leak_free_rate": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      }
+    },
+    "SEMANTIC_PARAPHRASE": {
+      "total": 4,
+      "answerable": 4,
+      "refusal": 0,
+      "hit_rate_at_1": {
+        "dense": 0.75,
+        "hybrid": 0.75,
+        "delta": 0.0
+      },
+      "hit_rate_at_5": {
+        "dense": 0.75,
+        "hybrid": 0.75,
+        "delta": 0.0
+      },
+      "recall_at_5": {
+        "dense": 0.75,
+        "hybrid": 0.75,
+        "delta": 0.0
+      },
+      "mrr_at_5": {
+        "dense": 0.75,
+        "hybrid": 0.75,
+        "delta": 0.0
+      },
+      "chunk_recall_at_5": {
+        "dense": 0.75,
+        "hybrid": 0.75,
+        "delta": 0.0
+      },
+      "refusal_leak_free_rate": {
+        "dense": null,
+        "hybrid": null,
+        "delta": null
+      }
+    }
+  },
+  "by_language": {
+    "en": {
+      "total": 19,
+      "answerable": 16,
+      "refusal": 3,
+      "hit_rate_at_1": {
+        "dense": 0.625,
+        "hybrid": 0.625,
+        "delta": 0.0
+      },
+      "hit_rate_at_5": {
+        "dense": 0.9375,
+        "hybrid": 0.9375,
+        "delta": 0.0
+      },
+      "recall_at_5": {
+        "dense": 0.9062,
+        "hybrid": 0.9062,
+        "delta": 0.0
+      },
+      "mrr_at_5": {
+        "dense": 0.7469,
+        "hybrid": 0.7417,
+        "delta": -0.0052
+      },
+      "chunk_recall_at_5": {
+        "dense": 0.9167,
+        "hybrid": 0.9167,
+        "delta": 0.0
+      },
+      "refusal_leak_free_rate": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      }
+    },
+    "vi": {
+      "total": 16,
+      "answerable": 14,
+      "refusal": 2,
+      "hit_rate_at_1": {
+        "dense": 0.6429,
+        "hybrid": 0.5714,
+        "delta": -0.0715
+      },
+      "hit_rate_at_5": {
+        "dense": 0.8571,
+        "hybrid": 0.7857,
+        "delta": -0.0714
+      },
+      "recall_at_5": {
+        "dense": 0.8571,
+        "hybrid": 0.7857,
+        "delta": -0.0714
+      },
+      "mrr_at_5": {
+        "dense": 0.7107,
+        "hybrid": 0.6571,
+        "delta": -0.0536
+      },
+      "chunk_recall_at_5": {
+        "dense": 0.8333,
+        "hybrid": 0.75,
+        "delta": -0.0833
+      },
+      "refusal_leak_free_rate": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      }
+    }
+  },
+  "by_tag": {
+    "ambiguous": {
+      "total": 3,
+      "answerable": 3,
+      "refusal": 0,
+      "hit_rate_at_1": {
+        "dense": 0.6667,
+        "hybrid": 0.3333,
+        "delta": -0.3334
+      },
+      "hit_rate_at_5": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      },
+      "recall_at_5": {
+        "dense": 0.8333,
+        "hybrid": 0.8333,
+        "delta": 0.0
+      },
+      "mrr_at_5": {
+        "dense": 0.75,
+        "hybrid": 0.6111,
+        "delta": -0.1389
+      },
+      "chunk_recall_at_5": {
+        "dense": null,
+        "hybrid": null,
+        "delta": null
+      },
+      "refusal_leak_free_rate": {
+        "dense": null,
+        "hybrid": null,
+        "delta": null
+      }
+    },
+    "beta_authorized": {
+      "total": 1,
+      "answerable": 1,
+      "refusal": 0,
+      "hit_rate_at_1": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      },
+      "hit_rate_at_5": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      },
+      "recall_at_5": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      },
+      "mrr_at_5": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      },
+      "chunk_recall_at_5": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      },
+      "refusal_leak_free_rate": {
+        "dense": null,
+        "hybrid": null,
+        "delta": null
+      }
+    },
+    "chunk_index:0": {
+      "total": 2,
+      "answerable": 2,
+      "refusal": 0,
+      "hit_rate_at_1": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      },
+      "hit_rate_at_5": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      },
+      "recall_at_5": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      },
+      "mrr_at_5": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      },
+      "chunk_recall_at_5": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      },
+      "refusal_leak_free_rate": {
+        "dense": null,
+        "hybrid": null,
+        "delta": null
+      }
+    },
+    "cross_workspace": {
+      "total": 3,
+      "answerable": 1,
+      "refusal": 2,
+      "hit_rate_at_1": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      },
+      "hit_rate_at_5": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      },
+      "recall_at_5": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      },
+      "mrr_at_5": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      },
+      "chunk_recall_at_5": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      },
+      "refusal_leak_free_rate": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      }
+    },
+    "evidence_in_overlap": {
+      "total": 1,
+      "answerable": 1,
+      "refusal": 0,
+      "hit_rate_at_1": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      },
+      "hit_rate_at_5": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      },
+      "recall_at_5": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      },
+      "mrr_at_5": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      },
+      "chunk_recall_at_5": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      },
+      "refusal_leak_free_rate": {
+        "dense": null,
+        "hybrid": null,
+        "delta": null
+      }
+    },
+    "identifier:config_param": {
+      "total": 1,
+      "answerable": 1,
+      "refusal": 0,
+      "hit_rate_at_1": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      },
+      "hit_rate_at_5": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      },
+      "recall_at_5": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      },
+      "mrr_at_5": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      },
+      "chunk_recall_at_5": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      },
+      "refusal_leak_free_rate": {
+        "dense": null,
+        "hybrid": null,
+        "delta": null
+      }
+    },
+    "identifier:enum_value": {
+      "total": 1,
+      "answerable": 1,
+      "refusal": 0,
+      "hit_rate_at_1": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      },
+      "hit_rate_at_5": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      },
+      "recall_at_5": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      },
+      "mrr_at_5": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      },
+      "chunk_recall_at_5": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      },
+      "refusal_leak_free_rate": {
+        "dense": null,
+        "hybrid": null,
+        "delta": null
+      }
+    },
+    "identifier:error_code": {
+      "total": 3,
+      "answerable": 3,
+      "refusal": 0,
+      "hit_rate_at_1": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      },
+      "hit_rate_at_5": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      },
+      "recall_at_5": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      },
+      "mrr_at_5": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      },
+      "chunk_recall_at_5": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      },
+      "refusal_leak_free_rate": {
+        "dense": null,
+        "hybrid": null,
+        "delta": null
+      }
+    },
+    "identifier:python_symbol": {
+      "total": 1,
+      "answerable": 1,
+      "refusal": 0,
+      "hit_rate_at_1": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      },
+      "hit_rate_at_5": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      },
+      "recall_at_5": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      },
+      "mrr_at_5": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      },
+      "chunk_recall_at_5": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      },
+      "refusal_leak_free_rate": {
+        "dense": null,
+        "hybrid": null,
+        "delta": null
+      }
+    },
+    "insufficient_info": {
+      "total": 1,
+      "answerable": 0,
+      "refusal": 1,
+      "hit_rate_at_1": {
+        "dense": null,
+        "hybrid": null,
+        "delta": null
+      },
+      "hit_rate_at_5": {
+        "dense": null,
+        "hybrid": null,
+        "delta": null
+      },
+      "recall_at_5": {
+        "dense": null,
+        "hybrid": null,
+        "delta": null
+      },
+      "mrr_at_5": {
+        "dense": null,
+        "hybrid": null,
+        "delta": null
+      },
+      "chunk_recall_at_5": {
+        "dense": null,
+        "hybrid": null,
+        "delta": null
+      },
+      "refusal_leak_free_rate": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      }
+    },
+    "lexical_overlap:exact": {
+      "total": 6,
+      "answerable": 6,
+      "refusal": 0,
+      "hit_rate_at_1": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      },
+      "hit_rate_at_5": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      },
+      "recall_at_5": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      },
+      "mrr_at_5": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      },
+      "chunk_recall_at_5": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      },
+      "refusal_leak_free_rate": {
+        "dense": null,
+        "hybrid": null,
+        "delta": null
+      }
+    },
+    "lexical_overlap:none": {
+      "total": 7,
+      "answerable": 7,
+      "refusal": 0,
+      "hit_rate_at_1": {
+        "dense": 0.1429,
+        "hybrid": 0.1429,
+        "delta": 0.0
+      },
+      "hit_rate_at_5": {
+        "dense": 0.5714,
+        "hybrid": 0.4286,
+        "delta": -0.1428
+      },
+      "recall_at_5": {
+        "dense": 0.5714,
+        "hybrid": 0.4286,
+        "delta": -0.1428
+      },
+      "mrr_at_5": {
+        "dense": 0.3143,
+        "hybrid": 0.219,
+        "delta": -0.0953
+      },
+      "chunk_recall_at_5": {
+        "dense": 0.5714,
+        "hybrid": 0.4286,
+        "delta": -0.1428
+      },
+      "refusal_leak_free_rate": {
+        "dense": null,
+        "hybrid": null,
+        "delta": null
+      }
+    },
+    "lexical_overlap:partial": {
+      "total": 7,
+      "answerable": 7,
+      "refusal": 0,
+      "hit_rate_at_1": {
+        "dense": 0.4286,
+        "hybrid": 0.4286,
+        "delta": 0.0
+      },
+      "hit_rate_at_5": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      },
+      "recall_at_5": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      },
+      "mrr_at_5": {
+        "dense": 0.6357,
+        "hybrid": 0.6714,
+        "delta": 0.0357
+      },
+      "chunk_recall_at_5": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      },
+      "refusal_leak_free_rate": {
+        "dense": null,
+        "hybrid": null,
+        "delta": null
+      }
+    },
+    "malicious": {
+      "total": 1,
+      "answerable": 0,
+      "refusal": 1,
+      "hit_rate_at_1": {
+        "dense": null,
+        "hybrid": null,
+        "delta": null
+      },
+      "hit_rate_at_5": {
+        "dense": null,
+        "hybrid": null,
+        "delta": null
+      },
+      "recall_at_5": {
+        "dense": null,
+        "hybrid": null,
+        "delta": null
+      },
+      "mrr_at_5": {
+        "dense": null,
+        "hybrid": null,
+        "delta": null
+      },
+      "chunk_recall_at_5": {
+        "dense": null,
+        "hybrid": null,
+        "delta": null
+      },
+      "refusal_leak_free_rate": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      }
+    },
+    "multi_chunk": {
+      "total": 3,
+      "answerable": 3,
+      "refusal": 0,
+      "hit_rate_at_1": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      },
+      "hit_rate_at_5": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      },
+      "recall_at_5": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      },
+      "mrr_at_5": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      },
+      "chunk_recall_at_5": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      },
+      "refusal_leak_free_rate": {
+        "dense": null,
+        "hybrid": null,
+        "delta": null
+      }
+    },
+    "multi_doc": {
+      "total": 3,
+      "answerable": 3,
+      "refusal": 0,
+      "hit_rate_at_1": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      },
+      "hit_rate_at_5": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      },
+      "recall_at_5": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      },
+      "mrr_at_5": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      },
+      "chunk_recall_at_5": {
+        "dense": null,
+        "hybrid": null,
+        "delta": null
+      },
+      "refusal_leak_free_rate": {
+        "dense": null,
+        "hybrid": null,
+        "delta": null
+      }
+    },
+    "multiple_plausible_documents": {
+      "total": 3,
+      "answerable": 3,
+      "refusal": 0,
+      "hit_rate_at_1": {
+        "dense": 0.6667,
+        "hybrid": 0.3333,
+        "delta": -0.3334
+      },
+      "hit_rate_at_5": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      },
+      "recall_at_5": {
+        "dense": 0.8333,
+        "hybrid": 0.8333,
+        "delta": 0.0
+      },
+      "mrr_at_5": {
+        "dense": 0.75,
+        "hybrid": 0.6111,
+        "delta": -0.1389
+      },
+      "chunk_recall_at_5": {
+        "dense": null,
+        "hybrid": null,
+        "delta": null
+      },
+      "refusal_leak_free_rate": {
+        "dense": null,
+        "hybrid": null,
+        "delta": null
+      }
+    },
+    "out_of_domain": {
+      "total": 1,
+      "answerable": 0,
+      "refusal": 1,
+      "hit_rate_at_1": {
+        "dense": null,
+        "hybrid": null,
+        "delta": null
+      },
+      "hit_rate_at_5": {
+        "dense": null,
+        "hybrid": null,
+        "delta": null
+      },
+      "recall_at_5": {
+        "dense": null,
+        "hybrid": null,
+        "delta": null
+      },
+      "mrr_at_5": {
+        "dense": null,
+        "hybrid": null,
+        "delta": null
+      },
+      "chunk_recall_at_5": {
+        "dense": null,
+        "hybrid": null,
+        "delta": null
+      },
+      "refusal_leak_free_rate": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      }
+    },
+    "paraphrase": {
+      "total": 4,
+      "answerable": 4,
+      "refusal": 0,
+      "hit_rate_at_1": {
+        "dense": 0.75,
+        "hybrid": 0.75,
+        "delta": 0.0
+      },
+      "hit_rate_at_5": {
+        "dense": 0.75,
+        "hybrid": 0.75,
+        "delta": 0.0
+      },
+      "recall_at_5": {
+        "dense": 0.75,
+        "hybrid": 0.75,
+        "delta": 0.0
+      },
+      "mrr_at_5": {
+        "dense": 0.75,
+        "hybrid": 0.75,
+        "delta": 0.0
+      },
+      "chunk_recall_at_5": {
+        "dense": 0.75,
+        "hybrid": 0.75,
+        "delta": 0.0
+      },
+      "refusal_leak_free_rate": {
+        "dense": null,
+        "hybrid": null,
+        "delta": null
+      }
+    },
+    "prompt_injection": {
+      "total": 1,
+      "answerable": 0,
+      "refusal": 1,
+      "hit_rate_at_1": {
+        "dense": null,
+        "hybrid": null,
+        "delta": null
+      },
+      "hit_rate_at_5": {
+        "dense": null,
+        "hybrid": null,
+        "delta": null
+      },
+      "recall_at_5": {
+        "dense": null,
+        "hybrid": null,
+        "delta": null
+      },
+      "mrr_at_5": {
+        "dense": null,
+        "hybrid": null,
+        "delta": null
+      },
+      "chunk_recall_at_5": {
+        "dense": null,
+        "hybrid": null,
+        "delta": null
+      },
+      "refusal_leak_free_rate": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      }
+    },
+    "requires_two_sources": {
+      "total": 3,
+      "answerable": 3,
+      "refusal": 0,
+      "hit_rate_at_1": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      },
+      "hit_rate_at_5": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      },
+      "recall_at_5": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      },
+      "mrr_at_5": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      },
+      "chunk_recall_at_5": {
+        "dense": null,
+        "hybrid": null,
+        "delta": null
+      },
+      "refusal_leak_free_rate": {
+        "dense": null,
+        "hybrid": null,
+        "delta": null
+      }
+    },
+    "tenant_isolation": {
+      "total": 2,
+      "answerable": 0,
+      "refusal": 2,
+      "hit_rate_at_1": {
+        "dense": null,
+        "hybrid": null,
+        "delta": null
+      },
+      "hit_rate_at_5": {
+        "dense": null,
+        "hybrid": null,
+        "delta": null
+      },
+      "recall_at_5": {
+        "dense": null,
+        "hybrid": null,
+        "delta": null
+      },
+      "mrr_at_5": {
+        "dense": null,
+        "hybrid": null,
+        "delta": null
+      },
+      "chunk_recall_at_5": {
+        "dense": null,
+        "hybrid": null,
+        "delta": null
+      },
+      "refusal_leak_free_rate": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      }
+    },
+    "unanswerable": {
+      "total": 2,
+      "answerable": 0,
+      "refusal": 2,
+      "hit_rate_at_1": {
+        "dense": null,
+        "hybrid": null,
+        "delta": null
+      },
+      "hit_rate_at_5": {
+        "dense": null,
+        "hybrid": null,
+        "delta": null
+      },
+      "recall_at_5": {
+        "dense": null,
+        "hybrid": null,
+        "delta": null
+      },
+      "mrr_at_5": {
+        "dense": null,
+        "hybrid": null,
+        "delta": null
+      },
+      "chunk_recall_at_5": {
+        "dense": null,
+        "hybrid": null,
+        "delta": null
+      },
+      "refusal_leak_free_rate": {
+        "dense": 1.0,
+        "hybrid": 1.0,
+        "delta": 0.0
+      }
+    },
+    "xling:en->vi": {
+      "total": 5,
+      "answerable": 5,
+      "refusal": 0,
+      "hit_rate_at_1": {
+        "dense": 0.0,
+        "hybrid": 0.2,
+        "delta": 0.2
+      },
+      "hit_rate_at_5": {
+        "dense": 0.8,
+        "hybrid": 0.8,
+        "delta": 0.0
+      },
+      "recall_at_5": {
+        "dense": 0.8,
+        "hybrid": 0.8,
+        "delta": 0.0
+      },
+      "mrr_at_5": {
+        "dense": 0.34,
+        "hybrid": 0.4067,
+        "delta": 0.0667
+      },
+      "chunk_recall_at_5": {
+        "dense": 0.8,
+        "hybrid": 0.8,
+        "delta": 0.0
+      },
+      "refusal_leak_free_rate": {
+        "dense": null,
+        "hybrid": null,
+        "delta": null
+      }
+    },
+    "xling:vi->en": {
+      "total": 5,
+      "answerable": 5,
+      "refusal": 0,
+      "hit_rate_at_1": {
+        "dense": 0.2,
+        "hybrid": 0.0,
+        "delta": -0.2
+      },
+      "hit_rate_at_5": {
+        "dense": 0.8,
+        "hybrid": 0.6,
+        "delta": -0.2
+      },
+      "recall_at_5": {
+        "dense": 0.8,
+        "hybrid": 0.6,
+        "delta": -0.2
+      },
+      "mrr_at_5": {
+        "dense": 0.39,
+        "hybrid": 0.24,
+        "delta": -0.15
+      },
+      "chunk_recall_at_5": {
+        "dense": 0.8,
+        "hybrid": 0.6,
+        "delta": -0.2
+      },
+      "refusal_leak_free_rate": {
+        "dense": null,
+        "hybrid": null,
+        "delta": null
+      }
+    }
+  },
+  "summary": {
+    "answerable_cases": 30,
+    "doc_rank_improved": [
+      "H-XL-10",
+      "H-AMB-01"
+    ],
+    "doc_rank_regressed": [
+      "H-XL-01",
+      "H-XL-02",
+      "H-XL-05",
+      "H-XL-06",
+      "H-XL-09",
+      "H-AMB-03"
+    ],
+    "doc_rank_unchanged_count": 22,
+    "chunk_labeled_cases": 24,
+    "chunk_rank_improved": [
+      "H-XL-10"
+    ],
+    "chunk_rank_regressed": [
+      "H-XL-01",
+      "H-XL-02",
+      "H-XL-05",
+      "H-XL-06",
+      "H-XL-09"
+    ],
+    "hybrid_only_hits_at_5": [],
+    "hybrid_lost_hits_at_5": [
+      "H-XL-02"
+    ],
+    "lexical_supported_cases": [
+      "H-XL-01",
+      "H-XL-04",
+      "H-XL-05",
+      "H-XL-07",
+      "H-XL-10",
+      "H-ID-01",
+      "H-ID-02",
+      "H-ID-03",
+      "H-ID-04",
+      "H-ID-05",
+      "H-ID-06",
+      "H-PARA-01",
+      "H-PARA-02",
+      "H-PARA-03",
+      "H-AMB-01",
+      "H-AMB-02",
+      "H-MD-01",
+      "H-MD-02",
+      "H-MD-03",
+      "H-MC-01",
+      "H-MC-02",
+      "H-MC-03",
+      "H-SEC-03"
+    ],
+    "top5_order_changed_cases": 23,
+    "total_cases": 35
+  },
+  "cases": [
+    {
+      "case_id": "H-XL-01",
+      "category": "CROSS_LINGUAL",
+      "language": "vi",
+      "tags": [
+        "xling:vi->en",
+        "lexical_overlap:partial"
+      ],
+      "answerable": true,
+      "dense_retrieved_keys": [
+        "holdout_en_rate_limiting",
+        "holdout_vi_k8s_autoscaling",
+        "holdout_vi_incident_runbook",
+        "holdout_vi_rate_limiting",
+        "holdout_vi_vector_indexing"
+      ],
+      "hybrid_retrieved_keys": [
+        "holdout_vi_k8s_autoscaling",
+        "holdout_en_rate_limiting",
+        "holdout_vi_incident_runbook",
+        "holdout_vi_vector_indexing",
+        "holdout_vi_rate_limiting"
+      ],
+      "top5_order_changed": true,
+      "dense_doc_rank": 1,
+      "hybrid_doc_rank": 2,
+      "doc_rank_status": "regressed",
+      "lexical_supported": true,
+      "dense_chunk_rank": 1,
+      "hybrid_chunk_rank": 2,
+      "chunk_rank_status": "regressed"
+    },
+    {
+      "case_id": "H-XL-02",
+      "category": "CROSS_LINGUAL",
+      "language": "vi",
+      "tags": [
+        "xling:vi->en",
+        "lexical_overlap:none"
+      ],
+      "answerable": true,
+      "dense_retrieved_keys": [
+        "holdout_vi_vector_indexing",
+        "holdout_vi_incident_runbook",
+        "holdout_vi_circuit_breaker",
+        "holdout_vi_cdc_pipeline",
+        "holdout_en_vector_indexing"
+      ],
+      "hybrid_retrieved_keys": [
+        "holdout_vi_vector_indexing",
+        "holdout_vi_incident_runbook",
+        "holdout_vi_circuit_breaker",
+        "holdout_vi_cdc_pipeline",
+        "holdout_vi_k8s_autoscaling"
+      ],
+      "top5_order_changed": true,
+      "dense_doc_rank": 5,
+      "hybrid_doc_rank": null,
+      "doc_rank_status": "regressed",
+      "lexical_supported": false,
+      "dense_chunk_rank": 5,
+      "hybrid_chunk_rank": null,
+      "chunk_rank_status": "regressed"
+    },
+    {
+      "case_id": "H-XL-03",
+      "category": "CROSS_LINGUAL",
+      "language": "vi",
+      "tags": [
+        "xling:vi->en",
+        "lexical_overlap:none"
+      ],
+      "answerable": true,
+      "dense_retrieved_keys": [
+        "holdout_vi_incident_runbook",
+        "holdout_vi_rate_limiting",
+        "holdout_vi_circuit_breaker",
+        "holdout_vi_cdc_pipeline",
+        "holdout_vi_vector_indexing"
+      ],
+      "hybrid_retrieved_keys": [
+        "holdout_vi_incident_runbook",
+        "holdout_vi_rate_limiting",
+        "holdout_vi_circuit_breaker",
+        "holdout_vi_cdc_pipeline",
+        "holdout_vi_vector_indexing"
+      ],
+      "top5_order_changed": false,
+      "dense_doc_rank": null,
+      "hybrid_doc_rank": null,
+      "doc_rank_status": "unchanged",
+      "lexical_supported": false,
+      "dense_chunk_rank": null,
+      "hybrid_chunk_rank": null,
+      "chunk_rank_status": "unchanged"
+    },
+    {
+      "case_id": "H-XL-04",
+      "category": "CROSS_LINGUAL",
+      "language": "vi",
+      "tags": [
+        "xling:vi->en",
+        "lexical_overlap:partial"
+      ],
+      "answerable": true,
+      "dense_retrieved_keys": [
+        "holdout_vi_incident_runbook",
+        "holdout_en_k8s_autoscaling",
+        "holdout_vi_rate_limiting",
+        "holdout_vi_vector_indexing",
+        "holdout_vi_k8s_autoscaling"
+      ],
+      "hybrid_retrieved_keys": [
+        "holdout_vi_incident_runbook",
+        "holdout_en_k8s_autoscaling",
+        "holdout_vi_rate_limiting",
+        "holdout_vi_vector_indexing",
+        "holdout_vi_k8s_autoscaling"
+      ],
+      "top5_order_changed": false,
+      "dense_doc_rank": 2,
+      "hybrid_doc_rank": 2,
+      "doc_rank_status": "unchanged",
+      "lexical_supported": true,
+      "dense_chunk_rank": 2,
+      "hybrid_chunk_rank": 2,
+      "chunk_rank_status": "unchanged"
+    },
+    {
+      "case_id": "H-XL-05",
+      "category": "CROSS_LINGUAL",
+      "language": "vi",
+      "tags": [
+        "xling:vi->en",
+        "lexical_overlap:partial"
+      ],
+      "answerable": true,
+      "dense_retrieved_keys": [
+        "holdout_vi_incident_runbook",
+        "holdout_vi_vector_indexing",
+        "holdout_vi_cdc_pipeline",
+        "holdout_en_cdc_pipeline",
+        "holdout_vi_rate_limiting"
+      ],
+      "hybrid_retrieved_keys": [
+        "holdout_vi_incident_runbook",
+        "holdout_vi_vector_indexing",
+        "holdout_vi_cdc_pipeline",
+        "holdout_vi_rate_limiting",
+        "holdout_en_cdc_pipeline"
+      ],
+      "top5_order_changed": true,
+      "dense_doc_rank": 4,
+      "hybrid_doc_rank": 5,
+      "doc_rank_status": "regressed",
+      "lexical_supported": true,
+      "dense_chunk_rank": 4,
+      "hybrid_chunk_rank": 5,
+      "chunk_rank_status": "regressed"
+    },
+    {
+      "case_id": "H-XL-06",
+      "category": "CROSS_LINGUAL",
+      "language": "en",
+      "tags": [
+        "xling:en->vi",
+        "lexical_overlap:none"
+      ],
+      "answerable": true,
+      "dense_retrieved_keys": [
+        "holdout_en_circuit_breaker",
+        "holdout_vi_rate_limiting",
+        "holdout_en_rate_limiting",
+        "holdout_en_cdc_pipeline",
+        "holdout_en_error_catalog"
+      ],
+      "hybrid_retrieved_keys": [
+        "holdout_en_error_catalog",
+        "holdout_en_k8s_autoscaling",
+        "holdout_en_vector_indexing",
+        "holdout_en_circuit_breaker",
+        "holdout_vi_rate_limiting"
+      ],
+      "top5_order_changed": true,
+      "dense_doc_rank": 2,
+      "hybrid_doc_rank": 5,
+      "doc_rank_status": "regressed",
+      "lexical_supported": false,
+      "dense_chunk_rank": 2,
+      "hybrid_chunk_rank": 5,
+      "chunk_rank_status": "regressed"
+    },
+    {
+      "case_id": "H-XL-07",
+      "category": "CROSS_LINGUAL",
+      "language": "en",
+      "tags": [
+        "xling:en->vi",
+        "lexical_overlap:partial"
+      ],
+      "answerable": true,
+      "dense_retrieved_keys": [
+        "holdout_en_vector_indexing",
+        "holdout_vi_vector_indexing",
+        "holdout_en_k8s_autoscaling",
+        "holdout_en_cdc_pipeline",
+        "holdout_en_error_catalog"
+      ],
+      "hybrid_retrieved_keys": [
+        "holdout_en_vector_indexing",
+        "holdout_vi_vector_indexing",
+        "holdout_en_error_catalog",
+        "holdout_vi_cdc_pipeline",
+        "holdout_en_k8s_autoscaling"
+      ],
+      "top5_order_changed": true,
+      "dense_doc_rank": 2,
+      "hybrid_doc_rank": 2,
+      "doc_rank_status": "unchanged",
+      "lexical_supported": true,
+      "dense_chunk_rank": 2,
+      "hybrid_chunk_rank": 2,
+      "chunk_rank_status": "unchanged"
+    },
+    {
+      "case_id": "H-XL-08",
+      "category": "CROSS_LINGUAL",
+      "language": "en",
+      "tags": [
+        "xling:en->vi",
+        "lexical_overlap:none"
+      ],
+      "answerable": true,
+      "dense_retrieved_keys": [
+        "holdout_en_cdc_pipeline",
+        "holdout_en_circuit_breaker",
+        "holdout_en_rate_limiting",
+        "holdout_en_vector_indexing",
+        "holdout_en_k8s_autoscaling"
+      ],
+      "hybrid_retrieved_keys": [
+        "holdout_en_cdc_pipeline",
+        "holdout_en_circuit_breaker",
+        "holdout_en_rate_limiting",
+        "holdout_en_vector_indexing",
+        "holdout_en_k8s_autoscaling"
+      ],
+      "top5_order_changed": false,
+      "dense_doc_rank": null,
+      "hybrid_doc_rank": null,
+      "doc_rank_status": "unchanged",
+      "lexical_supported": false,
+      "dense_chunk_rank": null,
+      "hybrid_chunk_rank": null,
+      "chunk_rank_status": "unchanged"
+    },
+    {
+      "case_id": "H-XL-09",
+      "category": "CROSS_LINGUAL",
+      "language": "en",
+      "tags": [
+        "xling:en->vi",
+        "lexical_overlap:none"
+      ],
+      "answerable": true,
+      "dense_retrieved_keys": [
+        "holdout_en_circuit_breaker",
+        "holdout_vi_circuit_breaker",
+        "holdout_en_k8s_autoscaling",
+        "holdout_en_rate_limiting",
+        "holdout_vi_incident_runbook"
+      ],
+      "hybrid_retrieved_keys": [
+        "holdout_en_circuit_breaker",
+        "holdout_en_k8s_autoscaling",
+        "holdout_vi_circuit_breaker",
+        "holdout_en_rate_limiting",
+        "holdout_vi_incident_runbook"
+      ],
+      "top5_order_changed": true,
+      "dense_doc_rank": 2,
+      "hybrid_doc_rank": 3,
+      "doc_rank_status": "regressed",
+      "lexical_supported": false,
+      "dense_chunk_rank": 2,
+      "hybrid_chunk_rank": 3,
+      "chunk_rank_status": "regressed"
+    },
+    {
+      "case_id": "H-XL-10",
+      "category": "CROSS_LINGUAL",
+      "language": "en",
+      "tags": [
+        "xling:en->vi",
+        "lexical_overlap:partial"
+      ],
+      "answerable": true,
+      "dense_retrieved_keys": [
+        "holdout_en_rate_limiting",
+        "holdout_en_k8s_autoscaling",
+        "holdout_en_vector_indexing",
+        "holdout_en_circuit_breaker",
+        "holdout_vi_k8s_autoscaling"
+      ],
+      "hybrid_retrieved_keys": [
+        "holdout_vi_k8s_autoscaling",
+        "holdout_en_cdc_pipeline",
+        "holdout_en_rate_limiting",
+        "holdout_en_k8s_autoscaling",
+        "holdout_en_vector_indexing"
+      ],
+      "top5_order_changed": true,
+      "dense_doc_rank": 5,
+      "hybrid_doc_rank": 1,
+      "doc_rank_status": "improved",
+      "lexical_supported": true,
+      "dense_chunk_rank": 5,
+      "hybrid_chunk_rank": 1,
+      "chunk_rank_status": "improved"
+    },
+    {
+      "case_id": "H-ID-01",
+      "category": "EXACT_IDENTIFIER",
+      "language": "en",
+      "tags": [
+        "identifier:error_code",
+        "lexical_overlap:exact"
+      ],
+      "answerable": true,
+      "dense_retrieved_keys": [
+        "holdout_en_error_catalog",
+        "holdout_en_rate_limiting",
+        "holdout_en_cdc_pipeline",
+        "holdout_en_vector_indexing",
+        "holdout_en_circuit_breaker"
+      ],
+      "hybrid_retrieved_keys": [
+        "holdout_en_error_catalog",
+        "holdout_en_rate_limiting",
+        "holdout_en_cdc_pipeline",
+        "holdout_en_vector_indexing",
+        "holdout_en_circuit_breaker"
+      ],
+      "top5_order_changed": false,
+      "dense_doc_rank": 1,
+      "hybrid_doc_rank": 1,
+      "doc_rank_status": "unchanged",
+      "lexical_supported": true,
+      "dense_chunk_rank": 1,
+      "hybrid_chunk_rank": 1,
+      "chunk_rank_status": "unchanged"
+    },
+    {
+      "case_id": "H-ID-02",
+      "category": "EXACT_IDENTIFIER",
+      "language": "vi",
+      "tags": [
+        "identifier:error_code",
+        "lexical_overlap:exact"
+      ],
+      "answerable": true,
+      "dense_retrieved_keys": [
+        "holdout_en_error_catalog",
+        "holdout_vi_incident_runbook",
+        "holdout_en_vector_indexing",
+        "holdout_vi_rate_limiting",
+        "holdout_vi_circuit_breaker"
+      ],
+      "hybrid_retrieved_keys": [
+        "holdout_en_error_catalog",
+        "holdout_vi_incident_runbook",
+        "holdout_vi_rate_limiting",
+        "holdout_vi_circuit_breaker",
+        "holdout_en_vector_indexing"
+      ],
+      "top5_order_changed": true,
+      "dense_doc_rank": 1,
+      "hybrid_doc_rank": 1,
+      "doc_rank_status": "unchanged",
+      "lexical_supported": true,
+      "dense_chunk_rank": 1,
+      "hybrid_chunk_rank": 1,
+      "chunk_rank_status": "unchanged"
+    },
+    {
+      "case_id": "H-ID-03",
+      "category": "EXACT_IDENTIFIER",
+      "language": "en",
+      "tags": [
+        "identifier:error_code",
+        "lexical_overlap:exact"
+      ],
+      "answerable": true,
+      "dense_retrieved_keys": [
+        "holdout_en_error_catalog",
+        "holdout_en_cdc_pipeline",
+        "holdout_en_rate_limiting",
+        "holdout_en_circuit_breaker",
+        "holdout_en_k8s_autoscaling"
+      ],
+      "hybrid_retrieved_keys": [
+        "holdout_en_error_catalog",
+        "holdout_en_k8s_autoscaling",
+        "holdout_en_cdc_pipeline",
+        "holdout_en_rate_limiting",
+        "holdout_en_circuit_breaker"
+      ],
+      "top5_order_changed": true,
+      "dense_doc_rank": 1,
+      "hybrid_doc_rank": 1,
+      "doc_rank_status": "unchanged",
+      "lexical_supported": true,
+      "dense_chunk_rank": 1,
+      "hybrid_chunk_rank": 1,
+      "chunk_rank_status": "unchanged"
+    },
+    {
+      "case_id": "H-ID-04",
+      "category": "EXACT_IDENTIFIER",
+      "language": "en",
+      "tags": [
+        "identifier:python_symbol",
+        "lexical_overlap:exact"
+      ],
+      "answerable": true,
+      "dense_retrieved_keys": [
+        "holdout_en_rate_limiting",
+        "holdout_en_error_catalog",
+        "holdout_en_k8s_autoscaling",
+        "holdout_en_cdc_pipeline",
+        "holdout_en_circuit_breaker"
+      ],
+      "hybrid_retrieved_keys": [
+        "holdout_en_rate_limiting",
+        "holdout_en_error_catalog",
+        "holdout_en_vector_indexing",
+        "holdout_en_k8s_autoscaling",
+        "holdout_en_cdc_pipeline"
+      ],
+      "top5_order_changed": true,
+      "dense_doc_rank": 1,
+      "hybrid_doc_rank": 1,
+      "doc_rank_status": "unchanged",
+      "lexical_supported": true,
+      "dense_chunk_rank": 1,
+      "hybrid_chunk_rank": 1,
+      "chunk_rank_status": "unchanged"
+    },
+    {
+      "case_id": "H-ID-05",
+      "category": "EXACT_IDENTIFIER",
+      "language": "vi",
+      "tags": [
+        "identifier:config_param",
+        "lexical_overlap:exact"
+      ],
+      "answerable": true,
+      "dense_retrieved_keys": [
+        "holdout_en_vector_indexing",
+        "holdout_vi_vector_indexing",
+        "holdout_vi_incident_runbook",
+        "holdout_vi_cdc_pipeline",
+        "holdout_en_error_catalog"
+      ],
+      "hybrid_retrieved_keys": [
+        "holdout_en_vector_indexing",
+        "holdout_vi_vector_indexing",
+        "holdout_vi_incident_runbook",
+        "holdout_vi_circuit_breaker",
+        "holdout_vi_k8s_autoscaling"
+      ],
+      "top5_order_changed": true,
+      "dense_doc_rank": 1,
+      "hybrid_doc_rank": 1,
+      "doc_rank_status": "unchanged",
+      "lexical_supported": true,
+      "dense_chunk_rank": 1,
+      "hybrid_chunk_rank": 1,
+      "chunk_rank_status": "unchanged"
+    },
+    {
+      "case_id": "H-ID-06",
+      "category": "EXACT_IDENTIFIER",
+      "language": "en",
+      "tags": [
+        "identifier:enum_value",
+        "lexical_overlap:exact"
+      ],
+      "answerable": true,
+      "dense_retrieved_keys": [
+        "holdout_en_circuit_breaker",
+        "holdout_en_cdc_pipeline",
+        "holdout_en_rate_limiting",
+        "holdout_vi_rate_limiting",
+        "holdout_en_error_catalog"
+      ],
+      "hybrid_retrieved_keys": [
+        "holdout_en_circuit_breaker",
+        "holdout_en_rate_limiting",
+        "holdout_en_cdc_pipeline",
+        "holdout_vi_rate_limiting",
+        "holdout_en_error_catalog"
+      ],
+      "top5_order_changed": true,
+      "dense_doc_rank": 1,
+      "hybrid_doc_rank": 1,
+      "doc_rank_status": "unchanged",
+      "lexical_supported": true,
+      "dense_chunk_rank": 1,
+      "hybrid_chunk_rank": 1,
+      "chunk_rank_status": "unchanged"
+    },
+    {
+      "case_id": "H-PARA-01",
+      "category": "SEMANTIC_PARAPHRASE",
+      "language": "en",
+      "tags": [
+        "paraphrase",
+        "lexical_overlap:partial"
+      ],
+      "answerable": true,
+      "dense_retrieved_keys": [
+        "holdout_en_rate_limiting",
+        "holdout_en_error_catalog",
+        "holdout_en_circuit_breaker",
+        "holdout_en_k8s_autoscaling",
+        "holdout_en_cdc_pipeline"
+      ],
+      "hybrid_retrieved_keys": [
+        "holdout_en_rate_limiting",
+        "holdout_en_circuit_breaker",
+        "holdout_en_k8s_autoscaling",
+        "holdout_en_error_catalog",
+        "holdout_en_cdc_pipeline"
+      ],
+      "top5_order_changed": true,
+      "dense_doc_rank": 1,
+      "hybrid_doc_rank": 1,
+      "doc_rank_status": "unchanged",
+      "lexical_supported": true,
+      "dense_chunk_rank": 1,
+      "hybrid_chunk_rank": 1,
+      "chunk_rank_status": "unchanged"
+    },
+    {
+      "case_id": "H-PARA-02",
+      "category": "SEMANTIC_PARAPHRASE",
+      "language": "vi",
+      "tags": [
+        "paraphrase",
+        "lexical_overlap:partial"
+      ],
+      "answerable": true,
+      "dense_retrieved_keys": [
+        "holdout_vi_vector_indexing",
+        "holdout_vi_incident_runbook",
+        "holdout_vi_cdc_pipeline",
+        "holdout_vi_rate_limiting",
+        "holdout_vi_k8s_autoscaling"
+      ],
+      "hybrid_retrieved_keys": [
+        "holdout_vi_vector_indexing",
+        "holdout_vi_incident_runbook",
+        "holdout_vi_cdc_pipeline",
+        "holdout_vi_k8s_autoscaling",
+        "holdout_vi_circuit_breaker"
+      ],
+      "top5_order_changed": true,
+      "dense_doc_rank": 1,
+      "hybrid_doc_rank": 1,
+      "doc_rank_status": "unchanged",
+      "lexical_supported": true,
+      "dense_chunk_rank": 1,
+      "hybrid_chunk_rank": 1,
+      "chunk_rank_status": "unchanged"
+    },
+    {
+      "case_id": "H-PARA-03",
+      "category": "SEMANTIC_PARAPHRASE",
+      "language": "en",
+      "tags": [
+        "paraphrase",
+        "lexical_overlap:none"
+      ],
+      "answerable": true,
+      "dense_retrieved_keys": [
+        "holdout_en_cdc_pipeline",
+        "holdout_en_error_catalog",
+        "holdout_en_vector_indexing",
+        "holdout_en_rate_limiting",
+        "holdout_en_k8s_autoscaling"
+      ],
+      "hybrid_retrieved_keys": [
+        "holdout_en_cdc_pipeline",
+        "holdout_en_error_catalog",
+        "holdout_en_vector_indexing",
+        "holdout_en_k8s_autoscaling",
+        "holdout_en_rate_limiting"
+      ],
+      "top5_order_changed": true,
+      "dense_doc_rank": 1,
+      "hybrid_doc_rank": 1,
+      "doc_rank_status": "unchanged",
+      "lexical_supported": true,
+      "dense_chunk_rank": 1,
+      "hybrid_chunk_rank": 1,
+      "chunk_rank_status": "unchanged"
+    },
+    {
+      "case_id": "H-PARA-04",
+      "category": "SEMANTIC_PARAPHRASE",
+      "language": "vi",
+      "tags": [
+        "paraphrase",
+        "lexical_overlap:none"
+      ],
+      "answerable": true,
+      "dense_retrieved_keys": [
+        "holdout_vi_k8s_autoscaling",
+        "holdout_vi_incident_runbook",
+        "holdout_vi_rate_limiting",
+        "holdout_vi_circuit_breaker",
+        "holdout_vi_vector_indexing"
+      ],
+      "hybrid_retrieved_keys": [
+        "holdout_vi_k8s_autoscaling",
+        "holdout_vi_incident_runbook",
+        "holdout_vi_rate_limiting",
+        "holdout_vi_circuit_breaker",
+        "holdout_vi_vector_indexing"
+      ],
+      "top5_order_changed": false,
+      "dense_doc_rank": null,
+      "hybrid_doc_rank": null,
+      "doc_rank_status": "unchanged",
+      "lexical_supported": false,
+      "dense_chunk_rank": null,
+      "hybrid_chunk_rank": null,
+      "chunk_rank_status": "unchanged"
+    },
+    {
+      "case_id": "H-AMB-01",
+      "category": "AMBIGUOUS_QUERY",
+      "language": "en",
+      "tags": [
+        "ambiguous",
+        "multiple_plausible_documents"
+      ],
+      "answerable": true,
+      "dense_retrieved_keys": [
+        "holdout_en_circuit_breaker",
+        "holdout_en_k8s_autoscaling",
+        "holdout_en_error_catalog",
+        "holdout_vi_rate_limiting",
+        "holdout_en_rate_limiting"
+      ],
+      "hybrid_retrieved_keys": [
+        "holdout_en_k8s_autoscaling",
+        "holdout_en_error_catalog",
+        "holdout_vi_rate_limiting",
+        "holdout_en_circuit_breaker",
+        "holdout_en_rate_limiting"
+      ],
+      "top5_order_changed": true,
+      "dense_doc_rank": 4,
+      "hybrid_doc_rank": 3,
+      "doc_rank_status": "improved",
+      "lexical_supported": true
+    },
+    {
+      "case_id": "H-AMB-02",
+      "category": "AMBIGUOUS_QUERY",
+      "language": "vi",
+      "tags": [
+        "ambiguous",
+        "multiple_plausible_documents"
+      ],
+      "answerable": true,
+      "dense_retrieved_keys": [
+        "holdout_vi_vector_indexing",
+        "holdout_en_vector_indexing",
+        "holdout_vi_incident_runbook",
+        "holdout_vi_circuit_breaker",
+        "holdout_vi_k8s_autoscaling"
+      ],
+      "hybrid_retrieved_keys": [
+        "holdout_vi_vector_indexing",
+        "holdout_vi_incident_runbook",
+        "holdout_en_vector_indexing",
+        "holdout_vi_circuit_breaker",
+        "holdout_vi_k8s_autoscaling"
+      ],
+      "top5_order_changed": true,
+      "dense_doc_rank": 1,
+      "hybrid_doc_rank": 1,
+      "doc_rank_status": "unchanged",
+      "lexical_supported": true
+    },
+    {
+      "case_id": "H-AMB-03",
+      "category": "AMBIGUOUS_QUERY",
+      "language": "en",
+      "tags": [
+        "ambiguous",
+        "multiple_plausible_documents"
+      ],
+      "answerable": true,
+      "dense_retrieved_keys": [
+        "holdout_en_circuit_breaker",
+        "holdout_en_rate_limiting",
+        "holdout_en_error_catalog",
+        "holdout_en_vector_indexing",
+        "holdout_en_k8s_autoscaling"
+      ],
+      "hybrid_retrieved_keys": [
+        "holdout_en_k8s_autoscaling",
+        "holdout_en_circuit_breaker",
+        "holdout_en_rate_limiting",
+        "holdout_en_error_catalog",
+        "holdout_en_vector_indexing"
+      ],
+      "top5_order_changed": true,
+      "dense_doc_rank": 1,
+      "hybrid_doc_rank": 2,
+      "doc_rank_status": "regressed",
+      "lexical_supported": false
+    },
+    {
+      "case_id": "H-MD-01",
+      "category": "MULTI_DOC",
+      "language": "en",
+      "tags": [
+        "multi_doc",
+        "requires_two_sources"
+      ],
+      "answerable": true,
+      "dense_retrieved_keys": [
+        "holdout_en_rate_limiting",
+        "holdout_en_error_catalog",
+        "holdout_en_circuit_breaker",
+        "holdout_en_vector_indexing",
+        "holdout_vi_rate_limiting"
+      ],
+      "hybrid_retrieved_keys": [
+        "holdout_en_rate_limiting",
+        "holdout_en_error_catalog",
+        "holdout_en_circuit_breaker",
+        "holdout_en_vector_indexing",
+        "holdout_vi_rate_limiting"
+      ],
+      "top5_order_changed": false,
+      "dense_doc_rank": 1,
+      "hybrid_doc_rank": 1,
+      "doc_rank_status": "unchanged",
+      "lexical_supported": true
+    },
+    {
+      "case_id": "H-MD-02",
+      "category": "MULTI_DOC",
+      "language": "vi",
+      "tags": [
+        "multi_doc",
+        "requires_two_sources"
+      ],
+      "answerable": true,
+      "dense_retrieved_keys": [
+        "holdout_vi_vector_indexing",
+        "holdout_vi_rate_limiting",
+        "holdout_en_vector_indexing",
+        "holdout_vi_cdc_pipeline",
+        "holdout_vi_incident_runbook"
+      ],
+      "hybrid_retrieved_keys": [
+        "holdout_vi_vector_indexing",
+        "holdout_vi_rate_limiting",
+        "holdout_en_vector_indexing",
+        "holdout_vi_cdc_pipeline",
+        "holdout_vi_k8s_autoscaling"
+      ],
+      "top5_order_changed": true,
+      "dense_doc_rank": 1,
+      "hybrid_doc_rank": 1,
+      "doc_rank_status": "unchanged",
+      "lexical_supported": true
+    },
+    {
+      "case_id": "H-MD-03",
+      "category": "MULTI_DOC",
+      "language": "en",
+      "tags": [
+        "multi_doc",
+        "requires_two_sources"
+      ],
+      "answerable": true,
+      "dense_retrieved_keys": [
+        "holdout_en_circuit_breaker",
+        "holdout_en_error_catalog",
+        "holdout_en_rate_limiting",
+        "holdout_en_cdc_pipeline",
+        "holdout_en_k8s_autoscaling"
+      ],
+      "hybrid_retrieved_keys": [
+        "holdout_en_circuit_breaker",
+        "holdout_en_error_catalog",
+        "holdout_en_rate_limiting",
+        "holdout_en_cdc_pipeline",
+        "holdout_en_k8s_autoscaling"
+      ],
+      "top5_order_changed": false,
+      "dense_doc_rank": 1,
+      "hybrid_doc_rank": 1,
+      "doc_rank_status": "unchanged",
+      "lexical_supported": true
+    },
+    {
+      "case_id": "H-MC-01",
+      "category": "MULTI_CHUNK",
+      "language": "vi",
+      "tags": [
+        "multi_chunk",
+        "chunk_index:0"
+      ],
+      "answerable": true,
+      "dense_retrieved_keys": [
+        "holdout_vi_incident_runbook",
+        "holdout_vi_rate_limiting",
+        "holdout_vi_circuit_breaker",
+        "holdout_vi_k8s_autoscaling",
+        "holdout_vi_cdc_pipeline"
+      ],
+      "hybrid_retrieved_keys": [
+        "holdout_vi_incident_runbook",
+        "holdout_vi_rate_limiting",
+        "holdout_vi_circuit_breaker",
+        "holdout_vi_k8s_autoscaling",
+        "holdout_vi_vector_indexing"
+      ],
+      "top5_order_changed": true,
+      "dense_doc_rank": 1,
+      "hybrid_doc_rank": 1,
+      "doc_rank_status": "unchanged",
+      "lexical_supported": true,
+      "dense_chunk_rank": 1,
+      "hybrid_chunk_rank": 1,
+      "chunk_rank_status": "unchanged"
+    },
+    {
+      "case_id": "H-MC-02",
+      "category": "MULTI_CHUNK",
+      "language": "vi",
+      "tags": [
+        "multi_chunk",
+        "evidence_in_overlap"
+      ],
+      "answerable": true,
+      "dense_retrieved_keys": [
+        "holdout_vi_incident_runbook",
+        "holdout_vi_k8s_autoscaling",
+        "holdout_vi_circuit_breaker",
+        "holdout_vi_rate_limiting",
+        "holdout_vi_vector_indexing"
+      ],
+      "hybrid_retrieved_keys": [
+        "holdout_vi_incident_runbook",
+        "holdout_vi_circuit_breaker",
+        "holdout_vi_k8s_autoscaling",
+        "holdout_vi_rate_limiting",
+        "holdout_vi_vector_indexing"
+      ],
+      "top5_order_changed": true,
+      "dense_doc_rank": 1,
+      "hybrid_doc_rank": 1,
+      "doc_rank_status": "unchanged",
+      "lexical_supported": true,
+      "dense_chunk_rank": 1,
+      "hybrid_chunk_rank": 1,
+      "chunk_rank_status": "unchanged"
+    },
+    {
+      "case_id": "H-MC-03",
+      "category": "MULTI_CHUNK",
+      "language": "vi",
+      "tags": [
+        "multi_chunk",
+        "chunk_index:0"
+      ],
+      "answerable": true,
+      "dense_retrieved_keys": [
+        "holdout_vi_incident_runbook",
+        "holdout_vi_k8s_autoscaling",
+        "holdout_vi_circuit_breaker",
+        "holdout_vi_vector_indexing",
+        "holdout_vi_rate_limiting"
+      ],
+      "hybrid_retrieved_keys": [
+        "holdout_vi_incident_runbook",
+        "holdout_vi_k8s_autoscaling",
+        "holdout_vi_circuit_breaker",
+        "holdout_vi_vector_indexing",
+        "holdout_vi_rate_limiting"
+      ],
+      "top5_order_changed": false,
+      "dense_doc_rank": 1,
+      "hybrid_doc_rank": 1,
+      "doc_rank_status": "unchanged",
+      "lexical_supported": true,
+      "dense_chunk_rank": 1,
+      "hybrid_chunk_rank": 1,
+      "chunk_rank_status": "unchanged"
+    },
+    {
+      "case_id": "H-SEC-01",
+      "category": "CROSS_WORKSPACE",
+      "language": "en",
+      "tags": [
+        "cross_workspace",
+        "tenant_isolation"
+      ],
+      "answerable": false,
+      "dense_retrieved_keys": [
+        "holdout_en_k8s_autoscaling",
+        "holdout_en_vector_indexing",
+        "holdout_en_rate_limiting",
+        "holdout_en_error_catalog",
+        "holdout_en_cdc_pipeline"
+      ],
+      "hybrid_retrieved_keys": [
+        "holdout_en_k8s_autoscaling",
+        "holdout_en_vector_indexing",
+        "holdout_en_rate_limiting",
+        "holdout_en_error_catalog",
+        "holdout_en_cdc_pipeline"
+      ],
+      "top5_order_changed": false,
+      "dense_cross_tenant_chunks": 0,
+      "hybrid_cross_tenant_chunks": 0
+    },
+    {
+      "case_id": "H-SEC-02",
+      "category": "CROSS_WORKSPACE",
+      "language": "vi",
+      "tags": [
+        "cross_workspace",
+        "tenant_isolation"
+      ],
+      "answerable": false,
+      "dense_retrieved_keys": [
+        "holdout_vi_incident_runbook",
+        "holdout_vi_cdc_pipeline",
+        "holdout_vi_circuit_breaker",
+        "holdout_vi_rate_limiting",
+        "holdout_vi_vector_indexing"
+      ],
+      "hybrid_retrieved_keys": [
+        "holdout_vi_incident_runbook",
+        "holdout_vi_circuit_breaker",
+        "holdout_vi_rate_limiting",
+        "holdout_vi_vector_indexing",
+        "holdout_vi_cdc_pipeline"
+      ],
+      "top5_order_changed": true,
+      "dense_cross_tenant_chunks": 0,
+      "hybrid_cross_tenant_chunks": 0
+    },
+    {
+      "case_id": "H-SEC-03",
+      "category": "CROSS_WORKSPACE",
+      "language": "en",
+      "tags": [
+        "cross_workspace",
+        "beta_authorized"
+      ],
+      "answerable": true,
+      "dense_retrieved_keys": [
+        "holdout_beta_billing_audit",
+        "holdout_beta_crypto_keys"
+      ],
+      "hybrid_retrieved_keys": [
+        "holdout_beta_billing_audit",
+        "holdout_beta_crypto_keys"
+      ],
+      "top5_order_changed": false,
+      "dense_doc_rank": 1,
+      "hybrid_doc_rank": 1,
+      "doc_rank_status": "unchanged",
+      "lexical_supported": true,
+      "dense_chunk_rank": 1,
+      "hybrid_chunk_rank": 1,
+      "chunk_rank_status": "unchanged"
+    },
+    {
+      "case_id": "H-OOD-01",
+      "category": "OUT_OF_DOMAIN",
+      "language": "vi",
+      "tags": [
+        "out_of_domain",
+        "unanswerable"
+      ],
+      "answerable": false,
+      "dense_retrieved_keys": [
+        "holdout_vi_incident_runbook",
+        "holdout_vi_circuit_breaker",
+        "holdout_vi_k8s_autoscaling",
+        "holdout_vi_rate_limiting",
+        "holdout_vi_cdc_pipeline"
+      ],
+      "hybrid_retrieved_keys": [
+        "holdout_vi_circuit_breaker",
+        "holdout_vi_incident_runbook",
+        "holdout_vi_k8s_autoscaling",
+        "holdout_vi_rate_limiting",
+        "holdout_vi_cdc_pipeline"
+      ],
+      "top5_order_changed": true,
+      "dense_cross_tenant_chunks": 0,
+      "hybrid_cross_tenant_chunks": 0
+    },
+    {
+      "case_id": "H-INJ-01",
+      "category": "PROMPT_INJECTION",
+      "language": "en",
+      "tags": [
+        "prompt_injection",
+        "malicious"
+      ],
+      "answerable": false,
+      "dense_retrieved_keys": [
+        "holdout_en_error_catalog",
+        "holdout_en_cdc_pipeline",
+        "holdout_en_circuit_breaker",
+        "holdout_vi_rate_limiting",
+        "holdout_vi_incident_runbook"
+      ],
+      "hybrid_retrieved_keys": [
+        "holdout_en_error_catalog",
+        "holdout_en_cdc_pipeline",
+        "holdout_en_circuit_breaker",
+        "holdout_vi_rate_limiting",
+        "holdout_vi_incident_runbook"
+      ],
+      "top5_order_changed": false,
+      "dense_cross_tenant_chunks": 0,
+      "hybrid_cross_tenant_chunks": 0
+    },
+    {
+      "case_id": "H-INF-01",
+      "category": "INSUFFICIENT_INFO",
+      "language": "en",
+      "tags": [
+        "insufficient_info",
+        "unanswerable"
+      ],
+      "answerable": false,
+      "dense_retrieved_keys": [
+        "holdout_en_rate_limiting",
+        "holdout_en_cdc_pipeline",
+        "holdout_en_circuit_breaker",
+        "holdout_en_error_catalog",
+        "holdout_en_k8s_autoscaling"
+      ],
+      "hybrid_retrieved_keys": [
+        "holdout_en_rate_limiting",
+        "holdout_en_cdc_pipeline",
+        "holdout_en_circuit_breaker",
+        "holdout_en_error_catalog",
+        "holdout_en_k8s_autoscaling"
+      ],
+      "top5_order_changed": false,
+      "dense_cross_tenant_chunks": 0,
+      "hybrid_cross_tenant_chunks": 0
+    }
+  ]
+}
