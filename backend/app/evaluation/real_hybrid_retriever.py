@@ -21,6 +21,8 @@ from app.repositories.document_chunk import (
 )
 from app.services.embedding import get_embedding_service
 from app.services.fusion import (
+    DEFAULT_DENSE_WEIGHT,
+    DEFAULT_KEYWORD_WEIGHT,
     DEFAULT_RRF_K,
     FusedSearchResult,
     reciprocal_rank_fusion,
@@ -37,12 +39,16 @@ class RealHybridCorpusRetriever:
         session_factory: async_sessionmaker[AsyncSession],
         env: ProvisionedRAGEnvironment,
         rrf_k: int = DEFAULT_RRF_K,
+        dense_weight: float = DEFAULT_DENSE_WEIGHT,
+        keyword_weight: float = DEFAULT_KEYWORD_WEIGHT,
         candidate_multiplier: int = 4,
     ) -> None:
         self._session_factory = session_factory
         self._env = env
         self._embedding_service = get_embedding_service()
         self._rrf_k = rrf_k
+        self._dense_weight = dense_weight
+        self._keyword_weight = keyword_weight
         self._candidate_multiplier = candidate_multiplier
 
         # Sub-stage latency tracking
@@ -124,6 +130,8 @@ class RealHybridCorpusRetriever:
             dense_results=dense_results,
             keyword_results=keyword_matches,
             k=self._rrf_k,
+            dense_weight=self._dense_weight,
+            keyword_weight=self._keyword_weight,
             limit=limit,
         )
         self.last_fusion_latency_ms = (time.perf_counter() - t0_fuse) * 1000.0

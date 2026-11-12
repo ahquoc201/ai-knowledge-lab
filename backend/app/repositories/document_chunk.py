@@ -314,6 +314,25 @@ async def search_similar_chunks(
     ]
 
 
+_FTS_STOPWORDS: frozenset[str] = frozenset(
+    {
+        # English grammatical / functional words
+        "a", "an", "the", "and", "or", "but", "in", "on", "at", "to", "for",
+        "of", "with", "by", "from", "up", "about", "into", "over", "after",
+        "is", "am", "are", "was", "were", "be", "been", "being", "have",
+        "has", "had", "do", "does", "did", "can", "could", "should", "would",
+        "will", "shall", "may", "might", "must",
+        "what", "when", "where", "which", "who", "whom", "whose", "why", "how",
+        "this", "that", "these", "those", "it", "its", "they", "them", "their",
+        # Vietnamese grammatical / functional words
+        "là", "của", "và", "các", "những", "trong", "với", "cho", "tại",
+        "về", "có", "được", "này", "đó", "khi", "như", "nào", "gì",
+        "sao", "thế", "đâu", "ai", "bằng", "ra", "vào", "để", "làm",
+        "một", "theo",
+    }
+)
+
+
 async def search_keyword_chunks(
     session: AsyncSession,
     *,
@@ -372,35 +391,43 @@ async def search_keyword_chunks(
     rows = result.all()
 
     # 2. If strict matching yields 0 rows and query has multiple words, relax to OR semantics
+    # filtering out high-frequency functional stopwords to prevent noisy keyword displacement.
     if not rows and " " in clean_query:
-        or_query_str = " or ".join(w for w in clean_query.split() if w.strip())
-        ts_or_query = func.websearch_to_tsquery("simple", or_query_str)
-        rank_or = func.ts_rank(tsv, ts_or_query).label("rank")
+        tokens: list[str] = []
+        for raw in clean_query.split():
+            clean_token = raw.strip(' ?.,!;:()[]{}"\'')
+            if len(clean_token) > 1 and clean_token.lower() not in _FTS_STOPWORDS:
+                tokens.append(clean_token)
 
-        or_stmt = (
-            select(
-                DocumentChunk,
-                rank_or,
-                Document.title,
+        if tokens:
+            or_query_str = " or ".join(tokens)
+            ts_or_query = func.websearch_to_tsquery("simple", or_query_str)
+            rank_or = func.ts_rank(tsv, ts_or_query).label("rank")
+
+            or_stmt = (
+                select(
+                    DocumentChunk,
+                    rank_or,
+                    Document.title,
+                )
+                .join(
+                    Document,
+                    Document.id == DocumentChunk.document_id,
+                )
+                .where(tsv.op("@@")(ts_or_query))
             )
-            .join(
-                Document,
-                Document.id == DocumentChunk.document_id,
-            )
-            .where(tsv.op("@@")(ts_or_query))
-        )
 
-        if workspace_id is not None:
-            or_stmt = or_stmt.where(Document.workspace_id == workspace_id)
-        else:
-            or_stmt = or_stmt.where(Document.user_id == user_id)
+            if workspace_id is not None:
+                or_stmt = or_stmt.where(Document.workspace_id == workspace_id)
+            else:
+                or_stmt = or_stmt.where(Document.user_id == user_id)
 
-        or_stmt = or_stmt.order_by(
-            rank_or.desc(), DocumentChunk.id.asc()
-        ).limit(limit)
+            or_stmt = or_stmt.order_by(
+                rank_or.desc(), DocumentChunk.id.asc()
+            ).limit(limit)
 
-        result = await session.execute(or_stmt)
-        rows = result.all()
+            result = await session.execute(or_stmt)
+            rows = result.all()
 
     return [
         (chunk, float(chunk_rank), str(title))

@@ -42,6 +42,7 @@ from app.evaluation.real_fixture_provisioner import (
 from app.evaluation.real_hybrid_retriever import RealHybridCorpusRetriever
 from app.evaluation.real_pgvector_retriever import RealPgVectorCorpusRetriever
 from app.llm.ollama import OllamaLLMProvider
+from app.services.fusion import DEFAULT_DENSE_WEIGHT, DEFAULT_KEYWORD_WEIGHT
 
 logging.basicConfig(
     level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s"
@@ -116,6 +117,18 @@ def parse_args() -> argparse.Namespace:
         type=int,
         default=60,
         help="RRF constant k for hybrid retrieval fusion (default: 60)",
+    )
+    parser.add_argument(
+        "--dense-weight",
+        type=float,
+        default=DEFAULT_DENSE_WEIGHT,
+        help=f"Dense weight for weighted RRF fusion (default: {DEFAULT_DENSE_WEIGHT})",
+    )
+    parser.add_argument(
+        "--keyword-weight",
+        type=float,
+        default=DEFAULT_KEYWORD_WEIGHT,
+        help=f"Keyword weight for weighted RRF fusion (default: {DEFAULT_KEYWORD_WEIGHT})",
     )
     parser.add_argument(
         "--database-url",
@@ -210,9 +223,13 @@ async def run_real_comparison(
                 ),
                 (
                     "hybrid",
-                    f"hybrid (pgvector + FTS + RRF k={args.rrf_k})",
+                    f"hybrid (pgvector + FTS + RRF k={args.rrf_k} w_d={args.dense_weight} w_k={args.keyword_weight})",
                     RealHybridCorpusRetriever(
-                        session_factory=session_factory, env=env, rrf_k=args.rrf_k
+                        session_factory=session_factory,
+                        env=env,
+                        rrf_k=args.rrf_k,
+                        dense_weight=args.dense_weight,
+                        keyword_weight=args.keyword_weight,
                     ),
                 ),
             )
@@ -342,12 +359,15 @@ async def main() -> None:
                 )
                 if args.mode == "real-hybrid":
                     logger.info(
-                        f"Instantiating RealHybridCorpusRetriever (rrf_k={args.rrf_k})..."
+                        f"Instantiating RealHybridCorpusRetriever (rrf_k={args.rrf_k}, "
+                        f"dense_weight={args.dense_weight}, keyword_weight={args.keyword_weight})..."
                     )
                     retriever = RealHybridCorpusRetriever(
                         session_factory=session_factory,
                         env=env,
                         rrf_k=args.rrf_k,
+                        dense_weight=args.dense_weight,
+                        keyword_weight=args.keyword_weight,
                     )
                 else:
                     logger.info("Instantiating RealPgVectorCorpusRetriever...")

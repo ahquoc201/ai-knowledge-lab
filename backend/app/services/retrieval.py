@@ -10,6 +10,8 @@ from app.services.context_builder import (
     build_retrieval_context,
 )
 from app.services.fusion import (
+    DEFAULT_DENSE_WEIGHT,
+    DEFAULT_KEYWORD_WEIGHT,
     DEFAULT_RRF_K,
     FusedSearchResult,
     reciprocal_rank_fusion,
@@ -31,6 +33,8 @@ async def hybrid_search(
     query: str,
     limit: int = 5,
     rrf_k: int = DEFAULT_RRF_K,
+    dense_weight: float = DEFAULT_DENSE_WEIGHT,
+    keyword_weight: float = DEFAULT_KEYWORD_WEIGHT,
     candidate_multiplier: int = 4,
 ) -> list[FusedSearchResult]:
     """Execute hybrid retrieval combining dense semantic search and keyword FTS via RRF.
@@ -66,6 +70,8 @@ async def hybrid_search(
         dense_results=dense_results,
         keyword_results=keyword_results,
         k=rrf_k,
+        dense_weight=dense_weight,
+        keyword_weight=keyword_weight,
         limit=limit,
     )
 
@@ -79,6 +85,8 @@ async def retrieve_context(
     limit: int = 5,
     mode: str | RetrievalMode = RetrievalMode.DENSE,
     rrf_k: int = DEFAULT_RRF_K,
+    dense_weight: float = DEFAULT_DENSE_WEIGHT,
+    keyword_weight: float = DEFAULT_KEYWORD_WEIGHT,
 ) -> RetrievalContext:
     """Retrieve context bounded by character budget, with configurable retrieval mode.
 
@@ -94,6 +102,8 @@ async def retrieve_context(
             query=query,
             limit=limit,
             rrf_k=rrf_k,
+            dense_weight=dense_weight,
+            keyword_weight=keyword_weight,
         )
     elif norm_mode in (RetrievalMode.KEYWORD.value, "keyword"):
         keyword_raw = await search_keyword_chunks(
@@ -107,6 +117,8 @@ async def retrieve_context(
             dense_results=[],
             keyword_results=keyword_raw,
             k=rrf_k,
+            dense_weight=dense_weight,
+            keyword_weight=keyword_weight,
             limit=limit,
         )
     else:

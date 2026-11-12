@@ -3,7 +3,7 @@
     "dataset_id": "ai-knowledge-lab-rag-quality-extended",
     "dataset_version": "1.0",
     "dense_strategy": "dense (pgvector cosine)",
-    "hybrid_strategy": "hybrid (pgvector + FTS + RRF k=60)",
+    "hybrid_strategy": "hybrid (pgvector + FTS + RRF k=60 w_d=1.0 w_k=0.4)",
     "embedding_model": "intfloat/multilingual-e5-small",
     "k": 5,
     "database_environment": "ailab_eval_test"
@@ -11,58 +11,58 @@
   "aggregate": {
     "hit_rate_at_1": {
       "dense": 0.7812,
-      "hybrid": 0.7188,
-      "delta": -0.0624
+      "hybrid": 0.8125,
+      "delta": 0.0313
     },
     "hit_rate_at_3": {
       "dense": 0.8125,
-      "hybrid": 0.75,
-      "delta": -0.0625
+      "hybrid": 0.875,
+      "delta": 0.0625
     },
     "hit_rate_at_5": {
       "dense": 0.9062,
-      "hybrid": 0.7812,
-      "delta": -0.125
+      "hybrid": 0.875,
+      "delta": -0.0312
     },
     "recall_at_1": {
       "dense": 0.7031,
-      "hybrid": 0.6406,
-      "delta": -0.0625
+      "hybrid": 0.7188,
+      "delta": 0.0157
     },
     "recall_at_3": {
       "dense": 0.7656,
-      "hybrid": 0.6875,
-      "delta": -0.0781
+      "hybrid": 0.8281,
+      "delta": 0.0625
     },
     "recall_at_5": {
       "dense": 0.8594,
-      "hybrid": 0.7188,
-      "delta": -0.1406
+      "hybrid": 0.8281,
+      "delta": -0.0313
     },
     "precision_at_5": {
       "dense": 0.2,
-      "hybrid": 0.1625,
-      "delta": -0.0375
+      "hybrid": 0.1938,
+      "delta": -0.0062
     },
     "mrr_at_5": {
       "dense": 0.8187,
-      "hybrid": 0.7422,
-      "delta": -0.0765
+      "hybrid": 0.8385,
+      "delta": 0.0198
     },
     "retrieval_coverage": {
       "dense": 0.9062,
-      "hybrid": 0.7812,
-      "delta": -0.125
+      "hybrid": 0.875,
+      "delta": -0.0312
     },
     "chunk_recall_at_5": {
       "dense": 0.8594,
-      "hybrid": 0.7188,
-      "delta": -0.1406
+      "hybrid": 0.8281,
+      "delta": -0.0313
     },
     "chunk_mrr_at_5": {
       "dense": 0.8031,
-      "hybrid": 0.7422,
-      "delta": -0.0609
+      "hybrid": 0.8385,
+      "delta": 0.0354
     },
     "tenant_isolation_rate": {
       "dense": 1.0,
@@ -87,28 +87,28 @@
       "refusal": 0,
       "hit_rate_at_1": {
         "dense": 0.6,
-        "hybrid": 0.6,
-        "delta": 0.0
+        "hybrid": 0.8,
+        "delta": 0.2
       },
       "hit_rate_at_5": {
         "dense": 0.8,
-        "hybrid": 0.6,
-        "delta": -0.2
+        "hybrid": 0.8,
+        "delta": 0.0
       },
       "recall_at_5": {
         "dense": 0.7,
-        "hybrid": 0.4,
-        "delta": -0.3
+        "hybrid": 0.7,
+        "delta": 0.0
       },
       "mrr_at_5": {
         "dense": 0.7,
-        "hybrid": 0.6,
-        "delta": -0.1
+        "hybrid": 0.8,
+        "delta": 0.1
       },
       "chunk_recall_at_5": {
         "dense": 0.7,
-        "hybrid": 0.4,
-        "delta": -0.3
+        "hybrid": 0.7,
+        "delta": 0.0
       },
       "refusal_leak_free_rate": {
         "dense": null,
@@ -122,28 +122,28 @@
       "refusal": 0,
       "hit_rate_at_1": {
         "dense": 0.4444,
-        "hybrid": 0.2222,
-        "delta": -0.2222
+        "hybrid": 0.4444,
+        "delta": 0.0
       },
       "hit_rate_at_5": {
         "dense": 0.7778,
-        "hybrid": 0.4444,
-        "delta": -0.3334
+        "hybrid": 0.6667,
+        "delta": -0.1111
       },
       "recall_at_5": {
         "dense": 0.7778,
-        "hybrid": 0.4444,
-        "delta": -0.3334
+        "hybrid": 0.6667,
+        "delta": -0.1111
       },
       "mrr_at_5": {
         "dense": 0.5222,
-        "hybrid": 0.3056,
-        "delta": -0.2166
+        "hybrid": 0.537,
+        "delta": 0.0148
       },
       "chunk_recall_at_5": {
         "dense": 0.7778,
-        "hybrid": 0.4444,
-        "delta": -0.3334
+        "hybrid": 0.6667,
+        "delta": -0.1111
       },
       "refusal_leak_free_rate": {
         "dense": null,
@@ -439,28 +439,28 @@
       "refusal": 8,
       "hit_rate_at_1": {
         "dense": 0.8333,
-        "hybrid": 0.75,
-        "delta": -0.0833
+        "hybrid": 0.875,
+        "delta": 0.0417
       },
       "hit_rate_at_5": {
         "dense": 0.9583,
-        "hybrid": 0.7917,
-        "delta": -0.1666
+        "hybrid": 0.9167,
+        "delta": -0.0416
       },
       "recall_at_5": {
         "dense": 0.9167,
-        "hybrid": 0.7292,
-        "delta": -0.1875
+        "hybrid": 0.875,
+        "delta": -0.0417
       },
       "mrr_at_5": {
         "dense": 0.8729,
-        "hybrid": 0.7604,
-        "delta": -0.1125
+        "hybrid": 0.8889,
+        "delta": 0.016
       },
       "chunk_recall_at_5": {
         "dense": 0.9167,
-        "hybrid": 0.7292,
-        "delta": -0.1875
+        "hybrid": 0.875,
+        "delta": -0.0417
       },
       "refusal_leak_free_rate": {
         "dense": 1.0,
@@ -546,8 +546,8 @@
       "refusal": 0,
       "hit_rate_at_1": {
         "dense": 1.0,
-        "hybrid": 0.0,
-        "delta": -1.0
+        "hybrid": 1.0,
+        "delta": 0.0
       },
       "hit_rate_at_5": {
         "dense": 1.0,
@@ -561,8 +561,8 @@
       },
       "mrr_at_5": {
         "dense": 1.0,
-        "hybrid": 0.25,
-        "delta": -0.75
+        "hybrid": 1.0,
+        "delta": 0.0
       },
       "chunk_recall_at_5": {
         "dense": 1.0,
@@ -1041,23 +1041,23 @@
       },
       "hit_rate_at_5": {
         "dense": 0.5,
-        "hybrid": 0.0,
-        "delta": -0.5
+        "hybrid": 0.25,
+        "delta": -0.25
       },
       "recall_at_5": {
         "dense": 0.5,
-        "hybrid": 0.0,
-        "delta": -0.5
+        "hybrid": 0.25,
+        "delta": -0.25
       },
       "mrr_at_5": {
         "dense": 0.1125,
-        "hybrid": 0.0,
-        "delta": -0.1125
+        "hybrid": 0.0833,
+        "delta": -0.0292
       },
       "chunk_recall_at_5": {
         "dense": 0.5,
-        "hybrid": 0.0,
-        "delta": -0.5
+        "hybrid": 0.25,
+        "delta": -0.25
       },
       "refusal_leak_free_rate": {
         "dense": null,
@@ -1071,28 +1071,28 @@
       "refusal": 0,
       "hit_rate_at_1": {
         "dense": 0.75,
-        "hybrid": 0.25,
-        "delta": -0.5
+        "hybrid": 0.75,
+        "delta": 0.0
       },
       "hit_rate_at_5": {
         "dense": 1.0,
-        "hybrid": 0.75,
-        "delta": -0.25
+        "hybrid": 1.0,
+        "delta": 0.0
       },
       "recall_at_5": {
         "dense": 1.0,
-        "hybrid": 0.75,
-        "delta": -0.25
+        "hybrid": 1.0,
+        "delta": 0.0
       },
       "mrr_at_5": {
         "dense": 0.8125,
-        "hybrid": 0.4375,
-        "delta": -0.375
+        "hybrid": 0.875,
+        "delta": 0.0625
       },
       "chunk_recall_at_5": {
         "dense": 1.0,
-        "hybrid": 0.75,
-        "delta": -0.25
+        "hybrid": 1.0,
+        "delta": 0.0
       },
       "refusal_leak_free_rate": {
         "dense": null,
@@ -1146,23 +1146,23 @@
       },
       "hit_rate_at_5": {
         "dense": 1.0,
-        "hybrid": 0.875,
-        "delta": -0.125
+        "hybrid": 1.0,
+        "delta": 0.0
       },
       "recall_at_5": {
         "dense": 0.875,
-        "hybrid": 0.75,
-        "delta": -0.125
+        "hybrid": 0.875,
+        "delta": 0.0
       },
       "mrr_at_5": {
         "dense": 0.75,
-        "hybrid": 0.8125,
-        "delta": 0.0625
+        "hybrid": 0.8542,
+        "delta": 0.1042
       },
       "chunk_recall_at_5": {
         "dense": 0.875,
-        "hybrid": 0.75,
-        "delta": -0.125
+        "hybrid": 0.875,
+        "delta": 0.0
       },
       "refusal_leak_free_rate": {
         "dense": null,
@@ -1211,28 +1211,28 @@
       "refusal": 0,
       "hit_rate_at_1": {
         "dense": 0.75,
-        "hybrid": 0.5,
-        "delta": -0.25
+        "hybrid": 0.75,
+        "delta": 0.0
       },
       "hit_rate_at_5": {
         "dense": 0.75,
-        "hybrid": 0.5,
-        "delta": -0.25
+        "hybrid": 0.75,
+        "delta": 0.0
       },
       "recall_at_5": {
         "dense": 0.75,
-        "hybrid": 0.375,
-        "delta": -0.375
+        "hybrid": 0.75,
+        "delta": 0.0
       },
       "mrr_at_5": {
         "dense": 0.75,
-        "hybrid": 0.5,
-        "delta": -0.25
+        "hybrid": 0.75,
+        "delta": 0.0
       },
       "chunk_recall_at_5": {
         "dense": 0.75,
-        "hybrid": 0.375,
-        "delta": -0.375
+        "hybrid": 0.75,
+        "delta": 0.0
       },
       "refusal_leak_free_rate": {
         "dense": null,
@@ -1631,28 +1631,28 @@
       "refusal": 0,
       "hit_rate_at_1": {
         "dense": 0.75,
-        "hybrid": 0.5,
-        "delta": -0.25
+        "hybrid": 0.75,
+        "delta": 0.0
       },
       "hit_rate_at_5": {
         "dense": 0.75,
-        "hybrid": 0.5,
-        "delta": -0.25
+        "hybrid": 0.75,
+        "delta": 0.0
       },
       "recall_at_5": {
         "dense": 0.75,
-        "hybrid": 0.375,
-        "delta": -0.375
+        "hybrid": 0.75,
+        "delta": 0.0
       },
       "mrr_at_5": {
         "dense": 0.75,
-        "hybrid": 0.5,
-        "delta": -0.25
+        "hybrid": 0.75,
+        "delta": 0.0
       },
       "chunk_recall_at_5": {
         "dense": 0.75,
-        "hybrid": 0.375,
-        "delta": -0.375
+        "hybrid": 0.75,
+        "delta": 0.0
       },
       "refusal_leak_free_rate": {
         "dense": null,
@@ -1666,28 +1666,28 @@
       "refusal": 0,
       "hit_rate_at_1": {
         "dense": 0.5,
-        "hybrid": 0.375,
-        "delta": -0.125
+        "hybrid": 0.625,
+        "delta": 0.125
       },
       "hit_rate_at_5": {
         "dense": 0.875,
-        "hybrid": 0.5,
-        "delta": -0.375
+        "hybrid": 0.75,
+        "delta": -0.125
       },
       "recall_at_5": {
         "dense": 0.75,
-        "hybrid": 0.3125,
-        "delta": -0.4375
+        "hybrid": 0.625,
+        "delta": -0.125
       },
       "mrr_at_5": {
         "dense": 0.6188,
-        "hybrid": 0.4062,
-        "delta": -0.2126
+        "hybrid": 0.6667,
+        "delta": 0.0479
       },
       "chunk_recall_at_5": {
         "dense": 0.75,
-        "hybrid": 0.3125,
-        "delta": -0.4375
+        "hybrid": 0.625,
+        "delta": -0.125
       },
       "refusal_leak_free_rate": {
         "dense": null,
@@ -1734,36 +1734,27 @@
   "summary": {
     "answerable_cases": 32,
     "doc_rank_improved": [
+      "X-XL-07",
       "X-XL-09",
       "X-AMB-05"
     ],
     "doc_rank_regressed": [
-      "X-XL-04",
-      "X-XL-05",
-      "X-XL-06",
-      "X-XL-07",
-      "X-AMB-01"
+      "X-XL-06"
     ],
-    "doc_rank_unchanged_count": 25,
+    "doc_rank_unchanged_count": 28,
     "chunk_labeled_cases": 32,
     "chunk_rank_improved": [
+      "X-XL-07",
       "X-XL-09",
       "X-MC-01",
       "X-AMB-05"
     ],
     "chunk_rank_regressed": [
-      "X-XL-04",
-      "X-XL-05",
-      "X-XL-06",
-      "X-XL-07",
-      "X-AMB-01"
+      "X-XL-06"
     ],
     "hybrid_only_hits_at_5": [],
     "hybrid_lost_hits_at_5": [
-      "X-XL-04",
-      "X-XL-06",
-      "X-XL-07",
-      "X-AMB-01"
+      "X-XL-06"
     ],
     "lexical_supported_cases": [
       "X-ID-01",
@@ -1776,7 +1767,9 @@
       "X-ID-08",
       "X-ID-09",
       "X-XL-03",
+      "X-XL-04",
       "X-XL-05",
+      "X-XL-07",
       "X-XL-08",
       "X-XL-09",
       "X-MC-01",
@@ -1785,6 +1778,7 @@
       "X-MC-04",
       "X-MD-01",
       "X-MD-02",
+      "X-AMB-01",
       "X-AMB-02",
       "X-AMB-03",
       "X-AMB-05",
@@ -1792,7 +1786,7 @@
       "X-SEC-05",
       "X-SEC-06"
     ],
-    "top5_order_changed_cases": 39,
+    "top5_order_changed_cases": 23,
     "total_cases": 41
   },
   "cases": [
@@ -1847,10 +1841,10 @@
       ],
       "hybrid_retrieved_keys": [
         "ext_error_codes",
+        "ext_long_security_policy",
         "ext_rate_limit_policy",
         "ext_long_runbook",
-        "ext_error_codes",
-        "ext_long_security_policy"
+        "ext_error_codes"
       ],
       "top5_order_changed": true,
       "dense_doc_rank": 1,
@@ -1881,11 +1875,11 @@
       "hybrid_retrieved_keys": [
         "ext_error_codes",
         "ext_error_codes",
-        "ext_long_runbook",
         "ext_error_codes",
-        "ext_long_runbook"
+        "ext_long_runbook",
+        "ext_long_security_policy"
       ],
-      "top5_order_changed": true,
+      "top5_order_changed": false,
       "dense_doc_rank": 1,
       "hybrid_doc_rank": 1,
       "doc_rank_status": "unchanged",
@@ -1912,10 +1906,10 @@
       ],
       "hybrid_retrieved_keys": [
         "ext_api_endpoints",
-        "ext_rate_limit_policy",
         "ext_inference_queue",
-        "ext_abbreviations",
-        "ext_error_codes"
+        "ext_rate_limit_policy",
+        "ext_celery_concurrency",
+        "ext_python_symbols"
       ],
       "top5_order_changed": true,
       "dense_doc_rank": 1,
@@ -1945,11 +1939,11 @@
       "hybrid_retrieved_keys": [
         "ext_python_symbols",
         "ext_abbreviations",
+        "ext_api_endpoints",
         "ext_error_codes",
-        "ext_error_codes",
-        "ext_long_runbook"
+        "ext_celery_concurrency"
       ],
-      "top5_order_changed": true,
+      "top5_order_changed": false,
       "dense_doc_rank": 1,
       "hybrid_doc_rank": 1,
       "doc_rank_status": "unchanged",
@@ -1978,8 +1972,8 @@
         "ext_db_columns",
         "ext_error_codes",
         "ext_error_codes",
-        "ext_long_runbook",
-        "ext_long_runbook"
+        "ext_fts_index",
+        "ext_long_security_policy"
       ],
       "top5_order_changed": true,
       "dense_doc_rank": 1,
@@ -2009,12 +2003,12 @@
       ],
       "hybrid_retrieved_keys": [
         "ext_abbreviations",
-        "ext_error_codes",
         "ext_vi_long_guide",
-        "ext_api_endpoints",
-        "ext_error_codes"
+        "ext_error_codes",
+        "ext_long_runbook",
+        "ext_long_security_policy"
       ],
-      "top5_order_changed": true,
+      "top5_order_changed": false,
       "dense_doc_rank": 1,
       "hybrid_doc_rank": 1,
       "doc_rank_status": "unchanged",
@@ -2044,7 +2038,7 @@
       "hybrid_retrieved_keys": [
         "ext_abbreviations",
         "ext_api_endpoints",
-        "ext_vi_cache",
+        "ext_vi_long_guide",
         "ext_vi_long_guide",
         "ext_vi_long_guide"
       ],
@@ -2077,9 +2071,9 @@
       "hybrid_retrieved_keys": [
         "ext_fts_index",
         "ext_en_cdn_cache",
-        "ext_error_codes",
         "ext_abbreviations",
-        "ext_long_runbook"
+        "ext_en_embedding",
+        "ext_error_codes"
       ],
       "top5_order_changed": true,
       "dense_doc_rank": 1,
@@ -2107,11 +2101,11 @@
         "ext_vi_cache"
       ],
       "hybrid_retrieved_keys": [
-        "ext_vi_long_guide",
         "ext_vi_backup",
-        "ext_vi_incident",
         "ext_vi_long_guide",
-        "ext_vi_long_guide"
+        "ext_vi_long_guide",
+        "ext_vi_long_guide",
+        "ext_vi_sec_roles"
       ],
       "top5_order_changed": true,
       "dense_doc_rank": null,
@@ -2139,8 +2133,8 @@
         "ext_vi_sec_roles"
       ],
       "hybrid_retrieved_keys": [
-        "ext_vi_incident",
         "ext_vi_long_guide",
+        "ext_vi_incident",
         "ext_vi_long_guide",
         "ext_vi_backup",
         "ext_vi_long_guide"
@@ -2173,9 +2167,9 @@
       "hybrid_retrieved_keys": [
         "ext_en_embedding",
         "ext_vi_long_guide",
-        "ext_vi_long_guide",
-        "ext_vi_long_guide",
-        "ext_vi_incident"
+        "ext_vi_incident",
+        "ext_vi_backup",
+        "ext_vi_long_guide"
       ],
       "top5_order_changed": true,
       "dense_doc_rank": 1,
@@ -2203,20 +2197,20 @@
         "ext_long_runbook"
       ],
       "hybrid_retrieved_keys": [
+        "ext_vi_backup",
+        "ext_en_log_retention",
         "ext_long_runbook",
-        "ext_long_security_policy",
-        "ext_rate_limit_policy",
-        "ext_long_security_policy",
-        "ext_long_runbook"
+        "ext_python_symbols",
+        "ext_abbreviations"
       ],
       "top5_order_changed": true,
       "dense_doc_rank": 1,
-      "hybrid_doc_rank": null,
-      "doc_rank_status": "regressed",
-      "lexical_supported": false,
+      "hybrid_doc_rank": 1,
+      "doc_rank_status": "unchanged",
+      "lexical_supported": true,
       "dense_chunk_rank": 1,
-      "hybrid_chunk_rank": null,
-      "chunk_rank_status": "regressed"
+      "hybrid_chunk_rank": 1,
+      "chunk_rank_status": "unchanged"
     },
     {
       "case_id": "X-XL-05",
@@ -2236,20 +2230,20 @@
         "ext_inference_queue"
       ],
       "hybrid_retrieved_keys": [
+        "ext_vi_incident",
         "ext_en_onboarding",
         "ext_long_runbook",
         "ext_error_codes",
-        "ext_vi_incident",
-        "ext_long_runbook"
+        "ext_error_codes"
       ],
       "top5_order_changed": true,
       "dense_doc_rank": 1,
-      "hybrid_doc_rank": 4,
-      "doc_rank_status": "regressed",
+      "hybrid_doc_rank": 1,
+      "doc_rank_status": "unchanged",
       "lexical_supported": true,
       "dense_chunk_rank": 1,
-      "hybrid_chunk_rank": 4,
-      "chunk_rank_status": "regressed"
+      "hybrid_chunk_rank": 1,
+      "chunk_rank_status": "unchanged"
     },
     {
       "case_id": "X-XL-06",
@@ -2268,11 +2262,11 @@
         "ext_vi_sec_roles"
       ],
       "hybrid_retrieved_keys": [
+        "ext_api_endpoints",
         "ext_en_onboarding",
         "ext_error_codes",
         "ext_en_log_retention",
-        "ext_python_symbols",
-        "ext_long_security_policy"
+        "ext_python_symbols"
       ],
       "top5_order_changed": true,
       "dense_doc_rank": 5,
@@ -2303,18 +2297,18 @@
       "hybrid_retrieved_keys": [
         "ext_error_codes",
         "ext_fts_index",
-        "ext_long_security_policy",
-        "ext_long_runbook",
-        "ext_long_runbook"
+        "ext_vi_long_guide",
+        "ext_api_endpoints",
+        "ext_search_overview"
       ],
       "top5_order_changed": true,
       "dense_doc_rank": 4,
-      "hybrid_doc_rank": null,
-      "doc_rank_status": "regressed",
-      "lexical_supported": false,
+      "hybrid_doc_rank": 3,
+      "doc_rank_status": "improved",
+      "lexical_supported": true,
       "dense_chunk_rank": 4,
-      "hybrid_chunk_rank": null,
-      "chunk_rank_status": "regressed"
+      "hybrid_chunk_rank": 3,
+      "chunk_rank_status": "improved"
     },
     {
       "case_id": "X-XL-08",
@@ -2335,12 +2329,12 @@
       ],
       "hybrid_retrieved_keys": [
         "ext_vi_backup",
-        "ext_vi_long_guide",
-        "ext_vi_long_guide",
         "ext_vi_cache",
+        "ext_vi_long_guide",
+        "ext_vi_long_guide",
         "ext_vi_long_guide"
       ],
-      "top5_order_changed": true,
+      "top5_order_changed": false,
       "dense_doc_rank": 1,
       "hybrid_doc_rank": 1,
       "doc_rank_status": "unchanged",
@@ -2370,7 +2364,7 @@
         "ext_vi_cache",
         "ext_long_security_policy",
         "ext_vi_long_guide",
-        "ext_vi_backup",
+        "ext_long_security_policy",
         "ext_long_security_policy"
       ],
       "top5_order_changed": true,
@@ -2401,9 +2395,9 @@
       "hybrid_retrieved_keys": [
         "ext_long_runbook",
         "ext_long_runbook",
-        "ext_long_runbook",
         "ext_celery_concurrency",
-        "ext_en_onboarding"
+        "ext_long_runbook",
+        "ext_error_codes"
       ],
       "top5_order_changed": true,
       "dense_doc_rank": 1,
@@ -2434,8 +2428,8 @@
         "ext_long_runbook",
         "ext_long_runbook",
         "ext_long_runbook",
-        "ext_error_codes",
-        "ext_long_runbook"
+        "ext_long_runbook",
+        "ext_en_onboarding"
       ],
       "top5_order_changed": true,
       "dense_doc_rank": 1,
@@ -2465,9 +2459,9 @@
       "hybrid_retrieved_keys": [
         "ext_long_security_policy",
         "ext_long_security_policy",
-        "ext_long_runbook",
         "ext_long_security_policy",
-        "ext_error_codes"
+        "ext_long_runbook",
+        "ext_en_ui_theme"
       ],
       "top5_order_changed": true,
       "dense_doc_rank": 1,
@@ -2496,12 +2490,12 @@
       ],
       "hybrid_retrieved_keys": [
         "ext_vi_long_guide",
-        "ext_vi_long_guide",
         "ext_vi_sec_roles",
+        "ext_vi_long_guide",
         "ext_vi_long_guide",
         "ext_vi_cache"
       ],
-      "top5_order_changed": true,
+      "top5_order_changed": false,
       "dense_doc_rank": 1,
       "hybrid_doc_rank": 1,
       "doc_rank_status": "unchanged",
@@ -2531,8 +2525,8 @@
         "ext_en_log_retention",
         "ext_long_security_policy",
         "ext_long_runbook",
-        "ext_rate_limit_policy",
-        "ext_long_security_policy"
+        "ext_api_endpoints",
+        "ext_python_symbols"
       ],
       "top5_order_changed": true,
       "dense_doc_rank": 1,
@@ -2565,9 +2559,9 @@
         "ext_vi_long_guide",
         "ext_vi_long_guide",
         "ext_vi_sec_roles",
-        "ext_vi_backup"
+        "ext_vi_incident"
       ],
-      "top5_order_changed": true,
+      "top5_order_changed": false,
       "dense_doc_rank": 1,
       "hybrid_doc_rank": 1,
       "doc_rank_status": "unchanged",
@@ -2593,20 +2587,20 @@
         "ext_python_symbols"
       ],
       "hybrid_retrieved_keys": [
-        "ext_long_runbook",
+        "ext_celery_concurrency",
+        "ext_inference_queue",
+        "ext_rate_limit_policy",
         "ext_error_codes",
-        "ext_error_codes",
-        "ext_long_runbook",
-        "ext_abbreviations"
+        "ext_python_symbols"
       ],
-      "top5_order_changed": true,
+      "top5_order_changed": false,
       "dense_doc_rank": 1,
-      "hybrid_doc_rank": null,
-      "doc_rank_status": "regressed",
-      "lexical_supported": false,
+      "hybrid_doc_rank": 1,
+      "doc_rank_status": "unchanged",
+      "lexical_supported": true,
       "dense_chunk_rank": 1,
-      "hybrid_chunk_rank": null,
-      "chunk_rank_status": "regressed"
+      "hybrid_chunk_rank": 1,
+      "chunk_rank_status": "unchanged"
     },
     {
       "case_id": "X-AMB-02",
@@ -2627,12 +2621,12 @@
       ],
       "hybrid_retrieved_keys": [
         "ext_en_cdn_cache",
-        "ext_long_runbook",
+        "ext_vi_cache",
         "ext_error_codes",
         "ext_error_codes",
-        "ext_error_codes"
+        "ext_long_runbook"
       ],
-      "top5_order_changed": true,
+      "top5_order_changed": false,
       "dense_doc_rank": 1,
       "hybrid_doc_rank": 1,
       "doc_rank_status": "unchanged",
@@ -2658,13 +2652,13 @@
         "ext_en_log_retention"
       ],
       "hybrid_retrieved_keys": [
-        "ext_en_pg_maintenance",
         "ext_en_worker_maintenance",
-        "ext_error_codes",
-        "ext_long_runbook",
-        "ext_long_security_policy"
+        "ext_en_pg_maintenance",
+        "ext_long_security_policy",
+        "ext_en_onboarding",
+        "ext_en_log_retention"
       ],
-      "top5_order_changed": true,
+      "top5_order_changed": false,
       "dense_doc_rank": 1,
       "hybrid_doc_rank": 1,
       "doc_rank_status": "unchanged",
@@ -2692,13 +2686,13 @@
         "ext_en_onboarding"
       ],
       "hybrid_retrieved_keys": [
-        "ext_error_codes",
-        "ext_long_security_policy",
+        "ext_en_worker_maintenance",
         "ext_rate_limit_policy",
         "ext_error_codes",
-        "ext_long_runbook"
+        "ext_celery_concurrency",
+        "ext_en_onboarding"
       ],
-      "top5_order_changed": true,
+      "top5_order_changed": false,
       "dense_doc_rank": null,
       "hybrid_doc_rank": null,
       "doc_rank_status": "unchanged",
@@ -2728,8 +2722,8 @@
         "ext_long_security_policy",
         "ext_long_security_policy",
         "ext_long_security_policy",
-        "ext_long_runbook",
-        "ext_en_log_retention"
+        "ext_en_log_retention",
+        "ext_api_endpoints"
       ],
       "top5_order_changed": true,
       "dense_doc_rank": 2,
@@ -2757,13 +2751,13 @@
         "ext_en_log_retention"
       ],
       "hybrid_retrieved_keys": [
-        "ext_long_runbook",
+        "ext_en_onboarding",
         "ext_error_codes",
         "ext_long_security_policy",
-        "ext_en_onboarding",
-        "ext_error_codes"
+        "ext_long_runbook",
+        "ext_en_log_retention"
       ],
-      "top5_order_changed": true,
+      "top5_order_changed": false,
       "dense_cross_tenant_chunks": 0,
       "hybrid_cross_tenant_chunks": 0
     },
@@ -2784,11 +2778,11 @@
         "ext_long_runbook"
       ],
       "hybrid_retrieved_keys": [
-        "ext_error_codes",
         "ext_rate_limit_policy",
+        "ext_error_codes",
+        "ext_en_pg_maintenance",
         "ext_long_security_policy",
-        "ext_long_security_policy",
-        "ext_long_runbook"
+        "ext_long_security_policy"
       ],
       "top5_order_changed": true,
       "dense_cross_tenant_chunks": 0,
@@ -2814,8 +2808,8 @@
       "hybrid_retrieved_keys": [
         "ext_error_codes",
         "ext_rate_limit_policy",
+        "ext_inference_queue",
         "ext_celery_concurrency",
-        "ext_long_runbook",
         "ext_error_codes"
       ],
       "top5_order_changed": true,
@@ -2839,11 +2833,11 @@
       ],
       "hybrid_retrieved_keys": [
         "ext_beta_backup",
+        "ext_beta_error_codes",
         "ext_beta_payroll",
-        "ext_beta_orion",
-        "ext_beta_error_codes"
+        "ext_beta_orion"
       ],
-      "top5_order_changed": true,
+      "top5_order_changed": false,
       "dense_doc_rank": 1,
       "hybrid_doc_rank": 1,
       "doc_rank_status": "unchanged",
@@ -2870,11 +2864,11 @@
       ],
       "hybrid_retrieved_keys": [
         "ext_beta_error_codes",
-        "ext_beta_payroll",
         "ext_beta_backup",
+        "ext_beta_payroll",
         "ext_beta_orion"
       ],
-      "top5_order_changed": false,
+      "top5_order_changed": true,
       "dense_doc_rank": 1,
       "hybrid_doc_rank": 1,
       "doc_rank_status": "unchanged",
@@ -2900,12 +2894,12 @@
       ],
       "hybrid_retrieved_keys": [
         "ext_en_holiday",
+        "ext_en_log_retention",
+        "ext_en_worker_maintenance",
         "ext_rate_limit_policy",
-        "ext_db_columns",
-        "ext_error_codes",
-        "ext_error_codes"
+        "ext_celery_concurrency"
       ],
-      "top5_order_changed": true,
+      "top5_order_changed": false,
       "dense_doc_rank": 1,
       "hybrid_doc_rank": 1,
       "doc_rank_status": "unchanged",
@@ -2931,11 +2925,11 @@
         "ext_inference_queue"
       ],
       "hybrid_retrieved_keys": [
-        "ext_error_codes",
-        "ext_long_runbook",
-        "ext_error_codes",
         "ext_db_columns",
-        "ext_long_security_policy"
+        "ext_error_codes",
+        "ext_celery_concurrency",
+        "ext_error_codes",
+        "ext_en_worker_maintenance"
       ],
       "top5_order_changed": true,
       "dense_cross_tenant_chunks": 0,
@@ -2957,13 +2951,13 @@
         "ext_error_codes"
       ],
       "hybrid_retrieved_keys": [
-        "ext_error_codes",
-        "ext_long_runbook",
-        "ext_long_runbook",
         "ext_python_symbols",
+        "ext_api_endpoints",
+        "ext_long_runbook",
+        "ext_long_runbook",
         "ext_error_codes"
       ],
-      "top5_order_changed": true,
+      "top5_order_changed": false,
       "dense_cross_tenant_chunks": 0,
       "hybrid_cross_tenant_chunks": 0
     },
@@ -2985,11 +2979,11 @@
       "hybrid_retrieved_keys": [
         "ext_long_runbook",
         "ext_error_codes",
-        "ext_long_runbook",
-        "ext_en_cdn_cache",
-        "ext_error_codes"
+        "ext_abbreviations",
+        "ext_api_endpoints",
+        "ext_en_cdn_cache"
       ],
-      "top5_order_changed": true,
+      "top5_order_changed": false,
       "dense_cross_tenant_chunks": 0,
       "hybrid_cross_tenant_chunks": 0
     },
@@ -3009,13 +3003,13 @@
         "ext_vi_sec_roles"
       ],
       "hybrid_retrieved_keys": [
-        "ext_vi_cache",
         "ext_vi_long_guide",
         "ext_vi_long_guide",
         "ext_fts_index",
+        "ext_vi_cache",
         "ext_vi_sec_roles"
       ],
-      "top5_order_changed": true,
+      "top5_order_changed": false,
       "dense_cross_tenant_chunks": 0,
       "hybrid_cross_tenant_chunks": 0
     },
@@ -3062,12 +3056,12 @@
       ],
       "hybrid_retrieved_keys": [
         "ext_long_security_policy",
-        "ext_en_holiday",
         "ext_api_endpoints",
         "ext_python_symbols",
-        "ext_db_columns"
+        "ext_db_columns",
+        "ext_rate_limit_policy"
       ],
-      "top5_order_changed": true,
+      "top5_order_changed": false,
       "dense_cross_tenant_chunks": 0,
       "hybrid_cross_tenant_chunks": 0
     }

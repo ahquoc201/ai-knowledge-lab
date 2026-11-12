@@ -2,7 +2,7 @@
   "metadata": {
     "dataset_id": "ai-knowledge-lab-rag-quality-extended",
     "dataset_version": "1.0",
-    "timestamp": "2026-11-11T07:40:38.742979+00:00",
+    "timestamp": "2026-11-12T02:40:04.199802+00:00",
     "execution_mode": "retrieval-only",
     "retrieval_strategy": "dense (pgvector cosine)",
     "chunk_labeled_cases_count": 32,
@@ -42,10 +42,10 @@
     "empty_candidate_rate": 0.0,
     "empty_accepted_evidence_rate": 0.0,
     "tenant_isolation_rate": 1.0,
-    "mean_latency_ms": 155.38,
-    "mean_embedding_latency_ms": 56.91,
-    "mean_vector_latency_ms": 98.42,
-    "mean_context_latency_ms": 0.08
+    "mean_latency_ms": 189.27,
+    "mean_embedding_latency_ms": 57.07,
+    "mean_vector_latency_ms": 132.13,
+    "mean_context_latency_ms": 0.09
   },
   "category_breakdown": {
     "AMBIGUOUS_QUERY": {
@@ -1025,10 +1025,10 @@
       "classification": "INSUFFICIENT_EVIDENCE_TO_GRADE",
       "root_cause": "NONE",
       "notes": "Retrieval successfully found expected evidence",
-      "retrieval_latency_ms": 100.36,
-      "embedding_latency_ms": 28.45,
-      "vector_latency_ms": 71.86,
-      "context_latency_ms": 0.07,
+      "retrieval_latency_ms": 133.6,
+      "embedding_latency_ms": 41.84,
+      "vector_latency_ms": 91.69,
+      "context_latency_ms": 0.09,
       "generation_latency_ms": 0.0
     },
     {
@@ -1095,10 +1095,10 @@
       "classification": "INSUFFICIENT_EVIDENCE_TO_GRADE",
       "root_cause": "NONE",
       "notes": "Retrieval successfully found expected evidence",
-      "retrieval_latency_ms": 127.71,
-      "embedding_latency_ms": 41.53,
-      "vector_latency_ms": 86.09,
-      "context_latency_ms": 0.06,
+      "retrieval_latency_ms": 148.78,
+      "embedding_latency_ms": 47.99,
+      "vector_latency_ms": 100.73,
+      "context_latency_ms": 0.08,
       "generation_latency_ms": 0.0
     },
     {
@@ -1165,10 +1165,10 @@
       "classification": "INSUFFICIENT_EVIDENCE_TO_GRADE",
       "root_cause": "NONE",
       "notes": "Retrieval successfully found expected evidence",
-      "retrieval_latency_ms": 122.51,
-      "embedding_latency_ms": 30.17,
-      "vector_latency_ms": 92.3,
-      "context_latency_ms": 0.06,
+      "retrieval_latency_ms": 142.96,
+      "embedding_latency_ms": 43.07,
+      "vector_latency_ms": 99.85,
+      "context_latency_ms": 0.07,
       "generation_latency_ms": 0.0
     },
     {
@@ -1234,10 +1234,10 @@
       "classification": "INSUFFICIENT_EVIDENCE_TO_GRADE",
       "root_cause": "NONE",
       "notes": "Retrieval successfully found expected evidence",
-      "retrieval_latency_ms": 140.52,
-      "embedding_latency_ms": 39.75,
-      "vector_latency_ms": 100.74,
-      "context_latency_ms": 0.06,
+      "retrieval_latency_ms": 154.7,
+      "embedding_latency_ms": 41.81,
+      "vector_latency_ms": 112.84,
+      "context_latency_ms": 0.1,
       "generation_latency_ms": 0.0
     },
     {
@@ -1303,10 +1303,10 @@
       "classification": "INSUFFICIENT_EVIDENCE_TO_GRADE",
       "root_cause": "NONE",
       "notes": "Retrieval successfully found expected evidence",
-      "retrieval_latency_ms": 143.49,
-      "embedding_latency_ms": 50.81,
-      "vector_latency_ms": 92.61,
-      "context_latency_ms": 0.06,
+      "retrieval_latency_ms": 194.86,
+      "embedding_latency_ms": 55.84,
+      "vector_latency_ms": 138.92,
+      "context_latency_ms": 0.13,
       "generation_latency_ms": 0.0
     },
     {
@@ -1372,10 +1372,10 @@
       "classification": "INSUFFICIENT_EVIDENCE_TO_GRADE",
       "root_cause": "NONE",
       "notes": "Retrieval successfully found expected evidence",
-      "retrieval_latency_ms": 141.92,
-      "embedding_latency_ms": 47.26,
-      "vector_latency_ms": 94.61,
-      "context_latency_ms": 0.06,
+      "retrieval_latency_ms": 152.38,
+      "embedding_latency_ms": 49.96,
+      "vector_latency_ms": 102.36,
+      "context_latency_ms": 0.08,
       "generation_latency_ms": 0.0
     },
     {
@@ -1442,10 +1442,10 @@
       "classification": "INSUFFICIENT_EVIDENCE_TO_GRADE",
       "root_cause": "NONE",
       "notes": "Retrieval successfully found expected evidence",
-      "retrieval_latency_ms": 148.22,
-      "embedding_latency_ms": 33.38,
-      "vector_latency_ms": 114.75,
-      "context_latency_ms": 0.1,
+      "retrieval_latency_ms": 144.29,
+      "embedding_latency_ms": 33.7,
+      "vector_latency_ms": 110.54,
+      "context_latency_ms": 0.08,
       "generation_latency_ms": 0.0
     },
     {
@@ -1513,10 +1513,10 @@
       "classification": "INSUFFICIENT_EVIDENCE_TO_GRADE",
       "root_cause": "NONE",
       "notes": "Retrieval successfully found expected evidence",
-      "retrieval_latency_ms": 175.65,
-      "embedding_latency_ms": 72.02,
-      "vector_latency_ms": 103.58,
-      "context_latency_ms": 0.06,
+      "retrieval_latency_ms": 176.8,
+      "embedding_latency_ms": 45.6,
+      "vector_latency_ms": 131.13,
+      "context_latency_ms": 0.1,
       "generation_latency_ms": 0.0
     },
     {
@@ -1583,10 +1583,10 @@
       "classification": "INSUFFICIENT_EVIDENCE_TO_GRADE",
       "root_cause": "NONE",
       "notes": "Retrieval successfully found expected evidence",
-      "retrieval_latency_ms": 160.41,
-      "embedding_latency_ms": 42.47,
-      "vector_latency_ms": 117.89,
-      "context_latency_ms": 0.06,
+      "retrieval_latency_ms": 236.75,
+      "embedding_latency_ms": 81.64,
+      "vector_latency_ms": 154.97,
+      "context_latency_ms": 0.14,
       "generation_latency_ms": 0.0
     },
     {
@@ -1652,10 +1652,10 @@
       "classification": "INSUFFICIENT_EVIDENCE_TO_GRADE",
       "root_cause": "WRONG_DOCUMENT_RANKING",
       "notes": "Retrieval failed to find expected evidence in top-k",
-      "retrieval_latency_ms": 184.61,
-      "embedding_latency_ms": 74.95,
-      "vector_latency_ms": 109.62,
-      "context_latency_ms": 0.06,
+      "retrieval_latency_ms": 228.04,
+      "embedding_latency_ms": 80.17,
+      "vector_latency_ms": 147.82,
+      "context_latency_ms": 0.09,
       "generation_latency_ms": 0.0
     },
     {
@@ -1721,10 +1721,10 @@
       "classification": "INSUFFICIENT_EVIDENCE_TO_GRADE",
       "root_cause": "WRONG_DOCUMENT_RANKING",
       "notes": "Retrieval failed to find expected evidence in top-k",
-      "retrieval_latency_ms": 131.39,
-      "embedding_latency_ms": 30.74,
-      "vector_latency_ms": 100.59,
-      "context_latency_ms": 0.07,
+      "retrieval_latency_ms": 270.07,
+      "embedding_latency_ms": 57.34,
+      "vector_latency_ms": 212.67,
+      "context_latency_ms": 0.09,
       "generation_latency_ms": 0.0
     },
     {
@@ -1790,10 +1790,10 @@
       "classification": "INSUFFICIENT_EVIDENCE_TO_GRADE",
       "root_cause": "NONE",
       "notes": "Retrieval successfully found expected evidence",
-      "retrieval_latency_ms": 124.55,
-      "embedding_latency_ms": 40.32,
-      "vector_latency_ms": 84.16,
-      "context_latency_ms": 0.12,
+      "retrieval_latency_ms": 255.09,
+      "embedding_latency_ms": 108.02,
+      "vector_latency_ms": 147.0,
+      "context_latency_ms": 0.09,
       "generation_latency_ms": 0.0
     },
     {
@@ -1859,10 +1859,10 @@
       "classification": "INSUFFICIENT_EVIDENCE_TO_GRADE",
       "root_cause": "NONE",
       "notes": "Retrieval successfully found expected evidence",
-      "retrieval_latency_ms": 104.2,
-      "embedding_latency_ms": 31.56,
-      "vector_latency_ms": 72.61,
-      "context_latency_ms": 0.05,
+      "retrieval_latency_ms": 193.81,
+      "embedding_latency_ms": 58.39,
+      "vector_latency_ms": 135.36,
+      "context_latency_ms": 0.07,
       "generation_latency_ms": 0.0
     },
     {
@@ -1929,10 +1929,10 @@
       "classification": "INSUFFICIENT_EVIDENCE_TO_GRADE",
       "root_cause": "NONE",
       "notes": "Retrieval successfully found expected evidence",
-      "retrieval_latency_ms": 110.63,
-      "embedding_latency_ms": 27.26,
-      "vector_latency_ms": 83.33,
-      "context_latency_ms": 0.05,
+      "retrieval_latency_ms": 377.45,
+      "embedding_latency_ms": 53.51,
+      "vector_latency_ms": 323.85,
+      "context_latency_ms": 0.17,
       "generation_latency_ms": 0.0
     },
     {
@@ -1998,10 +1998,10 @@
       "classification": "INSUFFICIENT_EVIDENCE_TO_GRADE",
       "root_cause": "NONE",
       "notes": "Retrieval successfully found expected evidence",
-      "retrieval_latency_ms": 100.62,
-      "embedding_latency_ms": 26.03,
-      "vector_latency_ms": 74.55,
-      "context_latency_ms": 0.05,
+      "retrieval_latency_ms": 237.78,
+      "embedding_latency_ms": 117.21,
+      "vector_latency_ms": 120.5,
+      "context_latency_ms": 0.11,
       "generation_latency_ms": 0.0
     },
     {
@@ -2068,10 +2068,10 @@
       "classification": "INSUFFICIENT_EVIDENCE_TO_GRADE",
       "root_cause": "NONE",
       "notes": "Retrieval successfully found expected evidence",
-      "retrieval_latency_ms": 135.29,
-      "embedding_latency_ms": 27.33,
-      "vector_latency_ms": 107.89,
-      "context_latency_ms": 0.1,
+      "retrieval_latency_ms": 196.09,
+      "embedding_latency_ms": 45.91,
+      "vector_latency_ms": 150.11,
+      "context_latency_ms": 0.09,
       "generation_latency_ms": 0.0
     },
     {
@@ -2138,10 +2138,10 @@
       "classification": "INSUFFICIENT_EVIDENCE_TO_GRADE",
       "root_cause": "NONE",
       "notes": "Retrieval successfully found expected evidence",
-      "retrieval_latency_ms": 286.0,
-      "embedding_latency_ms": 166.42,
-      "vector_latency_ms": 119.49,
-      "context_latency_ms": 0.08,
+      "retrieval_latency_ms": 320.88,
+      "embedding_latency_ms": 53.56,
+      "vector_latency_ms": 267.26,
+      "context_latency_ms": 0.11,
       "generation_latency_ms": 0.0
     },
     {
@@ -2208,10 +2208,10 @@
       "classification": "INSUFFICIENT_EVIDENCE_TO_GRADE",
       "root_cause": "NONE",
       "notes": "Retrieval successfully found expected evidence",
-      "retrieval_latency_ms": 146.29,
-      "embedding_latency_ms": 63.23,
-      "vector_latency_ms": 83.01,
-      "context_latency_ms": 0.06,
+      "retrieval_latency_ms": 293.6,
+      "embedding_latency_ms": 167.67,
+      "vector_latency_ms": 125.83,
+      "context_latency_ms": 0.12,
       "generation_latency_ms": 0.0
     },
     {
@@ -2277,10 +2277,10 @@
       "classification": "INSUFFICIENT_EVIDENCE_TO_GRADE",
       "root_cause": "NONE",
       "notes": "Retrieval successfully found expected evidence",
-      "retrieval_latency_ms": 105.18,
-      "embedding_latency_ms": 27.98,
-      "vector_latency_ms": 77.15,
-      "context_latency_ms": 0.05,
+      "retrieval_latency_ms": 107.71,
+      "embedding_latency_ms": 30.59,
+      "vector_latency_ms": 77.07,
+      "context_latency_ms": 0.07,
       "generation_latency_ms": 0.0
     },
     {
@@ -2346,10 +2346,10 @@
       "classification": "INSUFFICIENT_EVIDENCE_TO_GRADE",
       "root_cause": "NONE",
       "notes": "Retrieval successfully found expected evidence",
-      "retrieval_latency_ms": 128.34,
-      "embedding_latency_ms": 26.24,
-      "vector_latency_ms": 102.03,
-      "context_latency_ms": 0.1,
+      "retrieval_latency_ms": 163.77,
+      "embedding_latency_ms": 39.97,
+      "vector_latency_ms": 123.73,
+      "context_latency_ms": 0.12,
       "generation_latency_ms": 0.0
     },
     {
@@ -2416,10 +2416,10 @@
       "classification": "INSUFFICIENT_EVIDENCE_TO_GRADE",
       "root_cause": "NONE",
       "notes": "Retrieval successfully found expected evidence",
-      "retrieval_latency_ms": 357.55,
-      "embedding_latency_ms": 234.34,
-      "vector_latency_ms": 123.13,
-      "context_latency_ms": 0.07,
+      "retrieval_latency_ms": 305.22,
+      "embedding_latency_ms": 182.37,
+      "vector_latency_ms": 122.75,
+      "context_latency_ms": 0.1,
       "generation_latency_ms": 0.0
     },
     {
@@ -2485,10 +2485,10 @@
       "classification": "INSUFFICIENT_EVIDENCE_TO_GRADE",
       "root_cause": "NONE",
       "notes": "Retrieval successfully found expected evidence",
-      "retrieval_latency_ms": 219.51,
-      "embedding_latency_ms": 106.66,
-      "vector_latency_ms": 112.78,
-      "context_latency_ms": 0.1,
+      "retrieval_latency_ms": 150.71,
+      "embedding_latency_ms": 33.78,
+      "vector_latency_ms": 116.87,
+      "context_latency_ms": 0.08,
       "generation_latency_ms": 0.0
     },
     {
@@ -2557,10 +2557,10 @@
       "classification": "INSUFFICIENT_EVIDENCE_TO_GRADE",
       "root_cause": "NONE",
       "notes": "Retrieval successfully found expected evidence",
-      "retrieval_latency_ms": 137.69,
-      "embedding_latency_ms": 43.24,
-      "vector_latency_ms": 94.39,
-      "context_latency_ms": 0.09,
+      "retrieval_latency_ms": 139.93,
+      "embedding_latency_ms": 43.12,
+      "vector_latency_ms": 96.76,
+      "context_latency_ms": 0.07,
       "generation_latency_ms": 0.0
     },
     {
@@ -2629,10 +2629,10 @@
       "classification": "INSUFFICIENT_EVIDENCE_TO_GRADE",
       "root_cause": "NONE",
       "notes": "Retrieval successfully found expected evidence",
-      "retrieval_latency_ms": 126.68,
-      "embedding_latency_ms": 42.37,
-      "vector_latency_ms": 84.27,
-      "context_latency_ms": 0.05,
+      "retrieval_latency_ms": 170.82,
+      "embedding_latency_ms": 38.28,
+      "vector_latency_ms": 132.46,
+      "context_latency_ms": 0.19,
       "generation_latency_ms": 0.0
     },
     {
@@ -2700,10 +2700,10 @@
       "classification": "INSUFFICIENT_EVIDENCE_TO_GRADE",
       "root_cause": "NONE",
       "notes": "Retrieval successfully found expected evidence",
-      "retrieval_latency_ms": 120.29,
-      "embedding_latency_ms": 34.31,
-      "vector_latency_ms": 85.94,
-      "context_latency_ms": 0.05,
+      "retrieval_latency_ms": 167.2,
+      "embedding_latency_ms": 53.19,
+      "vector_latency_ms": 113.94,
+      "context_latency_ms": 0.18,
       "generation_latency_ms": 0.0
     },
     {
@@ -2772,10 +2772,10 @@
       "classification": "INSUFFICIENT_EVIDENCE_TO_GRADE",
       "root_cause": "NONE",
       "notes": "Retrieval successfully found expected evidence",
-      "retrieval_latency_ms": 107.59,
-      "embedding_latency_ms": 27.23,
-      "vector_latency_ms": 80.32,
-      "context_latency_ms": 0.06,
+      "retrieval_latency_ms": 167.18,
+      "embedding_latency_ms": 41.54,
+      "vector_latency_ms": 125.56,
+      "context_latency_ms": 0.13,
       "generation_latency_ms": 0.0
     },
     {
@@ -2843,10 +2843,10 @@
       "classification": "INSUFFICIENT_EVIDENCE_TO_GRADE",
       "root_cause": "NONE",
       "notes": "Retrieval successfully found expected evidence",
-      "retrieval_latency_ms": 233.89,
-      "embedding_latency_ms": 56.09,
-      "vector_latency_ms": 177.74,
-      "context_latency_ms": 0.1,
+      "retrieval_latency_ms": 154.84,
+      "embedding_latency_ms": 47.48,
+      "vector_latency_ms": 107.28,
+      "context_latency_ms": 0.07,
       "generation_latency_ms": 0.0
     },
     {
@@ -2916,10 +2916,10 @@
       "classification": "INSUFFICIENT_EVIDENCE_TO_GRADE",
       "root_cause": "WRONG_DOCUMENT_RANKING",
       "notes": "Retrieval failed to find expected evidence in top-k",
-      "retrieval_latency_ms": 274.62,
-      "embedding_latency_ms": 173.34,
-      "vector_latency_ms": 101.22,
-      "context_latency_ms": 0.06,
+      "retrieval_latency_ms": 140.09,
+      "embedding_latency_ms": 37.17,
+      "vector_latency_ms": 102.87,
+      "context_latency_ms": 0.07,
       "generation_latency_ms": 0.0
     },
     {
@@ -2988,10 +2988,10 @@
       "classification": "INSUFFICIENT_EVIDENCE_TO_GRADE",
       "root_cause": "NONE",
       "notes": "Retrieval successfully found expected evidence",
-      "retrieval_latency_ms": 129.01,
-      "embedding_latency_ms": 40.55,
-      "vector_latency_ms": 88.41,
-      "context_latency_ms": 0.15,
+      "retrieval_latency_ms": 155.22,
+      "embedding_latency_ms": 40.94,
+      "vector_latency_ms": 114.23,
+      "context_latency_ms": 0.08,
       "generation_latency_ms": 0.0
     },
     {
@@ -3053,10 +3053,10 @@
       "classification": "INSUFFICIENT_EVIDENCE_TO_GRADE",
       "root_cause": "CORRECT_GUARDRAIL_REFUSAL",
       "notes": "Zero cross-tenant or negative documents retrieved",
-      "retrieval_latency_ms": 122.92,
-      "embedding_latency_ms": 36.76,
-      "vector_latency_ms": 86.11,
-      "context_latency_ms": 0.06,
+      "retrieval_latency_ms": 148.77,
+      "embedding_latency_ms": 45.5,
+      "vector_latency_ms": 103.22,
+      "context_latency_ms": 0.07,
       "generation_latency_ms": 0.0
     },
     {
@@ -3118,9 +3118,9 @@
       "classification": "INSUFFICIENT_EVIDENCE_TO_GRADE",
       "root_cause": "CORRECT_GUARDRAIL_REFUSAL",
       "notes": "Zero cross-tenant or negative documents retrieved",
-      "retrieval_latency_ms": 109.53,
-      "embedding_latency_ms": 28.69,
-      "vector_latency_ms": 80.77,
+      "retrieval_latency_ms": 154.31,
+      "embedding_latency_ms": 41.4,
+      "vector_latency_ms": 112.84,
       "context_latency_ms": 0.1,
       "generation_latency_ms": 0.0
     },
@@ -3184,10 +3184,10 @@
       "classification": "INSUFFICIENT_EVIDENCE_TO_GRADE",
       "root_cause": "CORRECT_GUARDRAIL_REFUSAL",
       "notes": "Zero cross-tenant or negative documents retrieved",
-      "retrieval_latency_ms": 117.42,
-      "embedding_latency_ms": 39.96,
-      "vector_latency_ms": 77.41,
-      "context_latency_ms": 0.05,
+      "retrieval_latency_ms": 170.6,
+      "embedding_latency_ms": 54.51,
+      "vector_latency_ms": 116.04,
+      "context_latency_ms": 0.09,
       "generation_latency_ms": 0.0
     },
     {
@@ -3249,10 +3249,10 @@
       "classification": "INSUFFICIENT_EVIDENCE_TO_GRADE",
       "root_cause": "NONE",
       "notes": "Retrieval successfully found expected evidence",
-      "retrieval_latency_ms": 119.09,
-      "embedding_latency_ms": 32.28,
-      "vector_latency_ms": 86.77,
-      "context_latency_ms": 0.04,
+      "retrieval_latency_ms": 154.97,
+      "embedding_latency_ms": 38.77,
+      "vector_latency_ms": 116.15,
+      "context_latency_ms": 0.06,
       "generation_latency_ms": 0.0
     },
     {
@@ -3315,10 +3315,10 @@
       "classification": "INSUFFICIENT_EVIDENCE_TO_GRADE",
       "root_cause": "NONE",
       "notes": "Retrieval successfully found expected evidence",
-      "retrieval_latency_ms": 149.36,
-      "embedding_latency_ms": 38.71,
-      "vector_latency_ms": 110.57,
-      "context_latency_ms": 0.08,
+      "retrieval_latency_ms": 158.76,
+      "embedding_latency_ms": 44.15,
+      "vector_latency_ms": 114.56,
+      "context_latency_ms": 0.06,
       "generation_latency_ms": 0.0
     },
     {
@@ -3383,10 +3383,10 @@
       "classification": "INSUFFICIENT_EVIDENCE_TO_GRADE",
       "root_cause": "NONE",
       "notes": "Retrieval successfully found expected evidence",
-      "retrieval_latency_ms": 146.4,
-      "embedding_latency_ms": 44.2,
-      "vector_latency_ms": 102.15,
-      "context_latency_ms": 0.05,
+      "retrieval_latency_ms": 131.98,
+      "embedding_latency_ms": 35.23,
+      "vector_latency_ms": 96.7,
+      "context_latency_ms": 0.06,
       "generation_latency_ms": 0.0
     },
     {
@@ -3448,10 +3448,10 @@
       "classification": "INSUFFICIENT_EVIDENCE_TO_GRADE",
       "root_cause": "CORRECT_GUARDRAIL_REFUSAL",
       "notes": "Zero cross-tenant or negative documents retrieved",
-      "retrieval_latency_ms": 157.1,
-      "embedding_latency_ms": 60.56,
-      "vector_latency_ms": 96.46,
-      "context_latency_ms": 0.06,
+      "retrieval_latency_ms": 339.25,
+      "embedding_latency_ms": 61.64,
+      "vector_latency_ms": 277.56,
+      "context_latency_ms": 0.08,
       "generation_latency_ms": 0.0
     },
     {
@@ -3512,10 +3512,10 @@
       "classification": "INSUFFICIENT_EVIDENCE_TO_GRADE",
       "root_cause": "CORRECT_GUARDRAIL_REFUSAL",
       "notes": "Zero cross-tenant or negative documents retrieved",
-      "retrieval_latency_ms": 177.37,
-      "embedding_latency_ms": 61.23,
-      "vector_latency_ms": 116.07,
-      "context_latency_ms": 0.15,
+      "retrieval_latency_ms": 141.01,
+      "embedding_latency_ms": 45.22,
+      "vector_latency_ms": 95.74,
+      "context_latency_ms": 0.07,
       "generation_latency_ms": 0.0
     },
     {
@@ -3576,10 +3576,10 @@
       "classification": "INSUFFICIENT_EVIDENCE_TO_GRADE",
       "root_cause": "CORRECT_GUARDRAIL_REFUSAL",
       "notes": "Zero cross-tenant or negative documents retrieved",
-      "retrieval_latency_ms": 166.77,
-      "embedding_latency_ms": 62.69,
-      "vector_latency_ms": 104.01,
-      "context_latency_ms": 0.09,
+      "retrieval_latency_ms": 167.77,
+      "embedding_latency_ms": 35.89,
+      "vector_latency_ms": 131.83,
+      "context_latency_ms": 0.07,
       "generation_latency_ms": 0.0
     },
     {
@@ -3640,10 +3640,10 @@
       "classification": "INSUFFICIENT_EVIDENCE_TO_GRADE",
       "root_cause": "CORRECT_GUARDRAIL_REFUSAL",
       "notes": "Zero cross-tenant or negative documents retrieved",
-      "retrieval_latency_ms": 179.3,
-      "embedding_latency_ms": 52.14,
-      "vector_latency_ms": 127.08,
-      "context_latency_ms": 0.18,
+      "retrieval_latency_ms": 154.39,
+      "embedding_latency_ms": 41.67,
+      "vector_latency_ms": 112.64,
+      "context_latency_ms": 0.09,
       "generation_latency_ms": 0.0
     },
     {
@@ -3704,10 +3704,10 @@
       "classification": "INSUFFICIENT_EVIDENCE_TO_GRADE",
       "root_cause": "CORRECT_GUARDRAIL_REFUSAL",
       "notes": "Zero cross-tenant or negative documents retrieved",
-      "retrieval_latency_ms": 236.75,
-      "embedding_latency_ms": 128.94,
-      "vector_latency_ms": 107.73,
-      "context_latency_ms": 0.1,
+      "retrieval_latency_ms": 205.99,
+      "embedding_latency_ms": 78.43,
+      "vector_latency_ms": 127.39,
+      "context_latency_ms": 0.07,
       "generation_latency_ms": 0.0
     },
     {
@@ -3768,10 +3768,10 @@
       "classification": "INSUFFICIENT_EVIDENCE_TO_GRADE",
       "root_cause": "CORRECT_GUARDRAIL_REFUSAL",
       "notes": "Zero cross-tenant or negative documents retrieved",
-      "retrieval_latency_ms": 163.97,
-      "embedding_latency_ms": 60.99,
-      "vector_latency_ms": 102.92,
-      "context_latency_ms": 0.1,
+      "retrieval_latency_ms": 151.64,
+      "embedding_latency_ms": 45.83,
+      "vector_latency_ms": 105.76,
+      "context_latency_ms": 0.08,
       "generation_latency_ms": 0.0
     }
   ]
