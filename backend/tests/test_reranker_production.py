@@ -25,6 +25,7 @@ Plus optional real-model test against locally provisioned ONNX INT8 artifact.
 """
 
 import asyncio
+import threading
 import time
 from pathlib import Path
 from unittest.mock import MagicMock
@@ -679,3 +680,100 @@ async def test_real_model_inference_if_present():
         assert results[0].rerank_score > results[1].rerank_score
     finally:
         service.shutdown()
+
+
+# -----------------------------------------------------------------------------
+# Scenario 21: Deterministic Concurrency Limit & Blocked Worker Audit
+# -----------------------------------------------------------------------------
+@pytest.mark.anyio
+async def test_max_concurrent_cpu_inference_strictly_bounded_with_blocked_worker():
+    """Verify that under artificial thread blocks, concurrent execution strictly equals configured limit."""
+    c = SemanticSearchResult(chunk=make_dummy_chunk("Blocked Worker Test"), similarity=0.8)
+
+    class InstrumentedRerankerService(MockRerankerService):
+        def __init__(self, **kwargs):
+            super().__init__(**kwargs)
+            self.current_running_threads = 0
+            self.max_running_threads_seen = 0
+            self.thread_lock = threading.Lock()
+
+        def _sync_predict(self, pairs):
+            with self.thread_lock:
+                self.current_running_threads += 1
+                self.max_running_threads_seen = max(
+                    self.max_running_threads_seen, self.current_running_threads
+                )
+            try:
+                time.sleep(self.inference_delay)
+            finally:
+                with self.thread_lock:
+                    self.current_running_threads -= 1
+            return [1.0] * len(pairs), {"tokenize_ms": 1.0, "inference_ms": 2.0, "total_ms": 3.0}
+
+    # Max concurrency 1, queue size 5
+    service = InstrumentedRerankerService(
+        enabled=True,
+        max_concurrency=1,
+        max_queue_size=5,
+        inference_delay=0.08,
+        queue_timeout_seconds=0.5,
+        timeout_seconds=0.5,
+    )
+
+    try:
+        # Launch 4 requests simultaneously
+        tasks = [
+            asyncio.create_task(service.rerank_candidates(query=f"q{i}", candidates=[c], opt_in=True))
+            for i in range(4)
+        ]
+        results = await asyncio.gather(*tasks)
+
+        for _, is_reranked, fallback in results:
+            assert is_reranked
+            assert fallback is None
+
+        # INVARIANT: Under max_concurrency=1, max simultaneous worker execution must NEVER exceed 1!
+        assert service.max_running_threads_seen == 1
+        assert service._active_inferences == 0
+    finally:
+        service.shutdown()
+
+
+# -----------------------------------------------------------------------------
+# Scenario 22: Non-blocking shutdown with active inference running
+# -----------------------------------------------------------------------------
+@pytest.mark.anyio
+async def test_non_blocking_shutdown_with_running_inference():
+    """Verify shutdown(wait=False) returns immediately without blocking, while rejecting new requests."""
+    c = SemanticSearchResult(chunk=make_dummy_chunk("Shutdown Test"), similarity=0.8)
+    service = MockRerankerService(
+        enabled=True,
+        max_concurrency=1,
+        inference_delay=0.15,
+        timeout_seconds=1.0,
+    )
+
+    # Start long inference
+    t_start = asyncio.create_task(service.rerank_candidates(query="long", candidates=[c], opt_in=True))
+    await asyncio.sleep(0.02)  # Ensure task has acquired permit and entered thread
+
+    # Call shutdown
+    t0 = time.perf_counter()
+    service.shutdown()
+    t_shutdown = (time.perf_counter() - t0) * 1000.0
+
+    # Must be non-blocking (< 10ms)
+    assert t_shutdown < 10.0, f"Shutdown blocked for {t_shutdown:.2f}ms!"
+    assert not service.is_ready
+
+    # Subsequent requests must be rejected immediately via fallback
+    _, is_reranked_after, fallback_after = await service.rerank_candidates(
+        query="after_shutdown", candidates=[c], opt_in=True
+    )
+    assert not is_reranked_after
+    assert fallback_after in ("model_not_ready", "inference_error")
+
+    # The running task completes cleanly without throwing unhandled exceptions
+    _, is_reranked_orig, fallback_orig = await t_start
+    assert is_reranked_orig or fallback_orig is not None
+

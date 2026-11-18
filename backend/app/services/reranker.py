@@ -378,31 +378,34 @@ class RerankerService:
         queue_wait_ms = (time.perf_counter() - t_queue_start) * 1000.0
 
         # 5. Dispatch inference to worker thread pool
-        # Bounded concurrency rule: Do NOT release permit until the thread worker actually completes!
+        # Bounded concurrency rule: Hold permit until underlying OS thread worker completes!
         permit_released = False
+        loop = asyncio.get_running_loop()
 
-        def _release_worker_permit(_fut: Any) -> None:
+        def _release_permit() -> None:
             nonlocal permit_released
             if not permit_released:
                 permit_released = True
-                self._active_inferences -= 1
+                self._active_inferences = max(0, self._active_inferences - 1)
                 if self._semaphore is not None:
                     self._semaphore.release()
+
+        def _on_thread_worker_done(_fut: Any) -> None:
+            # Invoked on OS worker thread upon completion; release permit thread-safely on event loop
+            if loop.is_running() and not loop.is_closed():
+                loop.call_soon_threadsafe(_release_permit)
 
         self._active_inferences += 1
         pairs = [(query, c.chunk.content) for c in candidates]
 
         try:
-            loop = asyncio.get_running_loop()
-            worker_future = loop.run_in_executor(
-                self._executor,
-                self._sync_predict,
-                pairs,
-            )
-            worker_future.add_done_callback(_release_worker_permit)
+            # Submit directly to ThreadPoolExecutor to track true OS worker completion
+            thread_future = self._executor.submit(self._sync_predict, pairs)
+            thread_future.add_done_callback(_on_thread_worker_done)
+            asyncio_future = asyncio.wrap_future(thread_future, loop=loop)
 
             scores, timing = await asyncio.wait_for(
-                worker_future,
+                asyncio_future,
                 timeout=self.timeout_seconds,
             )
         except TimeoutError:
@@ -415,6 +418,7 @@ class RerankerService:
             raise
         except (RuntimeError, ValueError, OSError):
             logger.exception("[Reranker] Inference error. Falling back.")
+            _release_permit()
             self.telemetry.record_fallback("inference_error")
             return candidates[:limit], False, "inference_error"
 
@@ -456,7 +460,11 @@ class RerankerService:
         )
 
     def shutdown(self) -> None:
-        """Cleanly release resources on application shutdown."""
+        """Non-blocking release of runtime resources upon application shutdown.
+
+        Cancels any unstarted queued tasks and closes inference sessions without
+        blocking the event loop. Already-executing worker threads finish their active pass.
+        """
         self._is_ready = False
         self._session = None
         self._tokenizer = None
