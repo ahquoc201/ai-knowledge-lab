@@ -19,6 +19,7 @@ class ContextSource:
     document_title: str | None = None
     char_start: int | None = None
     char_end: int | None = None
+    rerank_score: float | None = None
 
 
 @dataclass(frozen=True, slots=True)
@@ -81,6 +82,7 @@ def build_retrieval_context(
             document_title=result.document_title,
             char_start=result.chunk.char_start,
             char_end=result.chunk.char_end,
+            rerank_score=getattr(result, "rerank_score", None),
         )
 
         sources.append(source)

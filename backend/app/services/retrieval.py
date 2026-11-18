@@ -4,6 +4,7 @@ from uuid import UUID
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.core.config import get_settings
 from app.repositories.document_chunk import search_keyword_chunks
 from app.services.context_builder import (
     RetrievalContext,
@@ -16,7 +17,8 @@ from app.services.fusion import (
     FusedSearchResult,
     reciprocal_rank_fusion,
 )
-from app.services.semantic_search import semantic_search
+from app.services.reranker import get_reranker_service
+from app.services.semantic_search import SemanticSearchResult, semantic_search
 
 
 class RetrievalMode(str, Enum):
@@ -76,7 +78,7 @@ async def hybrid_search(
     )
 
 
-async def retrieve_context(
+async def retrieve_candidates(
     session: AsyncSession,
     *,
     user_id: UUID | None = None,
@@ -87,15 +89,12 @@ async def retrieve_context(
     rrf_k: int = DEFAULT_RRF_K,
     dense_weight: float = DEFAULT_DENSE_WEIGHT,
     keyword_weight: float = DEFAULT_KEYWORD_WEIGHT,
-) -> RetrievalContext:
-    """Retrieve context bounded by character budget, with configurable retrieval mode.
-
-    Default mode is strictly DENSE to preserve existing behavior and backward compatibility.
-    """
+) -> list[SemanticSearchResult | FusedSearchResult]:
+    """Retrieve raw candidate chunks based on the configured retrieval mode."""
     norm_mode = str(getattr(mode, "value", mode)).lower()
 
     if norm_mode in (RetrievalMode.HYBRID.value, "hybrid"):
-        results = await hybrid_search(
+        return await hybrid_search(
             session,
             user_id=user_id,
             workspace_id=workspace_id,
@@ -113,7 +112,7 @@ async def retrieve_context(
             query=query,
             limit=limit,
         )
-        results = reciprocal_rank_fusion(
+        return reciprocal_rank_fusion(
             dense_results=[],
             keyword_results=keyword_raw,
             k=rrf_k,
@@ -134,6 +133,53 @@ async def retrieve_context(
         if workspace_id is not None and "workspace_id" in inspect.signature(semantic_search).parameters:
             search_kwargs["workspace_id"] = workspace_id
 
-        results = await semantic_search(**search_kwargs)
+        return await semantic_search(**search_kwargs)
 
-    return build_retrieval_context(results)
+
+async def retrieve_context(
+    session: AsyncSession,
+    *,
+    user_id: UUID | None = None,
+    workspace_id: UUID | None = None,
+    query: str,
+    limit: int = 5,
+    mode: str | RetrievalMode = RetrievalMode.DENSE,
+    rrf_k: int = DEFAULT_RRF_K,
+    dense_weight: float = DEFAULT_DENSE_WEIGHT,
+    keyword_weight: float = DEFAULT_KEYWORD_WEIGHT,
+    enable_reranking: bool = False,
+) -> RetrievalContext:
+    """Retrieve context bounded by character budget, with configurable retrieval mode and opt-in reranking.
+
+    Default mode is strictly DENSE and reranking is disabled by default to preserve backward compatibility.
+    """
+    settings = get_settings()
+
+    # Determine candidate pool size: expand if client opted-in and server has reranker enabled
+    fetch_limit = limit
+    if enable_reranking and settings.reranker_enabled:
+        fetch_limit = max(limit, settings.reranker_pool_size)
+
+    candidates = await retrieve_candidates(
+        session,
+        user_id=user_id,
+        workspace_id=workspace_id,
+        query=query,
+        limit=fetch_limit,
+        mode=mode,
+        rrf_k=rrf_k,
+        dense_weight=dense_weight,
+        keyword_weight=keyword_weight,
+    )
+
+    if enable_reranking:
+        reranker_service = get_reranker_service()
+        final_results, _is_reranked, _fallback = await reranker_service.rerank_candidates(
+            query=query,
+            candidates=candidates,
+            limit=limit,
+            opt_in=True,
+        )
+        return build_retrieval_context(final_results)
+
+    return build_retrieval_context(candidates[:limit])

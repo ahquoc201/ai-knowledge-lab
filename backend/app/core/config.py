@@ -64,6 +64,19 @@ class Settings(BaseSettings):
     agent_run_lease_ttl_seconds: int = 60
     agent_max_recovery_attempts: int = 3
 
+    # Production Reranker Integration (T260038)
+    reranker_enabled: bool = False
+    reranker_backend: str = "onnx_int8"
+    reranker_model_path: Path = PROJECT_ROOT / "storage" / "models" / "reranker" / "model_int8.onnx"
+    reranker_model_name: str = "cross-encoder/mmarco-mMiniLMv2-L12-H384-v1"
+    reranker_pool_size: int = 10
+    reranker_max_concurrency: int = 1
+    reranker_max_queue_size: int = 5
+    reranker_queue_timeout_seconds: float = 2.0
+    reranker_intra_op_threads: int = 4
+    reranker_timeout_ms: float = 3000.0
+    reranker_expected_sha256: str | None = None
+
     model_config = SettingsConfigDict(
         env_file=PROJECT_ROOT / ".env",
         env_file_encoding="utf-8",

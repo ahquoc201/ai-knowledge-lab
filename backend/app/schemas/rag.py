@@ -18,6 +18,10 @@ class RAGRequest(BaseModel):
         default="dense",
         description="Retrieval mode: dense, keyword, or hybrid",
     )
+    enable_reranking: bool = Field(
+        default=False,
+        description="Explicitly opt-in to Cross-Encoder reranking if enabled server-side.",
+    )
 
 
 class RAGSourceResponse(BaseModel):
@@ -30,6 +34,10 @@ class RAGSourceResponse(BaseModel):
     document_title: str | None = None
     char_start: int | None = None
     char_end: int | None = None
+    rerank_score: float | None = Field(
+        default=None,
+        description="Cross-Encoder reranking score if reranking was applied.",
+    )
 
 
 class RAGResponse(BaseModel):

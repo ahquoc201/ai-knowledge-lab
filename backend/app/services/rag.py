@@ -29,6 +29,7 @@ async def answer_with_rag(
     limit: int = 5,
     history: list[LLMMessage] | None = None,
     retrieval_mode: str = "dense",
+    enable_reranking: bool = False,
 ) -> RAGResult:
     import inspect
 
@@ -37,12 +38,17 @@ async def answer_with_rag(
         "query": query,
         "limit": limit,
     }
+    sig_params = inspect.signature(retrieve_context).parameters
+    has_var_kwargs = any(p.kind == inspect.Parameter.VAR_KEYWORD for p in sig_params.values())
+
     if user_id is not None:
         retrieval_kwargs["user_id"] = user_id
-    if workspace_id is not None and "workspace_id" in inspect.signature(retrieve_context).parameters:
+    if (workspace_id is not None) and ("workspace_id" in sig_params or has_var_kwargs):
         retrieval_kwargs["workspace_id"] = workspace_id
-    if "mode" in inspect.signature(retrieve_context).parameters:
+    if "mode" in sig_params or has_var_kwargs:
         retrieval_kwargs["mode"] = retrieval_mode
+    if "enable_reranking" in sig_params or has_var_kwargs:
+        retrieval_kwargs["enable_reranking"] = enable_reranking
 
     context = await retrieve_context(**retrieval_kwargs)
 

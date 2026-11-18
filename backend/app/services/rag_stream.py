@@ -46,6 +46,7 @@ def serialize_source(source: ContextSource) -> dict[str, Any]:
         "document_title": source.document_title,
         "char_start": source.char_start,
         "char_end": source.char_end,
+        "rerank_score": source.rerank_score,
     }
 
 
@@ -60,6 +61,7 @@ async def answer_with_rag_stream(
     limit: int = 5,
     history: list[LLMMessage] | None = None,
     retrieval_mode: str = "dense",
+    enable_reranking: bool = False,
 ) -> AsyncIterator[str]:
     """Execute streaming RAG workflow with guardrails and persistence.
 
@@ -88,10 +90,15 @@ async def answer_with_rag_stream(
             "query": query,
             "limit": limit,
         }
-        if workspace_id is not None and "workspace_id" in inspect.signature(retrieve_context).parameters:
+        sig_params = inspect.signature(retrieve_context).parameters
+        has_var_kwargs = any(p.kind == inspect.Parameter.VAR_KEYWORD for p in sig_params.values())
+
+        if (workspace_id is not None) and ("workspace_id" in sig_params or has_var_kwargs):
             retrieval_kwargs["workspace_id"] = workspace_id
-        if "mode" in inspect.signature(retrieve_context).parameters:
+        if "mode" in sig_params or has_var_kwargs:
             retrieval_kwargs["mode"] = retrieval_mode
+        if "enable_reranking" in sig_params or has_var_kwargs:
+            retrieval_kwargs["enable_reranking"] = enable_reranking
 
         context = await retrieve_context(**retrieval_kwargs)
 
