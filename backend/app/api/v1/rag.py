@@ -122,6 +122,7 @@ async def ask_rag(
         limit=payload.limit,
         history=history,
         retrieval_mode=payload.retrieval_mode,
+        enable_reranking=payload.enable_reranking,
     )
 
     assistant_message = await create_workspace_conversation_message(
@@ -169,6 +170,7 @@ async def ask_rag(
                 document_title=source.document_title,
                 char_start=source.char_start,
                 char_end=source.char_end,
+                rerank_score=source.rerank_score,
             )
             for source in result.sources
         ],
@@ -269,6 +271,7 @@ async def ask_rag_stream(
         limit=payload.limit,
         history=history,
         retrieval_mode=payload.retrieval_mode,
+        enable_reranking=payload.enable_reranking,
     )
 
     return StreamingResponse(
