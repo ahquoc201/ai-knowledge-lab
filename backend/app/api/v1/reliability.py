@@ -16,7 +16,9 @@ from app.models.workspace_membership import WorkspaceMembership
 from app.repositories import agent as agent_repo
 from app.services.agent_recovery import AgentRecoveryService
 from app.services.inference_governor import get_inference_governor
+from app.services.rag_observability import get_rag_observability
 from app.services.rate_limiter import get_rate_limiter
+from app.services.reranker import get_reranker_service
 
 logger = logging.getLogger(__name__)
 
@@ -105,6 +107,8 @@ async def get_reliability_metrics(
             "redis_connected": limiter.is_redis_active(),
             "mode": "distributed_redis" if limiter.is_redis_active() else "in_memory_fallback",
         },
+        "rag_observability": get_rag_observability().get_metrics(),
+        "reranker": get_reranker_service().get_metrics(),
     }
 
 

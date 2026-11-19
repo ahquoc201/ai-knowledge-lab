@@ -1,0 +1,74 @@
+{
+  "metadata": {
+    "task_id": "T260039",
+    "logical_cpu_count": 12,
+    "intra_op_threads_per_worker": 4,
+    "requests_per_worker": 8
+  },
+  "configurations": {
+    "1_worker": {
+      "num_workers": 1,
+      "aggregate_rps": 0.75,
+      "total_requests": 8,
+      "total_wall_s": 86.013,
+      "avg_p50_ms": 1325.16,
+      "max_p95_ms": 1994.48,
+      "total_rss_mb": 1315.5,
+      "workers": [
+        {
+          "worker_id": 0,
+          "requests": 8,
+          "fallbacks": 0,
+          "wall_s": 10.649,
+          "cpu_s": 38.716,
+          "rps": 0.75,
+          "p50_ms": 1325.16,
+          "p95_ms": 1994.48,
+          "rss_before_model_mb": 797.57,
+          "rss_after_warmup_mb": 1306.12,
+          "rss_peak_mb": 1315.5,
+          "model_memory_delta_mb": 508.55
+        }
+      ]
+    },
+    "2_worker": {
+      "num_workers": 2,
+      "aggregate_rps": 1.16,
+      "total_requests": 16,
+      "total_wall_s": 116.22,
+      "avg_p50_ms": 1710.16,
+      "max_p95_ms": 2043.13,
+      "total_rss_mb": 2635.61,
+      "workers": [
+        {
+          "worker_id": 1,
+          "requests": 8,
+          "fallbacks": 0,
+          "wall_s": 13.486,
+          "cpu_s": 52.404,
+          "rps": 0.59,
+          "p50_ms": 1611.63,
+          "p95_ms": 2043.13,
+          "rss_before_model_mb": 797.16,
+          "rss_after_warmup_mb": 1306.92,
+          "rss_peak_mb": 1316.34,
+          "model_memory_delta_mb": 509.76
+        },
+        {
+          "worker_id": 0,
+          "requests": 8,
+          "fallbacks": 0,
+          "wall_s": 14.098,
+          "cpu_s": 54.588,
+          "rps": 0.57,
+          "p50_ms": 1808.68,
+          "p95_ms": 1903.35,
+          "rss_before_model_mb": 797.29,
+          "rss_after_warmup_mb": 1309.96,
+          "rss_peak_mb": 1319.27,
+          "model_memory_delta_mb": 512.67
+        }
+      ]
+    }
+  }
+}
