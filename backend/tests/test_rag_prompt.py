@@ -329,3 +329,27 @@ def test_system_prompt_requires_canonical_refusal():
         "Do not add citations to the refusal."
         in SYSTEM_PROMPT
     )
+
+def test_answer_instructions_follow_the_question_t260040():
+    """Citation/refusal reminder is the last thing the model reads (T260040)."""
+    from app.services.rag_prompt import ANSWER_INSTRUCTIONS, INSUFFICIENT_CONTEXT_ANSWER
+
+    context = RetrievalContext(
+        text="[Source 1]\nPostgreSQL hỗ trợ transaction.",
+        sources=[
+            ContextSource(
+                source_index=1,
+                document_id=uuid4(),
+                chunk_id=uuid4(),
+                chunk_index=0,
+                content="PostgreSQL hỗ trợ transaction.",
+                similarity=0.9,
+            )
+        ],
+    )
+    messages = build_rag_messages(query="PostgreSQL hỗ trợ gì?", context=context)
+
+    assert messages[1].content.endswith("PostgreSQL hỗ trợ gì?\n\n" + ANSWER_INSTRUCTIONS)
+    assert "[Source N]" in ANSWER_INSTRUCTIONS
+    # The exact refusal sentence still lives in the system prompt.
+    assert INSUFFICIENT_CONTEXT_ANSWER in SYSTEM_PROMPT

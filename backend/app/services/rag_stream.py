@@ -23,7 +23,6 @@ from app.services.message import (
     create_workspace_conversation_message,
 )
 from app.services.message_source import save_assistant_message_sources
-from app.services.model_router import ModelRouter
 from app.services.rag_observability import (
     elapsed_ms,
     get_rag_observability,
@@ -33,8 +32,8 @@ from app.services.rag_prompt import (
     INSUFFICIENT_CONTEXT_ANSWER,
     build_rag_messages,
 )
+from app.services.rag_routing import route_rag_generation
 from app.services.retrieval import retrieve_context
-from app.services.task_classifier import TaskClassifier
 
 logger = logging.getLogger(__name__)
 
@@ -182,39 +181,27 @@ async def answer_with_rag_stream(
         serialized_sources = [serialize_source(s) for s in context.sources]
         yield format_sse("retrieval_completed", {"sources": serialized_sources})
 
-        # Adaptive Model Routing
+        # Adaptive model routing (request-local: never mutates the shared provider)
         stage = "model_routing"
-        model_router = ModelRouter()
-        classifier = TaskClassifier()
-        has_ctx = bool(context.sources and context.text.strip())
-        task_type = classifier.classify(
-            prompt=query,
-            has_retrieved_context=has_ctx,
-            context_document_count=len(context.sources),
+        routed = await route_rag_generation(
+            session,
+            llm=llm,
+            query=query,
+            context=context,
+            workspace_id=workspace_id,
         )
-        routed_model = getattr(llm, "model", "default")
-        if session is not None:
-            try:
-                routing = await model_router.select_model(
-                    session=session,
-                    task_type=task_type,
-                    workspace_id=workspace_id,
-                    context_metadata={"query": query[:100], "source_count": len(context.sources)},
-                )
-                routed_model = routing.selected_model
-                if hasattr(llm, "model"):
-                    llm.model = routed_model
-                yield format_sse(
-                    "model_routed",
-                    {
-                        "model": routing.selected_model,
-                        "task_type": routing.task_type,
-                        "reason": routing.selection_reason,
-                        "fallback_occurred": routing.is_fallback,
-                    },
-                )
-            except (RuntimeError, ValueError, KeyError, OSError, AttributeError) as e:
-                logger.warning("RAG model routing non-fatal warning: %s", e)
+        request_llm = routed.llm
+        routed_model = routed.model_name
+        if routed.routing is not None:
+            yield format_sse(
+                "model_routed",
+                {
+                    "model": routed.routing.selected_model,
+                    "task_type": routed.routing.task_type,
+                    "reason": routed.routing.selection_reason,
+                    "fallback_occurred": routed.routing.is_fallback,
+                },
+            )
 
         # Guardrail 1: Refuse when no usable evidence exists
         if not context.sources or not context.text.strip():
@@ -271,7 +258,7 @@ async def answer_with_rag_stream(
         governor = get_inference_governor()
         t_llm_start = time.perf_counter()
         async with governor.acquire(caller_info=f"rag_stream:{conversation_id}"):
-            async for token in llm.generate_stream(messages):
+            async for token in request_llm.generate_stream(messages):
                 if ttft_ms is None:
                     ttft_ms = elapsed_ms(t_total_start)
                 accumulated_tokens.append(token)

@@ -17,7 +17,7 @@ from app.core.agent_state import (
 )
 from app.core.config import get_settings
 from app.core.workspace_role import AuditOutcome
-from app.llm.base import LLMMessage, LLMProvider
+from app.llm.base import LLMMessage, LLMProvider, bind_model
 from app.models.agent import AgentRun
 from app.repositories import agent as agent_repo
 from app.services.agent_approval import AgentApprovalService
@@ -117,8 +117,6 @@ class AgentOrchestrator:
                 )
                 run.model_name = routing.selected_model
                 await session.commit()
-                if hasattr(self.llm_provider, "model"):
-                    self.llm_provider.model = routing.selected_model
 
                 await agent_repo.append_event(
                     session,
@@ -306,7 +304,10 @@ class AgentOrchestrator:
             try:
                 governor = get_inference_governor()
                 async with governor.acquire(caller_info=f"agent_decision:{run.id}"):
-                    raw_response = await self.llm_provider.generate(messages)
+                    # The injected provider is a shared singleton: bind the run's routed
+                    # model request-locally instead of mutating it (T260040).
+                    run_llm = bind_model(self.llm_provider, run.model_name)
+                    raw_response = await run_llm.generate(messages)
                 decision = parse_agent_decision(raw_response)
                 return decision
             except LLMParseError as exc:

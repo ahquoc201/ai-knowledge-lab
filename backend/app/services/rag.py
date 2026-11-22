@@ -17,6 +17,7 @@ from app.services.rag_prompt import (
     INSUFFICIENT_CONTEXT_ANSWER,
     build_rag_messages,
 )
+from app.services.rag_routing import route_rag_generation
 from app.services.retrieval import retrieve_context
 
 
@@ -24,6 +25,7 @@ from app.services.retrieval import retrieve_context
 class RAGResult:
     answer: str
     sources: list[ContextSource]
+    model_name: str | None = None
 
 
 async def answer_with_rag(
@@ -105,13 +107,23 @@ async def answer_with_rag(
             history=history,
         )
 
+        # Same request-local routing as the streaming path; the shared provider is never mutated.
+        stage = "model_routing"
+        routed = await route_rag_generation(
+            session,
+            llm=llm,
+            query=query,
+            context=context,
+            workspace_id=workspace_id,
+        )
+
         stage = "llm_generation"
         from app.services.inference_governor import get_inference_governor
 
         governor = get_inference_governor()
         t_llm_start = time.perf_counter()
         async with governor.acquire(caller_info=f"rag_ask:{workspace_id}"):
-            answer = await llm.generate(messages)
+            answer = await routed.llm.generate(messages)
         llm_ms = elapsed_ms(t_llm_start)
 
         if answer.strip() == INSUFFICIENT_CONTEXT_ANSWER:
@@ -133,6 +145,7 @@ async def answer_with_rag(
             return RAGResult(
                 answer=INSUFFICIENT_CONTEXT_ANSWER,
                 sources=[],
+                model_name=routed.model_name,
             )
 
         stage = "citation_validation"
@@ -164,6 +177,7 @@ async def answer_with_rag(
                     "từ tài liệu được truy xuất."
                 ),
                 sources=[],
+                model_name=routed.model_name,
             )
 
         obs.record_request(
@@ -184,6 +198,7 @@ async def answer_with_rag(
         return RAGResult(
             answer=answer,
             sources=context.sources,
+            model_name=routed.model_name,
         )
     except asyncio.CancelledError:
         obs.record_request(

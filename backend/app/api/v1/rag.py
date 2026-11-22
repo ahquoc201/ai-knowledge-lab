@@ -176,6 +176,7 @@ async def ask_rag(
     return RAGResponse(
         conversation_id=conversation_id,
         answer=result.answer,
+        model_name=getattr(result, "model_name", None),
         sources=[
             RAGSourceResponse(
                 source_index=source.source_index,

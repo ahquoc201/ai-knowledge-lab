@@ -1,0 +1,19 @@
+{
+  "name": "t260040_real_llm_eval",
+  "description": "Independently labeled real-LLM RAG evaluation set (T260040). Labels were written from the source documents before any model output was generated. 'required_facts' must all appear in a correct answer; 'evidence' is the exact source sentence fragment that supports the answer and must be contained in a cited chunk.",
+  "documents": ["lumora_hr_handbook.md", "orchid_operations_runbook.md"],
+  "questions": [
+    {"id": "q01", "question": "Nhân viên chính thức của Lumora được hưởng bao nhiêu ngày nghỉ phép có lương mỗi năm?", "answerable": true, "document": "lumora_hr_handbook.md", "required_facts": ["18"], "evidence": "được hưởng 18 ngày nghỉ phép có lương mỗi năm"},
+    {"id": "q02", "question": "Thời gian thử việc cho vị trí quản lý ở Lumora là bao lâu?", "answerable": true, "document": "lumora_hr_handbook.md", "required_facts": ["60"], "evidence": "60 ngày đối với vị trí quản lý"},
+    {"id": "q03", "question": "Trong thời gian thử việc, nhân viên Lumora được hưởng bao nhiêu phần trăm lương?", "answerable": true, "document": "lumora_hr_handbook.md", "required_facts": ["90"], "evidence": "được hưởng 90% lương chính thức"},
+    {"id": "q04", "question": "Ngày nào trong tuần là ngày bắt buộc làm việc tại văn phòng ở Lumora?", "answerable": true, "document": "lumora_hr_handbook.md", "required_facts": ["thứ Ba"], "evidence": "Ngày thứ Ba là ngày làm việc tại văn phòng bắt buộc"},
+    {"id": "q05", "question": "Lương ở Lumora được trả vào ngày nào hằng tháng?", "answerable": true, "document": "lumora_hr_handbook.md", "required_facts": ["5"], "evidence": "Lương được chi trả vào ngày 5 hằng tháng"},
+    {"id": "q06", "question": "Khi mất thiết bị, nhân viên phải báo cho bộ phận IT trong vòng bao lâu?", "answerable": true, "document": "lumora_hr_handbook.md", "required_facts": ["24 giờ"], "evidence": "báo cho bộ phận IT trong vòng 24 giờ"},
+    {"id": "q07", "question": "Mục tiêu thời gian khôi phục RTO của hệ thống Orchid là bao nhiêu?", "answerable": true, "document": "orchid_operations_runbook.md", "required_facts": ["4 giờ"], "evidence": "Mục tiêu thời gian khôi phục (RTO) của Orchid là 4 giờ"},
+    {"id": "q08", "question": "Với sự cố SEV1, kỹ sư trực phải phản hồi trong bao lâu?", "answerable": true, "document": "orchid_operations_runbook.md", "required_facts": ["10 phút"], "evidence": "kỹ sư trực phải phản hồi trong 10 phút"},
+    {"id": "q09", "question": "Bản sao lưu toàn phần của Orchid được giữ trong bao nhiêu ngày?", "answerable": true, "document": "orchid_operations_runbook.md", "required_facts": ["35"], "evidence": "Bản sao lưu toàn phần được giữ trong 35 ngày"},
+    {"id": "q10", "question": "Lumora có bao nhiêu ngày nghỉ thai sản cho nhân viên nữ?", "answerable": false, "document": null, "required_facts": [], "evidence": null},
+    {"id": "q11", "question": "Hệ thống Orchid sử dụng cơ sở dữ liệu của hãng nào?", "answerable": false, "document": null, "required_facts": [], "evidence": null},
+    {"id": "q12", "question": "Giám đốc điều hành hiện tại của Lumora là ai?", "answerable": false, "document": null, "required_facts": [], "evidence": null}
+  ]
+}

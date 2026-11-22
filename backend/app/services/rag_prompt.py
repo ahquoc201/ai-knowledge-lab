@@ -29,6 +29,19 @@ Rules:
 """.strip()
 
 
+# Repeated after the question because small local models follow the most recent
+# instruction far more reliably than the system prompt. Measured on qwen3:1.7b with the
+# T260040 eval set (temperature 0): answers carrying a [Source N] citation rose from 2/9
+# to 9/9 with no extra unsupported claims (docs/testing/T260040_REAL_LLM_VALIDATION.md).
+ANSWER_INSTRUCTIONS = (
+    "Answer only from the retrieved context. "
+    "End each factual sentence with the citation of the source that contains it, "
+    "in the form [Source N]. "
+    "If the context does not contain the answer, reply with the exact refusal "
+    "sentence and nothing else."
+)
+
+
 def build_bounded_history(
     history: list[LLMMessage] | None,
     *,
@@ -112,7 +125,8 @@ def build_rag_messages(
         "Retrieved context:\n\n"
         f"{context_text}\n\n"
         "Current question:\n"
-        f"{query}"
+        f"{query}\n\n"
+        f"{ANSWER_INSTRUCTIONS}"
     )
 
     return [
