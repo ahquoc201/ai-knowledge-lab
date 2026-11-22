@@ -8,6 +8,8 @@ from collections.abc import AsyncIterator
 from typing import Any
 from uuid import UUID
 
+import httpx
+from fastapi import HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.message_role import MessageRole
@@ -16,7 +18,10 @@ from app.models.user import User
 from app.services.citation_validation import validate_answer_citations
 from app.services.context_builder import ContextSource
 from app.services.inference_governor import get_inference_governor
-from app.services.message import create_conversation_message
+from app.services.message import (
+    create_conversation_message,
+    create_workspace_conversation_message,
+)
 from app.services.message_source import save_assistant_message_sources
 from app.services.model_router import ModelRouter
 from app.services.rag_observability import (
@@ -34,6 +39,53 @@ from app.services.task_classifier import TaskClassifier
 logger = logging.getLogger(__name__)
 
 UNVERIFIED_CITATION_ANSWER = "Không thể xác minh câu trả lời từ tài liệu được truy xuất."
+LLM_UNAVAILABLE_MESSAGE = (
+    "Mô hình ngôn ngữ hiện không khả dụng hoặc phản hồi quá chậm. "
+    "Vui lòng thử lại sau."
+)
+RAG_INTERNAL_ERROR_MESSAGE = "Đã xảy ra lỗi khi xử lý câu hỏi. Vui lòng thử lại sau."
+
+
+def describe_stream_failure(exc: Exception) -> tuple[str, str]:
+    """Map an internal failure to a stable error code and a user-facing message.
+
+    Raw exception text (upstream URLs, driver errors) is never sent to clients.
+    """
+    if isinstance(exc, httpx.HTTPError):
+        return "llm_unavailable", LLM_UNAVAILABLE_MESSAGE
+    if isinstance(exc, HTTPException):
+        return "service_busy", str(exc.detail)
+    return "internal_error", RAG_INTERNAL_ERROR_MESSAGE
+
+
+async def _persist_assistant_message(
+    session: AsyncSession,
+    *,
+    user: User,
+    workspace_id: UUID | None,
+    conversation_id: UUID,
+    content: str,
+):
+    """Persist the assistant reply in the same scope the API used to authorize the conversation.
+
+    Workspace conversations may be continued by any member, so they are resolved by
+    workspace rather than by the original conversation owner.
+    """
+    if workspace_id is not None:
+        return await create_workspace_conversation_message(
+            session,
+            workspace_id=workspace_id,
+            conversation_id=conversation_id,
+            role=MessageRole.ASSISTANT,
+            content=content,
+        )
+    return await create_conversation_message(
+        session,
+        user=user,
+        conversation_id=conversation_id,
+        role=MessageRole.ASSISTANT,
+        content=content,
+    )
 
 
 def format_sse(event_type: str, data: dict[str, Any]) -> str:
@@ -169,11 +221,11 @@ async def answer_with_rag_stream(
             ttft_ms = elapsed_ms(t_total_start)
             yield format_sse("token", {"token": INSUFFICIENT_CONTEXT_ANSWER})
 
-            assistant_message = await create_conversation_message(
+            assistant_message = await _persist_assistant_message(
                 session,
                 user=user,
+                workspace_id=workspace_id,
                 conversation_id=conversation_id,
-                role=MessageRole.ASSISTANT,
                 content=INSUFFICIENT_CONTEXT_ANSWER,
             )
 
@@ -245,11 +297,11 @@ async def answer_with_rag_stream(
 
         # Persist assistant message and citations
         stage = "persistence"
-        assistant_message = await create_conversation_message(
+        assistant_message = await _persist_assistant_message(
             session,
             user=user,
+            workspace_id=workspace_id,
             conversation_id=conversation_id,
-            role=MessageRole.ASSISTANT,
             content=final_answer,
         )
 
@@ -306,7 +358,7 @@ async def answer_with_rag_stream(
             total_ms=elapsed_ms(t_total_start),
         )
         raise
-    except Exception as exc:  # noqa: BLE001
+    except Exception as exc:
         obs.record_request(
             correlation_id=cid,
             mode=retrieval_mode,
@@ -323,4 +375,10 @@ async def answer_with_rag_stream(
             ttft_ms=ttft_ms,
             total_ms=elapsed_ms(t_total_start),
         )
-        yield format_sse("error", {"error": str(exc)})
+        logger.exception(
+            "RAG stream failed at stage=%s conversation=%s",
+            stage,
+            conversation_id,
+        )
+        code, message = describe_stream_failure(exc)
+        yield format_sse("error", {"error": message, "code": code, "stage": stage})

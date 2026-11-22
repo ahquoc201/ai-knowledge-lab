@@ -4,6 +4,7 @@
 """
 
 import asyncio
+import json
 import logging
 import time
 from collections.abc import AsyncIterator
@@ -401,7 +402,14 @@ async def test_failure_injection_streaming_interruption_and_cancellation(monkeyp
     assert "event: retrieval_started" in joined
     assert "event: retrieval_completed" in joined
     assert "event: error" in joined
-    assert "Upstream stream socket reset" in joined
+    # T260039: clients get a stable code + understandable message; raw exception text stays in server logs.
+    error_payload = json.loads(
+        next(ev for ev in events if ev.startswith("event: error")).split("data: ", 1)[1]
+    )
+    assert error_payload["code"] == "internal_error"
+    assert error_payload["stage"] == "llm_generation"
+    assert error_payload["error"] == stream_mod.RAG_INTERNAL_ERROR_MESSAGE
+    assert "Upstream stream socket reset" not in joined
 
     m = get_rag_observability().get_metrics()
     assert m["requests"]["failures"] == 1
@@ -467,6 +475,7 @@ async def test_streaming_sse_order_and_citation_integrity_with_rerank_fallback(m
 
     monkeypatch.setattr(ret_mod, "retrieve_candidates", fake_retrieve_candidates)
     monkeypatch.setattr(stream_mod, "create_conversation_message", fake_create_msg)
+    monkeypatch.setattr(stream_mod, "create_workspace_conversation_message", fake_create_msg)
     monkeypatch.setattr(stream_mod, "save_assistant_message_sources", fake_save_sources)
 
     # Inject faulty reranker that throws during predict -> must fall back to [c_a, c_b]

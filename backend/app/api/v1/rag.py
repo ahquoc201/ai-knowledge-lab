@@ -1,5 +1,7 @@
+import logging
 from typing import Annotated
 
+import httpx
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.responses import StreamingResponse
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -29,8 +31,10 @@ from app.services.conversation import (
 from app.services.message import create_workspace_conversation_message
 from app.services.message_source import save_assistant_message_sources
 from app.services.rag import answer_with_rag
-from app.services.rag_stream import answer_with_rag_stream
+from app.services.rag_stream import LLM_UNAVAILABLE_MESSAGE, answer_with_rag_stream
 from app.services.rate_limiter import get_rate_limiter
+
+logger = logging.getLogger(__name__)
 
 router = APIRouter(
     prefix="/rag",
@@ -113,17 +117,30 @@ async def ask_rag(
             detail="Conversation not found",
         )
 
-    result = await answer_with_rag(
-        session,
-        user_id=current_user.id,
-        workspace_id=membership.workspace_id,
-        query=payload.query,
-        llm=llm,
-        limit=payload.limit,
-        history=history,
-        retrieval_mode=payload.retrieval_mode,
-        enable_reranking=payload.enable_reranking,
-    )
+    try:
+        result = await answer_with_rag(
+            session,
+            user_id=current_user.id,
+            workspace_id=membership.workspace_id,
+            query=payload.query,
+            llm=llm,
+            limit=payload.limit,
+            history=history,
+            retrieval_mode=payload.retrieval_mode,
+            enable_reranking=payload.enable_reranking,
+        )
+    except httpx.HTTPError as exc:
+        # LLM backend unreachable, timed out or returned an error status.
+        logger.warning(
+            "RAG generation failed for conversation %s: %r",
+            conversation_id,
+            exc,
+        )
+        raise HTTPException(
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            detail=LLM_UNAVAILABLE_MESSAGE,
+            headers={"Retry-After": "5"},
+        ) from exc
 
     assistant_message = await create_workspace_conversation_message(
         session,
