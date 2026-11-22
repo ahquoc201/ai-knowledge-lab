@@ -37,6 +37,7 @@ from app.services.document import (
     create_user_document,
     delete_user_document,
     get_user_document,
+    get_workspace_document,
     list_workspace_documents,
     recover_user_stale_file_processing,
     set_document_status,
@@ -292,13 +293,15 @@ async def get_document(
     ],
     session: Annotated[AsyncSession, Depends(get_session)],
 ) -> DocumentResponse:
-    document = await get_user_document(
+    # Reads are workspace-scoped: any member with DOCUMENT_READ can open documents
+    # that are listed (and cited by RAG) in the workspace, not only the uploader.
+    document = await get_workspace_document(
         session,
-        user=current_user,
+        workspace_id=membership.workspace_id,
         document_id=document_id,
     )
 
-    if document is None or (getattr(document, "workspace_id", None) is not None and document.workspace_id != membership.workspace_id):
+    if document is None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Document not found",

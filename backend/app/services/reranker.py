@@ -83,10 +83,18 @@ class RerankerTelemetry:
         self.queue_timeouts: int = 0
         self.inference_timeouts: int = 0
         self.capacity_rejections: int = 0
+        self.init_success_count: int = 0
+        self.init_failure_count: int = 0
         self._tokenization_latencies: deque[float] = deque(maxlen=history_maxlen)
         self._inference_latencies: deque[float] = deque(maxlen=history_maxlen)
         self._total_latencies: deque[float] = deque(maxlen=history_maxlen)
         self._queue_wait_latencies: deque[float] = deque(maxlen=history_maxlen)
+
+    def record_init(self, success: bool) -> None:
+        if success:
+            self.init_success_count += 1
+        else:
+            self.init_failure_count += 1
 
     def record_request(self, opt_in: bool) -> None:
         self.total_requests += 1
@@ -133,6 +141,8 @@ class RerankerTelemetry:
         def _p95(data: deque[float]) -> float:
             return round(float(np.percentile(list(data), 95)), 2) if data else 0.0
 
+        opt_in_denom = self.total_opt_in if self.total_opt_in > 0 else 1
+
         return {
             "enabled": enabled,
             "is_ready": is_ready,
@@ -142,15 +152,22 @@ class RerankerTelemetry:
             "total_opt_in": self.total_opt_in,
             "total_success": self.total_success,
             "total_fallback": self.total_fallback,
+            "fallback_rate": round(self.total_fallback / opt_in_denom, 4) if self.total_opt_in > 0 else 0.0,
             "fallback_reasons": dict(self.fallback_reasons),
             "queue_timeouts": self.queue_timeouts,
+            "queue_timeout_rate": round(self.queue_timeouts / opt_in_denom, 4) if self.total_opt_in > 0 else 0.0,
             "inference_timeouts": self.inference_timeouts,
+            "inference_timeout_rate": round(self.inference_timeouts / opt_in_denom, 4) if self.total_opt_in > 0 else 0.0,
             "capacity_rejections": self.capacity_rejections,
+            "init_success_count": self.init_success_count,
+            "init_failure_count": self.init_failure_count,
             "p50_queue_wait_ms": _p50(self._queue_wait_latencies),
+            "p95_queue_wait_ms": _p95(self._queue_wait_latencies),
             "p50_tokenization_ms": _p50(self._tokenization_latencies),
             "p50_inference_ms": _p50(self._inference_latencies),
             "p95_inference_ms": _p95(self._inference_latencies),
             "p50_total_rerank_ms": _p50(self._total_latencies),
+            "p95_total_rerank_ms": _p95(self._total_latencies),
         }
 
     def reset(self) -> None:
@@ -162,6 +179,8 @@ class RerankerTelemetry:
         self.queue_timeouts = 0
         self.inference_timeouts = 0
         self.capacity_rejections = 0
+        self.init_success_count = 0
+        self.init_failure_count = 0
         self._tokenization_latencies.clear()
         self._inference_latencies.clear()
         self._total_latencies.clear()
@@ -215,6 +234,7 @@ class RerankerService:
         if not self.model_path.is_file():
             self._is_ready = False
             self._init_error = f"Model artifact missing at {self.model_path}"
+            self.telemetry.record_init(False)
             logger.warning("[Reranker] Model file not found at %s. Reranker disabled.", self.model_path)
             return False
 
@@ -224,27 +244,23 @@ class RerankerService:
                 if actual_sha.lower() != self.settings.reranker_expected_sha256.lower():
                     self._is_ready = False
                     self._init_error = f"SHA256 mismatch: expected {self.settings.reranker_expected_sha256}, got {actual_sha}"
+                    self.telemetry.record_init(False)
                     logger.error("[Reranker] Model integrity failure: %s", self._init_error)
                     return False
             except OSError as exc:
                 self._is_ready = False
                 self._init_error = f"Error reading model for checksum: {exc}"
+                self.telemetry.record_init(False)
                 return False
 
         try:
             from transformers import AutoTokenizer
 
-            # Load tokenizer locally without automated network downloads
-            try:
-                self._tokenizer = AutoTokenizer.from_pretrained(
-                    self.settings.reranker_model_name,
-                    local_files_only=True,
-                )
-            except (OSError, ValueError):
-                # Fall back to standard load if cached locally
-                self._tokenizer = AutoTokenizer.from_pretrained(
-                    self.settings.reranker_model_name,
-                )
+            # Load tokenizer strictly offline without automated network downloads
+            self._tokenizer = AutoTokenizer.from_pretrained(
+                self.settings.reranker_model_name,
+                local_files_only=True,
+            )
 
             import onnxruntime as ort
 
@@ -261,6 +277,7 @@ class RerankerService:
 
             self._is_ready = True
             self._init_error = None
+            self.telemetry.record_init(True)
             logger.info(
                 "[Reranker] Initialized ONNX INT8 session successfully (threads=%d, path=%s)",
                 self.intra_op_threads,
@@ -270,6 +287,7 @@ class RerankerService:
         except (OSError, RuntimeError, ValueError) as exc:
             self._is_ready = False
             self._init_error = str(exc)
+            self.telemetry.record_init(False)
             logger.exception("[Reranker] Failed to initialize model session")
             return False
 

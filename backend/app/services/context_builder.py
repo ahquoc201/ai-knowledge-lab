@@ -26,6 +26,12 @@ class ContextSource:
 class RetrievalContext:
     text: str
     sources: list[ContextSource]
+    retrieval_ms: float | None = None
+    context_assembly_ms: float | None = None
+    rerank_ms: float | None = None
+    rerank_used: bool = False
+    rerank_fallback_reason: str | None = None
+    retrieval_mode: str = "dense"
 
 
 def build_retrieval_context(

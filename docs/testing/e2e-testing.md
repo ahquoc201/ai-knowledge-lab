@@ -46,6 +46,11 @@ frontend/
 
 Để chạy trọn vẹn bộ test E2E với backend thật:
 1. **PostgreSQL 17 + pgvector**: Đang hoạt động trên cổng `15432` (hoặc cổng cấu hình trong `.env`).
+   - E2E **không bao giờ** dùng database lịch sử `ailab`. Backend do Playwright khởi động dùng `E2E_DATABASE_URL`, mặc định là database cô lập `ailab_e2e_test` (T260039). Tạo và migrate một lần:
+     ```bash
+     createdb -h 127.0.0.1 -p 15432 -U ailab ailab_e2e_test
+     cd backend && DATABASE_URL='postgresql+asyncpg://ailab:<password>@127.0.0.1:15432/ailab_e2e_test' .venv/bin/alembic upgrade head
+     ```
 2. **Backend FastAPI**: Đang chạy tại `http://127.0.0.1:8000`.
    - Lệnh khởi động backend:
      ```bash

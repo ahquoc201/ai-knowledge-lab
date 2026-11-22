@@ -1,0 +1,1805 @@
+{
+ "description": "T260040 generation-only comparison on identical real RAG prompts (retrieval fixed, 12 labeled questions). Host: i5-10500H CPU-only (GPU unusable by Ollama 0.35: 'device kernel image is invalid' with driver CUDA 12.2).",
+ "runs": {
+  "qwen3:1.7b original prompt, default sampling": [
+   {
+    "id": "q01",
+    "ttft_s": 18.3,
+    "total_s": 22.2,
+    "prompt_tokens": 1431,
+    "prompt_tok_s": 78.7,
+    "gen_tokens": 26,
+    "gen_tok_s": 6.6,
+    "load_s": 0.0,
+    "citation_valid": true,
+    "raw": "Nhân viên chính thức của Lumora được hưởng 18 ngày nghỉ phép có lương mỗi năm [Source 1].",
+    "score": {
+     "outcome": "answer",
+     "cited": [
+      1
+     ],
+     "correct": true,
+     "citation_indices_valid": true,
+     "evidence_in_cited_source": true,
+     "facts_in_cited_source": true,
+     "grounded": true,
+     "unsupported_numbers": []
+    }
+   },
+   {
+    "id": "q02",
+    "ttft_s": 17.1,
+    "total_s": 20.2,
+    "prompt_tokens": 1429,
+    "prompt_tok_s": 84.0,
+    "gen_tokens": 21,
+    "gen_tok_s": 6.8,
+    "load_s": 0.0,
+    "citation_valid": false,
+    "raw": "Thời gian thử việc cho vị trí quản lý tại Lumora là 60 ngày.",
+    "score": {
+     "outcome": "unverified",
+     "cited": [],
+     "correct": false,
+     "grounded": null,
+     "unsupported_numbers": []
+    }
+   },
+   {
+    "id": "q03",
+    "ttft_s": 16.7,
+    "total_s": 20.5,
+    "prompt_tokens": 1431,
+    "prompt_tok_s": 86.1,
+    "gen_tokens": 23,
+    "gen_tok_s": 6.2,
+    "load_s": 0.0,
+    "citation_valid": false,
+    "raw": "Trong thời gian thử việc, nhân viên Lumora được hưởng 90% lương chính thức.",
+    "score": {
+     "outcome": "unverified",
+     "cited": [],
+     "correct": false,
+     "grounded": null,
+     "unsupported_numbers": []
+    }
+   },
+   {
+    "id": "q04",
+    "ttft_s": 17.6,
+    "total_s": 21.0,
+    "prompt_tokens": 1428,
+    "prompt_tok_s": 81.8,
+    "gen_tokens": 19,
+    "gen_tok_s": 5.6,
+    "load_s": 0.0,
+    "citation_valid": false,
+    "raw": "Ngày thứ Ba là ngày làm việc tại văn phòng bắt buộc cho toàn công ty.",
+    "score": {
+     "outcome": "unverified",
+     "cited": [],
+     "correct": false,
+     "grounded": null,
+     "unsupported_numbers": []
+    }
+   },
+   {
+    "id": "q05",
+    "ttft_s": 2.1,
+    "total_s": 8.8,
+    "prompt_tokens": 1424,
+    "prompt_tok_s": 722.5,
+    "gen_tokens": 38,
+    "gen_tok_s": 5.7,
+    "load_s": 0.0,
+    "citation_valid": false,
+    "raw": "Lương ở Lumora được chi trả vào ngày 5 hằng tháng; nếu ngày 5 rơi vào cuối tuần hoặc ngày lễ thì chi trả vào ngày làm việc liền trước.",
+    "score": {
+     "outcome": "unverified",
+     "cited": [],
+     "correct": false,
+     "grounded": null,
+     "unsupported_numbers": []
+    }
+   },
+   {
+    "id": "q06",
+    "ttft_s": 48.5,
+    "total_s": 56.0,
+    "prompt_tokens": 1430,
+    "prompt_tok_s": 29.7,
+    "gen_tokens": 33,
+    "gen_tok_s": 4.4,
+    "load_s": 0.0,
+    "citation_valid": true,
+    "raw": "Khi mất thiết bị, nhân viên phải báo cho bộ phận IT trong vòng 24 giờ qua kênh #it-helpdesk. [Source 1]",
+    "score": {
+     "outcome": "answer",
+     "cited": [
+      1
+     ],
+     "correct": true,
+     "citation_indices_valid": true,
+     "evidence_in_cited_source": true,
+     "facts_in_cited_source": true,
+     "grounded": true,
+     "unsupported_numbers": []
+    }
+   },
+   {
+    "id": "q07",
+    "ttft_s": 0.6,
+    "total_s": 5.9,
+    "prompt_tokens": 1431,
+    "prompt_tok_s": 9418.4,
+    "gen_tokens": 24,
+    "gen_tok_s": 4.5,
+    "load_s": 0.0,
+    "citation_valid": false,
+    "raw": "Mục tiêu thời gian khôi phục (RTO) của hệ thống Orchid là 4 giờ.",
+    "score": {
+     "outcome": "unverified",
+     "cited": [],
+     "correct": false,
+     "grounded": null,
+     "unsupported_numbers": []
+    }
+   },
+   {
+    "id": "q08",
+    "ttft_s": 51.2,
+    "total_s": 54.1,
+    "prompt_tokens": 1429,
+    "prompt_tok_s": 28.1,
+    "gen_tokens": 21,
+    "gen_tok_s": 7.2,
+    "load_s": 0.0,
+    "citation_valid": false,
+    "raw": "Sự cố mức SEV1 yêu cầu kỹ sư trực phản hồi trong 10 phút.",
+    "score": {
+     "outcome": "unverified",
+     "cited": [],
+     "correct": false,
+     "grounded": null,
+     "unsupported_numbers": []
+    }
+   },
+   {
+    "id": "q09",
+    "ttft_s": 37.3,
+    "total_s": 42.5,
+    "prompt_tokens": 1428,
+    "prompt_tok_s": 38.7,
+    "gen_tokens": 23,
+    "gen_tok_s": 4.4,
+    "load_s": 0.0,
+    "citation_valid": true,
+    "raw": "Bản sao lưu toàn phần của Orchid được giữ trong 35 ngày [Source 1].",
+    "score": {
+     "outcome": "answer",
+     "cited": [
+      1
+     ],
+     "correct": true,
+     "citation_indices_valid": true,
+     "evidence_in_cited_source": true,
+     "facts_in_cited_source": true,
+     "grounded": true,
+     "unsupported_numbers": []
+    }
+   },
+   {
+    "id": "q10",
+    "ttft_s": 2.6,
+    "total_s": 6.1,
+    "prompt_tokens": 1426,
+    "prompt_tok_s": 666.3,
+    "gen_tokens": 15,
+    "gen_tok_s": 4.3,
+    "load_s": 0.0,
+    "citation_valid": true,
+    "raw": "Không đủ thông tin trong tài liệu để trả lời câu hỏi này.",
+    "score": {
+     "outcome": "refusal",
+     "cited": [],
+     "correct": true,
+     "grounded": null,
+     "unsupported_numbers": []
+    }
+   },
+   {
+    "id": "q11",
+    "ttft_s": 35.6,
+    "total_s": 38.1,
+    "prompt_tokens": 1425,
+    "prompt_tok_s": 40.5,
+    "gen_tokens": 15,
+    "gen_tok_s": 5.8,
+    "load_s": 0.0,
+    "citation_valid": true,
+    "raw": "Không đủ thông tin trong tài liệu để trả lời câu hỏi này.",
+    "score": {
+     "outcome": "refusal",
+     "cited": [],
+     "correct": true,
+     "grounded": null,
+     "unsupported_numbers": []
+    }
+   },
+   {
+    "id": "q12",
+    "ttft_s": 45.5,
+    "total_s": 47.6,
+    "prompt_tokens": 1423,
+    "prompt_tok_s": 31.5,
+    "gen_tokens": 15,
+    "gen_tok_s": 7.3,
+    "load_s": 0.0,
+    "citation_valid": true,
+    "raw": "Không đủ thông tin trong tài liệu để trả lời câu hỏi này.",
+    "score": {
+     "outcome": "refusal",
+     "cited": [],
+     "correct": true,
+     "grounded": null,
+     "unsupported_numbers": []
+    }
+   }
+  ],
+  "qwen3:0.6b original prompt, default sampling": [
+   {
+    "id": "q01",
+    "ttft_s": 29.4,
+    "total_s": 30.9,
+    "prompt_tokens": 1431,
+    "prompt_tok_s": 57.5,
+    "gen_tokens": 15,
+    "gen_tok_s": 10.1,
+    "load_s": 4.4,
+    "citation_valid": true,
+    "raw": "Không đủ thông tin trong tài liệu để trả lời câu hỏi này.",
+    "score": {
+     "outcome": "refusal",
+     "cited": [],
+     "correct": false,
+     "grounded": null,
+     "unsupported_numbers": []
+    }
+   },
+   {
+    "id": "q02",
+    "ttft_s": 9.1,
+    "total_s": 10.6,
+    "prompt_tokens": 1429,
+    "prompt_tok_s": 159.3,
+    "gen_tokens": 15,
+    "gen_tok_s": 10.3,
+    "load_s": 0.0,
+    "citation_valid": true,
+    "raw": "Không đủ thông tin trong tài liệu để trả lời câu hỏi này.",
+    "score": {
+     "outcome": "refusal",
+     "cited": [],
+     "correct": false,
+     "grounded": null,
+     "unsupported_numbers": []
+    }
+   },
+   {
+    "id": "q03",
+    "ttft_s": 8.8,
+    "total_s": 10.1,
+    "prompt_tokens": 1431,
+    "prompt_tok_s": 164.9,
+    "gen_tokens": 15,
+    "gen_tok_s": 11.8,
+    "load_s": 0.0,
+    "citation_valid": true,
+    "raw": "Không đủ thông tin trong tài liệu để trả lời câu hỏi này.",
+    "score": {
+     "outcome": "refusal",
+     "cited": [],
+     "correct": false,
+     "grounded": null,
+     "unsupported_numbers": []
+    }
+   },
+   {
+    "id": "q04",
+    "ttft_s": 8.2,
+    "total_s": 9.9,
+    "prompt_tokens": 1428,
+    "prompt_tok_s": 176.3,
+    "gen_tokens": 15,
+    "gen_tok_s": 8.9,
+    "load_s": 0.0,
+    "citation_valid": true,
+    "raw": "Không đủ thông tin trong tài liệu để trả lời câu hỏi này.",
+    "score": {
+     "outcome": "refusal",
+     "cited": [],
+     "correct": false,
+     "grounded": null,
+     "unsupported_numbers": []
+    }
+   },
+   {
+    "id": "q05",
+    "ttft_s": 1.2,
+    "total_s": 2.7,
+    "prompt_tokens": 1424,
+    "prompt_tok_s": 1316.4,
+    "gen_tokens": 15,
+    "gen_tok_s": 10.0,
+    "load_s": 0.0,
+    "citation_valid": true,
+    "raw": "Không đủ thông tin trong tài liệu để trả lời câu hỏi này.",
+    "score": {
+     "outcome": "refusal",
+     "cited": [],
+     "correct": false,
+     "grounded": null,
+     "unsupported_numbers": []
+    }
+   },
+   {
+    "id": "q06",
+    "ttft_s": 20.1,
+    "total_s": 21.5,
+    "prompt_tokens": 1430,
+    "prompt_tok_s": 73.1,
+    "gen_tokens": 15,
+    "gen_tok_s": 10.6,
+    "load_s": 0.0,
+    "citation_valid": true,
+    "raw": "Không đủ thông tin trong tài liệu để trả lời câu hỏi này.",
+    "score": {
+     "outcome": "refusal",
+     "cited": [],
+     "correct": false,
+     "grounded": null,
+     "unsupported_numbers": []
+    }
+   },
+   {
+    "id": "q07",
+    "ttft_s": 19.3,
+    "total_s": 20.6,
+    "prompt_tokens": 1431,
+    "prompt_tok_s": 76.2,
+    "gen_tokens": 15,
+    "gen_tok_s": 11.6,
+    "load_s": 0.0,
+    "citation_valid": true,
+    "raw": "Không đủ thông tin trong tài liệu để trả lời câu hỏi này.",
+    "score": {
+     "outcome": "refusal",
+     "cited": [],
+     "correct": false,
+     "grounded": null,
+     "unsupported_numbers": []
+    }
+   },
+   {
+    "id": "q08",
+    "ttft_s": 19.9,
+    "total_s": 21.3,
+    "prompt_tokens": 1429,
+    "prompt_tok_s": 73.6,
+    "gen_tokens": 15,
+    "gen_tok_s": 10.6,
+    "load_s": 0.0,
+    "citation_valid": true,
+    "raw": "Không đủ thông tin trong tài liệu để trả lời câu hỏi này.",
+    "score": {
+     "outcome": "refusal",
+     "cited": [],
+     "correct": false,
+     "grounded": null,
+     "unsupported_numbers": []
+    }
+   },
+   {
+    "id": "q09",
+    "ttft_s": 16.9,
+    "total_s": 18.4,
+    "prompt_tokens": 1428,
+    "prompt_tok_s": 87.5,
+    "gen_tokens": 15,
+    "gen_tok_s": 9.8,
+    "load_s": 0.0,
+    "citation_valid": true,
+    "raw": "Không đủ thông tin trong tài liệu để trả lời câu hỏi này.",
+    "score": {
+     "outcome": "refusal",
+     "cited": [],
+     "correct": false,
+     "grounded": null,
+     "unsupported_numbers": []
+    }
+   },
+   {
+    "id": "q10",
+    "ttft_s": 2.6,
+    "total_s": 4.2,
+    "prompt_tokens": 1426,
+    "prompt_tok_s": 715.1,
+    "gen_tokens": 15,
+    "gen_tok_s": 8.9,
+    "load_s": 0.0,
+    "citation_valid": true,
+    "raw": "Không đủ thông tin trong tài liệu để trả lời câu hỏi này.",
+    "score": {
+     "outcome": "refusal",
+     "cited": [],
+     "correct": true,
+     "grounded": null,
+     "unsupported_numbers": []
+    }
+   },
+   {
+    "id": "q11",
+    "ttft_s": 15.0,
+    "total_s": 16.5,
+    "prompt_tokens": 1425,
+    "prompt_tok_s": 97.8,
+    "gen_tokens": 15,
+    "gen_tok_s": 9.9,
+    "load_s": 0.0,
+    "citation_valid": true,
+    "raw": "Không đủ thông tin trong tài liệu để trả lời câu hỏi này.",
+    "score": {
+     "outcome": "refusal",
+     "cited": [],
+     "correct": true,
+     "grounded": null,
+     "unsupported_numbers": []
+    }
+   },
+   {
+    "id": "q12",
+    "ttft_s": 21.2,
+    "total_s": 22.7,
+    "prompt_tokens": 1423,
+    "prompt_tok_s": 68.7,
+    "gen_tokens": 15,
+    "gen_tok_s": 10.3,
+    "load_s": 0.0,
+    "citation_valid": true,
+    "raw": "Không đủ thông tin trong tài liệu để trả lời câu hỏi này.",
+    "score": {
+     "outcome": "refusal",
+     "cited": [],
+     "correct": true,
+     "grounded": null,
+     "unsupported_numbers": []
+    }
+   }
+  ],
+  "qwen3:1.7b + citation reminder, default sampling": [
+   {
+    "id": "q01",
+    "ttft_s": 23.9,
+    "total_s": 32.8,
+    "prompt_tokens": 1478,
+    "prompt_tok_s": 62.8,
+    "gen_tokens": 27,
+    "gen_tok_s": 3.1,
+    "load_s": 0.0,
+    "citation_valid": true,
+    "raw": "Nhân viên chính thức của Lumora được hưởng 18 ngày nghỉ phép có lương mỗi năm. [Source 2]",
+    "score": {
+     "outcome": "answer",
+     "cited": [
+      2
+     ],
+     "correct": true,
+     "citation_indices_valid": true,
+     "evidence_in_cited_source": false,
+     "facts_in_cited_source": false,
+     "grounded": false,
+     "unsupported_numbers": [
+      "18"
+     ]
+    }
+   },
+   {
+    "id": "q02",
+    "ttft_s": 25.5,
+    "total_s": 31.4,
+    "prompt_tokens": 1476,
+    "prompt_tok_s": 58.2,
+    "gen_tokens": 25,
+    "gen_tok_s": 4.3,
+    "load_s": 0.0,
+    "citation_valid": true,
+    "raw": "Thời gian thử việc cho vị trí quản lý ở Lumora là 60 ngày [Source 1].",
+    "score": {
+     "outcome": "answer",
+     "cited": [
+      1
+     ],
+     "correct": true,
+     "citation_indices_valid": true,
+     "evidence_in_cited_source": true,
+     "facts_in_cited_source": true,
+     "grounded": true,
+     "unsupported_numbers": []
+    }
+   },
+   {
+    "id": "q03",
+    "ttft_s": 20.5,
+    "total_s": 26.2,
+    "prompt_tokens": 1478,
+    "prompt_tok_s": 72.6,
+    "gen_tokens": 28,
+    "gen_tok_s": 4.9,
+    "load_s": 0.0,
+    "citation_valid": true,
+    "raw": "Trong thời gian thử việc, nhân viên Lumora được hưởng 90% lương chính thức. [Source 1]",
+    "score": {
+     "outcome": "answer",
+     "cited": [
+      1
+     ],
+     "correct": true,
+     "citation_indices_valid": true,
+     "evidence_in_cited_source": true,
+     "facts_in_cited_source": true,
+     "grounded": true,
+     "unsupported_numbers": []
+    }
+   },
+   {
+    "id": "q04",
+    "ttft_s": 27.9,
+    "total_s": 39.6,
+    "prompt_tokens": 1475,
+    "prompt_tok_s": 53.2,
+    "gen_tokens": 23,
+    "gen_tok_s": 2.0,
+    "load_s": 0.0,
+    "citation_valid": true,
+    "raw": "Ngày thứ Ba là ngày làm việc tại văn phòng bắt buộc cho toàn công ty [Source 2].",
+    "score": {
+     "outcome": "answer",
+     "cited": [
+      2
+     ],
+     "correct": true,
+     "citation_indices_valid": true,
+     "evidence_in_cited_source": true,
+     "facts_in_cited_source": true,
+     "grounded": true,
+     "unsupported_numbers": []
+    }
+   },
+   {
+    "id": "q05",
+    "ttft_s": 4.9,
+    "total_s": 11.1,
+    "prompt_tokens": 1471,
+    "prompt_tok_s": 310.0,
+    "gen_tokens": 21,
+    "gen_tok_s": 3.4,
+    "load_s": 0.0,
+    "citation_valid": true,
+    "raw": "Lương ở Lumora được chi trả vào ngày 5 hằng tháng [Source 2].",
+    "score": {
+     "outcome": "answer",
+     "cited": [
+      2
+     ],
+     "correct": true,
+     "citation_indices_valid": true,
+     "evidence_in_cited_source": true,
+     "facts_in_cited_source": true,
+     "grounded": true,
+     "unsupported_numbers": []
+    }
+   },
+   {
+    "id": "q06",
+    "ttft_s": 7.8,
+    "total_s": 17.8,
+    "prompt_tokens": 1477,
+    "prompt_tok_s": 202.3,
+    "gen_tokens": 26,
+    "gen_tok_s": 2.6,
+    "load_s": 0.0,
+    "citation_valid": true,
+    "raw": "Khi mất thiết bị, nhân viên phải báo cho bộ phận IT trong vòng 24 giờ [Source 1].",
+    "score": {
+     "outcome": "answer",
+     "cited": [
+      1
+     ],
+     "correct": true,
+     "citation_indices_valid": true,
+     "evidence_in_cited_source": true,
+     "facts_in_cited_source": true,
+     "grounded": true,
+     "unsupported_numbers": []
+    }
+   },
+   {
+    "id": "q07",
+    "ttft_s": 5.7,
+    "total_s": 26.2,
+    "prompt_tokens": 1478,
+    "prompt_tok_s": 283.9,
+    "gen_tokens": 29,
+    "gen_tok_s": 1.4,
+    "load_s": 0.0,
+    "citation_valid": true,
+    "raw": "Mục tiêu thời gian khôi phục (RTO) của hệ thống Orchid là 4 giờ. [Source 2]",
+    "score": {
+     "outcome": "answer",
+     "cited": [
+      2
+     ],
+     "correct": true,
+     "citation_indices_valid": true,
+     "evidence_in_cited_source": false,
+     "facts_in_cited_source": true,
+     "grounded": true,
+     "unsupported_numbers": []
+    }
+   },
+   {
+    "id": "q08",
+    "ttft_s": 10.5,
+    "total_s": 32.7,
+    "prompt_tokens": 1476,
+    "prompt_tok_s": 149.1,
+    "gen_tokens": 48,
+    "gen_tok_s": 2.2,
+    "load_s": 0.0,
+    "citation_valid": true,
+    "raw": "Sự cố mức SEV1 là khi toàn bộ hệ thống Orchid ngừng hoạt động hoặc dữ liệu khách hàng có nguy cơ bị lộ; kỹ sư trực phải phản hồi trong 10 phút. [Source 2]",
+    "score": {
+     "outcome": "answer",
+     "cited": [
+      2
+     ],
+     "correct": true,
+     "citation_indices_valid": true,
+     "evidence_in_cited_source": true,
+     "facts_in_cited_source": true,
+     "grounded": true,
+     "unsupported_numbers": []
+    }
+   },
+   {
+    "id": "q09",
+    "ttft_s": 39.9,
+    "total_s": 44.2,
+    "prompt_tokens": 1475,
+    "prompt_tok_s": 37.5,
+    "gen_tokens": 23,
+    "gen_tok_s": 5.4,
+    "load_s": 0.0,
+    "citation_valid": true,
+    "raw": "Bản sao lưu toàn phần của Orchid được giữ trong 35 ngày [Source 1].",
+    "score": {
+     "outcome": "answer",
+     "cited": [
+      1
+     ],
+     "correct": true,
+     "citation_indices_valid": true,
+     "evidence_in_cited_source": true,
+     "facts_in_cited_source": true,
+     "grounded": true,
+     "unsupported_numbers": []
+    }
+   },
+   {
+    "id": "q10",
+    "ttft_s": 4.2,
+    "total_s": 11.7,
+    "prompt_tokens": 1473,
+    "prompt_tok_s": 382.3,
+    "gen_tokens": 39,
+    "gen_tok_s": 5.2,
+    "load_s": 0.0,
+    "citation_valid": false,
+    "raw": "Retrieved context does not contain information about Lumora having a specific number of days of maternity leave for female employees.  \n\nKhông đủ thông tin trong tài liệu để trả lời câu hỏi này.",
+    "score": {
+     "outcome": "unverified",
+     "cited": [],
+     "correct": false,
+     "grounded": null,
+     "unsupported_numbers": []
+    }
+   },
+   {
+    "id": "q11",
+    "ttft_s": 39.9,
+    "total_s": 43.5,
+    "prompt_tokens": 1472,
+    "prompt_tok_s": 37.3,
+    "gen_tokens": 15,
+    "gen_tok_s": 4.1,
+    "load_s": 0.0,
+    "citation_valid": true,
+    "raw": "Không đủ thông tin trong tài liệu để trả lời câu hỏi này.",
+    "score": {
+     "outcome": "refusal",
+     "cited": [],
+     "correct": true,
+     "grounded": null,
+     "unsupported_numbers": []
+    }
+   },
+   {
+    "id": "q12",
+    "ttft_s": 6.5,
+    "total_s": 11.8,
+    "prompt_tokens": 1470,
+    "prompt_tok_s": 242.2,
+    "gen_tokens": 15,
+    "gen_tok_s": 2.9,
+    "load_s": 0.0,
+    "citation_valid": true,
+    "raw": "Không đủ thông tin trong tài liệu để trả lời câu hỏi này.",
+    "score": {
+     "outcome": "refusal",
+     "cited": [],
+     "correct": true,
+     "grounded": null,
+     "unsupported_numbers": []
+    }
+   }
+  ],
+  "qwen3:1.7b + reminder v2 (verbatim refusal), default sampling": [
+   {
+    "id": "q01",
+    "ttft_s": 19.0,
+    "total_s": 24.3,
+    "prompt_tokens": 1486,
+    "prompt_tok_s": 80.1,
+    "gen_tokens": 27,
+    "gen_tok_s": 5.0,
+    "load_s": 0.0,
+    "citation_valid": true,
+    "raw": "Nhân viên chính thức của Lumora được hưởng 18 ngày nghỉ phép có lương mỗi năm. [Source 2]",
+    "score": {
+     "outcome": "answer",
+     "cited": [
+      2
+     ],
+     "correct": true,
+     "citation_indices_valid": true,
+     "evidence_in_cited_source": false,
+     "facts_in_cited_source": false,
+     "grounded": false,
+     "unsupported_numbers": [
+      "18"
+     ]
+    }
+   },
+   {
+    "id": "q02",
+    "ttft_s": 18.3,
+    "total_s": 22.9,
+    "prompt_tokens": 1484,
+    "prompt_tok_s": 81.9,
+    "gen_tokens": 25,
+    "gen_tok_s": 5.4,
+    "load_s": 0.0,
+    "citation_valid": true,
+    "raw": "Thời gian thử việc cho vị trí quản lý tại Lumora là 60 ngày [Source 1].",
+    "score": {
+     "outcome": "answer",
+     "cited": [
+      1
+     ],
+     "correct": true,
+     "citation_indices_valid": true,
+     "evidence_in_cited_source": true,
+     "facts_in_cited_source": true,
+     "grounded": true,
+     "unsupported_numbers": []
+    }
+   },
+   {
+    "id": "q03",
+    "ttft_s": 18.0,
+    "total_s": 23.7,
+    "prompt_tokens": 1486,
+    "prompt_tok_s": 83.3,
+    "gen_tokens": 28,
+    "gen_tok_s": 4.9,
+    "load_s": 0.0,
+    "citation_valid": true,
+    "raw": "Trong thời gian thử việc, nhân viên Lumora được hưởng 90% lương chính thức. [Source 1]",
+    "score": {
+     "outcome": "answer",
+     "cited": [
+      1
+     ],
+     "correct": true,
+     "citation_indices_valid": true,
+     "evidence_in_cited_source": true,
+     "facts_in_cited_source": true,
+     "grounded": true,
+     "unsupported_numbers": []
+    }
+   },
+   {
+    "id": "q04",
+    "ttft_s": 18.1,
+    "total_s": 22.6,
+    "prompt_tokens": 1483,
+    "prompt_tok_s": 82.7,
+    "gen_tokens": 23,
+    "gen_tok_s": 5.1,
+    "load_s": 0.0,
+    "citation_valid": true,
+    "raw": "Ngày thứ Ba là ngày làm việc tại văn phòng bắt buộc cho toàn công ty [Source 2].",
+    "score": {
+     "outcome": "answer",
+     "cited": [
+      2
+     ],
+     "correct": true,
+     "citation_indices_valid": true,
+     "evidence_in_cited_source": true,
+     "facts_in_cited_source": true,
+     "grounded": true,
+     "unsupported_numbers": []
+    }
+   },
+   {
+    "id": "q05",
+    "ttft_s": 3.3,
+    "total_s": 7.2,
+    "prompt_tokens": 1479,
+    "prompt_tok_s": 462.0,
+    "gen_tokens": 21,
+    "gen_tok_s": 5.5,
+    "load_s": 0.0,
+    "citation_valid": true,
+    "raw": "Lương ở Lumora được chi trả vào ngày 5 hằng tháng [Source 2].",
+    "score": {
+     "outcome": "answer",
+     "cited": [
+      2
+     ],
+     "correct": true,
+     "citation_indices_valid": true,
+     "evidence_in_cited_source": true,
+     "facts_in_cited_source": true,
+     "grounded": true,
+     "unsupported_numbers": []
+    }
+   },
+   {
+    "id": "q06",
+    "ttft_s": 2.3,
+    "total_s": 7.2,
+    "prompt_tokens": 1485,
+    "prompt_tok_s": 765.9,
+    "gen_tokens": 26,
+    "gen_tok_s": 5.4,
+    "load_s": 0.0,
+    "citation_valid": true,
+    "raw": "Khi mất thiết bị, nhân viên phải báo cho bộ phận IT trong vòng 24 giờ [Source 1].",
+    "score": {
+     "outcome": "answer",
+     "cited": [
+      1
+     ],
+     "correct": true,
+     "citation_indices_valid": true,
+     "evidence_in_cited_source": true,
+     "facts_in_cited_source": true,
+     "grounded": true,
+     "unsupported_numbers": []
+    }
+   },
+   {
+    "id": "q07",
+    "ttft_s": 3.8,
+    "total_s": 8.5,
+    "prompt_tokens": 1486,
+    "prompt_tok_s": 436.5,
+    "gen_tokens": 24,
+    "gen_tok_s": 5.1,
+    "load_s": 0.0,
+    "citation_valid": false,
+    "raw": "Mục tiêu thời gian khôi phục (RTO) của hệ thống Orchid là 4 giờ.",
+    "score": {
+     "outcome": "unverified",
+     "cited": [],
+     "correct": false,
+     "grounded": null,
+     "unsupported_numbers": []
+    }
+   },
+   {
+    "id": "q08",
+    "ttft_s": 2.4,
+    "total_s": 11.8,
+    "prompt_tokens": 1484,
+    "prompt_tok_s": 730.8,
+    "gen_tokens": 48,
+    "gen_tok_s": 5.1,
+    "load_s": 0.0,
+    "citation_valid": true,
+    "raw": "Sự cố mức SEV1 là khi toàn bộ hệ thống Orchid ngừng hoạt động hoặc dữ liệu khách hàng có nguy cơ bị lộ; kỹ sư trực phải phản hồi trong 10 phút. [Source 2]",
+    "score": {
+     "outcome": "answer",
+     "cited": [
+      2
+     ],
+     "correct": true,
+     "citation_indices_valid": true,
+     "evidence_in_cited_source": true,
+     "facts_in_cited_source": true,
+     "grounded": true,
+     "unsupported_numbers": []
+    }
+   },
+   {
+    "id": "q09",
+    "ttft_s": 32.8,
+    "total_s": 37.1,
+    "prompt_tokens": 1483,
+    "prompt_tok_s": 45.7,
+    "gen_tokens": 23,
+    "gen_tok_s": 5.3,
+    "load_s": 0.0,
+    "citation_valid": true,
+    "raw": "Bản sao lưu toàn phần của Orchid được giữ trong 35 ngày [Source 1].",
+    "score": {
+     "outcome": "answer",
+     "cited": [
+      1
+     ],
+     "correct": true,
+     "citation_indices_valid": true,
+     "evidence_in_cited_source": true,
+     "facts_in_cited_source": true,
+     "grounded": true,
+     "unsupported_numbers": []
+    }
+   },
+   {
+    "id": "q10",
+    "ttft_s": 3.9,
+    "total_s": 9.6,
+    "prompt_tokens": 1481,
+    "prompt_tok_s": 428.5,
+    "gen_tokens": 35,
+    "gen_tok_s": 6.2,
+    "load_s": 0.0,
+    "citation_valid": false,
+    "raw": "Retrieved context does not mention any information about Lumora's maternity leave days for female employees.  \n\nKhông đủ thông tin trong tài liệu để trả lời câu hỏi này.",
+    "score": {
+     "outcome": "unverified",
+     "cited": [],
+     "correct": false,
+     "grounded": null,
+     "unsupported_numbers": []
+    }
+   },
+   {
+    "id": "q11",
+    "ttft_s": 33.1,
+    "total_s": 35.7,
+    "prompt_tokens": 1480,
+    "prompt_tok_s": 45.2,
+    "gen_tokens": 15,
+    "gen_tok_s": 5.6,
+    "load_s": 0.0,
+    "citation_valid": true,
+    "raw": "Không đủ thông tin trong tài liệu để trả lời câu hỏi này.",
+    "score": {
+     "outcome": "refusal",
+     "cited": [],
+     "correct": true,
+     "grounded": null,
+     "unsupported_numbers": []
+    }
+   },
+   {
+    "id": "q12",
+    "ttft_s": 2.1,
+    "total_s": 7.3,
+    "prompt_tokens": 1478,
+    "prompt_tok_s": 874.8,
+    "gen_tokens": 30,
+    "gen_tok_s": 5.8,
+    "load_s": 0.0,
+    "citation_valid": false,
+    "raw": "Retrieved context does not contain information about the current chairman of Lumora. Không đủ thông tin trong tài liệu để trả lời câu hỏi này.",
+    "score": {
+     "outcome": "unverified",
+     "cited": [],
+     "correct": false,
+     "grounded": null,
+     "unsupported_numbers": []
+    }
+   }
+  ],
+  "qwen3:1.7b original prompt, temperature 0": [
+   {
+    "id": "q01",
+    "ttft_s": 13.4,
+    "total_s": 17.3,
+    "prompt_tokens": 1431,
+    "prompt_tok_s": 109.8,
+    "gen_tokens": 26,
+    "gen_tok_s": 6.8,
+    "load_s": 0.0,
+    "citation_valid": true,
+    "raw": "Nhân viên chính thức của Lumora được hưởng 18 ngày nghỉ phép có lương mỗi năm [Source 1].",
+    "score": {
+     "outcome": "answer",
+     "cited": [
+      1
+     ],
+     "correct": true,
+     "citation_indices_valid": true,
+     "evidence_in_cited_source": true,
+     "facts_in_cited_source": true,
+     "grounded": true,
+     "unsupported_numbers": []
+    }
+   },
+   {
+    "id": "q02",
+    "ttft_s": 13.6,
+    "total_s": 16.6,
+    "prompt_tokens": 1429,
+    "prompt_tok_s": 106.1,
+    "gen_tokens": 21,
+    "gen_tok_s": 7.0,
+    "load_s": 0.0,
+    "citation_valid": false,
+    "raw": "Thời gian thử việc cho vị trí quản lý tại Lumora là 60 ngày.",
+    "score": {
+     "outcome": "unverified",
+     "cited": [],
+     "correct": false,
+     "grounded": null,
+     "unsupported_numbers": []
+    }
+   },
+   {
+    "id": "q03",
+    "ttft_s": 13.3,
+    "total_s": 16.8,
+    "prompt_tokens": 1431,
+    "prompt_tok_s": 108.4,
+    "gen_tokens": 23,
+    "gen_tok_s": 6.7,
+    "load_s": 0.0,
+    "citation_valid": false,
+    "raw": "Trong thời gian thử việc, nhân viên Lumora được hưởng 90% lương chính thức.",
+    "score": {
+     "outcome": "unverified",
+     "cited": [],
+     "correct": false,
+     "grounded": null,
+     "unsupported_numbers": []
+    }
+   },
+   {
+    "id": "q04",
+    "ttft_s": 14.1,
+    "total_s": 16.8,
+    "prompt_tokens": 1428,
+    "prompt_tok_s": 102.2,
+    "gen_tokens": 19,
+    "gen_tok_s": 7.0,
+    "load_s": 0.0,
+    "citation_valid": false,
+    "raw": "Ngày thứ Ba là ngày làm việc tại văn phòng bắt buộc cho toàn công ty.",
+    "score": {
+     "outcome": "unverified",
+     "cited": [],
+     "correct": false,
+     "grounded": null,
+     "unsupported_numbers": []
+    }
+   },
+   {
+    "id": "q05",
+    "ttft_s": 1.4,
+    "total_s": 7.6,
+    "prompt_tokens": 1424,
+    "prompt_tok_s": 1069.7,
+    "gen_tokens": 38,
+    "gen_tok_s": 6.2,
+    "load_s": 0.0,
+    "citation_valid": false,
+    "raw": "Lương ở Lumora được chi trả vào ngày 5 hằng tháng; nếu ngày 5 rơi vào cuối tuần hoặc ngày lễ thì chi trả vào ngày làm việc liền trước.",
+    "score": {
+     "outcome": "unverified",
+     "cited": [],
+     "correct": false,
+     "grounded": null,
+     "unsupported_numbers": []
+    }
+   },
+   {
+    "id": "q06",
+    "ttft_s": 1.1,
+    "total_s": 5.4,
+    "prompt_tokens": 1430,
+    "prompt_tok_s": 1841.2,
+    "gen_tokens": 28,
+    "gen_tok_s": 6.6,
+    "load_s": 0.0,
+    "citation_valid": false,
+    "raw": "Khi mất thiết bị, nhân viên phải báo cho bộ phận IT trong vòng 24 giờ qua kênh #it-helpdesk.",
+    "score": {
+     "outcome": "unverified",
+     "cited": [],
+     "correct": false,
+     "grounded": null,
+     "unsupported_numbers": []
+    }
+   },
+   {
+    "id": "q07",
+    "ttft_s": 2.0,
+    "total_s": 5.6,
+    "prompt_tokens": 1431,
+    "prompt_tok_s": 895.6,
+    "gen_tokens": 24,
+    "gen_tok_s": 6.7,
+    "load_s": 0.0,
+    "citation_valid": false,
+    "raw": "Mục tiêu thời gian khôi phục (RTO) của hệ thống Orchid là 4 giờ.",
+    "score": {
+     "outcome": "unverified",
+     "cited": [],
+     "correct": false,
+     "grounded": null,
+     "unsupported_numbers": []
+    }
+   },
+   {
+    "id": "q08",
+    "ttft_s": 1.1,
+    "total_s": 4.1,
+    "prompt_tokens": 1429,
+    "prompt_tok_s": 1910.0,
+    "gen_tokens": 21,
+    "gen_tok_s": 6.9,
+    "load_s": 0.0,
+    "citation_valid": false,
+    "raw": "Với sự cố SEV1, kỹ sư trực phải phản hồi trong 10 phút.",
+    "score": {
+     "outcome": "unverified",
+     "cited": [],
+     "correct": false,
+     "grounded": null,
+     "unsupported_numbers": []
+    }
+   },
+   {
+    "id": "q09",
+    "ttft_s": 26.4,
+    "total_s": 29.7,
+    "prompt_tokens": 1428,
+    "prompt_tok_s": 54.7,
+    "gen_tokens": 23,
+    "gen_tok_s": 7.0,
+    "load_s": 0.0,
+    "citation_valid": true,
+    "raw": "Bản sao lưu toàn phần của Orchid được giữ trong 35 ngày [Source 1].",
+    "score": {
+     "outcome": "answer",
+     "cited": [
+      1
+     ],
+     "correct": true,
+     "citation_indices_valid": true,
+     "evidence_in_cited_source": true,
+     "facts_in_cited_source": true,
+     "grounded": true,
+     "unsupported_numbers": []
+    }
+   },
+   {
+    "id": "q10",
+    "ttft_s": 1.7,
+    "total_s": 3.8,
+    "prompt_tokens": 1426,
+    "prompt_tok_s": 1039.0,
+    "gen_tokens": 15,
+    "gen_tok_s": 7.2,
+    "load_s": 0.0,
+    "citation_valid": true,
+    "raw": "Không đủ thông tin trong tài liệu để trả lời câu hỏi này.",
+    "score": {
+     "outcome": "refusal",
+     "cited": [],
+     "correct": true,
+     "grounded": null,
+     "unsupported_numbers": []
+    }
+   },
+   {
+    "id": "q11",
+    "ttft_s": 25.5,
+    "total_s": 27.5,
+    "prompt_tokens": 1425,
+    "prompt_tok_s": 56.7,
+    "gen_tokens": 15,
+    "gen_tok_s": 7.4,
+    "load_s": 0.0,
+    "citation_valid": true,
+    "raw": "Không đủ thông tin trong tài liệu để trả lời câu hỏi này.",
+    "score": {
+     "outcome": "refusal",
+     "cited": [],
+     "correct": true,
+     "grounded": null,
+     "unsupported_numbers": []
+    }
+   },
+   {
+    "id": "q12",
+    "ttft_s": 1.1,
+    "total_s": 3.2,
+    "prompt_tokens": 1423,
+    "prompt_tok_s": 1742.1,
+    "gen_tokens": 15,
+    "gen_tok_s": 7.2,
+    "load_s": 0.0,
+    "citation_valid": true,
+    "raw": "Không đủ thông tin trong tài liệu để trả lời câu hỏi này.",
+    "score": {
+     "outcome": "refusal",
+     "cited": [],
+     "correct": true,
+     "grounded": null,
+     "unsupported_numbers": []
+    }
+   }
+  ],
+  "qwen3:1.7b + citation reminder, temperature 0 (CHOSEN)": [
+   {
+    "id": "q01",
+    "ttft_s": 14.6,
+    "total_s": 18.4,
+    "prompt_tokens": 1478,
+    "prompt_tok_s": 103.3,
+    "gen_tokens": 27,
+    "gen_tok_s": 7.1,
+    "load_s": 0.0,
+    "citation_valid": true,
+    "raw": "Nhân viên chính thức của Lumora được hưởng 18 ngày nghỉ phép có lương mỗi năm. [Source 2]",
+    "score": {
+     "outcome": "answer",
+     "cited": [
+      2
+     ],
+     "correct": true,
+     "citation_indices_valid": true,
+     "evidence_in_cited_source": false,
+     "facts_in_cited_source": false,
+     "grounded": false,
+     "unsupported_numbers": [
+      "18"
+     ]
+    }
+   },
+   {
+    "id": "q02",
+    "ttft_s": 14.1,
+    "total_s": 17.7,
+    "prompt_tokens": 1476,
+    "prompt_tok_s": 105.3,
+    "gen_tokens": 25,
+    "gen_tok_s": 7.0,
+    "load_s": 0.0,
+    "citation_valid": true,
+    "raw": "Thời gian thử việc cho vị trí quản lý tại Lumora là 60 ngày [Source 1].",
+    "score": {
+     "outcome": "answer",
+     "cited": [
+      1
+     ],
+     "correct": true,
+     "citation_indices_valid": true,
+     "evidence_in_cited_source": true,
+     "facts_in_cited_source": true,
+     "grounded": true,
+     "unsupported_numbers": []
+    }
+   },
+   {
+    "id": "q03",
+    "ttft_s": 14.5,
+    "total_s": 18.7,
+    "prompt_tokens": 1478,
+    "prompt_tok_s": 102.4,
+    "gen_tokens": 28,
+    "gen_tok_s": 6.7,
+    "load_s": 0.0,
+    "citation_valid": true,
+    "raw": "Trong thời gian thử việc, nhân viên Lumora được hưởng 90% lương chính thức. [Source 1]",
+    "score": {
+     "outcome": "answer",
+     "cited": [
+      1
+     ],
+     "correct": true,
+     "citation_indices_valid": true,
+     "evidence_in_cited_source": true,
+     "facts_in_cited_source": true,
+     "grounded": true,
+     "unsupported_numbers": []
+    }
+   },
+   {
+    "id": "q04",
+    "ttft_s": 15.0,
+    "total_s": 18.4,
+    "prompt_tokens": 1475,
+    "prompt_tok_s": 98.9,
+    "gen_tokens": 23,
+    "gen_tok_s": 6.8,
+    "load_s": 0.0,
+    "citation_valid": true,
+    "raw": "Ngày thứ Ba là ngày làm việc tại văn phòng bắt buộc cho toàn công ty [Source 2].",
+    "score": {
+     "outcome": "answer",
+     "cited": [
+      2
+     ],
+     "correct": true,
+     "citation_indices_valid": true,
+     "evidence_in_cited_source": true,
+     "facts_in_cited_source": true,
+     "grounded": true,
+     "unsupported_numbers": []
+    }
+   },
+   {
+    "id": "q05",
+    "ttft_s": 2.5,
+    "total_s": 5.5,
+    "prompt_tokens": 1471,
+    "prompt_tok_s": 608.3,
+    "gen_tokens": 21,
+    "gen_tok_s": 7.2,
+    "load_s": 0.0,
+    "citation_valid": true,
+    "raw": "Lương ở Lumora được chi trả vào ngày 5 hằng tháng [Source 2].",
+    "score": {
+     "outcome": "answer",
+     "cited": [
+      2
+     ],
+     "correct": true,
+     "citation_indices_valid": true,
+     "evidence_in_cited_source": true,
+     "facts_in_cited_source": true,
+     "grounded": true,
+     "unsupported_numbers": []
+    }
+   },
+   {
+    "id": "q06",
+    "ttft_s": 3.3,
+    "total_s": 7.1,
+    "prompt_tokens": 1477,
+    "prompt_tok_s": 505.7,
+    "gen_tokens": 26,
+    "gen_tok_s": 6.9,
+    "load_s": 0.0,
+    "citation_valid": true,
+    "raw": "Khi mất thiết bị, nhân viên phải báo cho bộ phận IT trong vòng 24 giờ [Source 1].",
+    "score": {
+     "outcome": "answer",
+     "cited": [
+      1
+     ],
+     "correct": true,
+     "citation_indices_valid": true,
+     "evidence_in_cited_source": true,
+     "facts_in_cited_source": true,
+     "grounded": true,
+     "unsupported_numbers": []
+    }
+   },
+   {
+    "id": "q07",
+    "ttft_s": 2.9,
+    "total_s": 7.2,
+    "prompt_tokens": 1478,
+    "prompt_tok_s": 590.8,
+    "gen_tokens": 29,
+    "gen_tok_s": 6.8,
+    "load_s": 0.0,
+    "citation_valid": true,
+    "raw": "Mục tiêu thời gian khôi phục (RTO) của hệ thống Orchid là 4 giờ. [Source 2]",
+    "score": {
+     "outcome": "answer",
+     "cited": [
+      2
+     ],
+     "correct": true,
+     "citation_indices_valid": true,
+     "evidence_in_cited_source": false,
+     "facts_in_cited_source": true,
+     "grounded": true,
+     "unsupported_numbers": []
+    }
+   },
+   {
+    "id": "q08",
+    "ttft_s": 3.2,
+    "total_s": 10.8,
+    "prompt_tokens": 1476,
+    "prompt_tok_s": 518.9,
+    "gen_tokens": 48,
+    "gen_tok_s": 6.3,
+    "load_s": 0.0,
+    "citation_valid": true,
+    "raw": "Sự cố mức SEV1 là khi toàn bộ hệ thống Orchid ngừng hoạt động hoặc dữ liệu khách hàng có nguy cơ bị lộ; kỹ sư trực phải phản hồi trong 10 phút. [Source 2]",
+    "score": {
+     "outcome": "answer",
+     "cited": [
+      2
+     ],
+     "correct": true,
+     "citation_indices_valid": true,
+     "evidence_in_cited_source": true,
+     "facts_in_cited_source": true,
+     "grounded": true,
+     "unsupported_numbers": []
+    }
+   },
+   {
+    "id": "q09",
+    "ttft_s": 27.9,
+    "total_s": 31.3,
+    "prompt_tokens": 1475,
+    "prompt_tok_s": 53.5,
+    "gen_tokens": 23,
+    "gen_tok_s": 6.9,
+    "load_s": 0.0,
+    "citation_valid": true,
+    "raw": "Bản sao lưu toàn phần của Orchid được giữ trong 35 ngày [Source 1].",
+    "score": {
+     "outcome": "answer",
+     "cited": [
+      1
+     ],
+     "correct": true,
+     "citation_indices_valid": true,
+     "evidence_in_cited_source": true,
+     "facts_in_cited_source": true,
+     "grounded": true,
+     "unsupported_numbers": []
+    }
+   },
+   {
+    "id": "q10",
+    "ttft_s": 2.7,
+    "total_s": 8.4,
+    "prompt_tokens": 1473,
+    "prompt_tok_s": 612.7,
+    "gen_tokens": 39,
+    "gen_tok_s": 6.9,
+    "load_s": 0.0,
+    "citation_valid": false,
+    "raw": "Retrieved context does not contain information about Lumora having a specific number of days of maternity leave for female employees.  \n\nKhông đủ thông tin trong tài liệu để trả lời câu hỏi này.",
+    "score": {
+     "outcome": "unverified",
+     "cited": [],
+     "correct": false,
+     "grounded": null,
+     "unsupported_numbers": []
+    }
+   },
+   {
+    "id": "q11",
+    "ttft_s": 26.7,
+    "total_s": 29.4,
+    "prompt_tokens": 1472,
+    "prompt_tok_s": 55.9,
+    "gen_tokens": 15,
+    "gen_tok_s": 5.5,
+    "load_s": 0.0,
+    "citation_valid": true,
+    "raw": "Không đủ thông tin trong tài liệu để trả lời câu hỏi này.",
+    "score": {
+     "outcome": "refusal",
+     "cited": [],
+     "correct": true,
+     "grounded": null,
+     "unsupported_numbers": []
+    }
+   },
+   {
+    "id": "q12",
+    "ttft_s": 4.0,
+    "total_s": 6.4,
+    "prompt_tokens": 1470,
+    "prompt_tok_s": 407.8,
+    "gen_tokens": 15,
+    "gen_tok_s": 6.3,
+    "load_s": 0.0,
+    "citation_valid": true,
+    "raw": "Không đủ thông tin trong tài liệu để trả lời câu hỏi này.",
+    "score": {
+     "outcome": "refusal",
+     "cited": [],
+     "correct": true,
+     "grounded": null,
+     "unsupported_numbers": []
+    }
+   }
+  ]
+ },
+ "baseline_live_probe": [
+  {
+   "id": "q01",
+   "mode": "stream",
+   "answerable": true,
+   "status": 200,
+   "ttft_s": null,
+   "total_s": 64.93,
+   "events": [
+    "retrieval_started",
+    "retrieval_completed",
+    "model_routed",
+    "generation_started",
+    "error"
+   ],
+   "answer": null,
+   "sources": [],
+   "conversation_id": null,
+   "message_id": null,
+   "model_name": null,
+   "error": {
+    "event": "error",
+    "error": "Mô hình ngôn ngữ hiện không khả dụng hoặc phản hồi quá chậm. Vui lòng thử lại sau.",
+    "code": "llm_unavailable",
+    "stage": "llm_generation"
+   },
+   "retrieval_hit": true
+  },
+  {
+   "id": "q07",
+   "mode": "stream",
+   "answerable": true,
+   "status": 200,
+   "ttft_s": 50.23,
+   "total_s": 53.85,
+   "events": [
+    "retrieval_started",
+    "retrieval_completed",
+    "model_routed",
+    "generation_started",
+    "token",
+    "answer_completed"
+   ],
+   "answer": "Không thể xác minh câu trả lời từ tài liệu được truy xuất.",
+   "sources": [],
+   "conversation_id": "163c3f36-e149-4baf-a131-00b66149a793",
+   "message_id": "d221ed08-98fa-4397-932f-5321673b4468",
+   "model_name": "qwen3:1.7b",
+   "error": null,
+   "retrieval_hit": true,
+   "score": {
+    "outcome": "unverified",
+    "cited": [],
+    "correct": false,
+    "grounded": null,
+    "unsupported_numbers": []
+   }
+  },
+  {
+   "id": "q10",
+   "mode": "stream",
+   "answerable": false,
+   "status": 200,
+   "ttft_s": 16.95,
+   "total_s": 19.4,
+   "events": [
+    "retrieval_started",
+    "retrieval_completed",
+    "model_routed",
+    "generation_started",
+    "token",
+    "answer_completed"
+   ],
+   "answer": "Không đủ thông tin trong tài liệu để trả lời câu hỏi này.",
+   "sources": [],
+   "conversation_id": "864c097c-bab9-4f15-a402-f4d47554360c",
+   "message_id": "7e427c23-388f-4bc4-84b9-f130a03adabe",
+   "model_name": "qwen3:1.7b",
+   "error": null,
+   "retrieval_hit": null,
+   "score": {
+    "outcome": "refusal",
+    "cited": [],
+    "correct": true,
+    "grounded": null,
+    "unsupported_numbers": []
+   }
+  }
+ ],
+ "cold_start": [
+  {
+   "id": "q08",
+   "mode": "stream",
+   "answerable": true,
+   "status": 200,
+   "ttft_s": 51.4,
+   "total_s": 58.34,
+   "events": [
+    "retrieval_started",
+    "retrieval_completed",
+    "model_routed",
+    "generation_started",
+    "token",
+    "answer_completed"
+   ],
+   "answer": "Sự cố mức SEV1 là khi toàn bộ hệ thống Orchid ngừng hoạt động hoặc dữ liệu khách hàng có nguy cơ bị lộ; kỹ sư trực phải phản hồi trong 10 phút. [Source 2]",
+   "sources": [
+    {
+     "source_index": 1,
+     "document_id": "b0cc2f72-76b2-45e8-a342-fcfb1009129f",
+     "chunk_id": "fef5c29b-1d86-4b56-b1ea-513d9bf0bae6",
+     "chunk_index": 1,
+     "content": "hản hồi là 30 phút. Sự cố mức SEV3 là lỗi không ảnh hưởng đến luồng nghiệp vụ chính và được xử lý trong giờ hành chính.\n\n## 4. Trực vận hành\nLịch trực vận hành luân phiên theo tuần, bắt đầu lúc 10 giờ sáng thứ Hai. Mỗi ca trực gồm một kỹ sư chính và một kỹ sư dự phòng. Kỹ sư trực nhận phụ cấp 500.000 đồng cho mỗi ngày trực ngoài giờ hành chính.\n\n## 5. Triển khai phần mềm\nViệc triển khai lên môi trường production chỉ được thực hiện từ thứ Hai đến thứ Năm, trước 15 giờ. Không triển khai vào thứ Sáu, cuối tuần và ngày lễ, trừ bản vá khẩn cấp cho sự cố SEV1. Mỗi lần triển khai phải có ít nhất hai người phê duyệt pull request.",
+     "similarity": 0.9033869024053992,
+     "document_title": "orchid_operations_runbook.md",
+     "char_start": 800,
+     "char_end": 1429,
+     "rerank_score": null
+    },
+    {
+     "source_index": 2,
+     "document_id": "b0cc2f72-76b2-45e8-a342-fcfb1009129f",
+     "chunk_id": "88f865b2-82d3-4ae0-b2c0-03dc211afc1b",
+     "chunk_index": 0,
+     "content": "# Quy trình vận hành hệ thống Orchid\n\n## 1. Sao lưu dữ liệu\nCơ sở dữ liệu chính của Orchid được sao lưu toàn phần lúc 1 giờ 30 sáng mỗi ngày và sao lưu gia tăng mỗi 15 phút. Bản sao lưu toàn phần được giữ trong 35 ngày; bản sao lưu gia tăng được giữ trong 7 ngày. Bản sao lưu được lưu tại hai vùng: Hà Nội (chính) và Singapore (dự phòng).\n\n## 2. Mục tiêu khôi phục\nMục tiêu thời gian khôi phục (RTO) của Orchid là 4 giờ. Mục tiêu điểm khôi phục (RPO) là 15 phút. Diễn tập khôi phục thảm họa được thực hiện mỗi quý một lần, vào thứ Bảy tuần thứ hai của tháng đầu quý.\n\n## 3. Phân loại sự cố\nSự cố mức SEV1 là khi toàn bộ hệ thống Orchid ngừng hoạt động hoặc dữ liệu khách hàng có nguy cơ bị lộ; kỹ sư trực phải phản hồi trong 10 phút. Sự cố mức SEV2 là khi một chức năng chính bị suy giảm; thời gian phản hồi là 30 phút. Sự cố mức SEV3 là lỗi không ảnh hưởng đến luồng nghiệp vụ chính và được xử lý trong giờ hành chính.\n\n## 4. Trực vận hành\nLịch trực vận hành luân phiên theo tuần, bắt đầu lúc 10 giờ",
+     "similarity": 0.8755603133296219,
+     "document_title": "orchid_operations_runbook.md",
+     "char_start": 0,
+     "char_end": 1000,
+     "rerank_score": null
+    },
+    {
+     "source_index": 3,
+     "document_id": "dbac67ad-ff83-4431-bf7b-a5120d904b19",
+     "chunk_id": "e8e223ae-293f-4ebe-89b6-ab2d0a1bb5c2",
+     "chunk_index": 1,
+     "content": "xa tối đa 2 ngày mỗi tuần, với điều kiện đăng ký trên HRM Orchid trước 17 giờ của ngày làm việc liền trước. Ngày thứ Ba là ngày làm việc tại văn phòng bắt buộc cho toàn công ty. Khi làm việc từ xa, nhân viên phải trực tuyến trên Lumora Chat trong khung giờ cốt lõi từ 9 giờ 30 đến 16 giờ.\n\n## 4. Lương và phúc lợi\nLương được chi trả vào ngày 5 hằng tháng; nếu ngày 5 rơi vào cuối tuần hoặc ngày lễ thì chi trả vào ngày làm việc liền trước. Mỗi nhân viên chính thức nhận phụ cấp ăn trưa 1.200.000 đồng mỗi tháng. Gói khám sức khỏe định kỳ được tổ chức một lần mỗi năm vào tháng 9 tại phòng khám đối tác An Tâm.\n\n## 5. Thiết bị làm việc\nNhân viên khối kỹ thuật được cấp máy tính xách tay có cấu hình tối thiểu 32 GB RAM; các khối khác được cấp máy 16 GB RAM. Thiết bị được thay mới sau mỗi chu kỳ 3 năm. Khi mất thiết bị, nhân viên phải báo cho bộ phận IT trong vòng 24 giờ qua kênh #it-helpdesk.\n\n## 6. Đào tạo\nMỗi nhân viên có ngân sách đào tạo 8.000.000 đồng mỗi năm cho khóa học hoặc chứng chỉ liên",
+     "similarity": 0.8335279424753317,
+     "document_title": "lumora_hr_handbook.md",
+     "char_start": 800,
+     "char_end": 1800,
+     "rerank_score": null
+    },
+    {
+     "source_index": 4,
+     "document_id": "dbac67ad-ff83-4431-bf7b-a5120d904b19",
+     "chunk_id": "9a70dc64-b11b-491e-97e3-b73fb48aba93",
+     "chunk_index": 2,
+     "content": ". Khi mất thiết bị, nhân viên phải báo cho bộ phận IT trong vòng 24 giờ qua kênh #it-helpdesk.\n\n## 6. Đào tạo\nMỗi nhân viên có ngân sách đào tạo 8.000.000 đồng mỗi năm cho khóa học hoặc chứng chỉ liên quan đến công việc. Khoản chi trên 3.000.000 đồng cần được giám đốc khối phê duyệt trước khi đăng ký.",
+     "similarity": 0.8332371513278124,
+     "document_title": "lumora_hr_handbook.md",
+     "char_start": 1600,
+     "char_end": 1902,
+     "rerank_score": null
+    },
+    {
+     "source_index": 5,
+     "document_id": "dbac67ad-ff83-4431-bf7b-a5120d904b19",
+     "chunk_id": "b93ac68c-d520-4cc7-a3d9-da728c32664d",
+     "chunk_index": 0,
+     "content": "# Sổ tay nhân sự Lumora 2026\n\n## 1. Thời gian thử việc\nNhân viên mới tại Lumora có thời gian thử việc là 45 ngày đối với vị trí chuyên viên và 60 ngày đối với vị trí quản lý. Trong thời gian thử việc, nhân viên được hưởng 90% lương chính thức. Kết quả thử việc được trưởng bộ phận đánh giá bằng văn bản chậm nhất 3 ngày làm việc trước khi kết thúc thử việc.\n\n## 2. Nghỉ phép năm\nNhân viên chính thức được hưởng 18 ngày nghỉ phép có lương mỗi năm. Sau mỗi 5 năm làm việc liên tục, nhân viên được cộng thêm 2 ngày phép. Số ngày phép chưa dùng hết trong năm được chuyển sang năm sau tối đa 5 ngày và phải sử dụng trước ngày 31 tháng 3. Đơn xin nghỉ phải gửi qua hệ thống HRM Orchid trước ít nhất 7 ngày làm việc, trừ trường hợp khẩn cấp.\n\n## 3. Làm việc từ xa\nNhân viên đã qua thử việc được làm việc từ xa tối đa 2 ngày mỗi tuần, với điều kiện đăng ký trên HRM Orchid trước 17 giờ của ngày làm việc liền trước. Ngày thứ Ba là ngày làm việc tại văn phòng bắt buộc cho toàn công ty. Khi làm việc từ xa, nh",
+     "similarity": 0.8043407435011034,
+     "document_title": "lumora_hr_handbook.md",
+     "char_start": 0,
+     "char_end": 1000,
+     "rerank_score": null
+    }
+   ],
+   "conversation_id": "8be89b4f-4674-480b-b0f8-9e6e8ae890a8",
+   "message_id": "9523153d-cbe2-4c0d-92f4-acce41339971",
+   "model_name": "qwen3:1.7b",
+   "error": null,
+   "raw_answer": "Sự cố mức SEV1 là khi toàn bộ hệ thống Orchid ngừng hoạt động hoặc dữ liệu khách hàng có nguy cơ bị lộ; kỹ sư trực phải phản hồi trong 10 phút. [Source 2]",
+   "retrieval_hit": true,
+   "score": {
+    "outcome": "answer",
+    "cited": [
+     2
+    ],
+    "correct": true,
+    "citation_indices_valid": true,
+    "evidence_in_cited_source": true,
+    "facts_in_cited_source": true,
+    "grounded": true,
+    "unsupported_numbers": []
+   }
+  }
+ ],
+ "timeout_probe": {
+  "ask": {
+   "status": 503,
+   "body": {
+    "detail": "Mô hình ngôn ngữ hiện không khả dụng hoặc phản hồi quá chậm. Vui lòng thử lại sau."
+   },
+   "retry_after": "5",
+   "s": 7.6
+  },
+  "api_still_serving": 200
+ },
+ "concurrency_probe": {
+  "workspaces": {
+   "A": {
+    "ws": "776dfec1-5750-4ba3-ac09-4451a5664d40",
+    "doc": "d0c2b01a-55c5-4246-a621-d917d96986c6"
+   },
+   "B": {
+    "ws": "13090f6d-d989-436d-8a3a-d630ef9c57cb",
+    "doc": "ca13318e-40a8-40a3-9254-4705f71bee5c"
+   }
+  },
+  "results": {
+   "A-stream": {
+    "status": 200,
+    "final": "answer_completed",
+    "answer": "Nhân viên chính thức của Lumora được hưởng 18 ngày nghỉ phép có lương mỗi năm [Source 1].",
+    "code": null,
+    "model": "qwen3:1.7b",
+    "doc_ids": [
+     "d0c2b01a-55c5-4246-a621-d917d96986c6"
+    ],
+    "seconds": 8.6
+   },
+   "B-stream": {
+    "status": 200,
+    "final": "answer_completed",
+    "answer": "Mục tiêu thời gian khôi phục RTO của hệ thống Orchid là 4 giờ. [Source 1]",
+    "code": null,
+    "model": "qwen3:1.7b",
+    "doc_ids": [
+     "ca13318e-40a8-40a3-9254-4705f71bee5c"
+    ],
+    "seconds": 18.8
+   },
+   "A-ask": {
+    "status": 200,
+    "answer": "Lương ở Lumora được chi trả vào ngày 5 hằng tháng [Source 2].",
+    "model": "qwen3:1.7b",
+    "doc_ids": [
+     "d0c2b01a-55c5-4246-a621-d917d96986c6"
+    ],
+    "seconds": 23.6
+   },
+   "after-burst": {
+    "status": 200,
+    "final": "answer_completed",
+    "answer": "Ngày thứ Ba là ngày làm việc tại văn phòng bắt buộc cho toàn công ty [Source 2].",
+    "code": null,
+    "model": "qwen3:1.7b",
+    "doc_ids": [
+     "d0c2b01a-55c5-4246-a621-d917d96986c6"
+    ],
+    "seconds": 5.5
+   }
+  },
+  "checks": {
+   "A_only_A_docs": true,
+   "B_only_B_docs": true
+  }
+ }
+}

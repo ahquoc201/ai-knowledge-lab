@@ -44,3 +44,5 @@ class RAGResponse(BaseModel):
     conversation_id: UUID
     answer: str
     sources: list[RAGSourceResponse]
+    # Model that generated the answer (None when no generation was needed).
+    model_name: str | None = None

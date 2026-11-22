@@ -1,0 +1,998 @@
+{
+  "metadata": {
+    "task_id": "T260039",
+    "llm_mode": "deterministic_mock_llm",
+    "corpus": "augmented_74_chunks",
+    "requests_per_level": 12,
+    "concurrencies": [
+      1,
+      2,
+      5,
+      10
+    ],
+    "cpu_cores_logical": 12,
+    "reranker_config": {
+      "max_concurrency": 1,
+      "max_queue_size": 5,
+      "queue_timeout_seconds": 2.0,
+      "intra_op_threads": 4,
+      "timeout_ms": 3000.0,
+      "pool_size": 10
+    }
+  },
+  "results": [
+    {
+      "profile": "A_dense_no_rerank",
+      "mode": "dense",
+      "enable_reranking": false,
+      "streaming": false,
+      "concurrency": 1,
+      "total_requests": 12,
+      "completed_requests": 12,
+      "errors": 0,
+      "throughput_rps": 0.94,
+      "wall_time_s": 12.71,
+      "latency_ms": {
+        "sample_size": 12,
+        "mean": 1057.59,
+        "p50": 1031.61,
+        "p95": 1369.89,
+        "p99": 1370.56
+      },
+      "streaming_ttft_ms": null,
+      "reranker_metrics": {
+        "total_opt_in": 0,
+        "total_success": 0,
+        "total_fallback": 0,
+        "fallback_rate": 0.0,
+        "fallback_reasons": {},
+        "queue_timeouts": 0,
+        "inference_timeouts": 0,
+        "capacity_rejections": 0,
+        "p50_queue_wait_ms": 0.0,
+        "p50_inference_ms": 0.0,
+        "p95_inference_ms": 0.0
+      },
+      "pipeline_breakdown_ms": {
+        "retrieval_p50": 1007.843,
+        "context_p50": 0.203,
+        "llm_p50": 7.06
+      },
+      "resources": {
+        "cpu_seconds": 39.143,
+        "cpu_utilization_pct": 308.0,
+        "rss_before_mb": 1924.37,
+        "rss_after_mb": 1926.78,
+        "rss_peak_mb": 1926.78,
+        "event_loop_lag_p50_ms": 0.63,
+        "event_loop_lag_max_ms": 201.0
+      }
+    },
+    {
+      "profile": "A_dense_no_rerank",
+      "mode": "dense",
+      "enable_reranking": false,
+      "streaming": false,
+      "concurrency": 2,
+      "total_requests": 12,
+      "completed_requests": 12,
+      "errors": 0,
+      "throughput_rps": 1.55,
+      "wall_time_s": 7.736,
+      "latency_ms": {
+        "sample_size": 12,
+        "mean": 1239.98,
+        "p50": 1082.92,
+        "p95": 2188.82,
+        "p99": 2211.57
+      },
+      "streaming_ttft_ms": null,
+      "reranker_metrics": {
+        "total_opt_in": 0,
+        "total_success": 0,
+        "total_fallback": 0,
+        "fallback_rate": 0.0,
+        "fallback_reasons": {},
+        "queue_timeouts": 0,
+        "inference_timeouts": 0,
+        "capacity_rejections": 0,
+        "p50_queue_wait_ms": 0.0,
+        "p50_inference_ms": 0.0,
+        "p95_inference_ms": 0.0
+      },
+      "pipeline_breakdown_ms": {
+        "retrieval_p50": 1046.562,
+        "context_p50": 0.226,
+        "llm_p50": 7.335
+      },
+      "resources": {
+        "cpu_seconds": 7.486,
+        "cpu_utilization_pct": 96.8,
+        "rss_before_mb": 1926.84,
+        "rss_after_mb": 1928.09,
+        "rss_peak_mb": 1928.09,
+        "event_loop_lag_p50_ms": 0.68,
+        "event_loop_lag_max_ms": 331.47
+      }
+    },
+    {
+      "profile": "A_dense_no_rerank",
+      "mode": "dense",
+      "enable_reranking": false,
+      "streaming": false,
+      "concurrency": 5,
+      "total_requests": 12,
+      "completed_requests": 12,
+      "errors": 0,
+      "throughput_rps": 2.14,
+      "wall_time_s": 5.604,
+      "latency_ms": {
+        "sample_size": 12,
+        "mean": 2116.92,
+        "p50": 2174.44,
+        "p95": 2620.28,
+        "p99": 2628.61
+      },
+      "streaming_ttft_ms": null,
+      "reranker_metrics": {
+        "total_opt_in": 0,
+        "total_success": 0,
+        "total_fallback": 0,
+        "fallback_rate": 0.0,
+        "fallback_reasons": {},
+        "queue_timeouts": 0,
+        "inference_timeouts": 0,
+        "capacity_rejections": 0,
+        "p50_queue_wait_ms": 0.0,
+        "p50_inference_ms": 0.0,
+        "p95_inference_ms": 0.0
+      },
+      "pipeline_breakdown_ms": {
+        "retrieval_p50": 2098.561,
+        "context_p50": 0.192,
+        "llm_p50": 17.958
+      },
+      "resources": {
+        "cpu_seconds": 9.146,
+        "cpu_utilization_pct": 163.2,
+        "rss_before_mb": 1928.09,
+        "rss_after_mb": 1932.09,
+        "rss_peak_mb": 1932.09,
+        "event_loop_lag_p50_ms": 1.82,
+        "event_loop_lag_max_ms": 646.11
+      }
+    },
+    {
+      "profile": "A_dense_no_rerank",
+      "mode": "dense",
+      "enable_reranking": false,
+      "streaming": false,
+      "concurrency": 10,
+      "total_requests": 12,
+      "completed_requests": 12,
+      "errors": 0,
+      "throughput_rps": 1.98,
+      "wall_time_s": 6.048,
+      "latency_ms": {
+        "sample_size": 12,
+        "mean": 4413.43,
+        "p50": 5124.01,
+        "p95": 5178.87,
+        "p99": 5181.34
+      },
+      "streaming_ttft_ms": null,
+      "reranker_metrics": {
+        "total_opt_in": 0,
+        "total_success": 0,
+        "total_fallback": 0,
+        "fallback_rate": 0.0,
+        "fallback_reasons": {},
+        "queue_timeouts": 0,
+        "inference_timeouts": 0,
+        "capacity_rejections": 0,
+        "p50_queue_wait_ms": 0.0,
+        "p50_inference_ms": 0.0,
+        "p95_inference_ms": 0.0
+      },
+      "pipeline_breakdown_ms": {
+        "retrieval_p50": 5023.907,
+        "context_p50": 0.181,
+        "llm_p50": 24.299
+      },
+      "resources": {
+        "cpu_seconds": 9.226,
+        "cpu_utilization_pct": 152.5,
+        "rss_before_mb": 1932.09,
+        "rss_after_mb": 1937.92,
+        "rss_peak_mb": 1937.93,
+        "event_loop_lag_p50_ms": 2.13,
+        "event_loop_lag_max_ms": 932.98
+      }
+    },
+    {
+      "profile": "B_hybrid_no_rerank",
+      "mode": "hybrid",
+      "enable_reranking": false,
+      "streaming": false,
+      "concurrency": 1,
+      "total_requests": 12,
+      "completed_requests": 12,
+      "errors": 0,
+      "throughput_rps": 1.44,
+      "wall_time_s": 8.312,
+      "latency_ms": {
+        "sample_size": 12,
+        "mean": 691.45,
+        "p50": 591.06,
+        "p95": 1095.42,
+        "p99": 1285.53
+      },
+      "streaming_ttft_ms": null,
+      "reranker_metrics": {
+        "total_opt_in": 0,
+        "total_success": 0,
+        "total_fallback": 0,
+        "fallback_rate": 0.0,
+        "fallback_reasons": {},
+        "queue_timeouts": 0,
+        "inference_timeouts": 0,
+        "capacity_rejections": 0,
+        "p50_queue_wait_ms": 0.0,
+        "p50_inference_ms": 0.0,
+        "p95_inference_ms": 0.0
+      },
+      "pipeline_breakdown_ms": {
+        "retrieval_p50": 572.032,
+        "context_p50": 0.204,
+        "llm_p50": 7.093
+      },
+      "resources": {
+        "cpu_seconds": 6.11,
+        "cpu_utilization_pct": 73.5,
+        "rss_before_mb": 1937.92,
+        "rss_after_mb": 1936.8,
+        "rss_peak_mb": 1937.95,
+        "event_loop_lag_p50_ms": 0.66,
+        "event_loop_lag_max_ms": 190.1
+      }
+    },
+    {
+      "profile": "B_hybrid_no_rerank",
+      "mode": "hybrid",
+      "enable_reranking": false,
+      "streaming": false,
+      "concurrency": 2,
+      "total_requests": 12,
+      "completed_requests": 12,
+      "errors": 0,
+      "throughput_rps": 2.36,
+      "wall_time_s": 5.084,
+      "latency_ms": {
+        "sample_size": 12,
+        "mean": 842.83,
+        "p50": 783.78,
+        "p95": 1072.03,
+        "p99": 1077.77
+      },
+      "streaming_ttft_ms": null,
+      "reranker_metrics": {
+        "total_opt_in": 0,
+        "total_success": 0,
+        "total_fallback": 0,
+        "fallback_rate": 0.0,
+        "fallback_reasons": {},
+        "queue_timeouts": 0,
+        "inference_timeouts": 0,
+        "capacity_rejections": 0,
+        "p50_queue_wait_ms": 0.0,
+        "p50_inference_ms": 0.0,
+        "p95_inference_ms": 0.0
+      },
+      "pipeline_breakdown_ms": {
+        "retrieval_p50": 759.233,
+        "context_p50": 0.196,
+        "llm_p50": 7.611
+      },
+      "resources": {
+        "cpu_seconds": 6.246,
+        "cpu_utilization_pct": 122.9,
+        "rss_before_mb": 1936.8,
+        "rss_after_mb": 1936.74,
+        "rss_peak_mb": 1936.86,
+        "event_loop_lag_p50_ms": 0.8,
+        "event_loop_lag_max_ms": 237.77
+      }
+    },
+    {
+      "profile": "B_hybrid_no_rerank",
+      "mode": "hybrid",
+      "enable_reranking": false,
+      "streaming": false,
+      "concurrency": 5,
+      "total_requests": 12,
+      "completed_requests": 12,
+      "errors": 0,
+      "throughput_rps": 1.67,
+      "wall_time_s": 7.194,
+      "latency_ms": {
+        "sample_size": 12,
+        "mean": 2652.35,
+        "p50": 2391.5,
+        "p95": 3553.2,
+        "p99": 3581.47
+      },
+      "streaming_ttft_ms": null,
+      "reranker_metrics": {
+        "total_opt_in": 0,
+        "total_success": 0,
+        "total_fallback": 0,
+        "fallback_rate": 0.0,
+        "fallback_reasons": {},
+        "queue_timeouts": 0,
+        "inference_timeouts": 0,
+        "capacity_rejections": 0,
+        "p50_queue_wait_ms": 0.0,
+        "p50_inference_ms": 0.0,
+        "p95_inference_ms": 0.0
+      },
+      "pipeline_breakdown_ms": {
+        "retrieval_p50": 2242.303,
+        "context_p50": 0.236,
+        "llm_p50": 14.891
+      },
+      "resources": {
+        "cpu_seconds": 9.429,
+        "cpu_utilization_pct": 131.1,
+        "rss_before_mb": 1936.74,
+        "rss_after_mb": 1939.04,
+        "rss_peak_mb": 1939.04,
+        "event_loop_lag_p50_ms": 2.51,
+        "event_loop_lag_max_ms": 489.32
+      }
+    },
+    {
+      "profile": "B_hybrid_no_rerank",
+      "mode": "hybrid",
+      "enable_reranking": false,
+      "streaming": false,
+      "concurrency": 10,
+      "total_requests": 12,
+      "completed_requests": 12,
+      "errors": 0,
+      "throughput_rps": 1.13,
+      "wall_time_s": 10.631,
+      "latency_ms": {
+        "sample_size": 12,
+        "mean": 7798.16,
+        "p50": 8999.21,
+        "p95": 9114.92,
+        "p99": 9128.82
+      },
+      "streaming_ttft_ms": null,
+      "reranker_metrics": {
+        "total_opt_in": 0,
+        "total_success": 0,
+        "total_fallback": 0,
+        "fallback_rate": 0.0,
+        "fallback_reasons": {},
+        "queue_timeouts": 0,
+        "inference_timeouts": 0,
+        "capacity_rejections": 0,
+        "p50_queue_wait_ms": 0.0,
+        "p50_inference_ms": 0.0,
+        "p95_inference_ms": 0.0
+      },
+      "pipeline_breakdown_ms": {
+        "retrieval_p50": 8820.333,
+        "context_p50": 0.209,
+        "llm_p50": 62.121
+      },
+      "resources": {
+        "cpu_seconds": 12.748,
+        "cpu_utilization_pct": 119.9,
+        "rss_before_mb": 1939.04,
+        "rss_after_mb": 1943.02,
+        "rss_peak_mb": 1943.05,
+        "event_loop_lag_p50_ms": 6.28,
+        "event_loop_lag_max_ms": 3006.98
+      }
+    },
+    {
+      "profile": "C_dense_rerank",
+      "mode": "dense",
+      "enable_reranking": true,
+      "streaming": false,
+      "concurrency": 1,
+      "total_requests": 12,
+      "completed_requests": 12,
+      "errors": 0,
+      "throughput_rps": 0.5,
+      "wall_time_s": 24.238,
+      "latency_ms": {
+        "sample_size": 12,
+        "mean": 2018.32,
+        "p50": 2011.27,
+        "p95": 3080.12,
+        "p99": 3206.46
+      },
+      "streaming_ttft_ms": null,
+      "reranker_metrics": {
+        "total_opt_in": 12,
+        "total_success": 12,
+        "total_fallback": 0,
+        "fallback_rate": 0.0,
+        "fallback_reasons": {},
+        "queue_timeouts": 0,
+        "inference_timeouts": 0,
+        "capacity_rejections": 0,
+        "p50_queue_wait_ms": 0.09,
+        "p50_inference_ms": 1433.54,
+        "p95_inference_ms": 2471.23
+      },
+      "pipeline_breakdown_ms": {
+        "retrieval_p50": 464.779,
+        "context_p50": 0.213,
+        "llm_p50": 7.263
+      },
+      "resources": {
+        "cpu_seconds": 90.816,
+        "cpu_utilization_pct": 374.7,
+        "rss_before_mb": 1943.02,
+        "rss_after_mb": 1945.07,
+        "rss_peak_mb": 1945.07,
+        "event_loop_lag_p50_ms": 0.65,
+        "event_loop_lag_max_ms": 239.39
+      }
+    },
+    {
+      "profile": "C_dense_rerank",
+      "mode": "dense",
+      "enable_reranking": true,
+      "streaming": false,
+      "concurrency": 2,
+      "total_requests": 12,
+      "completed_requests": 12,
+      "errors": 0,
+      "throughput_rps": 0.56,
+      "wall_time_s": 21.594,
+      "latency_ms": {
+        "sample_size": 12,
+        "mean": 3423.48,
+        "p50": 3334.88,
+        "p95": 4768.03,
+        "p99": 4961.32
+      },
+      "streaming_ttft_ms": null,
+      "reranker_metrics": {
+        "total_opt_in": 12,
+        "total_success": 11,
+        "total_fallback": 1,
+        "fallback_rate": 0.0833,
+        "fallback_reasons": {
+          "queue_timeout": 1
+        },
+        "queue_timeouts": 1,
+        "inference_timeouts": 0,
+        "capacity_rejections": 0,
+        "p50_queue_wait_ms": 910.86,
+        "p50_inference_ms": 2054.5,
+        "p95_inference_ms": 2558.83
+      },
+      "pipeline_breakdown_ms": {
+        "retrieval_p50": 665.221,
+        "context_p50": 0.199,
+        "llm_p50": 7.48
+      },
+      "resources": {
+        "cpu_seconds": 88.059,
+        "cpu_utilization_pct": 407.8,
+        "rss_before_mb": 1945.07,
+        "rss_after_mb": 1945.42,
+        "rss_peak_mb": 1945.42,
+        "event_loop_lag_p50_ms": 0.66,
+        "event_loop_lag_max_ms": 318.0
+      }
+    },
+    {
+      "profile": "C_dense_rerank",
+      "mode": "dense",
+      "enable_reranking": true,
+      "streaming": false,
+      "concurrency": 5,
+      "total_requests": 12,
+      "completed_requests": 12,
+      "errors": 0,
+      "throughput_rps": 1.1,
+      "wall_time_s": 10.874,
+      "latency_ms": {
+        "sample_size": 12,
+        "mean": 3962.74,
+        "p50": 3728.87,
+        "p95": 5449.39,
+        "p99": 5889.34
+      },
+      "streaming_ttft_ms": null,
+      "reranker_metrics": {
+        "total_opt_in": 12,
+        "total_success": 5,
+        "total_fallback": 7,
+        "fallback_rate": 0.5833,
+        "fallback_reasons": {
+          "queue_timeout": 7
+        },
+        "queue_timeouts": 7,
+        "inference_timeouts": 0,
+        "capacity_rejections": 0,
+        "p50_queue_wait_ms": 1387.9,
+        "p50_inference_ms": 1622.76,
+        "p95_inference_ms": 2157.42
+      },
+      "pipeline_breakdown_ms": {
+        "retrieval_p50": 1540.409,
+        "context_p50": 0.209,
+        "llm_p50": 7.172
+      },
+      "resources": {
+        "cpu_seconds": 42.975,
+        "cpu_utilization_pct": 395.2,
+        "rss_before_mb": 1945.42,
+        "rss_after_mb": 1947.78,
+        "rss_peak_mb": 1947.78,
+        "event_loop_lag_p50_ms": 0.67,
+        "event_loop_lag_max_ms": 451.87
+      }
+    },
+    {
+      "profile": "C_dense_rerank",
+      "mode": "dense",
+      "enable_reranking": true,
+      "streaming": false,
+      "concurrency": 10,
+      "total_requests": 12,
+      "completed_requests": 12,
+      "errors": 0,
+      "throughput_rps": 1.26,
+      "wall_time_s": 9.495,
+      "latency_ms": {
+        "sample_size": 12,
+        "mean": 6527.39,
+        "p50": 7171.83,
+        "p95": 8837.36,
+        "p99": 9358.38
+      },
+      "streaming_ttft_ms": null,
+      "reranker_metrics": {
+        "total_opt_in": 12,
+        "total_success": 2,
+        "total_fallback": 10,
+        "fallback_rate": 0.8333,
+        "fallback_reasons": {
+          "capacity_saturated": 6,
+          "queue_timeout": 4
+        },
+        "queue_timeouts": 4,
+        "inference_timeouts": 0,
+        "capacity_rejections": 6,
+        "p50_queue_wait_ms": 847.9,
+        "p50_inference_ms": 1606.02,
+        "p95_inference_ms": 1677.87
+      },
+      "pipeline_breakdown_ms": {
+        "retrieval_p50": 6235.789,
+        "context_p50": 0.225,
+        "llm_p50": 9.362
+      },
+      "resources": {
+        "cpu_seconds": 24.255,
+        "cpu_utilization_pct": 255.5,
+        "rss_before_mb": 1947.78,
+        "rss_after_mb": 1951.03,
+        "rss_peak_mb": 1951.04,
+        "event_loop_lag_p50_ms": 1.21,
+        "event_loop_lag_max_ms": 973.11
+      }
+    },
+    {
+      "profile": "D_hybrid_rerank",
+      "mode": "hybrid",
+      "enable_reranking": true,
+      "streaming": false,
+      "concurrency": 1,
+      "total_requests": 12,
+      "completed_requests": 12,
+      "errors": 0,
+      "throughput_rps": 0.39,
+      "wall_time_s": 30.749,
+      "latency_ms": {
+        "sample_size": 12,
+        "mean": 2560.85,
+        "p50": 2699.39,
+        "p95": 3290.39,
+        "p99": 3302.92
+      },
+      "streaming_ttft_ms": null,
+      "reranker_metrics": {
+        "total_opt_in": 12,
+        "total_success": 12,
+        "total_fallback": 0,
+        "fallback_rate": 0.0,
+        "fallback_reasons": {},
+        "queue_timeouts": 0,
+        "inference_timeouts": 0,
+        "capacity_rejections": 0,
+        "p50_queue_wait_ms": 0.1,
+        "p50_inference_ms": 2063.35,
+        "p95_inference_ms": 2602.45
+      },
+      "pipeline_breakdown_ms": {
+        "retrieval_p50": 741.362,
+        "context_p50": 0.202,
+        "llm_p50": 7.247
+      },
+      "resources": {
+        "cpu_seconds": 114.829,
+        "cpu_utilization_pct": 373.4,
+        "rss_before_mb": 1951.03,
+        "rss_after_mb": 1950.2,
+        "rss_peak_mb": 1951.51,
+        "event_loop_lag_p50_ms": 0.61,
+        "event_loop_lag_max_ms": 289.86
+      }
+    },
+    {
+      "profile": "D_hybrid_rerank",
+      "mode": "hybrid",
+      "enable_reranking": true,
+      "streaming": false,
+      "concurrency": 2,
+      "total_requests": 12,
+      "completed_requests": 12,
+      "errors": 0,
+      "throughput_rps": 0.64,
+      "wall_time_s": 18.668,
+      "latency_ms": {
+        "sample_size": 12,
+        "mean": 2991.86,
+        "p50": 2906.3,
+        "p95": 4381.89,
+        "p99": 4388.23
+      },
+      "streaming_ttft_ms": null,
+      "reranker_metrics": {
+        "total_opt_in": 12,
+        "total_success": 12,
+        "total_fallback": 0,
+        "fallback_rate": 0.0,
+        "fallback_reasons": {},
+        "queue_timeouts": 0,
+        "inference_timeouts": 0,
+        "capacity_rejections": 0,
+        "p50_queue_wait_ms": 532.16,
+        "p50_inference_ms": 1478.25,
+        "p95_inference_ms": 2156.16
+      },
+      "pipeline_breakdown_ms": {
+        "retrieval_p50": 740.649,
+        "context_p50": 0.231,
+        "llm_p50": 7.316
+      },
+      "resources": {
+        "cpu_seconds": 95.126,
+        "cpu_utilization_pct": 509.6,
+        "rss_before_mb": 1950.2,
+        "rss_after_mb": 1950.59,
+        "rss_peak_mb": 1950.59,
+        "event_loop_lag_p50_ms": 0.59,
+        "event_loop_lag_max_ms": 277.31
+      }
+    },
+    {
+      "profile": "D_hybrid_rerank",
+      "mode": "hybrid",
+      "enable_reranking": true,
+      "streaming": false,
+      "concurrency": 5,
+      "total_requests": 12,
+      "completed_requests": 12,
+      "errors": 0,
+      "throughput_rps": 1.09,
+      "wall_time_s": 11.04,
+      "latency_ms": {
+        "sample_size": 12,
+        "mean": 3741.31,
+        "p50": 3652.06,
+        "p95": 5080.48,
+        "p99": 5566.33
+      },
+      "streaming_ttft_ms": null,
+      "reranker_metrics": {
+        "total_opt_in": 12,
+        "total_success": 7,
+        "total_fallback": 5,
+        "fallback_rate": 0.4167,
+        "fallback_reasons": {
+          "queue_timeout": 5
+        },
+        "queue_timeouts": 5,
+        "inference_timeouts": 0,
+        "capacity_rejections": 0,
+        "p50_queue_wait_ms": 1160.28,
+        "p50_inference_ms": 1084.11,
+        "p95_inference_ms": 2153.29
+      },
+      "pipeline_breakdown_ms": {
+        "retrieval_p50": 1669.926,
+        "context_p50": 0.23,
+        "llm_p50": 7.672
+      },
+      "resources": {
+        "cpu_seconds": 44.001,
+        "cpu_utilization_pct": 398.6,
+        "rss_before_mb": 1950.59,
+        "rss_after_mb": 1953.07,
+        "rss_peak_mb": 1953.07,
+        "event_loop_lag_p50_ms": 0.7,
+        "event_loop_lag_max_ms": 366.4
+      }
+    },
+    {
+      "profile": "D_hybrid_rerank",
+      "mode": "hybrid",
+      "enable_reranking": true,
+      "streaming": false,
+      "concurrency": 10,
+      "total_requests": 12,
+      "completed_requests": 12,
+      "errors": 0,
+      "throughput_rps": 1.91,
+      "wall_time_s": 6.274,
+      "latency_ms": {
+        "sample_size": 12,
+        "mean": 4541.12,
+        "p50": 4965.37,
+        "p95": 6107.57,
+        "p99": 6239.01
+      },
+      "streaming_ttft_ms": null,
+      "reranker_metrics": {
+        "total_opt_in": 12,
+        "total_success": 1,
+        "total_fallback": 11,
+        "fallback_rate": 0.9167,
+        "fallback_reasons": {
+          "capacity_saturated": 6,
+          "queue_timeout": 5
+        },
+        "queue_timeouts": 5,
+        "inference_timeouts": 0,
+        "capacity_rejections": 6,
+        "p50_queue_wait_ms": 0.08,
+        "p50_inference_ms": 2416.7,
+        "p95_inference_ms": 2416.7
+      },
+      "pipeline_breakdown_ms": {
+        "retrieval_p50": 3930.12,
+        "context_p50": 0.228,
+        "llm_p50": 7.952
+      },
+      "resources": {
+        "cpu_seconds": 18.147,
+        "cpu_utilization_pct": 289.2,
+        "rss_before_mb": 1953.07,
+        "rss_after_mb": 1955.54,
+        "rss_peak_mb": 1955.55,
+        "event_loop_lag_p50_ms": 1.3,
+        "event_loop_lag_max_ms": 739.18
+      }
+    },
+    {
+      "profile": "E_streaming_hybrid_rerank",
+      "mode": "hybrid",
+      "enable_reranking": true,
+      "streaming": true,
+      "concurrency": 1,
+      "total_requests": 12,
+      "completed_requests": 12,
+      "errors": 0,
+      "throughput_rps": 0.45,
+      "wall_time_s": 26.449,
+      "latency_ms": {
+        "sample_size": 12,
+        "mean": 2202.84,
+        "p50": 2161.09,
+        "p95": 3643.23,
+        "p99": 4218.87
+      },
+      "streaming_ttft_ms": {
+        "sample_size": 12,
+        "p50": 2128.5,
+        "p95": 3607.12
+      },
+      "reranker_metrics": {
+        "total_opt_in": 12,
+        "total_success": 12,
+        "total_fallback": 0,
+        "fallback_rate": 0.0,
+        "fallback_reasons": {},
+        "queue_timeouts": 0,
+        "inference_timeouts": 0,
+        "capacity_rejections": 0,
+        "p50_queue_wait_ms": 0.1,
+        "p50_inference_ms": 1618.53,
+        "p95_inference_ms": 2492.69
+      },
+      "pipeline_breakdown_ms": {
+        "retrieval_p50": 590.092,
+        "context_p50": 0.211,
+        "llm_p50": 13.733
+      },
+      "resources": {
+        "cpu_seconds": 97.314,
+        "cpu_utilization_pct": 367.9,
+        "rss_before_mb": 1955.54,
+        "rss_after_mb": 1954.2,
+        "rss_peak_mb": 1955.58,
+        "event_loop_lag_p50_ms": 0.63,
+        "event_loop_lag_max_ms": 343.28
+      }
+    },
+    {
+      "profile": "E_streaming_hybrid_rerank",
+      "mode": "hybrid",
+      "enable_reranking": true,
+      "streaming": true,
+      "concurrency": 2,
+      "total_requests": 12,
+      "completed_requests": 12,
+      "errors": 0,
+      "throughput_rps": 0.63,
+      "wall_time_s": 18.952,
+      "latency_ms": {
+        "sample_size": 12,
+        "mean": 3023.37,
+        "p50": 2887.47,
+        "p95": 4619.75,
+        "p99": 4825.7
+      },
+      "streaming_ttft_ms": {
+        "sample_size": 12,
+        "p50": 2851.15,
+        "p95": 4577.65
+      },
+      "reranker_metrics": {
+        "total_opt_in": 12,
+        "total_success": 12,
+        "total_fallback": 0,
+        "fallback_rate": 0.0,
+        "fallback_reasons": {},
+        "queue_timeouts": 0,
+        "inference_timeouts": 0,
+        "capacity_rejections": 0,
+        "p50_queue_wait_ms": 426.92,
+        "p50_inference_ms": 1409.05,
+        "p95_inference_ms": 2412.6
+      },
+      "pipeline_breakdown_ms": {
+        "retrieval_p50": 772.362,
+        "context_p50": 0.196,
+        "llm_p50": 15.066
+      },
+      "resources": {
+        "cpu_seconds": 95.047,
+        "cpu_utilization_pct": 501.5,
+        "rss_before_mb": 1954.2,
+        "rss_after_mb": 1954.39,
+        "rss_peak_mb": 1954.4,
+        "event_loop_lag_p50_ms": 0.63,
+        "event_loop_lag_max_ms": 294.43
+      }
+    },
+    {
+      "profile": "E_streaming_hybrid_rerank",
+      "mode": "hybrid",
+      "enable_reranking": true,
+      "streaming": true,
+      "concurrency": 5,
+      "total_requests": 12,
+      "completed_requests": 12,
+      "errors": 0,
+      "throughput_rps": 1.0,
+      "wall_time_s": 11.974,
+      "latency_ms": {
+        "sample_size": 12,
+        "mean": 4229.1,
+        "p50": 4147.9,
+        "p95": 5736.83,
+        "p99": 5908.67
+      },
+      "streaming_ttft_ms": {
+        "sample_size": 12,
+        "p50": 4094.96,
+        "p95": 5687.38
+      },
+      "reranker_metrics": {
+        "total_opt_in": 12,
+        "total_success": 5,
+        "total_fallback": 7,
+        "fallback_rate": 0.5833,
+        "fallback_reasons": {
+          "queue_timeout": 7
+        },
+        "queue_timeouts": 7,
+        "inference_timeouts": 0,
+        "capacity_rejections": 0,
+        "p50_queue_wait_ms": 1304.85,
+        "p50_inference_ms": 1794.64,
+        "p95_inference_ms": 2656.7
+      },
+      "pipeline_breakdown_ms": {
+        "retrieval_p50": 1720.207,
+        "context_p50": 0.222,
+        "llm_p50": 16.43
+      },
+      "resources": {
+        "cpu_seconds": 47.744,
+        "cpu_utilization_pct": 398.7,
+        "rss_before_mb": 1954.39,
+        "rss_after_mb": 1957.75,
+        "rss_peak_mb": 1957.76,
+        "event_loop_lag_p50_ms": 0.69,
+        "event_loop_lag_max_ms": 291.05
+      }
+    },
+    {
+      "profile": "E_streaming_hybrid_rerank",
+      "mode": "hybrid",
+      "enable_reranking": true,
+      "streaming": true,
+      "concurrency": 10,
+      "total_requests": 12,
+      "completed_requests": 12,
+      "errors": 0,
+      "throughput_rps": 1.28,
+      "wall_time_s": 9.365,
+      "latency_ms": {
+        "sample_size": 12,
+        "mean": 6130.37,
+        "p50": 6329.27,
+        "p95": 7847.81,
+        "p99": 8013.96
+      },
+      "streaming_ttft_ms": {
+        "sample_size": 12,
+        "p50": 6268.54,
+        "p95": 7798.31
+      },
+      "reranker_metrics": {
+        "total_opt_in": 12,
+        "total_success": 3,
+        "total_fallback": 9,
+        "fallback_rate": 0.75,
+        "fallback_reasons": {
+          "capacity_saturated": 5,
+          "queue_timeout": 4
+        },
+        "queue_timeouts": 4,
+        "inference_timeouts": 0,
+        "capacity_rejections": 5,
+        "p50_queue_wait_ms": 1000.03,
+        "p50_inference_ms": 1274.49,
+        "p95_inference_ms": 1283.77
+      },
+      "pipeline_breakdown_ms": {
+        "retrieval_p50": 5601.556,
+        "context_p50": 0.233,
+        "llm_p50": 19.652
+      },
+      "resources": {
+        "cpu_seconds": 26.066,
+        "cpu_utilization_pct": 278.3,
+        "rss_before_mb": 1957.75,
+        "rss_after_mb": 1961.58,
+        "rss_peak_mb": 1961.59,
+        "event_loop_lag_p50_ms": 1.18,
+        "event_loop_lag_max_ms": 1096.16
+      }
+    }
+  ]
+}

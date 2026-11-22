@@ -1,11 +1,15 @@
 """Streaming RAG pipeline with lifecycle events, citation validation, and persistence."""
 
+import asyncio
 import json
 import logging
+import time
 from collections.abc import AsyncIterator
 from typing import Any
 from uuid import UUID
 
+import httpx
+from fastapi import HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.message_role import MessageRole
@@ -14,19 +18,73 @@ from app.models.user import User
 from app.services.citation_validation import validate_answer_citations
 from app.services.context_builder import ContextSource
 from app.services.inference_governor import get_inference_governor
-from app.services.message import create_conversation_message
+from app.services.message import (
+    create_conversation_message,
+    create_workspace_conversation_message,
+)
 from app.services.message_source import save_assistant_message_sources
-from app.services.model_router import ModelRouter
+from app.services.rag_observability import (
+    elapsed_ms,
+    get_rag_observability,
+    sanitize_correlation_id,
+)
 from app.services.rag_prompt import (
     INSUFFICIENT_CONTEXT_ANSWER,
     build_rag_messages,
 )
+from app.services.rag_routing import route_rag_generation
 from app.services.retrieval import retrieve_context
-from app.services.task_classifier import TaskClassifier
 
 logger = logging.getLogger(__name__)
 
 UNVERIFIED_CITATION_ANSWER = "Không thể xác minh câu trả lời từ tài liệu được truy xuất."
+LLM_UNAVAILABLE_MESSAGE = (
+    "Mô hình ngôn ngữ hiện không khả dụng hoặc phản hồi quá chậm. "
+    "Vui lòng thử lại sau."
+)
+RAG_INTERNAL_ERROR_MESSAGE = "Đã xảy ra lỗi khi xử lý câu hỏi. Vui lòng thử lại sau."
+
+
+def describe_stream_failure(exc: Exception) -> tuple[str, str]:
+    """Map an internal failure to a stable error code and a user-facing message.
+
+    Raw exception text (upstream URLs, driver errors) is never sent to clients.
+    """
+    if isinstance(exc, httpx.HTTPError):
+        return "llm_unavailable", LLM_UNAVAILABLE_MESSAGE
+    if isinstance(exc, HTTPException):
+        return "service_busy", str(exc.detail)
+    return "internal_error", RAG_INTERNAL_ERROR_MESSAGE
+
+
+async def _persist_assistant_message(
+    session: AsyncSession,
+    *,
+    user: User,
+    workspace_id: UUID | None,
+    conversation_id: UUID,
+    content: str,
+):
+    """Persist the assistant reply in the same scope the API used to authorize the conversation.
+
+    Workspace conversations may be continued by any member, so they are resolved by
+    workspace rather than by the original conversation owner.
+    """
+    if workspace_id is not None:
+        return await create_workspace_conversation_message(
+            session,
+            workspace_id=workspace_id,
+            conversation_id=conversation_id,
+            role=MessageRole.ASSISTANT,
+            content=content,
+        )
+    return await create_conversation_message(
+        session,
+        user=user,
+        conversation_id=conversation_id,
+        role=MessageRole.ASSISTANT,
+        content=content,
+    )
 
 
 def format_sse(event_type: str, data: dict[str, Any]) -> str:
@@ -73,6 +131,19 @@ async def answer_with_rag_stream(
     5. answer_completed (verifies citations; falls back to refusal if invalid, persists message)
     6. error (on unhandled exceptions)
     """
+    t_total_start = time.perf_counter()
+    cid = sanitize_correlation_id(str(conversation_id))
+    obs = get_rag_observability()
+
+    retrieval_ms: float | None = None
+    context_ms: float | None = None
+    rerank_ms: float | None = None
+    rerank_used = False
+    rerank_fallback: str | None = None
+    llm_ms: float | None = None
+    ttft_ms: float | None = None
+    stage = "retrieval"
+
     try:
         yield format_sse(
             "retrieval_started",
@@ -101,53 +172,64 @@ async def answer_with_rag_stream(
             retrieval_kwargs["enable_reranking"] = enable_reranking
 
         context = await retrieve_context(**retrieval_kwargs)
+        retrieval_ms = getattr(context, "retrieval_ms", None)
+        context_ms = getattr(context, "context_assembly_ms", None)
+        rerank_ms = getattr(context, "rerank_ms", None)
+        rerank_used = getattr(context, "rerank_used", False)
+        rerank_fallback = getattr(context, "rerank_fallback_reason", None)
 
         serialized_sources = [serialize_source(s) for s in context.sources]
         yield format_sse("retrieval_completed", {"sources": serialized_sources})
 
-        # Adaptive Model Routing
-        model_router = ModelRouter()
-        classifier = TaskClassifier()
-        has_ctx = bool(context.sources and context.text.strip())
-        task_type = classifier.classify(
-            prompt=query,
-            has_retrieved_context=has_ctx,
-            context_document_count=len(context.sources),
+        # Adaptive model routing (request-local: never mutates the shared provider)
+        stage = "model_routing"
+        routed = await route_rag_generation(
+            session,
+            llm=llm,
+            query=query,
+            context=context,
+            workspace_id=workspace_id,
         )
-        routed_model = getattr(llm, "model", "default")
-        if session is not None:
-            try:
-                routing = await model_router.select_model(
-                    session=session,
-                    task_type=task_type,
-                    workspace_id=workspace_id,
-                    context_metadata={"query": query[:100], "source_count": len(context.sources)},
-                )
-                routed_model = routing.selected_model
-                if hasattr(llm, "model"):
-                    llm.model = routed_model
-                yield format_sse(
-                    "model_routed",
-                    {
-                        "model": routing.selected_model,
-                        "task_type": routing.task_type,
-                        "reason": routing.selection_reason,
-                        "fallback_occurred": routing.is_fallback,
-                    },
-                )
-            except (RuntimeError, ValueError, KeyError, OSError, AttributeError) as e:
-                logger.warning("RAG model routing non-fatal warning: %s", e)
+        request_llm = routed.llm
+        routed_model = routed.model_name
+        if routed.routing is not None:
+            yield format_sse(
+                "model_routed",
+                {
+                    "model": routed.routing.selected_model,
+                    "task_type": routed.routing.task_type,
+                    "reason": routed.routing.selection_reason,
+                    "fallback_occurred": routed.routing.is_fallback,
+                },
+            )
 
         # Guardrail 1: Refuse when no usable evidence exists
         if not context.sources or not context.text.strip():
+            ttft_ms = elapsed_ms(t_total_start)
             yield format_sse("token", {"token": INSUFFICIENT_CONTEXT_ANSWER})
 
-            assistant_message = await create_conversation_message(
+            assistant_message = await _persist_assistant_message(
                 session,
                 user=user,
+                workspace_id=workspace_id,
                 conversation_id=conversation_id,
-                role=MessageRole.ASSISTANT,
                 content=INSUFFICIENT_CONTEXT_ANSWER,
+            )
+
+            obs.record_request(
+                correlation_id=cid,
+                mode=retrieval_mode,
+                stream=True,
+                rerank_opt_in=enable_reranking,
+                rerank_used=rerank_used,
+                rerank_fallback_reason=rerank_fallback,
+                status="success",
+                retrieval_ms=retrieval_ms,
+                rerank_ms=rerank_ms,
+                context_assembly_ms=context_ms,
+                ttft_ms=ttft_ms,
+                total_ms=elapsed_ms(t_total_start),
+                source_count=0,
             )
 
             yield format_sse(
@@ -162,6 +244,7 @@ async def answer_with_rag_stream(
             )
             return
 
+        stage = "context_assembly"
         messages = build_rag_messages(
             query=query,
             context=context,
@@ -170,12 +253,17 @@ async def answer_with_rag_stream(
 
         yield format_sse("generation_started", {"model_name": routed_model})
 
+        stage = "llm_generation"
         accumulated_tokens: list[str] = []
         governor = get_inference_governor()
+        t_llm_start = time.perf_counter()
         async with governor.acquire(caller_info=f"rag_stream:{conversation_id}"):
-            async for token in llm.generate_stream(messages):
+            async for token in request_llm.generate_stream(messages):
+                if ttft_ms is None:
+                    ttft_ms = elapsed_ms(t_total_start)
                 accumulated_tokens.append(token)
                 yield format_sse("token", {"token": token})
+        llm_ms = elapsed_ms(t_llm_start)
 
         raw_answer = "".join(accumulated_tokens)
 
@@ -185,6 +273,7 @@ async def answer_with_rag_stream(
             final_sources: list[ContextSource] = []
         else:
             # Guardrail 3: Strict citation validation
+            stage = "citation_validation"
             validation = validate_answer_citations(raw_answer, context.sources)
             if not validation.is_valid:
                 final_answer = UNVERIFIED_CITATION_ANSWER
@@ -194,11 +283,12 @@ async def answer_with_rag_stream(
                 final_sources = context.sources
 
         # Persist assistant message and citations
-        assistant_message = await create_conversation_message(
+        stage = "persistence"
+        assistant_message = await _persist_assistant_message(
             session,
             user=user,
+            workspace_id=workspace_id,
             conversation_id=conversation_id,
-            role=MessageRole.ASSISTANT,
             content=final_answer,
         )
 
@@ -208,6 +298,23 @@ async def answer_with_rag_stream(
                 message=assistant_message,
                 sources=final_sources,
             )
+
+        obs.record_request(
+            correlation_id=cid,
+            mode=retrieval_mode,
+            stream=True,
+            rerank_opt_in=enable_reranking,
+            rerank_used=rerank_used,
+            rerank_fallback_reason=rerank_fallback,
+            status="success",
+            retrieval_ms=retrieval_ms,
+            rerank_ms=rerank_ms,
+            context_assembly_ms=context_ms,
+            llm_generation_ms=llm_ms,
+            ttft_ms=ttft_ms,
+            total_ms=elapsed_ms(t_total_start),
+            source_count=len(final_sources),
+        )
 
         yield format_sse(
             "answer_completed",
@@ -220,5 +327,45 @@ async def answer_with_rag_stream(
             },
         )
 
-    except Exception as exc:  # noqa: BLE001
-        yield format_sse("error", {"error": str(exc)})
+    except asyncio.CancelledError:
+        obs.record_request(
+            correlation_id=cid,
+            mode=retrieval_mode,
+            stream=True,
+            rerank_opt_in=enable_reranking,
+            rerank_used=rerank_used,
+            rerank_fallback_reason=rerank_fallback,
+            status="cancelled",
+            failure_stage=stage,
+            retrieval_ms=retrieval_ms,
+            rerank_ms=rerank_ms,
+            context_assembly_ms=context_ms,
+            llm_generation_ms=llm_ms,
+            ttft_ms=ttft_ms,
+            total_ms=elapsed_ms(t_total_start),
+        )
+        raise
+    except Exception as exc:
+        obs.record_request(
+            correlation_id=cid,
+            mode=retrieval_mode,
+            stream=True,
+            rerank_opt_in=enable_reranking,
+            rerank_used=rerank_used,
+            rerank_fallback_reason=rerank_fallback,
+            status="error",
+            failure_stage=stage,
+            retrieval_ms=retrieval_ms,
+            rerank_ms=rerank_ms,
+            context_assembly_ms=context_ms,
+            llm_generation_ms=llm_ms,
+            ttft_ms=ttft_ms,
+            total_ms=elapsed_ms(t_total_start),
+        )
+        logger.exception(
+            "RAG stream failed at stage=%s conversation=%s",
+            stage,
+            conversation_id,
+        )
+        code, message = describe_stream_failure(exc)
+        yield format_sse("error", {"error": message, "code": code, "stage": stage})

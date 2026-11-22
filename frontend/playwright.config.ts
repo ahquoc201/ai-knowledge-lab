@@ -1,5 +1,11 @@
 import { defineConfig, devices } from "@playwright/test";
 
+// E2E runs must never touch the historical `ailab` database.
+// Override with E2E_DATABASE_URL; the default is an isolated, migrated test database.
+const E2E_DATABASE_URL =
+  process.env.E2E_DATABASE_URL ||
+  "postgresql+asyncpg://ailab:local_only_change_me@/ailab_e2e_test?host=/tmp&port=15432";
+
 export default defineConfig({
   testDir: "./e2e",
   fullyParallel: false,
@@ -35,7 +41,7 @@ export default defineConfig({
   webServer: [
     {
       command:
-        "cd ../backend && HF_HUB_OFFLINE=1 TRANSFORMERS_OFFLINE=1 DATABASE_URL='postgresql+asyncpg://ailab:local_only_change_me@/ailab?host=/tmp&port=15432' .venv/bin/uvicorn app.main:app --host 127.0.0.1 --port 8000",
+        `cd ../backend && HF_HUB_OFFLINE=1 TRANSFORMERS_OFFLINE=1 DATABASE_URL='${E2E_DATABASE_URL}' .venv/bin/uvicorn app.main:app --host 127.0.0.1 --port 8000`,
       url: "http://127.0.0.1:8000/api/v1/health",
       reuseExistingServer: false,
       timeout: 30000,

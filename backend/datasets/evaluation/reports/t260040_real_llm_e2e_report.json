@@ -1,0 +1,1898 @@
+{
+  "started_at": "2026-11-22T17:27:16",
+  "modes": [
+    "stream",
+    "ask"
+  ],
+  "results": [
+    {
+      "id": "q01",
+      "mode": "stream",
+      "answerable": true,
+      "status": 200,
+      "ttft_s": 19.19,
+      "total_s": 23.02,
+      "events": [
+        "retrieval_started",
+        "retrieval_completed",
+        "model_routed",
+        "generation_started",
+        "token",
+        "answer_completed"
+      ],
+      "answer": "Nhân viên chính thức của Lumora được hưởng 18 ngày nghỉ phép có lương mỗi năm. [Source 2]",
+      "sources": [
+        {
+          "source_index": 1,
+          "document_id": "8f88b9a4-926f-43f0-b2fe-3d27b0d07ee6",
+          "chunk_id": "2571d457-6a41-48e4-86c0-c2985f5bd4a2",
+          "chunk_index": 0,
+          "content": "# Sổ tay nhân sự Lumora 2026\n\n## 1. Thời gian thử việc\nNhân viên mới tại Lumora có thời gian thử việc là 45 ngày đối với vị trí chuyên viên và 60 ngày đối với vị trí quản lý. Trong thời gian thử việc, nhân viên được hưởng 90% lương chính thức. Kết quả thử việc được trưởng bộ phận đánh giá bằng văn bản chậm nhất 3 ngày làm việc trước khi kết thúc thử việc.\n\n## 2. Nghỉ phép năm\nNhân viên chính thức được hưởng 18 ngày nghỉ phép có lương mỗi năm. Sau mỗi 5 năm làm việc liên tục, nhân viên được cộng thêm 2 ngày phép. Số ngày phép chưa dùng hết trong năm được chuyển sang năm sau tối đa 5 ngày và phải sử dụng trước ngày 31 tháng 3. Đơn xin nghỉ phải gửi qua hệ thống HRM Orchid trước ít nhất 7 ngày làm việc, trừ trường hợp khẩn cấp.\n\n## 3. Làm việc từ xa\nNhân viên đã qua thử việc được làm việc từ xa tối đa 2 ngày mỗi tuần, với điều kiện đăng ký trên HRM Orchid trước 17 giờ của ngày làm việc liền trước. Ngày thứ Ba là ngày làm việc tại văn phòng bắt buộc cho toàn công ty. Khi làm việc từ xa, nh",
+          "similarity": 0.9120442867279053,
+          "document_title": "lumora_hr_handbook.md",
+          "char_start": 0,
+          "char_end": 1000,
+          "rerank_score": null
+        },
+        {
+          "source_index": 2,
+          "document_id": "8f88b9a4-926f-43f0-b2fe-3d27b0d07ee6",
+          "chunk_id": "4d5cb161-e33d-4e25-8efb-c080f3cceb51",
+          "chunk_index": 1,
+          "content": "xa tối đa 2 ngày mỗi tuần, với điều kiện đăng ký trên HRM Orchid trước 17 giờ của ngày làm việc liền trước. Ngày thứ Ba là ngày làm việc tại văn phòng bắt buộc cho toàn công ty. Khi làm việc từ xa, nhân viên phải trực tuyến trên Lumora Chat trong khung giờ cốt lõi từ 9 giờ 30 đến 16 giờ.\n\n## 4. Lương và phúc lợi\nLương được chi trả vào ngày 5 hằng tháng; nếu ngày 5 rơi vào cuối tuần hoặc ngày lễ thì chi trả vào ngày làm việc liền trước. Mỗi nhân viên chính thức nhận phụ cấp ăn trưa 1.200.000 đồng mỗi tháng. Gói khám sức khỏe định kỳ được tổ chức một lần mỗi năm vào tháng 9 tại phòng khám đối tác An Tâm.\n\n## 5. Thiết bị làm việc\nNhân viên khối kỹ thuật được cấp máy tính xách tay có cấu hình tối thiểu 32 GB RAM; các khối khác được cấp máy 16 GB RAM. Thiết bị được thay mới sau mỗi chu kỳ 3 năm. Khi mất thiết bị, nhân viên phải báo cho bộ phận IT trong vòng 24 giờ qua kênh #it-helpdesk.\n\n## 6. Đào tạo\nMỗi nhân viên có ngân sách đào tạo 8.000.000 đồng mỗi năm cho khóa học hoặc chứng chỉ liên",
+          "similarity": 0.8874156475067139,
+          "document_title": "lumora_hr_handbook.md",
+          "char_start": 800,
+          "char_end": 1800,
+          "rerank_score": null
+        },
+        {
+          "source_index": 3,
+          "document_id": "10fbe116-d69d-4a93-a3fc-a3c5afd4f102",
+          "chunk_id": "d94b86bf-5316-45b4-961c-e52c519390f2",
+          "chunk_index": 1,
+          "content": "hản hồi là 30 phút. Sự cố mức SEV3 là lỗi không ảnh hưởng đến luồng nghiệp vụ chính và được xử lý trong giờ hành chính.\n\n## 4. Trực vận hành\nLịch trực vận hành luân phiên theo tuần, bắt đầu lúc 10 giờ sáng thứ Hai. Mỗi ca trực gồm một kỹ sư chính và một kỹ sư dự phòng. Kỹ sư trực nhận phụ cấp 500.000 đồng cho mỗi ngày trực ngoài giờ hành chính.\n\n## 5. Triển khai phần mềm\nViệc triển khai lên môi trường production chỉ được thực hiện từ thứ Hai đến thứ Năm, trước 15 giờ. Không triển khai vào thứ Sáu, cuối tuần và ngày lễ, trừ bản vá khẩn cấp cho sự cố SEV1. Mỗi lần triển khai phải có ít nhất hai người phê duyệt pull request.",
+          "similarity": 0.8187108039855957,
+          "document_title": "orchid_operations_runbook.md",
+          "char_start": 800,
+          "char_end": 1429,
+          "rerank_score": null
+        },
+        {
+          "source_index": 4,
+          "document_id": "8f88b9a4-926f-43f0-b2fe-3d27b0d07ee6",
+          "chunk_id": "8601eab2-85f9-4944-b791-55905c8c4b18",
+          "chunk_index": 2,
+          "content": ". Khi mất thiết bị, nhân viên phải báo cho bộ phận IT trong vòng 24 giờ qua kênh #it-helpdesk.\n\n## 6. Đào tạo\nMỗi nhân viên có ngân sách đào tạo 8.000.000 đồng mỗi năm cho khóa học hoặc chứng chỉ liên quan đến công việc. Khoản chi trên 3.000.000 đồng cần được giám đốc khối phê duyệt trước khi đăng ký.",
+          "similarity": 0.8126128539308541,
+          "document_title": "lumora_hr_handbook.md",
+          "char_start": 1600,
+          "char_end": 1902,
+          "rerank_score": null
+        },
+        {
+          "source_index": 5,
+          "document_id": "10fbe116-d69d-4a93-a3fc-a3c5afd4f102",
+          "chunk_id": "a30dbad0-18d6-4c02-b853-e3063f3539d9",
+          "chunk_index": 0,
+          "content": "# Quy trình vận hành hệ thống Orchid\n\n## 1. Sao lưu dữ liệu\nCơ sở dữ liệu chính của Orchid được sao lưu toàn phần lúc 1 giờ 30 sáng mỗi ngày và sao lưu gia tăng mỗi 15 phút. Bản sao lưu toàn phần được giữ trong 35 ngày; bản sao lưu gia tăng được giữ trong 7 ngày. Bản sao lưu được lưu tại hai vùng: Hà Nội (chính) và Singapore (dự phòng).\n\n## 2. Mục tiêu khôi phục\nMục tiêu thời gian khôi phục (RTO) của Orchid là 4 giờ. Mục tiêu điểm khôi phục (RPO) là 15 phút. Diễn tập khôi phục thảm họa được thực hiện mỗi quý một lần, vào thứ Bảy tuần thứ hai của tháng đầu quý.\n\n## 3. Phân loại sự cố\nSự cố mức SEV1 là khi toàn bộ hệ thống Orchid ngừng hoạt động hoặc dữ liệu khách hàng có nguy cơ bị lộ; kỹ sư trực phải phản hồi trong 10 phút. Sự cố mức SEV2 là khi một chức năng chính bị suy giảm; thời gian phản hồi là 30 phút. Sự cố mức SEV3 là lỗi không ảnh hưởng đến luồng nghiệp vụ chính và được xử lý trong giờ hành chính.\n\n## 4. Trực vận hành\nLịch trực vận hành luân phiên theo tuần, bắt đầu lúc 10 giờ",
+          "similarity": 0.7941911465893865,
+          "document_title": "orchid_operations_runbook.md",
+          "char_start": 0,
+          "char_end": 1000,
+          "rerank_score": null
+        }
+      ],
+      "conversation_id": "b5a577ed-9174-4a6d-95fa-3fa9e112c50f",
+      "message_id": "0e078000-1189-45c0-bd9a-85dba6b5fe34",
+      "model_name": "qwen3:1.7b",
+      "error": null,
+      "raw_answer": "Nhân viên chính thức của Lumora được hưởng 18 ngày nghỉ phép có lương mỗi năm. [Source 2]",
+      "retrieval_hit": true,
+      "score": {
+        "outcome": "answer",
+        "cited": [
+          2
+        ],
+        "correct": true,
+        "citation_indices_valid": true,
+        "evidence_in_cited_source": false,
+        "facts_in_cited_source": false,
+        "grounded": false,
+        "unsupported_numbers": [
+          "18"
+        ]
+      }
+    },
+    {
+      "id": "q01",
+      "mode": "ask",
+      "answerable": true,
+      "status": 200,
+      "total_s": 4.2,
+      "answer": "Nhân viên chính thức của Lumora được hưởng 18 ngày nghỉ phép có lương mỗi năm. [Source 2]",
+      "sources": [
+        {
+          "source_index": 1,
+          "document_id": "8f88b9a4-926f-43f0-b2fe-3d27b0d07ee6",
+          "chunk_id": "2571d457-6a41-48e4-86c0-c2985f5bd4a2",
+          "chunk_index": 0,
+          "content": "# Sổ tay nhân sự Lumora 2026\n\n## 1. Thời gian thử việc\nNhân viên mới tại Lumora có thời gian thử việc là 45 ngày đối với vị trí chuyên viên và 60 ngày đối với vị trí quản lý. Trong thời gian thử việc, nhân viên được hưởng 90% lương chính thức. Kết quả thử việc được trưởng bộ phận đánh giá bằng văn bản chậm nhất 3 ngày làm việc trước khi kết thúc thử việc.\n\n## 2. Nghỉ phép năm\nNhân viên chính thức được hưởng 18 ngày nghỉ phép có lương mỗi năm. Sau mỗi 5 năm làm việc liên tục, nhân viên được cộng thêm 2 ngày phép. Số ngày phép chưa dùng hết trong năm được chuyển sang năm sau tối đa 5 ngày và phải sử dụng trước ngày 31 tháng 3. Đơn xin nghỉ phải gửi qua hệ thống HRM Orchid trước ít nhất 7 ngày làm việc, trừ trường hợp khẩn cấp.\n\n## 3. Làm việc từ xa\nNhân viên đã qua thử việc được làm việc từ xa tối đa 2 ngày mỗi tuần, với điều kiện đăng ký trên HRM Orchid trước 17 giờ của ngày làm việc liền trước. Ngày thứ Ba là ngày làm việc tại văn phòng bắt buộc cho toàn công ty. Khi làm việc từ xa, nh",
+          "similarity": 0.9120442867279053,
+          "document_title": "lumora_hr_handbook.md",
+          "char_start": 0,
+          "char_end": 1000,
+          "rerank_score": null
+        },
+        {
+          "source_index": 2,
+          "document_id": "8f88b9a4-926f-43f0-b2fe-3d27b0d07ee6",
+          "chunk_id": "4d5cb161-e33d-4e25-8efb-c080f3cceb51",
+          "chunk_index": 1,
+          "content": "xa tối đa 2 ngày mỗi tuần, với điều kiện đăng ký trên HRM Orchid trước 17 giờ của ngày làm việc liền trước. Ngày thứ Ba là ngày làm việc tại văn phòng bắt buộc cho toàn công ty. Khi làm việc từ xa, nhân viên phải trực tuyến trên Lumora Chat trong khung giờ cốt lõi từ 9 giờ 30 đến 16 giờ.\n\n## 4. Lương và phúc lợi\nLương được chi trả vào ngày 5 hằng tháng; nếu ngày 5 rơi vào cuối tuần hoặc ngày lễ thì chi trả vào ngày làm việc liền trước. Mỗi nhân viên chính thức nhận phụ cấp ăn trưa 1.200.000 đồng mỗi tháng. Gói khám sức khỏe định kỳ được tổ chức một lần mỗi năm vào tháng 9 tại phòng khám đối tác An Tâm.\n\n## 5. Thiết bị làm việc\nNhân viên khối kỹ thuật được cấp máy tính xách tay có cấu hình tối thiểu 32 GB RAM; các khối khác được cấp máy 16 GB RAM. Thiết bị được thay mới sau mỗi chu kỳ 3 năm. Khi mất thiết bị, nhân viên phải báo cho bộ phận IT trong vòng 24 giờ qua kênh #it-helpdesk.\n\n## 6. Đào tạo\nMỗi nhân viên có ngân sách đào tạo 8.000.000 đồng mỗi năm cho khóa học hoặc chứng chỉ liên",
+          "similarity": 0.8874156475067139,
+          "document_title": "lumora_hr_handbook.md",
+          "char_start": 800,
+          "char_end": 1800,
+          "rerank_score": null
+        },
+        {
+          "source_index": 3,
+          "document_id": "10fbe116-d69d-4a93-a3fc-a3c5afd4f102",
+          "chunk_id": "d94b86bf-5316-45b4-961c-e52c519390f2",
+          "chunk_index": 1,
+          "content": "hản hồi là 30 phút. Sự cố mức SEV3 là lỗi không ảnh hưởng đến luồng nghiệp vụ chính và được xử lý trong giờ hành chính.\n\n## 4. Trực vận hành\nLịch trực vận hành luân phiên theo tuần, bắt đầu lúc 10 giờ sáng thứ Hai. Mỗi ca trực gồm một kỹ sư chính và một kỹ sư dự phòng. Kỹ sư trực nhận phụ cấp 500.000 đồng cho mỗi ngày trực ngoài giờ hành chính.\n\n## 5. Triển khai phần mềm\nViệc triển khai lên môi trường production chỉ được thực hiện từ thứ Hai đến thứ Năm, trước 15 giờ. Không triển khai vào thứ Sáu, cuối tuần và ngày lễ, trừ bản vá khẩn cấp cho sự cố SEV1. Mỗi lần triển khai phải có ít nhất hai người phê duyệt pull request.",
+          "similarity": 0.8187108039855957,
+          "document_title": "orchid_operations_runbook.md",
+          "char_start": 800,
+          "char_end": 1429,
+          "rerank_score": null
+        },
+        {
+          "source_index": 4,
+          "document_id": "8f88b9a4-926f-43f0-b2fe-3d27b0d07ee6",
+          "chunk_id": "8601eab2-85f9-4944-b791-55905c8c4b18",
+          "chunk_index": 2,
+          "content": ". Khi mất thiết bị, nhân viên phải báo cho bộ phận IT trong vòng 24 giờ qua kênh #it-helpdesk.\n\n## 6. Đào tạo\nMỗi nhân viên có ngân sách đào tạo 8.000.000 đồng mỗi năm cho khóa học hoặc chứng chỉ liên quan đến công việc. Khoản chi trên 3.000.000 đồng cần được giám đốc khối phê duyệt trước khi đăng ký.",
+          "similarity": 0.8126128539308541,
+          "document_title": "lumora_hr_handbook.md",
+          "char_start": 1600,
+          "char_end": 1902,
+          "rerank_score": null
+        },
+        {
+          "source_index": 5,
+          "document_id": "10fbe116-d69d-4a93-a3fc-a3c5afd4f102",
+          "chunk_id": "a30dbad0-18d6-4c02-b853-e3063f3539d9",
+          "chunk_index": 0,
+          "content": "# Quy trình vận hành hệ thống Orchid\n\n## 1. Sao lưu dữ liệu\nCơ sở dữ liệu chính của Orchid được sao lưu toàn phần lúc 1 giờ 30 sáng mỗi ngày và sao lưu gia tăng mỗi 15 phút. Bản sao lưu toàn phần được giữ trong 35 ngày; bản sao lưu gia tăng được giữ trong 7 ngày. Bản sao lưu được lưu tại hai vùng: Hà Nội (chính) và Singapore (dự phòng).\n\n## 2. Mục tiêu khôi phục\nMục tiêu thời gian khôi phục (RTO) của Orchid là 4 giờ. Mục tiêu điểm khôi phục (RPO) là 15 phút. Diễn tập khôi phục thảm họa được thực hiện mỗi quý một lần, vào thứ Bảy tuần thứ hai của tháng đầu quý.\n\n## 3. Phân loại sự cố\nSự cố mức SEV1 là khi toàn bộ hệ thống Orchid ngừng hoạt động hoặc dữ liệu khách hàng có nguy cơ bị lộ; kỹ sư trực phải phản hồi trong 10 phút. Sự cố mức SEV2 là khi một chức năng chính bị suy giảm; thời gian phản hồi là 30 phút. Sự cố mức SEV3 là lỗi không ảnh hưởng đến luồng nghiệp vụ chính và được xử lý trong giờ hành chính.\n\n## 4. Trực vận hành\nLịch trực vận hành luân phiên theo tuần, bắt đầu lúc 10 giờ",
+          "similarity": 0.7941911465893865,
+          "document_title": "orchid_operations_runbook.md",
+          "char_start": 0,
+          "char_end": 1000,
+          "rerank_score": null
+        }
+      ],
+      "conversation_id": "7805a9cc-c23e-4a07-bb49-3b02d6d9d093",
+      "model_name": "qwen3:1.7b",
+      "detail": null,
+      "retrieval_hit": null,
+      "score": {
+        "outcome": "answer",
+        "cited": [
+          2
+        ],
+        "correct": true,
+        "citation_indices_valid": true,
+        "evidence_in_cited_source": false,
+        "facts_in_cited_source": false,
+        "grounded": false,
+        "unsupported_numbers": [
+          "18"
+        ]
+      }
+    },
+    {
+      "id": "q02",
+      "mode": "stream",
+      "answerable": true,
+      "status": 200,
+      "ttft_s": 14.16,
+      "total_s": 17.75,
+      "events": [
+        "retrieval_started",
+        "retrieval_completed",
+        "model_routed",
+        "generation_started",
+        "token",
+        "answer_completed"
+      ],
+      "answer": "Thời gian thử việc cho vị trí quản lý tại Lumora là 60 ngày [Source 1].",
+      "sources": [
+        {
+          "source_index": 1,
+          "document_id": "8f88b9a4-926f-43f0-b2fe-3d27b0d07ee6",
+          "chunk_id": "2571d457-6a41-48e4-86c0-c2985f5bd4a2",
+          "chunk_index": 0,
+          "content": "# Sổ tay nhân sự Lumora 2026\n\n## 1. Thời gian thử việc\nNhân viên mới tại Lumora có thời gian thử việc là 45 ngày đối với vị trí chuyên viên và 60 ngày đối với vị trí quản lý. Trong thời gian thử việc, nhân viên được hưởng 90% lương chính thức. Kết quả thử việc được trưởng bộ phận đánh giá bằng văn bản chậm nhất 3 ngày làm việc trước khi kết thúc thử việc.\n\n## 2. Nghỉ phép năm\nNhân viên chính thức được hưởng 18 ngày nghỉ phép có lương mỗi năm. Sau mỗi 5 năm làm việc liên tục, nhân viên được cộng thêm 2 ngày phép. Số ngày phép chưa dùng hết trong năm được chuyển sang năm sau tối đa 5 ngày và phải sử dụng trước ngày 31 tháng 3. Đơn xin nghỉ phải gửi qua hệ thống HRM Orchid trước ít nhất 7 ngày làm việc, trừ trường hợp khẩn cấp.\n\n## 3. Làm việc từ xa\nNhân viên đã qua thử việc được làm việc từ xa tối đa 2 ngày mỗi tuần, với điều kiện đăng ký trên HRM Orchid trước 17 giờ của ngày làm việc liền trước. Ngày thứ Ba là ngày làm việc tại văn phòng bắt buộc cho toàn công ty. Khi làm việc từ xa, nh",
+          "similarity": 0.9115907006507711,
+          "document_title": "lumora_hr_handbook.md",
+          "char_start": 0,
+          "char_end": 1000,
+          "rerank_score": null
+        },
+        {
+          "source_index": 2,
+          "document_id": "8f88b9a4-926f-43f0-b2fe-3d27b0d07ee6",
+          "chunk_id": "4d5cb161-e33d-4e25-8efb-c080f3cceb51",
+          "chunk_index": 1,
+          "content": "xa tối đa 2 ngày mỗi tuần, với điều kiện đăng ký trên HRM Orchid trước 17 giờ của ngày làm việc liền trước. Ngày thứ Ba là ngày làm việc tại văn phòng bắt buộc cho toàn công ty. Khi làm việc từ xa, nhân viên phải trực tuyến trên Lumora Chat trong khung giờ cốt lõi từ 9 giờ 30 đến 16 giờ.\n\n## 4. Lương và phúc lợi\nLương được chi trả vào ngày 5 hằng tháng; nếu ngày 5 rơi vào cuối tuần hoặc ngày lễ thì chi trả vào ngày làm việc liền trước. Mỗi nhân viên chính thức nhận phụ cấp ăn trưa 1.200.000 đồng mỗi tháng. Gói khám sức khỏe định kỳ được tổ chức một lần mỗi năm vào tháng 9 tại phòng khám đối tác An Tâm.\n\n## 5. Thiết bị làm việc\nNhân viên khối kỹ thuật được cấp máy tính xách tay có cấu hình tối thiểu 32 GB RAM; các khối khác được cấp máy 16 GB RAM. Thiết bị được thay mới sau mỗi chu kỳ 3 năm. Khi mất thiết bị, nhân viên phải báo cho bộ phận IT trong vòng 24 giờ qua kênh #it-helpdesk.\n\n## 6. Đào tạo\nMỗi nhân viên có ngân sách đào tạo 8.000.000 đồng mỗi năm cho khóa học hoặc chứng chỉ liên",
+          "similarity": 0.8808517527072592,
+          "document_title": "lumora_hr_handbook.md",
+          "char_start": 800,
+          "char_end": 1800,
+          "rerank_score": null
+        },
+        {
+          "source_index": 3,
+          "document_id": "10fbe116-d69d-4a93-a3fc-a3c5afd4f102",
+          "chunk_id": "d94b86bf-5316-45b4-961c-e52c519390f2",
+          "chunk_index": 1,
+          "content": "hản hồi là 30 phút. Sự cố mức SEV3 là lỗi không ảnh hưởng đến luồng nghiệp vụ chính và được xử lý trong giờ hành chính.\n\n## 4. Trực vận hành\nLịch trực vận hành luân phiên theo tuần, bắt đầu lúc 10 giờ sáng thứ Hai. Mỗi ca trực gồm một kỹ sư chính và một kỹ sư dự phòng. Kỹ sư trực nhận phụ cấp 500.000 đồng cho mỗi ngày trực ngoài giờ hành chính.\n\n## 5. Triển khai phần mềm\nViệc triển khai lên môi trường production chỉ được thực hiện từ thứ Hai đến thứ Năm, trước 15 giờ. Không triển khai vào thứ Sáu, cuối tuần và ngày lễ, trừ bản vá khẩn cấp cho sự cố SEV1. Mỗi lần triển khai phải có ít nhất hai người phê duyệt pull request.",
+          "similarity": 0.8572813953589576,
+          "document_title": "orchid_operations_runbook.md",
+          "char_start": 800,
+          "char_end": 1429,
+          "rerank_score": null
+        },
+        {
+          "source_index": 4,
+          "document_id": "10fbe116-d69d-4a93-a3fc-a3c5afd4f102",
+          "chunk_id": "a30dbad0-18d6-4c02-b853-e3063f3539d9",
+          "chunk_index": 0,
+          "content": "# Quy trình vận hành hệ thống Orchid\n\n## 1. Sao lưu dữ liệu\nCơ sở dữ liệu chính của Orchid được sao lưu toàn phần lúc 1 giờ 30 sáng mỗi ngày và sao lưu gia tăng mỗi 15 phút. Bản sao lưu toàn phần được giữ trong 35 ngày; bản sao lưu gia tăng được giữ trong 7 ngày. Bản sao lưu được lưu tại hai vùng: Hà Nội (chính) và Singapore (dự phòng).\n\n## 2. Mục tiêu khôi phục\nMục tiêu thời gian khôi phục (RTO) của Orchid là 4 giờ. Mục tiêu điểm khôi phục (RPO) là 15 phút. Diễn tập khôi phục thảm họa được thực hiện mỗi quý một lần, vào thứ Bảy tuần thứ hai của tháng đầu quý.\n\n## 3. Phân loại sự cố\nSự cố mức SEV1 là khi toàn bộ hệ thống Orchid ngừng hoạt động hoặc dữ liệu khách hàng có nguy cơ bị lộ; kỹ sư trực phải phản hồi trong 10 phút. Sự cố mức SEV2 là khi một chức năng chính bị suy giảm; thời gian phản hồi là 30 phút. Sự cố mức SEV3 là lỗi không ảnh hưởng đến luồng nghiệp vụ chính và được xử lý trong giờ hành chính.\n\n## 4. Trực vận hành\nLịch trực vận hành luân phiên theo tuần, bắt đầu lúc 10 giờ",
+          "similarity": 0.8272264908743233,
+          "document_title": "orchid_operations_runbook.md",
+          "char_start": 0,
+          "char_end": 1000,
+          "rerank_score": null
+        },
+        {
+          "source_index": 5,
+          "document_id": "8f88b9a4-926f-43f0-b2fe-3d27b0d07ee6",
+          "chunk_id": "8601eab2-85f9-4944-b791-55905c8c4b18",
+          "chunk_index": 2,
+          "content": ". Khi mất thiết bị, nhân viên phải báo cho bộ phận IT trong vòng 24 giờ qua kênh #it-helpdesk.\n\n## 6. Đào tạo\nMỗi nhân viên có ngân sách đào tạo 8.000.000 đồng mỗi năm cho khóa học hoặc chứng chỉ liên quan đến công việc. Khoản chi trên 3.000.000 đồng cần được giám đốc khối phê duyệt trước khi đăng ký.",
+          "similarity": 0.8062210429511604,
+          "document_title": "lumora_hr_handbook.md",
+          "char_start": 1600,
+          "char_end": 1902,
+          "rerank_score": null
+        }
+      ],
+      "conversation_id": "920af115-5a74-4f5c-8bf9-f4d3ed42357a",
+      "message_id": "3fab160a-5220-4e95-a875-53d2c204cf3a",
+      "model_name": "qwen3:1.7b",
+      "error": null,
+      "raw_answer": "Thời gian thử việc cho vị trí quản lý tại Lumora là 60 ngày [Source 1].",
+      "retrieval_hit": true,
+      "score": {
+        "outcome": "answer",
+        "cited": [
+          1
+        ],
+        "correct": true,
+        "citation_indices_valid": true,
+        "evidence_in_cited_source": true,
+        "facts_in_cited_source": true,
+        "grounded": true,
+        "unsupported_numbers": []
+      }
+    },
+    {
+      "id": "q02",
+      "mode": "ask",
+      "answerable": true,
+      "status": 200,
+      "total_s": 4.1,
+      "answer": "Thời gian thử việc cho vị trí quản lý tại Lumora là 60 ngày [Source 1].",
+      "sources": [
+        {
+          "source_index": 1,
+          "document_id": "8f88b9a4-926f-43f0-b2fe-3d27b0d07ee6",
+          "chunk_id": "2571d457-6a41-48e4-86c0-c2985f5bd4a2",
+          "chunk_index": 0,
+          "content": "# Sổ tay nhân sự Lumora 2026\n\n## 1. Thời gian thử việc\nNhân viên mới tại Lumora có thời gian thử việc là 45 ngày đối với vị trí chuyên viên và 60 ngày đối với vị trí quản lý. Trong thời gian thử việc, nhân viên được hưởng 90% lương chính thức. Kết quả thử việc được trưởng bộ phận đánh giá bằng văn bản chậm nhất 3 ngày làm việc trước khi kết thúc thử việc.\n\n## 2. Nghỉ phép năm\nNhân viên chính thức được hưởng 18 ngày nghỉ phép có lương mỗi năm. Sau mỗi 5 năm làm việc liên tục, nhân viên được cộng thêm 2 ngày phép. Số ngày phép chưa dùng hết trong năm được chuyển sang năm sau tối đa 5 ngày và phải sử dụng trước ngày 31 tháng 3. Đơn xin nghỉ phải gửi qua hệ thống HRM Orchid trước ít nhất 7 ngày làm việc, trừ trường hợp khẩn cấp.\n\n## 3. Làm việc từ xa\nNhân viên đã qua thử việc được làm việc từ xa tối đa 2 ngày mỗi tuần, với điều kiện đăng ký trên HRM Orchid trước 17 giờ của ngày làm việc liền trước. Ngày thứ Ba là ngày làm việc tại văn phòng bắt buộc cho toàn công ty. Khi làm việc từ xa, nh",
+          "similarity": 0.9115907006507711,
+          "document_title": "lumora_hr_handbook.md",
+          "char_start": 0,
+          "char_end": 1000,
+          "rerank_score": null
+        },
+        {
+          "source_index": 2,
+          "document_id": "8f88b9a4-926f-43f0-b2fe-3d27b0d07ee6",
+          "chunk_id": "4d5cb161-e33d-4e25-8efb-c080f3cceb51",
+          "chunk_index": 1,
+          "content": "xa tối đa 2 ngày mỗi tuần, với điều kiện đăng ký trên HRM Orchid trước 17 giờ của ngày làm việc liền trước. Ngày thứ Ba là ngày làm việc tại văn phòng bắt buộc cho toàn công ty. Khi làm việc từ xa, nhân viên phải trực tuyến trên Lumora Chat trong khung giờ cốt lõi từ 9 giờ 30 đến 16 giờ.\n\n## 4. Lương và phúc lợi\nLương được chi trả vào ngày 5 hằng tháng; nếu ngày 5 rơi vào cuối tuần hoặc ngày lễ thì chi trả vào ngày làm việc liền trước. Mỗi nhân viên chính thức nhận phụ cấp ăn trưa 1.200.000 đồng mỗi tháng. Gói khám sức khỏe định kỳ được tổ chức một lần mỗi năm vào tháng 9 tại phòng khám đối tác An Tâm.\n\n## 5. Thiết bị làm việc\nNhân viên khối kỹ thuật được cấp máy tính xách tay có cấu hình tối thiểu 32 GB RAM; các khối khác được cấp máy 16 GB RAM. Thiết bị được thay mới sau mỗi chu kỳ 3 năm. Khi mất thiết bị, nhân viên phải báo cho bộ phận IT trong vòng 24 giờ qua kênh #it-helpdesk.\n\n## 6. Đào tạo\nMỗi nhân viên có ngân sách đào tạo 8.000.000 đồng mỗi năm cho khóa học hoặc chứng chỉ liên",
+          "similarity": 0.8808517527072592,
+          "document_title": "lumora_hr_handbook.md",
+          "char_start": 800,
+          "char_end": 1800,
+          "rerank_score": null
+        },
+        {
+          "source_index": 3,
+          "document_id": "10fbe116-d69d-4a93-a3fc-a3c5afd4f102",
+          "chunk_id": "d94b86bf-5316-45b4-961c-e52c519390f2",
+          "chunk_index": 1,
+          "content": "hản hồi là 30 phút. Sự cố mức SEV3 là lỗi không ảnh hưởng đến luồng nghiệp vụ chính và được xử lý trong giờ hành chính.\n\n## 4. Trực vận hành\nLịch trực vận hành luân phiên theo tuần, bắt đầu lúc 10 giờ sáng thứ Hai. Mỗi ca trực gồm một kỹ sư chính và một kỹ sư dự phòng. Kỹ sư trực nhận phụ cấp 500.000 đồng cho mỗi ngày trực ngoài giờ hành chính.\n\n## 5. Triển khai phần mềm\nViệc triển khai lên môi trường production chỉ được thực hiện từ thứ Hai đến thứ Năm, trước 15 giờ. Không triển khai vào thứ Sáu, cuối tuần và ngày lễ, trừ bản vá khẩn cấp cho sự cố SEV1. Mỗi lần triển khai phải có ít nhất hai người phê duyệt pull request.",
+          "similarity": 0.8572813953589576,
+          "document_title": "orchid_operations_runbook.md",
+          "char_start": 800,
+          "char_end": 1429,
+          "rerank_score": null
+        },
+        {
+          "source_index": 4,
+          "document_id": "10fbe116-d69d-4a93-a3fc-a3c5afd4f102",
+          "chunk_id": "a30dbad0-18d6-4c02-b853-e3063f3539d9",
+          "chunk_index": 0,
+          "content": "# Quy trình vận hành hệ thống Orchid\n\n## 1. Sao lưu dữ liệu\nCơ sở dữ liệu chính của Orchid được sao lưu toàn phần lúc 1 giờ 30 sáng mỗi ngày và sao lưu gia tăng mỗi 15 phút. Bản sao lưu toàn phần được giữ trong 35 ngày; bản sao lưu gia tăng được giữ trong 7 ngày. Bản sao lưu được lưu tại hai vùng: Hà Nội (chính) và Singapore (dự phòng).\n\n## 2. Mục tiêu khôi phục\nMục tiêu thời gian khôi phục (RTO) của Orchid là 4 giờ. Mục tiêu điểm khôi phục (RPO) là 15 phút. Diễn tập khôi phục thảm họa được thực hiện mỗi quý một lần, vào thứ Bảy tuần thứ hai của tháng đầu quý.\n\n## 3. Phân loại sự cố\nSự cố mức SEV1 là khi toàn bộ hệ thống Orchid ngừng hoạt động hoặc dữ liệu khách hàng có nguy cơ bị lộ; kỹ sư trực phải phản hồi trong 10 phút. Sự cố mức SEV2 là khi một chức năng chính bị suy giảm; thời gian phản hồi là 30 phút. Sự cố mức SEV3 là lỗi không ảnh hưởng đến luồng nghiệp vụ chính và được xử lý trong giờ hành chính.\n\n## 4. Trực vận hành\nLịch trực vận hành luân phiên theo tuần, bắt đầu lúc 10 giờ",
+          "similarity": 0.8272264908743233,
+          "document_title": "orchid_operations_runbook.md",
+          "char_start": 0,
+          "char_end": 1000,
+          "rerank_score": null
+        },
+        {
+          "source_index": 5,
+          "document_id": "8f88b9a4-926f-43f0-b2fe-3d27b0d07ee6",
+          "chunk_id": "8601eab2-85f9-4944-b791-55905c8c4b18",
+          "chunk_index": 2,
+          "content": ". Khi mất thiết bị, nhân viên phải báo cho bộ phận IT trong vòng 24 giờ qua kênh #it-helpdesk.\n\n## 6. Đào tạo\nMỗi nhân viên có ngân sách đào tạo 8.000.000 đồng mỗi năm cho khóa học hoặc chứng chỉ liên quan đến công việc. Khoản chi trên 3.000.000 đồng cần được giám đốc khối phê duyệt trước khi đăng ký.",
+          "similarity": 0.8062210429511604,
+          "document_title": "lumora_hr_handbook.md",
+          "char_start": 1600,
+          "char_end": 1902,
+          "rerank_score": null
+        }
+      ],
+      "conversation_id": "d1a667e1-76c9-4cff-8085-a6b786542842",
+      "model_name": "qwen3:1.7b",
+      "detail": null,
+      "retrieval_hit": null,
+      "score": {
+        "outcome": "answer",
+        "cited": [
+          1
+        ],
+        "correct": true,
+        "citation_indices_valid": true,
+        "evidence_in_cited_source": true,
+        "facts_in_cited_source": true,
+        "grounded": true,
+        "unsupported_numbers": []
+      }
+    },
+    {
+      "id": "q03",
+      "mode": "stream",
+      "answerable": true,
+      "status": 200,
+      "ttft_s": 14.19,
+      "total_s": 18.28,
+      "events": [
+        "retrieval_started",
+        "retrieval_completed",
+        "model_routed",
+        "generation_started",
+        "token",
+        "answer_completed"
+      ],
+      "answer": "Trong thời gian thử việc, nhân viên Lumora được hưởng 90% lương chính thức. [Source 1]",
+      "sources": [
+        {
+          "source_index": 1,
+          "document_id": "8f88b9a4-926f-43f0-b2fe-3d27b0d07ee6",
+          "chunk_id": "2571d457-6a41-48e4-86c0-c2985f5bd4a2",
+          "chunk_index": 0,
+          "content": "# Sổ tay nhân sự Lumora 2026\n\n## 1. Thời gian thử việc\nNhân viên mới tại Lumora có thời gian thử việc là 45 ngày đối với vị trí chuyên viên và 60 ngày đối với vị trí quản lý. Trong thời gian thử việc, nhân viên được hưởng 90% lương chính thức. Kết quả thử việc được trưởng bộ phận đánh giá bằng văn bản chậm nhất 3 ngày làm việc trước khi kết thúc thử việc.\n\n## 2. Nghỉ phép năm\nNhân viên chính thức được hưởng 18 ngày nghỉ phép có lương mỗi năm. Sau mỗi 5 năm làm việc liên tục, nhân viên được cộng thêm 2 ngày phép. Số ngày phép chưa dùng hết trong năm được chuyển sang năm sau tối đa 5 ngày và phải sử dụng trước ngày 31 tháng 3. Đơn xin nghỉ phải gửi qua hệ thống HRM Orchid trước ít nhất 7 ngày làm việc, trừ trường hợp khẩn cấp.\n\n## 3. Làm việc từ xa\nNhân viên đã qua thử việc được làm việc từ xa tối đa 2 ngày mỗi tuần, với điều kiện đăng ký trên HRM Orchid trước 17 giờ của ngày làm việc liền trước. Ngày thứ Ba là ngày làm việc tại văn phòng bắt buộc cho toàn công ty. Khi làm việc từ xa, nh",
+          "similarity": 0.904065159084355,
+          "document_title": "lumora_hr_handbook.md",
+          "char_start": 0,
+          "char_end": 1000,
+          "rerank_score": null
+        },
+        {
+          "source_index": 2,
+          "document_id": "8f88b9a4-926f-43f0-b2fe-3d27b0d07ee6",
+          "chunk_id": "4d5cb161-e33d-4e25-8efb-c080f3cceb51",
+          "chunk_index": 1,
+          "content": "xa tối đa 2 ngày mỗi tuần, với điều kiện đăng ký trên HRM Orchid trước 17 giờ của ngày làm việc liền trước. Ngày thứ Ba là ngày làm việc tại văn phòng bắt buộc cho toàn công ty. Khi làm việc từ xa, nhân viên phải trực tuyến trên Lumora Chat trong khung giờ cốt lõi từ 9 giờ 30 đến 16 giờ.\n\n## 4. Lương và phúc lợi\nLương được chi trả vào ngày 5 hằng tháng; nếu ngày 5 rơi vào cuối tuần hoặc ngày lễ thì chi trả vào ngày làm việc liền trước. Mỗi nhân viên chính thức nhận phụ cấp ăn trưa 1.200.000 đồng mỗi tháng. Gói khám sức khỏe định kỳ được tổ chức một lần mỗi năm vào tháng 9 tại phòng khám đối tác An Tâm.\n\n## 5. Thiết bị làm việc\nNhân viên khối kỹ thuật được cấp máy tính xách tay có cấu hình tối thiểu 32 GB RAM; các khối khác được cấp máy 16 GB RAM. Thiết bị được thay mới sau mỗi chu kỳ 3 năm. Khi mất thiết bị, nhân viên phải báo cho bộ phận IT trong vòng 24 giờ qua kênh #it-helpdesk.\n\n## 6. Đào tạo\nMỗi nhân viên có ngân sách đào tạo 8.000.000 đồng mỗi năm cho khóa học hoặc chứng chỉ liên",
+          "similarity": 0.8818651104529239,
+          "document_title": "lumora_hr_handbook.md",
+          "char_start": 800,
+          "char_end": 1800,
+          "rerank_score": null
+        },
+        {
+          "source_index": 3,
+          "document_id": "10fbe116-d69d-4a93-a3fc-a3c5afd4f102",
+          "chunk_id": "d94b86bf-5316-45b4-961c-e52c519390f2",
+          "chunk_index": 1,
+          "content": "hản hồi là 30 phút. Sự cố mức SEV3 là lỗi không ảnh hưởng đến luồng nghiệp vụ chính và được xử lý trong giờ hành chính.\n\n## 4. Trực vận hành\nLịch trực vận hành luân phiên theo tuần, bắt đầu lúc 10 giờ sáng thứ Hai. Mỗi ca trực gồm một kỹ sư chính và một kỹ sư dự phòng. Kỹ sư trực nhận phụ cấp 500.000 đồng cho mỗi ngày trực ngoài giờ hành chính.\n\n## 5. Triển khai phần mềm\nViệc triển khai lên môi trường production chỉ được thực hiện từ thứ Hai đến thứ Năm, trước 15 giờ. Không triển khai vào thứ Sáu, cuối tuần và ngày lễ, trừ bản vá khẩn cấp cho sự cố SEV1. Mỗi lần triển khai phải có ít nhất hai người phê duyệt pull request.",
+          "similarity": 0.8401939523277868,
+          "document_title": "orchid_operations_runbook.md",
+          "char_start": 800,
+          "char_end": 1429,
+          "rerank_score": null
+        },
+        {
+          "source_index": 4,
+          "document_id": "8f88b9a4-926f-43f0-b2fe-3d27b0d07ee6",
+          "chunk_id": "8601eab2-85f9-4944-b791-55905c8c4b18",
+          "chunk_index": 2,
+          "content": ". Khi mất thiết bị, nhân viên phải báo cho bộ phận IT trong vòng 24 giờ qua kênh #it-helpdesk.\n\n## 6. Đào tạo\nMỗi nhân viên có ngân sách đào tạo 8.000.000 đồng mỗi năm cho khóa học hoặc chứng chỉ liên quan đến công việc. Khoản chi trên 3.000.000 đồng cần được giám đốc khối phê duyệt trước khi đăng ký.",
+          "similarity": 0.8132566678592652,
+          "document_title": "lumora_hr_handbook.md",
+          "char_start": 1600,
+          "char_end": 1902,
+          "rerank_score": null
+        },
+        {
+          "source_index": 5,
+          "document_id": "10fbe116-d69d-4a93-a3fc-a3c5afd4f102",
+          "chunk_id": "a30dbad0-18d6-4c02-b853-e3063f3539d9",
+          "chunk_index": 0,
+          "content": "# Quy trình vận hành hệ thống Orchid\n\n## 1. Sao lưu dữ liệu\nCơ sở dữ liệu chính của Orchid được sao lưu toàn phần lúc 1 giờ 30 sáng mỗi ngày và sao lưu gia tăng mỗi 15 phút. Bản sao lưu toàn phần được giữ trong 35 ngày; bản sao lưu gia tăng được giữ trong 7 ngày. Bản sao lưu được lưu tại hai vùng: Hà Nội (chính) và Singapore (dự phòng).\n\n## 2. Mục tiêu khôi phục\nMục tiêu thời gian khôi phục (RTO) của Orchid là 4 giờ. Mục tiêu điểm khôi phục (RPO) là 15 phút. Diễn tập khôi phục thảm họa được thực hiện mỗi quý một lần, vào thứ Bảy tuần thứ hai của tháng đầu quý.\n\n## 3. Phân loại sự cố\nSự cố mức SEV1 là khi toàn bộ hệ thống Orchid ngừng hoạt động hoặc dữ liệu khách hàng có nguy cơ bị lộ; kỹ sư trực phải phản hồi trong 10 phút. Sự cố mức SEV2 là khi một chức năng chính bị suy giảm; thời gian phản hồi là 30 phút. Sự cố mức SEV3 là lỗi không ảnh hưởng đến luồng nghiệp vụ chính và được xử lý trong giờ hành chính.\n\n## 4. Trực vận hành\nLịch trực vận hành luân phiên theo tuần, bắt đầu lúc 10 giờ",
+          "similarity": 0.8017129777330567,
+          "document_title": "orchid_operations_runbook.md",
+          "char_start": 0,
+          "char_end": 1000,
+          "rerank_score": null
+        }
+      ],
+      "conversation_id": "d474ede0-f49c-4e45-99a6-24ce2feb3478",
+      "message_id": "79bc5938-9e8b-418e-928f-77dd5c9809e6",
+      "model_name": "qwen3:1.7b",
+      "error": null,
+      "raw_answer": "Trong thời gian thử việc, nhân viên Lumora được hưởng 90% lương chính thức. [Source 1]",
+      "retrieval_hit": true,
+      "score": {
+        "outcome": "answer",
+        "cited": [
+          1
+        ],
+        "correct": true,
+        "citation_indices_valid": true,
+        "evidence_in_cited_source": true,
+        "facts_in_cited_source": true,
+        "grounded": true,
+        "unsupported_numbers": []
+      }
+    },
+    {
+      "id": "q03",
+      "mode": "ask",
+      "answerable": true,
+      "status": 200,
+      "total_s": 4.42,
+      "answer": "Trong thời gian thử việc, nhân viên Lumora được hưởng 90% lương chính thức. [Source 1]",
+      "sources": [
+        {
+          "source_index": 1,
+          "document_id": "8f88b9a4-926f-43f0-b2fe-3d27b0d07ee6",
+          "chunk_id": "2571d457-6a41-48e4-86c0-c2985f5bd4a2",
+          "chunk_index": 0,
+          "content": "# Sổ tay nhân sự Lumora 2026\n\n## 1. Thời gian thử việc\nNhân viên mới tại Lumora có thời gian thử việc là 45 ngày đối với vị trí chuyên viên và 60 ngày đối với vị trí quản lý. Trong thời gian thử việc, nhân viên được hưởng 90% lương chính thức. Kết quả thử việc được trưởng bộ phận đánh giá bằng văn bản chậm nhất 3 ngày làm việc trước khi kết thúc thử việc.\n\n## 2. Nghỉ phép năm\nNhân viên chính thức được hưởng 18 ngày nghỉ phép có lương mỗi năm. Sau mỗi 5 năm làm việc liên tục, nhân viên được cộng thêm 2 ngày phép. Số ngày phép chưa dùng hết trong năm được chuyển sang năm sau tối đa 5 ngày và phải sử dụng trước ngày 31 tháng 3. Đơn xin nghỉ phải gửi qua hệ thống HRM Orchid trước ít nhất 7 ngày làm việc, trừ trường hợp khẩn cấp.\n\n## 3. Làm việc từ xa\nNhân viên đã qua thử việc được làm việc từ xa tối đa 2 ngày mỗi tuần, với điều kiện đăng ký trên HRM Orchid trước 17 giờ của ngày làm việc liền trước. Ngày thứ Ba là ngày làm việc tại văn phòng bắt buộc cho toàn công ty. Khi làm việc từ xa, nh",
+          "similarity": 0.904065159084355,
+          "document_title": "lumora_hr_handbook.md",
+          "char_start": 0,
+          "char_end": 1000,
+          "rerank_score": null
+        },
+        {
+          "source_index": 2,
+          "document_id": "8f88b9a4-926f-43f0-b2fe-3d27b0d07ee6",
+          "chunk_id": "4d5cb161-e33d-4e25-8efb-c080f3cceb51",
+          "chunk_index": 1,
+          "content": "xa tối đa 2 ngày mỗi tuần, với điều kiện đăng ký trên HRM Orchid trước 17 giờ của ngày làm việc liền trước. Ngày thứ Ba là ngày làm việc tại văn phòng bắt buộc cho toàn công ty. Khi làm việc từ xa, nhân viên phải trực tuyến trên Lumora Chat trong khung giờ cốt lõi từ 9 giờ 30 đến 16 giờ.\n\n## 4. Lương và phúc lợi\nLương được chi trả vào ngày 5 hằng tháng; nếu ngày 5 rơi vào cuối tuần hoặc ngày lễ thì chi trả vào ngày làm việc liền trước. Mỗi nhân viên chính thức nhận phụ cấp ăn trưa 1.200.000 đồng mỗi tháng. Gói khám sức khỏe định kỳ được tổ chức một lần mỗi năm vào tháng 9 tại phòng khám đối tác An Tâm.\n\n## 5. Thiết bị làm việc\nNhân viên khối kỹ thuật được cấp máy tính xách tay có cấu hình tối thiểu 32 GB RAM; các khối khác được cấp máy 16 GB RAM. Thiết bị được thay mới sau mỗi chu kỳ 3 năm. Khi mất thiết bị, nhân viên phải báo cho bộ phận IT trong vòng 24 giờ qua kênh #it-helpdesk.\n\n## 6. Đào tạo\nMỗi nhân viên có ngân sách đào tạo 8.000.000 đồng mỗi năm cho khóa học hoặc chứng chỉ liên",
+          "similarity": 0.8818651104529239,
+          "document_title": "lumora_hr_handbook.md",
+          "char_start": 800,
+          "char_end": 1800,
+          "rerank_score": null
+        },
+        {
+          "source_index": 3,
+          "document_id": "10fbe116-d69d-4a93-a3fc-a3c5afd4f102",
+          "chunk_id": "d94b86bf-5316-45b4-961c-e52c519390f2",
+          "chunk_index": 1,
+          "content": "hản hồi là 30 phút. Sự cố mức SEV3 là lỗi không ảnh hưởng đến luồng nghiệp vụ chính và được xử lý trong giờ hành chính.\n\n## 4. Trực vận hành\nLịch trực vận hành luân phiên theo tuần, bắt đầu lúc 10 giờ sáng thứ Hai. Mỗi ca trực gồm một kỹ sư chính và một kỹ sư dự phòng. Kỹ sư trực nhận phụ cấp 500.000 đồng cho mỗi ngày trực ngoài giờ hành chính.\n\n## 5. Triển khai phần mềm\nViệc triển khai lên môi trường production chỉ được thực hiện từ thứ Hai đến thứ Năm, trước 15 giờ. Không triển khai vào thứ Sáu, cuối tuần và ngày lễ, trừ bản vá khẩn cấp cho sự cố SEV1. Mỗi lần triển khai phải có ít nhất hai người phê duyệt pull request.",
+          "similarity": 0.8401939523277868,
+          "document_title": "orchid_operations_runbook.md",
+          "char_start": 800,
+          "char_end": 1429,
+          "rerank_score": null
+        },
+        {
+          "source_index": 4,
+          "document_id": "8f88b9a4-926f-43f0-b2fe-3d27b0d07ee6",
+          "chunk_id": "8601eab2-85f9-4944-b791-55905c8c4b18",
+          "chunk_index": 2,
+          "content": ". Khi mất thiết bị, nhân viên phải báo cho bộ phận IT trong vòng 24 giờ qua kênh #it-helpdesk.\n\n## 6. Đào tạo\nMỗi nhân viên có ngân sách đào tạo 8.000.000 đồng mỗi năm cho khóa học hoặc chứng chỉ liên quan đến công việc. Khoản chi trên 3.000.000 đồng cần được giám đốc khối phê duyệt trước khi đăng ký.",
+          "similarity": 0.8132566678592652,
+          "document_title": "lumora_hr_handbook.md",
+          "char_start": 1600,
+          "char_end": 1902,
+          "rerank_score": null
+        },
+        {
+          "source_index": 5,
+          "document_id": "10fbe116-d69d-4a93-a3fc-a3c5afd4f102",
+          "chunk_id": "a30dbad0-18d6-4c02-b853-e3063f3539d9",
+          "chunk_index": 0,
+          "content": "# Quy trình vận hành hệ thống Orchid\n\n## 1. Sao lưu dữ liệu\nCơ sở dữ liệu chính của Orchid được sao lưu toàn phần lúc 1 giờ 30 sáng mỗi ngày và sao lưu gia tăng mỗi 15 phút. Bản sao lưu toàn phần được giữ trong 35 ngày; bản sao lưu gia tăng được giữ trong 7 ngày. Bản sao lưu được lưu tại hai vùng: Hà Nội (chính) và Singapore (dự phòng).\n\n## 2. Mục tiêu khôi phục\nMục tiêu thời gian khôi phục (RTO) của Orchid là 4 giờ. Mục tiêu điểm khôi phục (RPO) là 15 phút. Diễn tập khôi phục thảm họa được thực hiện mỗi quý một lần, vào thứ Bảy tuần thứ hai của tháng đầu quý.\n\n## 3. Phân loại sự cố\nSự cố mức SEV1 là khi toàn bộ hệ thống Orchid ngừng hoạt động hoặc dữ liệu khách hàng có nguy cơ bị lộ; kỹ sư trực phải phản hồi trong 10 phút. Sự cố mức SEV2 là khi một chức năng chính bị suy giảm; thời gian phản hồi là 30 phút. Sự cố mức SEV3 là lỗi không ảnh hưởng đến luồng nghiệp vụ chính và được xử lý trong giờ hành chính.\n\n## 4. Trực vận hành\nLịch trực vận hành luân phiên theo tuần, bắt đầu lúc 10 giờ",
+          "similarity": 0.8017129777330567,
+          "document_title": "orchid_operations_runbook.md",
+          "char_start": 0,
+          "char_end": 1000,
+          "rerank_score": null
+        }
+      ],
+      "conversation_id": "fc7b621b-311f-4239-8c61-79fdf8bd638d",
+      "model_name": "qwen3:1.7b",
+      "detail": null,
+      "retrieval_hit": null,
+      "score": {
+        "outcome": "answer",
+        "cited": [
+          1
+        ],
+        "correct": true,
+        "citation_indices_valid": true,
+        "evidence_in_cited_source": true,
+        "facts_in_cited_source": true,
+        "grounded": true,
+        "unsupported_numbers": []
+      }
+    },
+    {
+      "id": "q04",
+      "mode": "stream",
+      "answerable": true,
+      "status": 200,
+      "ttft_s": 14.19,
+      "total_s": 17.51,
+      "events": [
+        "retrieval_started",
+        "retrieval_completed",
+        "model_routed",
+        "generation_started",
+        "token",
+        "answer_completed"
+      ],
+      "answer": "Ngày thứ Ba là ngày làm việc tại văn phòng bắt buộc cho toàn công ty [Source 2].",
+      "sources": [
+        {
+          "source_index": 1,
+          "document_id": "8f88b9a4-926f-43f0-b2fe-3d27b0d07ee6",
+          "chunk_id": "2571d457-6a41-48e4-86c0-c2985f5bd4a2",
+          "chunk_index": 0,
+          "content": "# Sổ tay nhân sự Lumora 2026\n\n## 1. Thời gian thử việc\nNhân viên mới tại Lumora có thời gian thử việc là 45 ngày đối với vị trí chuyên viên và 60 ngày đối với vị trí quản lý. Trong thời gian thử việc, nhân viên được hưởng 90% lương chính thức. Kết quả thử việc được trưởng bộ phận đánh giá bằng văn bản chậm nhất 3 ngày làm việc trước khi kết thúc thử việc.\n\n## 2. Nghỉ phép năm\nNhân viên chính thức được hưởng 18 ngày nghỉ phép có lương mỗi năm. Sau mỗi 5 năm làm việc liên tục, nhân viên được cộng thêm 2 ngày phép. Số ngày phép chưa dùng hết trong năm được chuyển sang năm sau tối đa 5 ngày và phải sử dụng trước ngày 31 tháng 3. Đơn xin nghỉ phải gửi qua hệ thống HRM Orchid trước ít nhất 7 ngày làm việc, trừ trường hợp khẩn cấp.\n\n## 3. Làm việc từ xa\nNhân viên đã qua thử việc được làm việc từ xa tối đa 2 ngày mỗi tuần, với điều kiện đăng ký trên HRM Orchid trước 17 giờ của ngày làm việc liền trước. Ngày thứ Ba là ngày làm việc tại văn phòng bắt buộc cho toàn công ty. Khi làm việc từ xa, nh",
+          "similarity": 0.8905402421951294,
+          "document_title": "lumora_hr_handbook.md",
+          "char_start": 0,
+          "char_end": 1000,
+          "rerank_score": null
+        },
+        {
+          "source_index": 2,
+          "document_id": "8f88b9a4-926f-43f0-b2fe-3d27b0d07ee6",
+          "chunk_id": "4d5cb161-e33d-4e25-8efb-c080f3cceb51",
+          "chunk_index": 1,
+          "content": "xa tối đa 2 ngày mỗi tuần, với điều kiện đăng ký trên HRM Orchid trước 17 giờ của ngày làm việc liền trước. Ngày thứ Ba là ngày làm việc tại văn phòng bắt buộc cho toàn công ty. Khi làm việc từ xa, nhân viên phải trực tuyến trên Lumora Chat trong khung giờ cốt lõi từ 9 giờ 30 đến 16 giờ.\n\n## 4. Lương và phúc lợi\nLương được chi trả vào ngày 5 hằng tháng; nếu ngày 5 rơi vào cuối tuần hoặc ngày lễ thì chi trả vào ngày làm việc liền trước. Mỗi nhân viên chính thức nhận phụ cấp ăn trưa 1.200.000 đồng mỗi tháng. Gói khám sức khỏe định kỳ được tổ chức một lần mỗi năm vào tháng 9 tại phòng khám đối tác An Tâm.\n\n## 5. Thiết bị làm việc\nNhân viên khối kỹ thuật được cấp máy tính xách tay có cấu hình tối thiểu 32 GB RAM; các khối khác được cấp máy 16 GB RAM. Thiết bị được thay mới sau mỗi chu kỳ 3 năm. Khi mất thiết bị, nhân viên phải báo cho bộ phận IT trong vòng 24 giờ qua kênh #it-helpdesk.\n\n## 6. Đào tạo\nMỗi nhân viên có ngân sách đào tạo 8.000.000 đồng mỗi năm cho khóa học hoặc chứng chỉ liên",
+          "similarity": 0.8827359676361084,
+          "document_title": "lumora_hr_handbook.md",
+          "char_start": 800,
+          "char_end": 1800,
+          "rerank_score": null
+        },
+        {
+          "source_index": 3,
+          "document_id": "10fbe116-d69d-4a93-a3fc-a3c5afd4f102",
+          "chunk_id": "d94b86bf-5316-45b4-961c-e52c519390f2",
+          "chunk_index": 1,
+          "content": "hản hồi là 30 phút. Sự cố mức SEV3 là lỗi không ảnh hưởng đến luồng nghiệp vụ chính và được xử lý trong giờ hành chính.\n\n## 4. Trực vận hành\nLịch trực vận hành luân phiên theo tuần, bắt đầu lúc 10 giờ sáng thứ Hai. Mỗi ca trực gồm một kỹ sư chính và một kỹ sư dự phòng. Kỹ sư trực nhận phụ cấp 500.000 đồng cho mỗi ngày trực ngoài giờ hành chính.\n\n## 5. Triển khai phần mềm\nViệc triển khai lên môi trường production chỉ được thực hiện từ thứ Hai đến thứ Năm, trước 15 giờ. Không triển khai vào thứ Sáu, cuối tuần và ngày lễ, trừ bản vá khẩn cấp cho sự cố SEV1. Mỗi lần triển khai phải có ít nhất hai người phê duyệt pull request.",
+          "similarity": 0.8437303304672241,
+          "document_title": "orchid_operations_runbook.md",
+          "char_start": 800,
+          "char_end": 1429,
+          "rerank_score": null
+        },
+        {
+          "source_index": 4,
+          "document_id": "10fbe116-d69d-4a93-a3fc-a3c5afd4f102",
+          "chunk_id": "a30dbad0-18d6-4c02-b853-e3063f3539d9",
+          "chunk_index": 0,
+          "content": "# Quy trình vận hành hệ thống Orchid\n\n## 1. Sao lưu dữ liệu\nCơ sở dữ liệu chính của Orchid được sao lưu toàn phần lúc 1 giờ 30 sáng mỗi ngày và sao lưu gia tăng mỗi 15 phút. Bản sao lưu toàn phần được giữ trong 35 ngày; bản sao lưu gia tăng được giữ trong 7 ngày. Bản sao lưu được lưu tại hai vùng: Hà Nội (chính) và Singapore (dự phòng).\n\n## 2. Mục tiêu khôi phục\nMục tiêu thời gian khôi phục (RTO) của Orchid là 4 giờ. Mục tiêu điểm khôi phục (RPO) là 15 phút. Diễn tập khôi phục thảm họa được thực hiện mỗi quý một lần, vào thứ Bảy tuần thứ hai của tháng đầu quý.\n\n## 3. Phân loại sự cố\nSự cố mức SEV1 là khi toàn bộ hệ thống Orchid ngừng hoạt động hoặc dữ liệu khách hàng có nguy cơ bị lộ; kỹ sư trực phải phản hồi trong 10 phút. Sự cố mức SEV2 là khi một chức năng chính bị suy giảm; thời gian phản hồi là 30 phút. Sự cố mức SEV3 là lỗi không ảnh hưởng đến luồng nghiệp vụ chính và được xử lý trong giờ hành chính.\n\n## 4. Trực vận hành\nLịch trực vận hành luân phiên theo tuần, bắt đầu lúc 10 giờ",
+          "similarity": 0.8080836167235889,
+          "document_title": "orchid_operations_runbook.md",
+          "char_start": 0,
+          "char_end": 1000,
+          "rerank_score": null
+        },
+        {
+          "source_index": 5,
+          "document_id": "8f88b9a4-926f-43f0-b2fe-3d27b0d07ee6",
+          "chunk_id": "8601eab2-85f9-4944-b791-55905c8c4b18",
+          "chunk_index": 2,
+          "content": ". Khi mất thiết bị, nhân viên phải báo cho bộ phận IT trong vòng 24 giờ qua kênh #it-helpdesk.\n\n## 6. Đào tạo\nMỗi nhân viên có ngân sách đào tạo 8.000.000 đồng mỗi năm cho khóa học hoặc chứng chỉ liên quan đến công việc. Khoản chi trên 3.000.000 đồng cần được giám đốc khối phê duyệt trước khi đăng ký.",
+          "similarity": 0.7872018471715688,
+          "document_title": "lumora_hr_handbook.md",
+          "char_start": 1600,
+          "char_end": 1902,
+          "rerank_score": null
+        }
+      ],
+      "conversation_id": "ce16b9fa-9004-485f-a30d-9abbfede815c",
+      "message_id": "83c89b0c-c731-431d-b2c3-1765229f3e49",
+      "model_name": "qwen3:1.7b",
+      "error": null,
+      "raw_answer": "Ngày thứ Ba là ngày làm việc tại văn phòng bắt buộc cho toàn công ty [Source 2].",
+      "retrieval_hit": true,
+      "score": {
+        "outcome": "answer",
+        "cited": [
+          2
+        ],
+        "correct": true,
+        "citation_indices_valid": true,
+        "evidence_in_cited_source": true,
+        "facts_in_cited_source": true,
+        "grounded": true,
+        "unsupported_numbers": []
+      }
+    },
+    {
+      "id": "q04",
+      "mode": "ask",
+      "answerable": true,
+      "status": 200,
+      "total_s": 3.61,
+      "answer": "Ngày thứ Ba là ngày làm việc tại văn phòng bắt buộc cho toàn công ty [Source 2].",
+      "sources": [
+        {
+          "source_index": 1,
+          "document_id": "8f88b9a4-926f-43f0-b2fe-3d27b0d07ee6",
+          "chunk_id": "2571d457-6a41-48e4-86c0-c2985f5bd4a2",
+          "chunk_index": 0,
+          "content": "# Sổ tay nhân sự Lumora 2026\n\n## 1. Thời gian thử việc\nNhân viên mới tại Lumora có thời gian thử việc là 45 ngày đối với vị trí chuyên viên và 60 ngày đối với vị trí quản lý. Trong thời gian thử việc, nhân viên được hưởng 90% lương chính thức. Kết quả thử việc được trưởng bộ phận đánh giá bằng văn bản chậm nhất 3 ngày làm việc trước khi kết thúc thử việc.\n\n## 2. Nghỉ phép năm\nNhân viên chính thức được hưởng 18 ngày nghỉ phép có lương mỗi năm. Sau mỗi 5 năm làm việc liên tục, nhân viên được cộng thêm 2 ngày phép. Số ngày phép chưa dùng hết trong năm được chuyển sang năm sau tối đa 5 ngày và phải sử dụng trước ngày 31 tháng 3. Đơn xin nghỉ phải gửi qua hệ thống HRM Orchid trước ít nhất 7 ngày làm việc, trừ trường hợp khẩn cấp.\n\n## 3. Làm việc từ xa\nNhân viên đã qua thử việc được làm việc từ xa tối đa 2 ngày mỗi tuần, với điều kiện đăng ký trên HRM Orchid trước 17 giờ của ngày làm việc liền trước. Ngày thứ Ba là ngày làm việc tại văn phòng bắt buộc cho toàn công ty. Khi làm việc từ xa, nh",
+          "similarity": 0.8905402421951294,
+          "document_title": "lumora_hr_handbook.md",
+          "char_start": 0,
+          "char_end": 1000,
+          "rerank_score": null
+        },
+        {
+          "source_index": 2,
+          "document_id": "8f88b9a4-926f-43f0-b2fe-3d27b0d07ee6",
+          "chunk_id": "4d5cb161-e33d-4e25-8efb-c080f3cceb51",
+          "chunk_index": 1,
+          "content": "xa tối đa 2 ngày mỗi tuần, với điều kiện đăng ký trên HRM Orchid trước 17 giờ của ngày làm việc liền trước. Ngày thứ Ba là ngày làm việc tại văn phòng bắt buộc cho toàn công ty. Khi làm việc từ xa, nhân viên phải trực tuyến trên Lumora Chat trong khung giờ cốt lõi từ 9 giờ 30 đến 16 giờ.\n\n## 4. Lương và phúc lợi\nLương được chi trả vào ngày 5 hằng tháng; nếu ngày 5 rơi vào cuối tuần hoặc ngày lễ thì chi trả vào ngày làm việc liền trước. Mỗi nhân viên chính thức nhận phụ cấp ăn trưa 1.200.000 đồng mỗi tháng. Gói khám sức khỏe định kỳ được tổ chức một lần mỗi năm vào tháng 9 tại phòng khám đối tác An Tâm.\n\n## 5. Thiết bị làm việc\nNhân viên khối kỹ thuật được cấp máy tính xách tay có cấu hình tối thiểu 32 GB RAM; các khối khác được cấp máy 16 GB RAM. Thiết bị được thay mới sau mỗi chu kỳ 3 năm. Khi mất thiết bị, nhân viên phải báo cho bộ phận IT trong vòng 24 giờ qua kênh #it-helpdesk.\n\n## 6. Đào tạo\nMỗi nhân viên có ngân sách đào tạo 8.000.000 đồng mỗi năm cho khóa học hoặc chứng chỉ liên",
+          "similarity": 0.8827359676361084,
+          "document_title": "lumora_hr_handbook.md",
+          "char_start": 800,
+          "char_end": 1800,
+          "rerank_score": null
+        },
+        {
+          "source_index": 3,
+          "document_id": "10fbe116-d69d-4a93-a3fc-a3c5afd4f102",
+          "chunk_id": "d94b86bf-5316-45b4-961c-e52c519390f2",
+          "chunk_index": 1,
+          "content": "hản hồi là 30 phút. Sự cố mức SEV3 là lỗi không ảnh hưởng đến luồng nghiệp vụ chính và được xử lý trong giờ hành chính.\n\n## 4. Trực vận hành\nLịch trực vận hành luân phiên theo tuần, bắt đầu lúc 10 giờ sáng thứ Hai. Mỗi ca trực gồm một kỹ sư chính và một kỹ sư dự phòng. Kỹ sư trực nhận phụ cấp 500.000 đồng cho mỗi ngày trực ngoài giờ hành chính.\n\n## 5. Triển khai phần mềm\nViệc triển khai lên môi trường production chỉ được thực hiện từ thứ Hai đến thứ Năm, trước 15 giờ. Không triển khai vào thứ Sáu, cuối tuần và ngày lễ, trừ bản vá khẩn cấp cho sự cố SEV1. Mỗi lần triển khai phải có ít nhất hai người phê duyệt pull request.",
+          "similarity": 0.8437303304672241,
+          "document_title": "orchid_operations_runbook.md",
+          "char_start": 800,
+          "char_end": 1429,
+          "rerank_score": null
+        },
+        {
+          "source_index": 4,
+          "document_id": "10fbe116-d69d-4a93-a3fc-a3c5afd4f102",
+          "chunk_id": "a30dbad0-18d6-4c02-b853-e3063f3539d9",
+          "chunk_index": 0,
+          "content": "# Quy trình vận hành hệ thống Orchid\n\n## 1. Sao lưu dữ liệu\nCơ sở dữ liệu chính của Orchid được sao lưu toàn phần lúc 1 giờ 30 sáng mỗi ngày và sao lưu gia tăng mỗi 15 phút. Bản sao lưu toàn phần được giữ trong 35 ngày; bản sao lưu gia tăng được giữ trong 7 ngày. Bản sao lưu được lưu tại hai vùng: Hà Nội (chính) và Singapore (dự phòng).\n\n## 2. Mục tiêu khôi phục\nMục tiêu thời gian khôi phục (RTO) của Orchid là 4 giờ. Mục tiêu điểm khôi phục (RPO) là 15 phút. Diễn tập khôi phục thảm họa được thực hiện mỗi quý một lần, vào thứ Bảy tuần thứ hai của tháng đầu quý.\n\n## 3. Phân loại sự cố\nSự cố mức SEV1 là khi toàn bộ hệ thống Orchid ngừng hoạt động hoặc dữ liệu khách hàng có nguy cơ bị lộ; kỹ sư trực phải phản hồi trong 10 phút. Sự cố mức SEV2 là khi một chức năng chính bị suy giảm; thời gian phản hồi là 30 phút. Sự cố mức SEV3 là lỗi không ảnh hưởng đến luồng nghiệp vụ chính và được xử lý trong giờ hành chính.\n\n## 4. Trực vận hành\nLịch trực vận hành luân phiên theo tuần, bắt đầu lúc 10 giờ",
+          "similarity": 0.8080836167235889,
+          "document_title": "orchid_operations_runbook.md",
+          "char_start": 0,
+          "char_end": 1000,
+          "rerank_score": null
+        },
+        {
+          "source_index": 5,
+          "document_id": "8f88b9a4-926f-43f0-b2fe-3d27b0d07ee6",
+          "chunk_id": "8601eab2-85f9-4944-b791-55905c8c4b18",
+          "chunk_index": 2,
+          "content": ". Khi mất thiết bị, nhân viên phải báo cho bộ phận IT trong vòng 24 giờ qua kênh #it-helpdesk.\n\n## 6. Đào tạo\nMỗi nhân viên có ngân sách đào tạo 8.000.000 đồng mỗi năm cho khóa học hoặc chứng chỉ liên quan đến công việc. Khoản chi trên 3.000.000 đồng cần được giám đốc khối phê duyệt trước khi đăng ký.",
+          "similarity": 0.7872018471715688,
+          "document_title": "lumora_hr_handbook.md",
+          "char_start": 1600,
+          "char_end": 1902,
+          "rerank_score": null
+        }
+      ],
+      "conversation_id": "e39bcaaf-d246-4515-b70c-609074f592fd",
+      "model_name": "qwen3:1.7b",
+      "detail": null,
+      "retrieval_hit": null,
+      "score": {
+        "outcome": "answer",
+        "cited": [
+          2
+        ],
+        "correct": true,
+        "citation_indices_valid": true,
+        "evidence_in_cited_source": true,
+        "facts_in_cited_source": true,
+        "grounded": true,
+        "unsupported_numbers": []
+      }
+    },
+    {
+      "id": "q05",
+      "mode": "stream",
+      "answerable": true,
+      "status": 200,
+      "ttft_s": 2.82,
+      "total_s": 6.2,
+      "events": [
+        "retrieval_started",
+        "retrieval_completed",
+        "model_routed",
+        "generation_started",
+        "token",
+        "answer_completed"
+      ],
+      "answer": "Lương ở Lumora được chi trả vào ngày 5 hằng tháng [Source 2].",
+      "sources": [
+        {
+          "source_index": 1,
+          "document_id": "8f88b9a4-926f-43f0-b2fe-3d27b0d07ee6",
+          "chunk_id": "2571d457-6a41-48e4-86c0-c2985f5bd4a2",
+          "chunk_index": 0,
+          "content": "# Sổ tay nhân sự Lumora 2026\n\n## 1. Thời gian thử việc\nNhân viên mới tại Lumora có thời gian thử việc là 45 ngày đối với vị trí chuyên viên và 60 ngày đối với vị trí quản lý. Trong thời gian thử việc, nhân viên được hưởng 90% lương chính thức. Kết quả thử việc được trưởng bộ phận đánh giá bằng văn bản chậm nhất 3 ngày làm việc trước khi kết thúc thử việc.\n\n## 2. Nghỉ phép năm\nNhân viên chính thức được hưởng 18 ngày nghỉ phép có lương mỗi năm. Sau mỗi 5 năm làm việc liên tục, nhân viên được cộng thêm 2 ngày phép. Số ngày phép chưa dùng hết trong năm được chuyển sang năm sau tối đa 5 ngày và phải sử dụng trước ngày 31 tháng 3. Đơn xin nghỉ phải gửi qua hệ thống HRM Orchid trước ít nhất 7 ngày làm việc, trừ trường hợp khẩn cấp.\n\n## 3. Làm việc từ xa\nNhân viên đã qua thử việc được làm việc từ xa tối đa 2 ngày mỗi tuần, với điều kiện đăng ký trên HRM Orchid trước 17 giờ của ngày làm việc liền trước. Ngày thứ Ba là ngày làm việc tại văn phòng bắt buộc cho toàn công ty. Khi làm việc từ xa, nh",
+          "similarity": 0.8769991397857666,
+          "document_title": "lumora_hr_handbook.md",
+          "char_start": 0,
+          "char_end": 1000,
+          "rerank_score": null
+        },
+        {
+          "source_index": 2,
+          "document_id": "8f88b9a4-926f-43f0-b2fe-3d27b0d07ee6",
+          "chunk_id": "4d5cb161-e33d-4e25-8efb-c080f3cceb51",
+          "chunk_index": 1,
+          "content": "xa tối đa 2 ngày mỗi tuần, với điều kiện đăng ký trên HRM Orchid trước 17 giờ của ngày làm việc liền trước. Ngày thứ Ba là ngày làm việc tại văn phòng bắt buộc cho toàn công ty. Khi làm việc từ xa, nhân viên phải trực tuyến trên Lumora Chat trong khung giờ cốt lõi từ 9 giờ 30 đến 16 giờ.\n\n## 4. Lương và phúc lợi\nLương được chi trả vào ngày 5 hằng tháng; nếu ngày 5 rơi vào cuối tuần hoặc ngày lễ thì chi trả vào ngày làm việc liền trước. Mỗi nhân viên chính thức nhận phụ cấp ăn trưa 1.200.000 đồng mỗi tháng. Gói khám sức khỏe định kỳ được tổ chức một lần mỗi năm vào tháng 9 tại phòng khám đối tác An Tâm.\n\n## 5. Thiết bị làm việc\nNhân viên khối kỹ thuật được cấp máy tính xách tay có cấu hình tối thiểu 32 GB RAM; các khối khác được cấp máy 16 GB RAM. Thiết bị được thay mới sau mỗi chu kỳ 3 năm. Khi mất thiết bị, nhân viên phải báo cho bộ phận IT trong vòng 24 giờ qua kênh #it-helpdesk.\n\n## 6. Đào tạo\nMỗi nhân viên có ngân sách đào tạo 8.000.000 đồng mỗi năm cho khóa học hoặc chứng chỉ liên",
+          "similarity": 0.8622494339942932,
+          "document_title": "lumora_hr_handbook.md",
+          "char_start": 800,
+          "char_end": 1800,
+          "rerank_score": null
+        },
+        {
+          "source_index": 3,
+          "document_id": "10fbe116-d69d-4a93-a3fc-a3c5afd4f102",
+          "chunk_id": "d94b86bf-5316-45b4-961c-e52c519390f2",
+          "chunk_index": 1,
+          "content": "hản hồi là 30 phút. Sự cố mức SEV3 là lỗi không ảnh hưởng đến luồng nghiệp vụ chính và được xử lý trong giờ hành chính.\n\n## 4. Trực vận hành\nLịch trực vận hành luân phiên theo tuần, bắt đầu lúc 10 giờ sáng thứ Hai. Mỗi ca trực gồm một kỹ sư chính và một kỹ sư dự phòng. Kỹ sư trực nhận phụ cấp 500.000 đồng cho mỗi ngày trực ngoài giờ hành chính.\n\n## 5. Triển khai phần mềm\nViệc triển khai lên môi trường production chỉ được thực hiện từ thứ Hai đến thứ Năm, trước 15 giờ. Không triển khai vào thứ Sáu, cuối tuần và ngày lễ, trừ bản vá khẩn cấp cho sự cố SEV1. Mỗi lần triển khai phải có ít nhất hai người phê duyệt pull request.",
+          "similarity": 0.8182775974273682,
+          "document_title": "orchid_operations_runbook.md",
+          "char_start": 800,
+          "char_end": 1429,
+          "rerank_score": null
+        },
+        {
+          "source_index": 4,
+          "document_id": "10fbe116-d69d-4a93-a3fc-a3c5afd4f102",
+          "chunk_id": "a30dbad0-18d6-4c02-b853-e3063f3539d9",
+          "chunk_index": 0,
+          "content": "# Quy trình vận hành hệ thống Orchid\n\n## 1. Sao lưu dữ liệu\nCơ sở dữ liệu chính của Orchid được sao lưu toàn phần lúc 1 giờ 30 sáng mỗi ngày và sao lưu gia tăng mỗi 15 phút. Bản sao lưu toàn phần được giữ trong 35 ngày; bản sao lưu gia tăng được giữ trong 7 ngày. Bản sao lưu được lưu tại hai vùng: Hà Nội (chính) và Singapore (dự phòng).\n\n## 2. Mục tiêu khôi phục\nMục tiêu thời gian khôi phục (RTO) của Orchid là 4 giờ. Mục tiêu điểm khôi phục (RPO) là 15 phút. Diễn tập khôi phục thảm họa được thực hiện mỗi quý một lần, vào thứ Bảy tuần thứ hai của tháng đầu quý.\n\n## 3. Phân loại sự cố\nSự cố mức SEV1 là khi toàn bộ hệ thống Orchid ngừng hoạt động hoặc dữ liệu khách hàng có nguy cơ bị lộ; kỹ sư trực phải phản hồi trong 10 phút. Sự cố mức SEV2 là khi một chức năng chính bị suy giảm; thời gian phản hồi là 30 phút. Sự cố mức SEV3 là lỗi không ảnh hưởng đến luồng nghiệp vụ chính và được xử lý trong giờ hành chính.\n\n## 4. Trực vận hành\nLịch trực vận hành luân phiên theo tuần, bắt đầu lúc 10 giờ",
+          "similarity": 0.7885157718043655,
+          "document_title": "orchid_operations_runbook.md",
+          "char_start": 0,
+          "char_end": 1000,
+          "rerank_score": null
+        },
+        {
+          "source_index": 5,
+          "document_id": "8f88b9a4-926f-43f0-b2fe-3d27b0d07ee6",
+          "chunk_id": "8601eab2-85f9-4944-b791-55905c8c4b18",
+          "chunk_index": 2,
+          "content": ". Khi mất thiết bị, nhân viên phải báo cho bộ phận IT trong vòng 24 giờ qua kênh #it-helpdesk.\n\n## 6. Đào tạo\nMỗi nhân viên có ngân sách đào tạo 8.000.000 đồng mỗi năm cho khóa học hoặc chứng chỉ liên quan đến công việc. Khoản chi trên 3.000.000 đồng cần được giám đốc khối phê duyệt trước khi đăng ký.",
+          "similarity": 0.7835934420116668,
+          "document_title": "lumora_hr_handbook.md",
+          "char_start": 1600,
+          "char_end": 1902,
+          "rerank_score": null
+        }
+      ],
+      "conversation_id": "17a43967-9ad2-4776-99b6-4bf41006d887",
+      "message_id": "8b830c08-2d81-48e9-bbeb-82094df8bdb2",
+      "model_name": "qwen3:1.7b",
+      "error": null,
+      "raw_answer": "Lương ở Lumora được chi trả vào ngày 5 hằng tháng [Source 2].",
+      "retrieval_hit": true,
+      "score": {
+        "outcome": "answer",
+        "cited": [
+          2
+        ],
+        "correct": true,
+        "citation_indices_valid": true,
+        "evidence_in_cited_source": true,
+        "facts_in_cited_source": true,
+        "grounded": true,
+        "unsupported_numbers": []
+      }
+    },
+    {
+      "id": "q05",
+      "mode": "ask",
+      "answerable": true,
+      "status": 200,
+      "total_s": 3.27,
+      "answer": "Lương ở Lumora được chi trả vào ngày 5 hằng tháng [Source 2].",
+      "sources": [
+        {
+          "source_index": 1,
+          "document_id": "8f88b9a4-926f-43f0-b2fe-3d27b0d07ee6",
+          "chunk_id": "2571d457-6a41-48e4-86c0-c2985f5bd4a2",
+          "chunk_index": 0,
+          "content": "# Sổ tay nhân sự Lumora 2026\n\n## 1. Thời gian thử việc\nNhân viên mới tại Lumora có thời gian thử việc là 45 ngày đối với vị trí chuyên viên và 60 ngày đối với vị trí quản lý. Trong thời gian thử việc, nhân viên được hưởng 90% lương chính thức. Kết quả thử việc được trưởng bộ phận đánh giá bằng văn bản chậm nhất 3 ngày làm việc trước khi kết thúc thử việc.\n\n## 2. Nghỉ phép năm\nNhân viên chính thức được hưởng 18 ngày nghỉ phép có lương mỗi năm. Sau mỗi 5 năm làm việc liên tục, nhân viên được cộng thêm 2 ngày phép. Số ngày phép chưa dùng hết trong năm được chuyển sang năm sau tối đa 5 ngày và phải sử dụng trước ngày 31 tháng 3. Đơn xin nghỉ phải gửi qua hệ thống HRM Orchid trước ít nhất 7 ngày làm việc, trừ trường hợp khẩn cấp.\n\n## 3. Làm việc từ xa\nNhân viên đã qua thử việc được làm việc từ xa tối đa 2 ngày mỗi tuần, với điều kiện đăng ký trên HRM Orchid trước 17 giờ của ngày làm việc liền trước. Ngày thứ Ba là ngày làm việc tại văn phòng bắt buộc cho toàn công ty. Khi làm việc từ xa, nh",
+          "similarity": 0.8769991397857666,
+          "document_title": "lumora_hr_handbook.md",
+          "char_start": 0,
+          "char_end": 1000,
+          "rerank_score": null
+        },
+        {
+          "source_index": 2,
+          "document_id": "8f88b9a4-926f-43f0-b2fe-3d27b0d07ee6",
+          "chunk_id": "4d5cb161-e33d-4e25-8efb-c080f3cceb51",
+          "chunk_index": 1,
+          "content": "xa tối đa 2 ngày mỗi tuần, với điều kiện đăng ký trên HRM Orchid trước 17 giờ của ngày làm việc liền trước. Ngày thứ Ba là ngày làm việc tại văn phòng bắt buộc cho toàn công ty. Khi làm việc từ xa, nhân viên phải trực tuyến trên Lumora Chat trong khung giờ cốt lõi từ 9 giờ 30 đến 16 giờ.\n\n## 4. Lương và phúc lợi\nLương được chi trả vào ngày 5 hằng tháng; nếu ngày 5 rơi vào cuối tuần hoặc ngày lễ thì chi trả vào ngày làm việc liền trước. Mỗi nhân viên chính thức nhận phụ cấp ăn trưa 1.200.000 đồng mỗi tháng. Gói khám sức khỏe định kỳ được tổ chức một lần mỗi năm vào tháng 9 tại phòng khám đối tác An Tâm.\n\n## 5. Thiết bị làm việc\nNhân viên khối kỹ thuật được cấp máy tính xách tay có cấu hình tối thiểu 32 GB RAM; các khối khác được cấp máy 16 GB RAM. Thiết bị được thay mới sau mỗi chu kỳ 3 năm. Khi mất thiết bị, nhân viên phải báo cho bộ phận IT trong vòng 24 giờ qua kênh #it-helpdesk.\n\n## 6. Đào tạo\nMỗi nhân viên có ngân sách đào tạo 8.000.000 đồng mỗi năm cho khóa học hoặc chứng chỉ liên",
+          "similarity": 0.8622494339942932,
+          "document_title": "lumora_hr_handbook.md",
+          "char_start": 800,
+          "char_end": 1800,
+          "rerank_score": null
+        },
+        {
+          "source_index": 3,
+          "document_id": "10fbe116-d69d-4a93-a3fc-a3c5afd4f102",
+          "chunk_id": "d94b86bf-5316-45b4-961c-e52c519390f2",
+          "chunk_index": 1,
+          "content": "hản hồi là 30 phút. Sự cố mức SEV3 là lỗi không ảnh hưởng đến luồng nghiệp vụ chính và được xử lý trong giờ hành chính.\n\n## 4. Trực vận hành\nLịch trực vận hành luân phiên theo tuần, bắt đầu lúc 10 giờ sáng thứ Hai. Mỗi ca trực gồm một kỹ sư chính và một kỹ sư dự phòng. Kỹ sư trực nhận phụ cấp 500.000 đồng cho mỗi ngày trực ngoài giờ hành chính.\n\n## 5. Triển khai phần mềm\nViệc triển khai lên môi trường production chỉ được thực hiện từ thứ Hai đến thứ Năm, trước 15 giờ. Không triển khai vào thứ Sáu, cuối tuần và ngày lễ, trừ bản vá khẩn cấp cho sự cố SEV1. Mỗi lần triển khai phải có ít nhất hai người phê duyệt pull request.",
+          "similarity": 0.8182775974273682,
+          "document_title": "orchid_operations_runbook.md",
+          "char_start": 800,
+          "char_end": 1429,
+          "rerank_score": null
+        },
+        {
+          "source_index": 4,
+          "document_id": "10fbe116-d69d-4a93-a3fc-a3c5afd4f102",
+          "chunk_id": "a30dbad0-18d6-4c02-b853-e3063f3539d9",
+          "chunk_index": 0,
+          "content": "# Quy trình vận hành hệ thống Orchid\n\n## 1. Sao lưu dữ liệu\nCơ sở dữ liệu chính của Orchid được sao lưu toàn phần lúc 1 giờ 30 sáng mỗi ngày và sao lưu gia tăng mỗi 15 phút. Bản sao lưu toàn phần được giữ trong 35 ngày; bản sao lưu gia tăng được giữ trong 7 ngày. Bản sao lưu được lưu tại hai vùng: Hà Nội (chính) và Singapore (dự phòng).\n\n## 2. Mục tiêu khôi phục\nMục tiêu thời gian khôi phục (RTO) của Orchid là 4 giờ. Mục tiêu điểm khôi phục (RPO) là 15 phút. Diễn tập khôi phục thảm họa được thực hiện mỗi quý một lần, vào thứ Bảy tuần thứ hai của tháng đầu quý.\n\n## 3. Phân loại sự cố\nSự cố mức SEV1 là khi toàn bộ hệ thống Orchid ngừng hoạt động hoặc dữ liệu khách hàng có nguy cơ bị lộ; kỹ sư trực phải phản hồi trong 10 phút. Sự cố mức SEV2 là khi một chức năng chính bị suy giảm; thời gian phản hồi là 30 phút. Sự cố mức SEV3 là lỗi không ảnh hưởng đến luồng nghiệp vụ chính và được xử lý trong giờ hành chính.\n\n## 4. Trực vận hành\nLịch trực vận hành luân phiên theo tuần, bắt đầu lúc 10 giờ",
+          "similarity": 0.7885157718043655,
+          "document_title": "orchid_operations_runbook.md",
+          "char_start": 0,
+          "char_end": 1000,
+          "rerank_score": null
+        },
+        {
+          "source_index": 5,
+          "document_id": "8f88b9a4-926f-43f0-b2fe-3d27b0d07ee6",
+          "chunk_id": "8601eab2-85f9-4944-b791-55905c8c4b18",
+          "chunk_index": 2,
+          "content": ". Khi mất thiết bị, nhân viên phải báo cho bộ phận IT trong vòng 24 giờ qua kênh #it-helpdesk.\n\n## 6. Đào tạo\nMỗi nhân viên có ngân sách đào tạo 8.000.000 đồng mỗi năm cho khóa học hoặc chứng chỉ liên quan đến công việc. Khoản chi trên 3.000.000 đồng cần được giám đốc khối phê duyệt trước khi đăng ký.",
+          "similarity": 0.7835934420116668,
+          "document_title": "lumora_hr_handbook.md",
+          "char_start": 1600,
+          "char_end": 1902,
+          "rerank_score": null
+        }
+      ],
+      "conversation_id": "f3aedc81-8f29-4fa8-a96f-4981541e7f08",
+      "model_name": "qwen3:1.7b",
+      "detail": null,
+      "retrieval_hit": null,
+      "score": {
+        "outcome": "answer",
+        "cited": [
+          2
+        ],
+        "correct": true,
+        "citation_indices_valid": true,
+        "evidence_in_cited_source": true,
+        "facts_in_cited_source": true,
+        "grounded": true,
+        "unsupported_numbers": []
+      }
+    },
+    {
+      "id": "q06",
+      "mode": "stream",
+      "answerable": true,
+      "status": 200,
+      "ttft_s": 0.55,
+      "total_s": 4.28,
+      "events": [
+        "retrieval_started",
+        "retrieval_completed",
+        "model_routed",
+        "generation_started",
+        "token",
+        "answer_completed"
+      ],
+      "answer": "Khi mất thiết bị, nhân viên phải báo cho bộ phận IT trong vòng 24 giờ [Source 1].",
+      "sources": [
+        {
+          "source_index": 1,
+          "document_id": "8f88b9a4-926f-43f0-b2fe-3d27b0d07ee6",
+          "chunk_id": "8601eab2-85f9-4944-b791-55905c8c4b18",
+          "chunk_index": 2,
+          "content": ". Khi mất thiết bị, nhân viên phải báo cho bộ phận IT trong vòng 24 giờ qua kênh #it-helpdesk.\n\n## 6. Đào tạo\nMỗi nhân viên có ngân sách đào tạo 8.000.000 đồng mỗi năm cho khóa học hoặc chứng chỉ liên quan đến công việc. Khoản chi trên 3.000.000 đồng cần được giám đốc khối phê duyệt trước khi đăng ký.",
+          "similarity": 0.906695377028546,
+          "document_title": "lumora_hr_handbook.md",
+          "char_start": 1600,
+          "char_end": 1902,
+          "rerank_score": null
+        },
+        {
+          "source_index": 2,
+          "document_id": "8f88b9a4-926f-43f0-b2fe-3d27b0d07ee6",
+          "chunk_id": "4d5cb161-e33d-4e25-8efb-c080f3cceb51",
+          "chunk_index": 1,
+          "content": "xa tối đa 2 ngày mỗi tuần, với điều kiện đăng ký trên HRM Orchid trước 17 giờ của ngày làm việc liền trước. Ngày thứ Ba là ngày làm việc tại văn phòng bắt buộc cho toàn công ty. Khi làm việc từ xa, nhân viên phải trực tuyến trên Lumora Chat trong khung giờ cốt lõi từ 9 giờ 30 đến 16 giờ.\n\n## 4. Lương và phúc lợi\nLương được chi trả vào ngày 5 hằng tháng; nếu ngày 5 rơi vào cuối tuần hoặc ngày lễ thì chi trả vào ngày làm việc liền trước. Mỗi nhân viên chính thức nhận phụ cấp ăn trưa 1.200.000 đồng mỗi tháng. Gói khám sức khỏe định kỳ được tổ chức một lần mỗi năm vào tháng 9 tại phòng khám đối tác An Tâm.\n\n## 5. Thiết bị làm việc\nNhân viên khối kỹ thuật được cấp máy tính xách tay có cấu hình tối thiểu 32 GB RAM; các khối khác được cấp máy 16 GB RAM. Thiết bị được thay mới sau mỗi chu kỳ 3 năm. Khi mất thiết bị, nhân viên phải báo cho bộ phận IT trong vòng 24 giờ qua kênh #it-helpdesk.\n\n## 6. Đào tạo\nMỗi nhân viên có ngân sách đào tạo 8.000.000 đồng mỗi năm cho khóa học hoặc chứng chỉ liên",
+          "similarity": 0.8752614855766296,
+          "document_title": "lumora_hr_handbook.md",
+          "char_start": 800,
+          "char_end": 1800,
+          "rerank_score": null
+        },
+        {
+          "source_index": 3,
+          "document_id": "10fbe116-d69d-4a93-a3fc-a3c5afd4f102",
+          "chunk_id": "d94b86bf-5316-45b4-961c-e52c519390f2",
+          "chunk_index": 1,
+          "content": "hản hồi là 30 phút. Sự cố mức SEV3 là lỗi không ảnh hưởng đến luồng nghiệp vụ chính và được xử lý trong giờ hành chính.\n\n## 4. Trực vận hành\nLịch trực vận hành luân phiên theo tuần, bắt đầu lúc 10 giờ sáng thứ Hai. Mỗi ca trực gồm một kỹ sư chính và một kỹ sư dự phòng. Kỹ sư trực nhận phụ cấp 500.000 đồng cho mỗi ngày trực ngoài giờ hành chính.\n\n## 5. Triển khai phần mềm\nViệc triển khai lên môi trường production chỉ được thực hiện từ thứ Hai đến thứ Năm, trước 15 giờ. Không triển khai vào thứ Sáu, cuối tuần và ngày lễ, trừ bản vá khẩn cấp cho sự cố SEV1. Mỗi lần triển khai phải có ít nhất hai người phê duyệt pull request.",
+          "similarity": 0.8364084362983704,
+          "document_title": "orchid_operations_runbook.md",
+          "char_start": 800,
+          "char_end": 1429,
+          "rerank_score": null
+        },
+        {
+          "source_index": 4,
+          "document_id": "10fbe116-d69d-4a93-a3fc-a3c5afd4f102",
+          "chunk_id": "a30dbad0-18d6-4c02-b853-e3063f3539d9",
+          "chunk_index": 0,
+          "content": "# Quy trình vận hành hệ thống Orchid\n\n## 1. Sao lưu dữ liệu\nCơ sở dữ liệu chính của Orchid được sao lưu toàn phần lúc 1 giờ 30 sáng mỗi ngày và sao lưu gia tăng mỗi 15 phút. Bản sao lưu toàn phần được giữ trong 35 ngày; bản sao lưu gia tăng được giữ trong 7 ngày. Bản sao lưu được lưu tại hai vùng: Hà Nội (chính) và Singapore (dự phòng).\n\n## 2. Mục tiêu khôi phục\nMục tiêu thời gian khôi phục (RTO) của Orchid là 4 giờ. Mục tiêu điểm khôi phục (RPO) là 15 phút. Diễn tập khôi phục thảm họa được thực hiện mỗi quý một lần, vào thứ Bảy tuần thứ hai của tháng đầu quý.\n\n## 3. Phân loại sự cố\nSự cố mức SEV1 là khi toàn bộ hệ thống Orchid ngừng hoạt động hoặc dữ liệu khách hàng có nguy cơ bị lộ; kỹ sư trực phải phản hồi trong 10 phút. Sự cố mức SEV2 là khi một chức năng chính bị suy giảm; thời gian phản hồi là 30 phút. Sự cố mức SEV3 là lỗi không ảnh hưởng đến luồng nghiệp vụ chính và được xử lý trong giờ hành chính.\n\n## 4. Trực vận hành\nLịch trực vận hành luân phiên theo tuần, bắt đầu lúc 10 giờ",
+          "similarity": 0.8340185482479932,
+          "document_title": "orchid_operations_runbook.md",
+          "char_start": 0,
+          "char_end": 1000,
+          "rerank_score": null
+        },
+        {
+          "source_index": 5,
+          "document_id": "8f88b9a4-926f-43f0-b2fe-3d27b0d07ee6",
+          "chunk_id": "2571d457-6a41-48e4-86c0-c2985f5bd4a2",
+          "chunk_index": 0,
+          "content": "# Sổ tay nhân sự Lumora 2026\n\n## 1. Thời gian thử việc\nNhân viên mới tại Lumora có thời gian thử việc là 45 ngày đối với vị trí chuyên viên và 60 ngày đối với vị trí quản lý. Trong thời gian thử việc, nhân viên được hưởng 90% lương chính thức. Kết quả thử việc được trưởng bộ phận đánh giá bằng văn bản chậm nhất 3 ngày làm việc trước khi kết thúc thử việc.\n\n## 2. Nghỉ phép năm\nNhân viên chính thức được hưởng 18 ngày nghỉ phép có lương mỗi năm. Sau mỗi 5 năm làm việc liên tục, nhân viên được cộng thêm 2 ngày phép. Số ngày phép chưa dùng hết trong năm được chuyển sang năm sau tối đa 5 ngày và phải sử dụng trước ngày 31 tháng 3. Đơn xin nghỉ phải gửi qua hệ thống HRM Orchid trước ít nhất 7 ngày làm việc, trừ trường hợp khẩn cấp.\n\n## 3. Làm việc từ xa\nNhân viên đã qua thử việc được làm việc từ xa tối đa 2 ngày mỗi tuần, với điều kiện đăng ký trên HRM Orchid trước 17 giờ của ngày làm việc liền trước. Ngày thứ Ba là ngày làm việc tại văn phòng bắt buộc cho toàn công ty. Khi làm việc từ xa, nh",
+          "similarity": 0.8270940780639648,
+          "document_title": "lumora_hr_handbook.md",
+          "char_start": 0,
+          "char_end": 1000,
+          "rerank_score": null
+        }
+      ],
+      "conversation_id": "7295c69a-9511-48eb-9f7a-59746c46f8d2",
+      "message_id": "af7c5cc7-0d19-452d-91bc-c212434dbe0d",
+      "model_name": "qwen3:1.7b",
+      "error": null,
+      "raw_answer": "Khi mất thiết bị, nhân viên phải báo cho bộ phận IT trong vòng 24 giờ [Source 1].",
+      "retrieval_hit": true,
+      "score": {
+        "outcome": "answer",
+        "cited": [
+          1
+        ],
+        "correct": true,
+        "citation_indices_valid": true,
+        "evidence_in_cited_source": true,
+        "facts_in_cited_source": true,
+        "grounded": true,
+        "unsupported_numbers": []
+      }
+    },
+    {
+      "id": "q06",
+      "mode": "ask",
+      "answerable": true,
+      "status": 200,
+      "total_s": 4.08,
+      "answer": "Khi mất thiết bị, nhân viên phải báo cho bộ phận IT trong vòng 24 giờ [Source 1].",
+      "sources": [
+        {
+          "source_index": 1,
+          "document_id": "8f88b9a4-926f-43f0-b2fe-3d27b0d07ee6",
+          "chunk_id": "8601eab2-85f9-4944-b791-55905c8c4b18",
+          "chunk_index": 2,
+          "content": ". Khi mất thiết bị, nhân viên phải báo cho bộ phận IT trong vòng 24 giờ qua kênh #it-helpdesk.\n\n## 6. Đào tạo\nMỗi nhân viên có ngân sách đào tạo 8.000.000 đồng mỗi năm cho khóa học hoặc chứng chỉ liên quan đến công việc. Khoản chi trên 3.000.000 đồng cần được giám đốc khối phê duyệt trước khi đăng ký.",
+          "similarity": 0.906695377028546,
+          "document_title": "lumora_hr_handbook.md",
+          "char_start": 1600,
+          "char_end": 1902,
+          "rerank_score": null
+        },
+        {
+          "source_index": 2,
+          "document_id": "8f88b9a4-926f-43f0-b2fe-3d27b0d07ee6",
+          "chunk_id": "4d5cb161-e33d-4e25-8efb-c080f3cceb51",
+          "chunk_index": 1,
+          "content": "xa tối đa 2 ngày mỗi tuần, với điều kiện đăng ký trên HRM Orchid trước 17 giờ của ngày làm việc liền trước. Ngày thứ Ba là ngày làm việc tại văn phòng bắt buộc cho toàn công ty. Khi làm việc từ xa, nhân viên phải trực tuyến trên Lumora Chat trong khung giờ cốt lõi từ 9 giờ 30 đến 16 giờ.\n\n## 4. Lương và phúc lợi\nLương được chi trả vào ngày 5 hằng tháng; nếu ngày 5 rơi vào cuối tuần hoặc ngày lễ thì chi trả vào ngày làm việc liền trước. Mỗi nhân viên chính thức nhận phụ cấp ăn trưa 1.200.000 đồng mỗi tháng. Gói khám sức khỏe định kỳ được tổ chức một lần mỗi năm vào tháng 9 tại phòng khám đối tác An Tâm.\n\n## 5. Thiết bị làm việc\nNhân viên khối kỹ thuật được cấp máy tính xách tay có cấu hình tối thiểu 32 GB RAM; các khối khác được cấp máy 16 GB RAM. Thiết bị được thay mới sau mỗi chu kỳ 3 năm. Khi mất thiết bị, nhân viên phải báo cho bộ phận IT trong vòng 24 giờ qua kênh #it-helpdesk.\n\n## 6. Đào tạo\nMỗi nhân viên có ngân sách đào tạo 8.000.000 đồng mỗi năm cho khóa học hoặc chứng chỉ liên",
+          "similarity": 0.8752614855766296,
+          "document_title": "lumora_hr_handbook.md",
+          "char_start": 800,
+          "char_end": 1800,
+          "rerank_score": null
+        },
+        {
+          "source_index": 3,
+          "document_id": "10fbe116-d69d-4a93-a3fc-a3c5afd4f102",
+          "chunk_id": "d94b86bf-5316-45b4-961c-e52c519390f2",
+          "chunk_index": 1,
+          "content": "hản hồi là 30 phút. Sự cố mức SEV3 là lỗi không ảnh hưởng đến luồng nghiệp vụ chính và được xử lý trong giờ hành chính.\n\n## 4. Trực vận hành\nLịch trực vận hành luân phiên theo tuần, bắt đầu lúc 10 giờ sáng thứ Hai. Mỗi ca trực gồm một kỹ sư chính và một kỹ sư dự phòng. Kỹ sư trực nhận phụ cấp 500.000 đồng cho mỗi ngày trực ngoài giờ hành chính.\n\n## 5. Triển khai phần mềm\nViệc triển khai lên môi trường production chỉ được thực hiện từ thứ Hai đến thứ Năm, trước 15 giờ. Không triển khai vào thứ Sáu, cuối tuần và ngày lễ, trừ bản vá khẩn cấp cho sự cố SEV1. Mỗi lần triển khai phải có ít nhất hai người phê duyệt pull request.",
+          "similarity": 0.8364084362983704,
+          "document_title": "orchid_operations_runbook.md",
+          "char_start": 800,
+          "char_end": 1429,
+          "rerank_score": null
+        },
+        {
+          "source_index": 4,
+          "document_id": "10fbe116-d69d-4a93-a3fc-a3c5afd4f102",
+          "chunk_id": "a30dbad0-18d6-4c02-b853-e3063f3539d9",
+          "chunk_index": 0,
+          "content": "# Quy trình vận hành hệ thống Orchid\n\n## 1. Sao lưu dữ liệu\nCơ sở dữ liệu chính của Orchid được sao lưu toàn phần lúc 1 giờ 30 sáng mỗi ngày và sao lưu gia tăng mỗi 15 phút. Bản sao lưu toàn phần được giữ trong 35 ngày; bản sao lưu gia tăng được giữ trong 7 ngày. Bản sao lưu được lưu tại hai vùng: Hà Nội (chính) và Singapore (dự phòng).\n\n## 2. Mục tiêu khôi phục\nMục tiêu thời gian khôi phục (RTO) của Orchid là 4 giờ. Mục tiêu điểm khôi phục (RPO) là 15 phút. Diễn tập khôi phục thảm họa được thực hiện mỗi quý một lần, vào thứ Bảy tuần thứ hai của tháng đầu quý.\n\n## 3. Phân loại sự cố\nSự cố mức SEV1 là khi toàn bộ hệ thống Orchid ngừng hoạt động hoặc dữ liệu khách hàng có nguy cơ bị lộ; kỹ sư trực phải phản hồi trong 10 phút. Sự cố mức SEV2 là khi một chức năng chính bị suy giảm; thời gian phản hồi là 30 phút. Sự cố mức SEV3 là lỗi không ảnh hưởng đến luồng nghiệp vụ chính và được xử lý trong giờ hành chính.\n\n## 4. Trực vận hành\nLịch trực vận hành luân phiên theo tuần, bắt đầu lúc 10 giờ",
+          "similarity": 0.8340185482479932,
+          "document_title": "orchid_operations_runbook.md",
+          "char_start": 0,
+          "char_end": 1000,
+          "rerank_score": null
+        },
+        {
+          "source_index": 5,
+          "document_id": "8f88b9a4-926f-43f0-b2fe-3d27b0d07ee6",
+          "chunk_id": "2571d457-6a41-48e4-86c0-c2985f5bd4a2",
+          "chunk_index": 0,
+          "content": "# Sổ tay nhân sự Lumora 2026\n\n## 1. Thời gian thử việc\nNhân viên mới tại Lumora có thời gian thử việc là 45 ngày đối với vị trí chuyên viên và 60 ngày đối với vị trí quản lý. Trong thời gian thử việc, nhân viên được hưởng 90% lương chính thức. Kết quả thử việc được trưởng bộ phận đánh giá bằng văn bản chậm nhất 3 ngày làm việc trước khi kết thúc thử việc.\n\n## 2. Nghỉ phép năm\nNhân viên chính thức được hưởng 18 ngày nghỉ phép có lương mỗi năm. Sau mỗi 5 năm làm việc liên tục, nhân viên được cộng thêm 2 ngày phép. Số ngày phép chưa dùng hết trong năm được chuyển sang năm sau tối đa 5 ngày và phải sử dụng trước ngày 31 tháng 3. Đơn xin nghỉ phải gửi qua hệ thống HRM Orchid trước ít nhất 7 ngày làm việc, trừ trường hợp khẩn cấp.\n\n## 3. Làm việc từ xa\nNhân viên đã qua thử việc được làm việc từ xa tối đa 2 ngày mỗi tuần, với điều kiện đăng ký trên HRM Orchid trước 17 giờ của ngày làm việc liền trước. Ngày thứ Ba là ngày làm việc tại văn phòng bắt buộc cho toàn công ty. Khi làm việc từ xa, nh",
+          "similarity": 0.8270940780639648,
+          "document_title": "lumora_hr_handbook.md",
+          "char_start": 0,
+          "char_end": 1000,
+          "rerank_score": null
+        }
+      ],
+      "conversation_id": "04eab1ec-56c9-4915-86d6-a179753d0f7b",
+      "model_name": "qwen3:1.7b",
+      "detail": null,
+      "retrieval_hit": null,
+      "score": {
+        "outcome": "answer",
+        "cited": [
+          1
+        ],
+        "correct": true,
+        "citation_indices_valid": true,
+        "evidence_in_cited_source": true,
+        "facts_in_cited_source": true,
+        "grounded": true,
+        "unsupported_numbers": []
+      }
+    },
+    {
+      "id": "q07",
+      "mode": "stream",
+      "answerable": true,
+      "status": 200,
+      "ttft_s": 2.94,
+      "total_s": 7.27,
+      "events": [
+        "retrieval_started",
+        "retrieval_completed",
+        "model_routed",
+        "generation_started",
+        "token",
+        "answer_completed"
+      ],
+      "answer": "Mục tiêu thời gian khôi phục (RTO) của hệ thống Orchid là 4 giờ. [Source 2]",
+      "sources": [
+        {
+          "source_index": 1,
+          "document_id": "10fbe116-d69d-4a93-a3fc-a3c5afd4f102",
+          "chunk_id": "a30dbad0-18d6-4c02-b853-e3063f3539d9",
+          "chunk_index": 0,
+          "content": "# Quy trình vận hành hệ thống Orchid\n\n## 1. Sao lưu dữ liệu\nCơ sở dữ liệu chính của Orchid được sao lưu toàn phần lúc 1 giờ 30 sáng mỗi ngày và sao lưu gia tăng mỗi 15 phút. Bản sao lưu toàn phần được giữ trong 35 ngày; bản sao lưu gia tăng được giữ trong 7 ngày. Bản sao lưu được lưu tại hai vùng: Hà Nội (chính) và Singapore (dự phòng).\n\n## 2. Mục tiêu khôi phục\nMục tiêu thời gian khôi phục (RTO) của Orchid là 4 giờ. Mục tiêu điểm khôi phục (RPO) là 15 phút. Diễn tập khôi phục thảm họa được thực hiện mỗi quý một lần, vào thứ Bảy tuần thứ hai của tháng đầu quý.\n\n## 3. Phân loại sự cố\nSự cố mức SEV1 là khi toàn bộ hệ thống Orchid ngừng hoạt động hoặc dữ liệu khách hàng có nguy cơ bị lộ; kỹ sư trực phải phản hồi trong 10 phút. Sự cố mức SEV2 là khi một chức năng chính bị suy giảm; thời gian phản hồi là 30 phút. Sự cố mức SEV3 là lỗi không ảnh hưởng đến luồng nghiệp vụ chính và được xử lý trong giờ hành chính.\n\n## 4. Trực vận hành\nLịch trực vận hành luân phiên theo tuần, bắt đầu lúc 10 giờ",
+          "similarity": 0.9079460611407748,
+          "document_title": "orchid_operations_runbook.md",
+          "char_start": 0,
+          "char_end": 1000,
+          "rerank_score": null
+        },
+        {
+          "source_index": 2,
+          "document_id": "8f88b9a4-926f-43f0-b2fe-3d27b0d07ee6",
+          "chunk_id": "4d5cb161-e33d-4e25-8efb-c080f3cceb51",
+          "chunk_index": 1,
+          "content": "xa tối đa 2 ngày mỗi tuần, với điều kiện đăng ký trên HRM Orchid trước 17 giờ của ngày làm việc liền trước. Ngày thứ Ba là ngày làm việc tại văn phòng bắt buộc cho toàn công ty. Khi làm việc từ xa, nhân viên phải trực tuyến trên Lumora Chat trong khung giờ cốt lõi từ 9 giờ 30 đến 16 giờ.\n\n## 4. Lương và phúc lợi\nLương được chi trả vào ngày 5 hằng tháng; nếu ngày 5 rơi vào cuối tuần hoặc ngày lễ thì chi trả vào ngày làm việc liền trước. Mỗi nhân viên chính thức nhận phụ cấp ăn trưa 1.200.000 đồng mỗi tháng. Gói khám sức khỏe định kỳ được tổ chức một lần mỗi năm vào tháng 9 tại phòng khám đối tác An Tâm.\n\n## 5. Thiết bị làm việc\nNhân viên khối kỹ thuật được cấp máy tính xách tay có cấu hình tối thiểu 32 GB RAM; các khối khác được cấp máy 16 GB RAM. Thiết bị được thay mới sau mỗi chu kỳ 3 năm. Khi mất thiết bị, nhân viên phải báo cho bộ phận IT trong vòng 24 giờ qua kênh #it-helpdesk.\n\n## 6. Đào tạo\nMỗi nhân viên có ngân sách đào tạo 8.000.000 đồng mỗi năm cho khóa học hoặc chứng chỉ liên",
+          "similarity": 0.8674347996711731,
+          "document_title": "lumora_hr_handbook.md",
+          "char_start": 800,
+          "char_end": 1800,
+          "rerank_score": null
+        },
+        {
+          "source_index": 3,
+          "document_id": "8f88b9a4-926f-43f0-b2fe-3d27b0d07ee6",
+          "chunk_id": "2571d457-6a41-48e4-86c0-c2985f5bd4a2",
+          "chunk_index": 0,
+          "content": "# Sổ tay nhân sự Lumora 2026\n\n## 1. Thời gian thử việc\nNhân viên mới tại Lumora có thời gian thử việc là 45 ngày đối với vị trí chuyên viên và 60 ngày đối với vị trí quản lý. Trong thời gian thử việc, nhân viên được hưởng 90% lương chính thức. Kết quả thử việc được trưởng bộ phận đánh giá bằng văn bản chậm nhất 3 ngày làm việc trước khi kết thúc thử việc.\n\n## 2. Nghỉ phép năm\nNhân viên chính thức được hưởng 18 ngày nghỉ phép có lương mỗi năm. Sau mỗi 5 năm làm việc liên tục, nhân viên được cộng thêm 2 ngày phép. Số ngày phép chưa dùng hết trong năm được chuyển sang năm sau tối đa 5 ngày và phải sử dụng trước ngày 31 tháng 3. Đơn xin nghỉ phải gửi qua hệ thống HRM Orchid trước ít nhất 7 ngày làm việc, trừ trường hợp khẩn cấp.\n\n## 3. Làm việc từ xa\nNhân viên đã qua thử việc được làm việc từ xa tối đa 2 ngày mỗi tuần, với điều kiện đăng ký trên HRM Orchid trước 17 giờ của ngày làm việc liền trước. Ngày thứ Ba là ngày làm việc tại văn phòng bắt buộc cho toàn công ty. Khi làm việc từ xa, nh",
+          "similarity": 0.8387340307235718,
+          "document_title": "lumora_hr_handbook.md",
+          "char_start": 0,
+          "char_end": 1000,
+          "rerank_score": null
+        },
+        {
+          "source_index": 4,
+          "document_id": "8f88b9a4-926f-43f0-b2fe-3d27b0d07ee6",
+          "chunk_id": "8601eab2-85f9-4944-b791-55905c8c4b18",
+          "chunk_index": 2,
+          "content": ". Khi mất thiết bị, nhân viên phải báo cho bộ phận IT trong vòng 24 giờ qua kênh #it-helpdesk.\n\n## 6. Đào tạo\nMỗi nhân viên có ngân sách đào tạo 8.000.000 đồng mỗi năm cho khóa học hoặc chứng chỉ liên quan đến công việc. Khoản chi trên 3.000.000 đồng cần được giám đốc khối phê duyệt trước khi đăng ký.",
+          "similarity": 0.8313629828258833,
+          "document_title": "lumora_hr_handbook.md",
+          "char_start": 1600,
+          "char_end": 1902,
+          "rerank_score": null
+        },
+        {
+          "source_index": 5,
+          "document_id": "10fbe116-d69d-4a93-a3fc-a3c5afd4f102",
+          "chunk_id": "d94b86bf-5316-45b4-961c-e52c519390f2",
+          "chunk_index": 1,
+          "content": "hản hồi là 30 phút. Sự cố mức SEV3 là lỗi không ảnh hưởng đến luồng nghiệp vụ chính và được xử lý trong giờ hành chính.\n\n## 4. Trực vận hành\nLịch trực vận hành luân phiên theo tuần, bắt đầu lúc 10 giờ sáng thứ Hai. Mỗi ca trực gồm một kỹ sư chính và một kỹ sư dự phòng. Kỹ sư trực nhận phụ cấp 500.000 đồng cho mỗi ngày trực ngoài giờ hành chính.\n\n## 5. Triển khai phần mềm\nViệc triển khai lên môi trường production chỉ được thực hiện từ thứ Hai đến thứ Năm, trước 15 giờ. Không triển khai vào thứ Sáu, cuối tuần và ngày lễ, trừ bản vá khẩn cấp cho sự cố SEV1. Mỗi lần triển khai phải có ít nhất hai người phê duyệt pull request.",
+          "similarity": 0.8275896906852722,
+          "document_title": "orchid_operations_runbook.md",
+          "char_start": 800,
+          "char_end": 1429,
+          "rerank_score": null
+        }
+      ],
+      "conversation_id": "e4ae4748-3435-4618-8b7e-1f51f9cf282d",
+      "message_id": "4fc2c4b5-d3f6-46e2-bdaa-05ead6c1ec4d",
+      "model_name": "qwen3:1.7b",
+      "error": null,
+      "raw_answer": "Mục tiêu thời gian khôi phục (RTO) của hệ thống Orchid là 4 giờ. [Source 2]",
+      "retrieval_hit": true,
+      "score": {
+        "outcome": "answer",
+        "cited": [
+          2
+        ],
+        "correct": true,
+        "citation_indices_valid": true,
+        "evidence_in_cited_source": false,
+        "facts_in_cited_source": true,
+        "grounded": true,
+        "unsupported_numbers": []
+      }
+    },
+    {
+      "id": "q07",
+      "mode": "ask",
+      "answerable": true,
+      "status": 200,
+      "total_s": 4.2,
+      "answer": "Mục tiêu thời gian khôi phục RTO của hệ thống Orchid là 4 giờ. [Source 2]",
+      "sources": [
+        {
+          "source_index": 1,
+          "document_id": "10fbe116-d69d-4a93-a3fc-a3c5afd4f102",
+          "chunk_id": "a30dbad0-18d6-4c02-b853-e3063f3539d9",
+          "chunk_index": 0,
+          "content": "# Quy trình vận hành hệ thống Orchid\n\n## 1. Sao lưu dữ liệu\nCơ sở dữ liệu chính của Orchid được sao lưu toàn phần lúc 1 giờ 30 sáng mỗi ngày và sao lưu gia tăng mỗi 15 phút. Bản sao lưu toàn phần được giữ trong 35 ngày; bản sao lưu gia tăng được giữ trong 7 ngày. Bản sao lưu được lưu tại hai vùng: Hà Nội (chính) và Singapore (dự phòng).\n\n## 2. Mục tiêu khôi phục\nMục tiêu thời gian khôi phục (RTO) của Orchid là 4 giờ. Mục tiêu điểm khôi phục (RPO) là 15 phút. Diễn tập khôi phục thảm họa được thực hiện mỗi quý một lần, vào thứ Bảy tuần thứ hai của tháng đầu quý.\n\n## 3. Phân loại sự cố\nSự cố mức SEV1 là khi toàn bộ hệ thống Orchid ngừng hoạt động hoặc dữ liệu khách hàng có nguy cơ bị lộ; kỹ sư trực phải phản hồi trong 10 phút. Sự cố mức SEV2 là khi một chức năng chính bị suy giảm; thời gian phản hồi là 30 phút. Sự cố mức SEV3 là lỗi không ảnh hưởng đến luồng nghiệp vụ chính và được xử lý trong giờ hành chính.\n\n## 4. Trực vận hành\nLịch trực vận hành luân phiên theo tuần, bắt đầu lúc 10 giờ",
+          "similarity": 0.9079460611407748,
+          "document_title": "orchid_operations_runbook.md",
+          "char_start": 0,
+          "char_end": 1000,
+          "rerank_score": null
+        },
+        {
+          "source_index": 2,
+          "document_id": "8f88b9a4-926f-43f0-b2fe-3d27b0d07ee6",
+          "chunk_id": "4d5cb161-e33d-4e25-8efb-c080f3cceb51",
+          "chunk_index": 1,
+          "content": "xa tối đa 2 ngày mỗi tuần, với điều kiện đăng ký trên HRM Orchid trước 17 giờ của ngày làm việc liền trước. Ngày thứ Ba là ngày làm việc tại văn phòng bắt buộc cho toàn công ty. Khi làm việc từ xa, nhân viên phải trực tuyến trên Lumora Chat trong khung giờ cốt lõi từ 9 giờ 30 đến 16 giờ.\n\n## 4. Lương và phúc lợi\nLương được chi trả vào ngày 5 hằng tháng; nếu ngày 5 rơi vào cuối tuần hoặc ngày lễ thì chi trả vào ngày làm việc liền trước. Mỗi nhân viên chính thức nhận phụ cấp ăn trưa 1.200.000 đồng mỗi tháng. Gói khám sức khỏe định kỳ được tổ chức một lần mỗi năm vào tháng 9 tại phòng khám đối tác An Tâm.\n\n## 5. Thiết bị làm việc\nNhân viên khối kỹ thuật được cấp máy tính xách tay có cấu hình tối thiểu 32 GB RAM; các khối khác được cấp máy 16 GB RAM. Thiết bị được thay mới sau mỗi chu kỳ 3 năm. Khi mất thiết bị, nhân viên phải báo cho bộ phận IT trong vòng 24 giờ qua kênh #it-helpdesk.\n\n## 6. Đào tạo\nMỗi nhân viên có ngân sách đào tạo 8.000.000 đồng mỗi năm cho khóa học hoặc chứng chỉ liên",
+          "similarity": 0.8674347996711731,
+          "document_title": "lumora_hr_handbook.md",
+          "char_start": 800,
+          "char_end": 1800,
+          "rerank_score": null
+        },
+        {
+          "source_index": 3,
+          "document_id": "8f88b9a4-926f-43f0-b2fe-3d27b0d07ee6",
+          "chunk_id": "2571d457-6a41-48e4-86c0-c2985f5bd4a2",
+          "chunk_index": 0,
+          "content": "# Sổ tay nhân sự Lumora 2026\n\n## 1. Thời gian thử việc\nNhân viên mới tại Lumora có thời gian thử việc là 45 ngày đối với vị trí chuyên viên và 60 ngày đối với vị trí quản lý. Trong thời gian thử việc, nhân viên được hưởng 90% lương chính thức. Kết quả thử việc được trưởng bộ phận đánh giá bằng văn bản chậm nhất 3 ngày làm việc trước khi kết thúc thử việc.\n\n## 2. Nghỉ phép năm\nNhân viên chính thức được hưởng 18 ngày nghỉ phép có lương mỗi năm. Sau mỗi 5 năm làm việc liên tục, nhân viên được cộng thêm 2 ngày phép. Số ngày phép chưa dùng hết trong năm được chuyển sang năm sau tối đa 5 ngày và phải sử dụng trước ngày 31 tháng 3. Đơn xin nghỉ phải gửi qua hệ thống HRM Orchid trước ít nhất 7 ngày làm việc, trừ trường hợp khẩn cấp.\n\n## 3. Làm việc từ xa\nNhân viên đã qua thử việc được làm việc từ xa tối đa 2 ngày mỗi tuần, với điều kiện đăng ký trên HRM Orchid trước 17 giờ của ngày làm việc liền trước. Ngày thứ Ba là ngày làm việc tại văn phòng bắt buộc cho toàn công ty. Khi làm việc từ xa, nh",
+          "similarity": 0.8387340307235718,
+          "document_title": "lumora_hr_handbook.md",
+          "char_start": 0,
+          "char_end": 1000,
+          "rerank_score": null
+        },
+        {
+          "source_index": 4,
+          "document_id": "8f88b9a4-926f-43f0-b2fe-3d27b0d07ee6",
+          "chunk_id": "8601eab2-85f9-4944-b791-55905c8c4b18",
+          "chunk_index": 2,
+          "content": ". Khi mất thiết bị, nhân viên phải báo cho bộ phận IT trong vòng 24 giờ qua kênh #it-helpdesk.\n\n## 6. Đào tạo\nMỗi nhân viên có ngân sách đào tạo 8.000.000 đồng mỗi năm cho khóa học hoặc chứng chỉ liên quan đến công việc. Khoản chi trên 3.000.000 đồng cần được giám đốc khối phê duyệt trước khi đăng ký.",
+          "similarity": 0.8313629828258833,
+          "document_title": "lumora_hr_handbook.md",
+          "char_start": 1600,
+          "char_end": 1902,
+          "rerank_score": null
+        },
+        {
+          "source_index": 5,
+          "document_id": "10fbe116-d69d-4a93-a3fc-a3c5afd4f102",
+          "chunk_id": "d94b86bf-5316-45b4-961c-e52c519390f2",
+          "chunk_index": 1,
+          "content": "hản hồi là 30 phút. Sự cố mức SEV3 là lỗi không ảnh hưởng đến luồng nghiệp vụ chính và được xử lý trong giờ hành chính.\n\n## 4. Trực vận hành\nLịch trực vận hành luân phiên theo tuần, bắt đầu lúc 10 giờ sáng thứ Hai. Mỗi ca trực gồm một kỹ sư chính và một kỹ sư dự phòng. Kỹ sư trực nhận phụ cấp 500.000 đồng cho mỗi ngày trực ngoài giờ hành chính.\n\n## 5. Triển khai phần mềm\nViệc triển khai lên môi trường production chỉ được thực hiện từ thứ Hai đến thứ Năm, trước 15 giờ. Không triển khai vào thứ Sáu, cuối tuần và ngày lễ, trừ bản vá khẩn cấp cho sự cố SEV1. Mỗi lần triển khai phải có ít nhất hai người phê duyệt pull request.",
+          "similarity": 0.8275896906852722,
+          "document_title": "orchid_operations_runbook.md",
+          "char_start": 800,
+          "char_end": 1429,
+          "rerank_score": null
+        }
+      ],
+      "conversation_id": "d609b999-51c5-44ac-a28f-1818ba335014",
+      "model_name": "qwen3:1.7b",
+      "detail": null,
+      "retrieval_hit": null,
+      "score": {
+        "outcome": "answer",
+        "cited": [
+          2
+        ],
+        "correct": true,
+        "citation_indices_valid": true,
+        "evidence_in_cited_source": false,
+        "facts_in_cited_source": true,
+        "grounded": true,
+        "unsupported_numbers": []
+      }
+    },
+    {
+      "id": "q08",
+      "mode": "stream",
+      "answerable": true,
+      "status": 200,
+      "ttft_s": 0.53,
+      "total_s": 7.52,
+      "events": [
+        "retrieval_started",
+        "retrieval_completed",
+        "model_routed",
+        "generation_started",
+        "token",
+        "answer_completed"
+      ],
+      "answer": "Sự cố mức SEV1 là khi toàn bộ hệ thống Orchid ngừng hoạt động hoặc dữ liệu khách hàng có nguy cơ bị lộ; kỹ sư trực phải phản hồi trong 10 phút. [Source 2]",
+      "sources": [
+        {
+          "source_index": 1,
+          "document_id": "10fbe116-d69d-4a93-a3fc-a3c5afd4f102",
+          "chunk_id": "d94b86bf-5316-45b4-961c-e52c519390f2",
+          "chunk_index": 1,
+          "content": "hản hồi là 30 phút. Sự cố mức SEV3 là lỗi không ảnh hưởng đến luồng nghiệp vụ chính và được xử lý trong giờ hành chính.\n\n## 4. Trực vận hành\nLịch trực vận hành luân phiên theo tuần, bắt đầu lúc 10 giờ sáng thứ Hai. Mỗi ca trực gồm một kỹ sư chính và một kỹ sư dự phòng. Kỹ sư trực nhận phụ cấp 500.000 đồng cho mỗi ngày trực ngoài giờ hành chính.\n\n## 5. Triển khai phần mềm\nViệc triển khai lên môi trường production chỉ được thực hiện từ thứ Hai đến thứ Năm, trước 15 giờ. Không triển khai vào thứ Sáu, cuối tuần và ngày lễ, trừ bản vá khẩn cấp cho sự cố SEV1. Mỗi lần triển khai phải có ít nhất hai người phê duyệt pull request.",
+          "similarity": 0.9033869024053992,
+          "document_title": "orchid_operations_runbook.md",
+          "char_start": 800,
+          "char_end": 1429,
+          "rerank_score": null
+        },
+        {
+          "source_index": 2,
+          "document_id": "10fbe116-d69d-4a93-a3fc-a3c5afd4f102",
+          "chunk_id": "a30dbad0-18d6-4c02-b853-e3063f3539d9",
+          "chunk_index": 0,
+          "content": "# Quy trình vận hành hệ thống Orchid\n\n## 1. Sao lưu dữ liệu\nCơ sở dữ liệu chính của Orchid được sao lưu toàn phần lúc 1 giờ 30 sáng mỗi ngày và sao lưu gia tăng mỗi 15 phút. Bản sao lưu toàn phần được giữ trong 35 ngày; bản sao lưu gia tăng được giữ trong 7 ngày. Bản sao lưu được lưu tại hai vùng: Hà Nội (chính) và Singapore (dự phòng).\n\n## 2. Mục tiêu khôi phục\nMục tiêu thời gian khôi phục (RTO) của Orchid là 4 giờ. Mục tiêu điểm khôi phục (RPO) là 15 phút. Diễn tập khôi phục thảm họa được thực hiện mỗi quý một lần, vào thứ Bảy tuần thứ hai của tháng đầu quý.\n\n## 3. Phân loại sự cố\nSự cố mức SEV1 là khi toàn bộ hệ thống Orchid ngừng hoạt động hoặc dữ liệu khách hàng có nguy cơ bị lộ; kỹ sư trực phải phản hồi trong 10 phút. Sự cố mức SEV2 là khi một chức năng chính bị suy giảm; thời gian phản hồi là 30 phút. Sự cố mức SEV3 là lỗi không ảnh hưởng đến luồng nghiệp vụ chính và được xử lý trong giờ hành chính.\n\n## 4. Trực vận hành\nLịch trực vận hành luân phiên theo tuần, bắt đầu lúc 10 giờ",
+          "similarity": 0.8755603133296219,
+          "document_title": "orchid_operations_runbook.md",
+          "char_start": 0,
+          "char_end": 1000,
+          "rerank_score": null
+        },
+        {
+          "source_index": 3,
+          "document_id": "8f88b9a4-926f-43f0-b2fe-3d27b0d07ee6",
+          "chunk_id": "4d5cb161-e33d-4e25-8efb-c080f3cceb51",
+          "chunk_index": 1,
+          "content": "xa tối đa 2 ngày mỗi tuần, với điều kiện đăng ký trên HRM Orchid trước 17 giờ của ngày làm việc liền trước. Ngày thứ Ba là ngày làm việc tại văn phòng bắt buộc cho toàn công ty. Khi làm việc từ xa, nhân viên phải trực tuyến trên Lumora Chat trong khung giờ cốt lõi từ 9 giờ 30 đến 16 giờ.\n\n## 4. Lương và phúc lợi\nLương được chi trả vào ngày 5 hằng tháng; nếu ngày 5 rơi vào cuối tuần hoặc ngày lễ thì chi trả vào ngày làm việc liền trước. Mỗi nhân viên chính thức nhận phụ cấp ăn trưa 1.200.000 đồng mỗi tháng. Gói khám sức khỏe định kỳ được tổ chức một lần mỗi năm vào tháng 9 tại phòng khám đối tác An Tâm.\n\n## 5. Thiết bị làm việc\nNhân viên khối kỹ thuật được cấp máy tính xách tay có cấu hình tối thiểu 32 GB RAM; các khối khác được cấp máy 16 GB RAM. Thiết bị được thay mới sau mỗi chu kỳ 3 năm. Khi mất thiết bị, nhân viên phải báo cho bộ phận IT trong vòng 24 giờ qua kênh #it-helpdesk.\n\n## 6. Đào tạo\nMỗi nhân viên có ngân sách đào tạo 8.000.000 đồng mỗi năm cho khóa học hoặc chứng chỉ liên",
+          "similarity": 0.8335279424753317,
+          "document_title": "lumora_hr_handbook.md",
+          "char_start": 800,
+          "char_end": 1800,
+          "rerank_score": null
+        },
+        {
+          "source_index": 4,
+          "document_id": "8f88b9a4-926f-43f0-b2fe-3d27b0d07ee6",
+          "chunk_id": "8601eab2-85f9-4944-b791-55905c8c4b18",
+          "chunk_index": 2,
+          "content": ". Khi mất thiết bị, nhân viên phải báo cho bộ phận IT trong vòng 24 giờ qua kênh #it-helpdesk.\n\n## 6. Đào tạo\nMỗi nhân viên có ngân sách đào tạo 8.000.000 đồng mỗi năm cho khóa học hoặc chứng chỉ liên quan đến công việc. Khoản chi trên 3.000.000 đồng cần được giám đốc khối phê duyệt trước khi đăng ký.",
+          "similarity": 0.8332371513278124,
+          "document_title": "lumora_hr_handbook.md",
+          "char_start": 1600,
+          "char_end": 1902,
+          "rerank_score": null
+        },
+        {
+          "source_index": 5,
+          "document_id": "8f88b9a4-926f-43f0-b2fe-3d27b0d07ee6",
+          "chunk_id": "2571d457-6a41-48e4-86c0-c2985f5bd4a2",
+          "chunk_index": 0,
+          "content": "# Sổ tay nhân sự Lumora 2026\n\n## 1. Thời gian thử việc\nNhân viên mới tại Lumora có thời gian thử việc là 45 ngày đối với vị trí chuyên viên và 60 ngày đối với vị trí quản lý. Trong thời gian thử việc, nhân viên được hưởng 90% lương chính thức. Kết quả thử việc được trưởng bộ phận đánh giá bằng văn bản chậm nhất 3 ngày làm việc trước khi kết thúc thử việc.\n\n## 2. Nghỉ phép năm\nNhân viên chính thức được hưởng 18 ngày nghỉ phép có lương mỗi năm. Sau mỗi 5 năm làm việc liên tục, nhân viên được cộng thêm 2 ngày phép. Số ngày phép chưa dùng hết trong năm được chuyển sang năm sau tối đa 5 ngày và phải sử dụng trước ngày 31 tháng 3. Đơn xin nghỉ phải gửi qua hệ thống HRM Orchid trước ít nhất 7 ngày làm việc, trừ trường hợp khẩn cấp.\n\n## 3. Làm việc từ xa\nNhân viên đã qua thử việc được làm việc từ xa tối đa 2 ngày mỗi tuần, với điều kiện đăng ký trên HRM Orchid trước 17 giờ của ngày làm việc liền trước. Ngày thứ Ba là ngày làm việc tại văn phòng bắt buộc cho toàn công ty. Khi làm việc từ xa, nh",
+          "similarity": 0.8043407435011034,
+          "document_title": "lumora_hr_handbook.md",
+          "char_start": 0,
+          "char_end": 1000,
+          "rerank_score": null
+        }
+      ],
+      "conversation_id": "cc5f1bb9-e9f7-47c0-99df-411387ee2dab",
+      "message_id": "382c1281-7c96-42ca-9f72-8e73c2589f42",
+      "model_name": "qwen3:1.7b",
+      "error": null,
+      "raw_answer": "Sự cố mức SEV1 là khi toàn bộ hệ thống Orchid ngừng hoạt động hoặc dữ liệu khách hàng có nguy cơ bị lộ; kỹ sư trực phải phản hồi trong 10 phút. [Source 2]",
+      "retrieval_hit": true,
+      "score": {
+        "outcome": "answer",
+        "cited": [
+          2
+        ],
+        "correct": true,
+        "citation_indices_valid": true,
+        "evidence_in_cited_source": true,
+        "facts_in_cited_source": true,
+        "grounded": true,
+        "unsupported_numbers": []
+      }
+    },
+    {
+      "id": "q08",
+      "mode": "ask",
+      "answerable": true,
+      "status": 200,
+      "total_s": 7.47,
+      "answer": "Sự cố mức SEV1 là khi toàn bộ hệ thống Orchid ngừng hoạt động hoặc dữ liệu khách hàng có nguy cơ bị lộ; kỹ sư trực phải phản hồi trong 10 phút. [Source 2]",
+      "sources": [
+        {
+          "source_index": 1,
+          "document_id": "10fbe116-d69d-4a93-a3fc-a3c5afd4f102",
+          "chunk_id": "d94b86bf-5316-45b4-961c-e52c519390f2",
+          "chunk_index": 1,
+          "content": "hản hồi là 30 phút. Sự cố mức SEV3 là lỗi không ảnh hưởng đến luồng nghiệp vụ chính và được xử lý trong giờ hành chính.\n\n## 4. Trực vận hành\nLịch trực vận hành luân phiên theo tuần, bắt đầu lúc 10 giờ sáng thứ Hai. Mỗi ca trực gồm một kỹ sư chính và một kỹ sư dự phòng. Kỹ sư trực nhận phụ cấp 500.000 đồng cho mỗi ngày trực ngoài giờ hành chính.\n\n## 5. Triển khai phần mềm\nViệc triển khai lên môi trường production chỉ được thực hiện từ thứ Hai đến thứ Năm, trước 15 giờ. Không triển khai vào thứ Sáu, cuối tuần và ngày lễ, trừ bản vá khẩn cấp cho sự cố SEV1. Mỗi lần triển khai phải có ít nhất hai người phê duyệt pull request.",
+          "similarity": 0.9033869024053992,
+          "document_title": "orchid_operations_runbook.md",
+          "char_start": 800,
+          "char_end": 1429,
+          "rerank_score": null
+        },
+        {
+          "source_index": 2,
+          "document_id": "10fbe116-d69d-4a93-a3fc-a3c5afd4f102",
+          "chunk_id": "a30dbad0-18d6-4c02-b853-e3063f3539d9",
+          "chunk_index": 0,
+          "content": "# Quy trình vận hành hệ thống Orchid\n\n## 1. Sao lưu dữ liệu\nCơ sở dữ liệu chính của Orchid được sao lưu toàn phần lúc 1 giờ 30 sáng mỗi ngày và sao lưu gia tăng mỗi 15 phút. Bản sao lưu toàn phần được giữ trong 35 ngày; bản sao lưu gia tăng được giữ trong 7 ngày. Bản sao lưu được lưu tại hai vùng: Hà Nội (chính) và Singapore (dự phòng).\n\n## 2. Mục tiêu khôi phục\nMục tiêu thời gian khôi phục (RTO) của Orchid là 4 giờ. Mục tiêu điểm khôi phục (RPO) là 15 phút. Diễn tập khôi phục thảm họa được thực hiện mỗi quý một lần, vào thứ Bảy tuần thứ hai của tháng đầu quý.\n\n## 3. Phân loại sự cố\nSự cố mức SEV1 là khi toàn bộ hệ thống Orchid ngừng hoạt động hoặc dữ liệu khách hàng có nguy cơ bị lộ; kỹ sư trực phải phản hồi trong 10 phút. Sự cố mức SEV2 là khi một chức năng chính bị suy giảm; thời gian phản hồi là 30 phút. Sự cố mức SEV3 là lỗi không ảnh hưởng đến luồng nghiệp vụ chính và được xử lý trong giờ hành chính.\n\n## 4. Trực vận hành\nLịch trực vận hành luân phiên theo tuần, bắt đầu lúc 10 giờ",
+          "similarity": 0.8755603133296219,
+          "document_title": "orchid_operations_runbook.md",
+          "char_start": 0,
+          "char_end": 1000,
+          "rerank_score": null
+        },
+        {
+          "source_index": 3,
+          "document_id": "8f88b9a4-926f-43f0-b2fe-3d27b0d07ee6",
+          "chunk_id": "4d5cb161-e33d-4e25-8efb-c080f3cceb51",
+          "chunk_index": 1,
+          "content": "xa tối đa 2 ngày mỗi tuần, với điều kiện đăng ký trên HRM Orchid trước 17 giờ của ngày làm việc liền trước. Ngày thứ Ba là ngày làm việc tại văn phòng bắt buộc cho toàn công ty. Khi làm việc từ xa, nhân viên phải trực tuyến trên Lumora Chat trong khung giờ cốt lõi từ 9 giờ 30 đến 16 giờ.\n\n## 4. Lương và phúc lợi\nLương được chi trả vào ngày 5 hằng tháng; nếu ngày 5 rơi vào cuối tuần hoặc ngày lễ thì chi trả vào ngày làm việc liền trước. Mỗi nhân viên chính thức nhận phụ cấp ăn trưa 1.200.000 đồng mỗi tháng. Gói khám sức khỏe định kỳ được tổ chức một lần mỗi năm vào tháng 9 tại phòng khám đối tác An Tâm.\n\n## 5. Thiết bị làm việc\nNhân viên khối kỹ thuật được cấp máy tính xách tay có cấu hình tối thiểu 32 GB RAM; các khối khác được cấp máy 16 GB RAM. Thiết bị được thay mới sau mỗi chu kỳ 3 năm. Khi mất thiết bị, nhân viên phải báo cho bộ phận IT trong vòng 24 giờ qua kênh #it-helpdesk.\n\n## 6. Đào tạo\nMỗi nhân viên có ngân sách đào tạo 8.000.000 đồng mỗi năm cho khóa học hoặc chứng chỉ liên",
+          "similarity": 0.8335279424753317,
+          "document_title": "lumora_hr_handbook.md",
+          "char_start": 800,
+          "char_end": 1800,
+          "rerank_score": null
+        },
+        {
+          "source_index": 4,
+          "document_id": "8f88b9a4-926f-43f0-b2fe-3d27b0d07ee6",
+          "chunk_id": "8601eab2-85f9-4944-b791-55905c8c4b18",
+          "chunk_index": 2,
+          "content": ". Khi mất thiết bị, nhân viên phải báo cho bộ phận IT trong vòng 24 giờ qua kênh #it-helpdesk.\n\n## 6. Đào tạo\nMỗi nhân viên có ngân sách đào tạo 8.000.000 đồng mỗi năm cho khóa học hoặc chứng chỉ liên quan đến công việc. Khoản chi trên 3.000.000 đồng cần được giám đốc khối phê duyệt trước khi đăng ký.",
+          "similarity": 0.8332371513278124,
+          "document_title": "lumora_hr_handbook.md",
+          "char_start": 1600,
+          "char_end": 1902,
+          "rerank_score": null
+        },
+        {
+          "source_index": 5,
+          "document_id": "8f88b9a4-926f-43f0-b2fe-3d27b0d07ee6",
+          "chunk_id": "2571d457-6a41-48e4-86c0-c2985f5bd4a2",
+          "chunk_index": 0,
+          "content": "# Sổ tay nhân sự Lumora 2026\n\n## 1. Thời gian thử việc\nNhân viên mới tại Lumora có thời gian thử việc là 45 ngày đối với vị trí chuyên viên và 60 ngày đối với vị trí quản lý. Trong thời gian thử việc, nhân viên được hưởng 90% lương chính thức. Kết quả thử việc được trưởng bộ phận đánh giá bằng văn bản chậm nhất 3 ngày làm việc trước khi kết thúc thử việc.\n\n## 2. Nghỉ phép năm\nNhân viên chính thức được hưởng 18 ngày nghỉ phép có lương mỗi năm. Sau mỗi 5 năm làm việc liên tục, nhân viên được cộng thêm 2 ngày phép. Số ngày phép chưa dùng hết trong năm được chuyển sang năm sau tối đa 5 ngày và phải sử dụng trước ngày 31 tháng 3. Đơn xin nghỉ phải gửi qua hệ thống HRM Orchid trước ít nhất 7 ngày làm việc, trừ trường hợp khẩn cấp.\n\n## 3. Làm việc từ xa\nNhân viên đã qua thử việc được làm việc từ xa tối đa 2 ngày mỗi tuần, với điều kiện đăng ký trên HRM Orchid trước 17 giờ của ngày làm việc liền trước. Ngày thứ Ba là ngày làm việc tại văn phòng bắt buộc cho toàn công ty. Khi làm việc từ xa, nh",
+          "similarity": 0.8043407435011034,
+          "document_title": "lumora_hr_handbook.md",
+          "char_start": 0,
+          "char_end": 1000,
+          "rerank_score": null
+        }
+      ],
+      "conversation_id": "f08c0d3f-170e-430e-8c77-09061c32db3a",
+      "model_name": "qwen3:1.7b",
+      "detail": null,
+      "retrieval_hit": null,
+      "score": {
+        "outcome": "answer",
+        "cited": [
+          2
+        ],
+        "correct": true,
+        "citation_indices_valid": true,
+        "evidence_in_cited_source": true,
+        "facts_in_cited_source": true,
+        "grounded": true,
+        "unsupported_numbers": []
+      }
+    },
+    {
+      "id": "q09",
+      "mode": "stream",
+      "answerable": true,
+      "status": 200,
+      "ttft_s": 26.48,
+      "total_s": 29.68,
+      "events": [
+        "retrieval_started",
+        "retrieval_completed",
+        "model_routed",
+        "generation_started",
+        "token",
+        "answer_completed"
+      ],
+      "answer": "Bản sao lưu toàn phần của Orchid được giữ trong 35 ngày [Source 1].",
+      "sources": [
+        {
+          "source_index": 1,
+          "document_id": "10fbe116-d69d-4a93-a3fc-a3c5afd4f102",
+          "chunk_id": "a30dbad0-18d6-4c02-b853-e3063f3539d9",
+          "chunk_index": 0,
+          "content": "# Quy trình vận hành hệ thống Orchid\n\n## 1. Sao lưu dữ liệu\nCơ sở dữ liệu chính của Orchid được sao lưu toàn phần lúc 1 giờ 30 sáng mỗi ngày và sao lưu gia tăng mỗi 15 phút. Bản sao lưu toàn phần được giữ trong 35 ngày; bản sao lưu gia tăng được giữ trong 7 ngày. Bản sao lưu được lưu tại hai vùng: Hà Nội (chính) và Singapore (dự phòng).\n\n## 2. Mục tiêu khôi phục\nMục tiêu thời gian khôi phục (RTO) của Orchid là 4 giờ. Mục tiêu điểm khôi phục (RPO) là 15 phút. Diễn tập khôi phục thảm họa được thực hiện mỗi quý một lần, vào thứ Bảy tuần thứ hai của tháng đầu quý.\n\n## 3. Phân loại sự cố\nSự cố mức SEV1 là khi toàn bộ hệ thống Orchid ngừng hoạt động hoặc dữ liệu khách hàng có nguy cơ bị lộ; kỹ sư trực phải phản hồi trong 10 phút. Sự cố mức SEV2 là khi một chức năng chính bị suy giảm; thời gian phản hồi là 30 phút. Sự cố mức SEV3 là lỗi không ảnh hưởng đến luồng nghiệp vụ chính và được xử lý trong giờ hành chính.\n\n## 4. Trực vận hành\nLịch trực vận hành luân phiên theo tuần, bắt đầu lúc 10 giờ",
+          "similarity": 0.8871230752174675,
+          "document_title": "orchid_operations_runbook.md",
+          "char_start": 0,
+          "char_end": 1000,
+          "rerank_score": null
+        },
+        {
+          "source_index": 2,
+          "document_id": "8f88b9a4-926f-43f0-b2fe-3d27b0d07ee6",
+          "chunk_id": "2571d457-6a41-48e4-86c0-c2985f5bd4a2",
+          "chunk_index": 0,
+          "content": "# Sổ tay nhân sự Lumora 2026\n\n## 1. Thời gian thử việc\nNhân viên mới tại Lumora có thời gian thử việc là 45 ngày đối với vị trí chuyên viên và 60 ngày đối với vị trí quản lý. Trong thời gian thử việc, nhân viên được hưởng 90% lương chính thức. Kết quả thử việc được trưởng bộ phận đánh giá bằng văn bản chậm nhất 3 ngày làm việc trước khi kết thúc thử việc.\n\n## 2. Nghỉ phép năm\nNhân viên chính thức được hưởng 18 ngày nghỉ phép có lương mỗi năm. Sau mỗi 5 năm làm việc liên tục, nhân viên được cộng thêm 2 ngày phép. Số ngày phép chưa dùng hết trong năm được chuyển sang năm sau tối đa 5 ngày và phải sử dụng trước ngày 31 tháng 3. Đơn xin nghỉ phải gửi qua hệ thống HRM Orchid trước ít nhất 7 ngày làm việc, trừ trường hợp khẩn cấp.\n\n## 3. Làm việc từ xa\nNhân viên đã qua thử việc được làm việc từ xa tối đa 2 ngày mỗi tuần, với điều kiện đăng ký trên HRM Orchid trước 17 giờ của ngày làm việc liền trước. Ngày thứ Ba là ngày làm việc tại văn phòng bắt buộc cho toàn công ty. Khi làm việc từ xa, nh",
+          "similarity": 0.8408044170374432,
+          "document_title": "lumora_hr_handbook.md",
+          "char_start": 0,
+          "char_end": 1000,
+          "rerank_score": null
+        },
+        {
+          "source_index": 3,
+          "document_id": "8f88b9a4-926f-43f0-b2fe-3d27b0d07ee6",
+          "chunk_id": "4d5cb161-e33d-4e25-8efb-c080f3cceb51",
+          "chunk_index": 1,
+          "content": "xa tối đa 2 ngày mỗi tuần, với điều kiện đăng ký trên HRM Orchid trước 17 giờ của ngày làm việc liền trước. Ngày thứ Ba là ngày làm việc tại văn phòng bắt buộc cho toàn công ty. Khi làm việc từ xa, nhân viên phải trực tuyến trên Lumora Chat trong khung giờ cốt lõi từ 9 giờ 30 đến 16 giờ.\n\n## 4. Lương và phúc lợi\nLương được chi trả vào ngày 5 hằng tháng; nếu ngày 5 rơi vào cuối tuần hoặc ngày lễ thì chi trả vào ngày làm việc liền trước. Mỗi nhân viên chính thức nhận phụ cấp ăn trưa 1.200.000 đồng mỗi tháng. Gói khám sức khỏe định kỳ được tổ chức một lần mỗi năm vào tháng 9 tại phòng khám đối tác An Tâm.\n\n## 5. Thiết bị làm việc\nNhân viên khối kỹ thuật được cấp máy tính xách tay có cấu hình tối thiểu 32 GB RAM; các khối khác được cấp máy 16 GB RAM. Thiết bị được thay mới sau mỗi chu kỳ 3 năm. Khi mất thiết bị, nhân viên phải báo cho bộ phận IT trong vòng 24 giờ qua kênh #it-helpdesk.\n\n## 6. Đào tạo\nMỗi nhân viên có ngân sách đào tạo 8.000.000 đồng mỗi năm cho khóa học hoặc chứng chỉ liên",
+          "similarity": 0.8387159301381254,
+          "document_title": "lumora_hr_handbook.md",
+          "char_start": 800,
+          "char_end": 1800,
+          "rerank_score": null
+        },
+        {
+          "source_index": 4,
+          "document_id": "10fbe116-d69d-4a93-a3fc-a3c5afd4f102",
+          "chunk_id": "d94b86bf-5316-45b4-961c-e52c519390f2",
+          "chunk_index": 1,
+          "content": "hản hồi là 30 phút. Sự cố mức SEV3 là lỗi không ảnh hưởng đến luồng nghiệp vụ chính và được xử lý trong giờ hành chính.\n\n## 4. Trực vận hành\nLịch trực vận hành luân phiên theo tuần, bắt đầu lúc 10 giờ sáng thứ Hai. Mỗi ca trực gồm một kỹ sư chính và một kỹ sư dự phòng. Kỹ sư trực nhận phụ cấp 500.000 đồng cho mỗi ngày trực ngoài giờ hành chính.\n\n## 5. Triển khai phần mềm\nViệc triển khai lên môi trường production chỉ được thực hiện từ thứ Hai đến thứ Năm, trước 15 giờ. Không triển khai vào thứ Sáu, cuối tuần và ngày lễ, trừ bản vá khẩn cấp cho sự cố SEV1. Mỗi lần triển khai phải có ít nhất hai người phê duyệt pull request.",
+          "similarity": 0.7992062211982996,
+          "document_title": "orchid_operations_runbook.md",
+          "char_start": 800,
+          "char_end": 1429,
+          "rerank_score": null
+        },
+        {
+          "source_index": 5,
+          "document_id": "8f88b9a4-926f-43f0-b2fe-3d27b0d07ee6",
+          "chunk_id": "8601eab2-85f9-4944-b791-55905c8c4b18",
+          "chunk_index": 2,
+          "content": ". Khi mất thiết bị, nhân viên phải báo cho bộ phận IT trong vòng 24 giờ qua kênh #it-helpdesk.\n\n## 6. Đào tạo\nMỗi nhân viên có ngân sách đào tạo 8.000.000 đồng mỗi năm cho khóa học hoặc chứng chỉ liên quan đến công việc. Khoản chi trên 3.000.000 đồng cần được giám đốc khối phê duyệt trước khi đăng ký.",
+          "similarity": 0.7786022952551138,
+          "document_title": "lumora_hr_handbook.md",
+          "char_start": 1600,
+          "char_end": 1902,
+          "rerank_score": null
+        }
+      ],
+      "conversation_id": "3058f044-2b5a-468d-847c-16eec72fb9e4",
+      "message_id": "b62649a5-07e0-49bd-a6cb-1d4163fa02ba",
+      "model_name": "qwen3:1.7b",
+      "error": null,
+      "raw_answer": "Bản sao lưu toàn phần của Orchid được giữ trong 35 ngày [Source 1].",
+      "retrieval_hit": true,
+      "score": {
+        "outcome": "answer",
+        "cited": [
+          1
+        ],
+        "correct": true,
+        "citation_indices_valid": true,
+        "evidence_in_cited_source": true,
+        "facts_in_cited_source": true,
+        "grounded": true,
+        "unsupported_numbers": []
+      }
+    },
+    {
+      "id": "q09",
+      "mode": "ask",
+      "answerable": true,
+      "status": 200,
+      "total_s": 3.63,
+      "answer": "Bản sao lưu toàn phần của Orchid được giữ trong 35 ngày [Source 1].",
+      "sources": [
+        {
+          "source_index": 1,
+          "document_id": "10fbe116-d69d-4a93-a3fc-a3c5afd4f102",
+          "chunk_id": "a30dbad0-18d6-4c02-b853-e3063f3539d9",
+          "chunk_index": 0,
+          "content": "# Quy trình vận hành hệ thống Orchid\n\n## 1. Sao lưu dữ liệu\nCơ sở dữ liệu chính của Orchid được sao lưu toàn phần lúc 1 giờ 30 sáng mỗi ngày và sao lưu gia tăng mỗi 15 phút. Bản sao lưu toàn phần được giữ trong 35 ngày; bản sao lưu gia tăng được giữ trong 7 ngày. Bản sao lưu được lưu tại hai vùng: Hà Nội (chính) và Singapore (dự phòng).\n\n## 2. Mục tiêu khôi phục\nMục tiêu thời gian khôi phục (RTO) của Orchid là 4 giờ. Mục tiêu điểm khôi phục (RPO) là 15 phút. Diễn tập khôi phục thảm họa được thực hiện mỗi quý một lần, vào thứ Bảy tuần thứ hai của tháng đầu quý.\n\n## 3. Phân loại sự cố\nSự cố mức SEV1 là khi toàn bộ hệ thống Orchid ngừng hoạt động hoặc dữ liệu khách hàng có nguy cơ bị lộ; kỹ sư trực phải phản hồi trong 10 phút. Sự cố mức SEV2 là khi một chức năng chính bị suy giảm; thời gian phản hồi là 30 phút. Sự cố mức SEV3 là lỗi không ảnh hưởng đến luồng nghiệp vụ chính và được xử lý trong giờ hành chính.\n\n## 4. Trực vận hành\nLịch trực vận hành luân phiên theo tuần, bắt đầu lúc 10 giờ",
+          "similarity": 0.8871230752174675,
+          "document_title": "orchid_operations_runbook.md",
+          "char_start": 0,
+          "char_end": 1000,
+          "rerank_score": null
+        },
+        {
+          "source_index": 2,
+          "document_id": "8f88b9a4-926f-43f0-b2fe-3d27b0d07ee6",
+          "chunk_id": "2571d457-6a41-48e4-86c0-c2985f5bd4a2",
+          "chunk_index": 0,
+          "content": "# Sổ tay nhân sự Lumora 2026\n\n## 1. Thời gian thử việc\nNhân viên mới tại Lumora có thời gian thử việc là 45 ngày đối với vị trí chuyên viên và 60 ngày đối với vị trí quản lý. Trong thời gian thử việc, nhân viên được hưởng 90% lương chính thức. Kết quả thử việc được trưởng bộ phận đánh giá bằng văn bản chậm nhất 3 ngày làm việc trước khi kết thúc thử việc.\n\n## 2. Nghỉ phép năm\nNhân viên chính thức được hưởng 18 ngày nghỉ phép có lương mỗi năm. Sau mỗi 5 năm làm việc liên tục, nhân viên được cộng thêm 2 ngày phép. Số ngày phép chưa dùng hết trong năm được chuyển sang năm sau tối đa 5 ngày và phải sử dụng trước ngày 31 tháng 3. Đơn xin nghỉ phải gửi qua hệ thống HRM Orchid trước ít nhất 7 ngày làm việc, trừ trường hợp khẩn cấp.\n\n## 3. Làm việc từ xa\nNhân viên đã qua thử việc được làm việc từ xa tối đa 2 ngày mỗi tuần, với điều kiện đăng ký trên HRM Orchid trước 17 giờ của ngày làm việc liền trước. Ngày thứ Ba là ngày làm việc tại văn phòng bắt buộc cho toàn công ty. Khi làm việc từ xa, nh",
+          "similarity": 0.8408044170374432,
+          "document_title": "lumora_hr_handbook.md",
+          "char_start": 0,
+          "char_end": 1000,
+          "rerank_score": null
+        },
+        {
+          "source_index": 3,
+          "document_id": "8f88b9a4-926f-43f0-b2fe-3d27b0d07ee6",
+          "chunk_id": "4d5cb161-e33d-4e25-8efb-c080f3cceb51",
+          "chunk_index": 1,
+          "content": "xa tối đa 2 ngày mỗi tuần, với điều kiện đăng ký trên HRM Orchid trước 17 giờ của ngày làm việc liền trước. Ngày thứ Ba là ngày làm việc tại văn phòng bắt buộc cho toàn công ty. Khi làm việc từ xa, nhân viên phải trực tuyến trên Lumora Chat trong khung giờ cốt lõi từ 9 giờ 30 đến 16 giờ.\n\n## 4. Lương và phúc lợi\nLương được chi trả vào ngày 5 hằng tháng; nếu ngày 5 rơi vào cuối tuần hoặc ngày lễ thì chi trả vào ngày làm việc liền trước. Mỗi nhân viên chính thức nhận phụ cấp ăn trưa 1.200.000 đồng mỗi tháng. Gói khám sức khỏe định kỳ được tổ chức một lần mỗi năm vào tháng 9 tại phòng khám đối tác An Tâm.\n\n## 5. Thiết bị làm việc\nNhân viên khối kỹ thuật được cấp máy tính xách tay có cấu hình tối thiểu 32 GB RAM; các khối khác được cấp máy 16 GB RAM. Thiết bị được thay mới sau mỗi chu kỳ 3 năm. Khi mất thiết bị, nhân viên phải báo cho bộ phận IT trong vòng 24 giờ qua kênh #it-helpdesk.\n\n## 6. Đào tạo\nMỗi nhân viên có ngân sách đào tạo 8.000.000 đồng mỗi năm cho khóa học hoặc chứng chỉ liên",
+          "similarity": 0.8387159301381254,
+          "document_title": "lumora_hr_handbook.md",
+          "char_start": 800,
+          "char_end": 1800,
+          "rerank_score": null
+        },
+        {
+          "source_index": 4,
+          "document_id": "10fbe116-d69d-4a93-a3fc-a3c5afd4f102",
+          "chunk_id": "d94b86bf-5316-45b4-961c-e52c519390f2",
+          "chunk_index": 1,
+          "content": "hản hồi là 30 phút. Sự cố mức SEV3 là lỗi không ảnh hưởng đến luồng nghiệp vụ chính và được xử lý trong giờ hành chính.\n\n## 4. Trực vận hành\nLịch trực vận hành luân phiên theo tuần, bắt đầu lúc 10 giờ sáng thứ Hai. Mỗi ca trực gồm một kỹ sư chính và một kỹ sư dự phòng. Kỹ sư trực nhận phụ cấp 500.000 đồng cho mỗi ngày trực ngoài giờ hành chính.\n\n## 5. Triển khai phần mềm\nViệc triển khai lên môi trường production chỉ được thực hiện từ thứ Hai đến thứ Năm, trước 15 giờ. Không triển khai vào thứ Sáu, cuối tuần và ngày lễ, trừ bản vá khẩn cấp cho sự cố SEV1. Mỗi lần triển khai phải có ít nhất hai người phê duyệt pull request.",
+          "similarity": 0.7992062211982996,
+          "document_title": "orchid_operations_runbook.md",
+          "char_start": 800,
+          "char_end": 1429,
+          "rerank_score": null
+        },
+        {
+          "source_index": 5,
+          "document_id": "8f88b9a4-926f-43f0-b2fe-3d27b0d07ee6",
+          "chunk_id": "8601eab2-85f9-4944-b791-55905c8c4b18",
+          "chunk_index": 2,
+          "content": ". Khi mất thiết bị, nhân viên phải báo cho bộ phận IT trong vòng 24 giờ qua kênh #it-helpdesk.\n\n## 6. Đào tạo\nMỗi nhân viên có ngân sách đào tạo 8.000.000 đồng mỗi năm cho khóa học hoặc chứng chỉ liên quan đến công việc. Khoản chi trên 3.000.000 đồng cần được giám đốc khối phê duyệt trước khi đăng ký.",
+          "similarity": 0.7786022952551138,
+          "document_title": "lumora_hr_handbook.md",
+          "char_start": 1600,
+          "char_end": 1902,
+          "rerank_score": null
+        }
+      ],
+      "conversation_id": "da3badc9-2daf-4172-bbcb-33500e44eee0",
+      "model_name": "qwen3:1.7b",
+      "detail": null,
+      "retrieval_hit": null,
+      "score": {
+        "outcome": "answer",
+        "cited": [
+          1
+        ],
+        "correct": true,
+        "citation_indices_valid": true,
+        "evidence_in_cited_source": true,
+        "facts_in_cited_source": true,
+        "grounded": true,
+        "unsupported_numbers": []
+      }
+    },
+    {
+      "id": "q10",
+      "mode": "stream",
+      "answerable": false,
+      "status": 200,
+      "ttft_s": 2.69,
+      "total_s": 8.52,
+      "events": [
+        "retrieval_started",
+        "retrieval_completed",
+        "model_routed",
+        "generation_started",
+        "token",
+        "answer_completed"
+      ],
+      "answer": "Không thể xác minh câu trả lời từ tài liệu được truy xuất.",
+      "sources": [],
+      "conversation_id": "6c8bdd3a-4ba3-4ab1-b483-e3f32062f211",
+      "message_id": "ee76f3f9-b680-4fc1-a355-2b853e451c38",
+      "model_name": "qwen3:1.7b",
+      "error": null,
+      "raw_answer": "Retrieved context does not contain information about Lumora having a specific number of days of maternity leave for female employees.  \n\nKhông đủ thông tin trong tài liệu để trả lời câu hỏi này.",
+      "retrieval_hit": null,
+      "score": {
+        "outcome": "unverified",
+        "cited": [],
+        "correct": false,
+        "grounded": null,
+        "unsupported_numbers": []
+      }
+    },
+    {
+      "id": "q10",
+      "mode": "ask",
+      "answerable": false,
+      "status": 200,
+      "total_s": 3.61,
+      "answer": "Không thể xác minh câu trả lời từ tài liệu được truy xuất.",
+      "sources": [],
+      "conversation_id": "cbb6364e-fc66-487e-9bd2-67c8b46e6c0b",
+      "model_name": "qwen3:1.7b",
+      "detail": null,
+      "retrieval_hit": null,
+      "score": {
+        "outcome": "unverified",
+        "cited": [],
+        "correct": false,
+        "grounded": null,
+        "unsupported_numbers": []
+      }
+    },
+    {
+      "id": "q11",
+      "mode": "stream",
+      "answerable": false,
+      "status": 200,
+      "ttft_s": 27.19,
+      "total_s": 29.27,
+      "events": [
+        "retrieval_started",
+        "retrieval_completed",
+        "model_routed",
+        "generation_started",
+        "token",
+        "answer_completed"
+      ],
+      "answer": "Không đủ thông tin trong tài liệu để trả lời câu hỏi này.",
+      "sources": [],
+      "conversation_id": "1e71b1ea-3360-4537-aa49-4577b2806dd8",
+      "message_id": "f44e8d17-7040-4139-889a-d40fa24a5724",
+      "model_name": "qwen3:1.7b",
+      "error": null,
+      "raw_answer": "Không đủ thông tin trong tài liệu để trả lời câu hỏi này.",
+      "retrieval_hit": null,
+      "score": {
+        "outcome": "refusal",
+        "cited": [],
+        "correct": true,
+        "grounded": null,
+        "unsupported_numbers": []
+      }
+    },
+    {
+      "id": "q11",
+      "mode": "ask",
+      "answerable": false,
+      "status": 200,
+      "total_s": 2.42,
+      "answer": "Không đủ thông tin trong tài liệu để trả lời câu hỏi này.",
+      "sources": [],
+      "conversation_id": "12402c7b-c9de-432d-a7af-b4823d3fafb3",
+      "model_name": "qwen3:1.7b",
+      "detail": null,
+      "retrieval_hit": null,
+      "score": {
+        "outcome": "refusal",
+        "cited": [],
+        "correct": true,
+        "grounded": null,
+        "unsupported_numbers": []
+      }
+    },
+    {
+      "id": "q12",
+      "mode": "stream",
+      "answerable": false,
+      "status": 200,
+      "ttft_s": 0.51,
+      "total_s": 2.71,
+      "events": [
+        "retrieval_started",
+        "retrieval_completed",
+        "model_routed",
+        "generation_started",
+        "token",
+        "answer_completed"
+      ],
+      "answer": "Không thể xác minh câu trả lời từ tài liệu được truy xuất.",
+      "sources": [],
+      "conversation_id": "8bb6b197-f358-475b-b694-08072d1779b0",
+      "message_id": "e7d56011-5a5d-40ad-9ab8-3966fecff0db",
+      "model_name": "qwen3:1.7b",
+      "error": null,
+      "raw_answer": "Retrieved context does not contain information about the current chairman of Lumora.",
+      "retrieval_hit": null,
+      "score": {
+        "outcome": "unverified",
+        "cited": [],
+        "correct": false,
+        "grounded": null,
+        "unsupported_numbers": []
+      }
+    },
+    {
+      "id": "q12",
+      "mode": "ask",
+      "answerable": false,
+      "status": 200,
+      "total_s": 2.75,
+      "answer": "Không thể xác minh câu trả lời từ tài liệu được truy xuất.",
+      "sources": [],
+      "conversation_id": "f868fe75-0e5e-471a-96d0-43ad46380bb9",
+      "model_name": "qwen3:1.7b",
+      "detail": null,
+      "retrieval_hit": null,
+      "score": {
+        "outcome": "unverified",
+        "cited": [],
+        "correct": false,
+        "grounded": null,
+        "unsupported_numbers": []
+      }
+    }
+  ],
+  "checks": {
+    "ingestion": {
+      "statuses": {
+        "lumora_hr_handbook.md": "ready",
+        "orchid_operations_runbook.md": "ready"
+      },
+      "seconds": 6.3,
+      "chunks": {
+        "lumora_hr_handbook.md": 3,
+        "orchid_operations_runbook.md": 2
+      }
+    },
+    "conversation": {
+      "first_answer": "Thời gian thử việc cho vị trí quản lý tại Lumora là 60 ngày [Source 1].",
+      "follow_up_answer": "Thời gian thử việc cho vị trí chuyên viên tại Lumora là 45 ngày [Source 1].",
+      "follow_up_ttft_s": 36.03,
+      "follow_up_total_s": 39.75,
+      "follow_up_correct": true,
+      "follow_up_score": {
+        "outcome": "answer",
+        "cited": [
+          1
+        ],
+        "correct": true,
+        "citation_indices_valid": true,
+        "evidence_in_cited_source": true,
+        "facts_in_cited_source": true,
+        "grounded": true,
+        "unsupported_numbers": []
+      },
+      "persisted_roles": [
+        "user",
+        "assistant",
+        "user",
+        "assistant"
+      ],
+      "last_message_matches": true
+    },
+    "isolation": {
+      "outsider_forged_workspace_status": 403,
+      "outsider_own_workspace_answer": "Không đủ thông tin trong tài liệu để trả lời câu hỏi này.",
+      "outsider_retrieved_foreign_sources": [],
+      "outsider_read_foreign_doc_status": 404
+    }
+  },
+  "summary": {
+    "ask": {
+      "requests": 12,
+      "errors_or_timeouts": 0,
+      "answerable_correct": "9/9",
+      "answerable_answered": 9,
+      "answerable_refused_or_unverified": 0,
+      "answered_grounded": "8/9",
+      "answered_with_unsupported_numbers": 1,
+      "unanswerable_correct_refusal": "1/3",
+      "unanswerable_hallucinated": 0,
+      "retrieval_hit": null,
+      "latency_s": {
+        "p50": 3.9,
+        "max": 7.5
+      },
+      "ttft_s": null
+    },
+    "stream": {
+      "requests": 12,
+      "errors_or_timeouts": 0,
+      "answerable_correct": "9/9",
+      "answerable_answered": 9,
+      "answerable_refused_or_unverified": 0,
+      "answered_grounded": "8/9",
+      "answered_with_unsupported_numbers": 1,
+      "unanswerable_correct_refusal": "1/3",
+      "unanswerable_hallucinated": 0,
+      "retrieval_hit": "9/9",
+      "latency_s": {
+        "p50": 13.0,
+        "max": 29.7
+      },
+      "ttft_s": {
+        "p50": 8.6,
+        "max": 27.2
+      }
+    }
+  },
+  "finished_at": "2026-11-22T17:31:44"
+}

@@ -30,7 +30,17 @@ class Settings(BaseSettings):
 
     ollama_base_url: str = "http://127.0.0.1:11434"
     ollama_model: str = "qwen3:1.7b"
-    ollama_timeout_seconds: float = 60.0
+    # Read timeout (max silence between bytes): bounds prompt evaluation for streaming
+    # and the whole generation for non-streaming requests.
+    # Defaults measured on a CPU-only host (T260040): a ~1.5k-token RAG prompt needs up
+    # to ~50s of prompt evaluation for qwen3:1.7b, plus ~10s when the model is cold.
+    ollama_timeout_seconds: float = 120.0
+    ollama_connect_timeout_seconds: float = 5.0
+    ollama_total_timeout_seconds: float = 180.0
+    ollama_num_ctx: int = 4096
+    ollama_num_predict: int = 512
+    ollama_temperature: float | None = 0.0
+    ollama_keep_alive: str = "30m"
 
     # Governed agent runtime budgets (T260025)
     agent_max_steps: int = 8

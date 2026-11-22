@@ -4,9 +4,11 @@ from uuid import UUID
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.api.deps import get_current_user
+from app.api.deps import get_current_user, require_workspace_permission
+from app.core.workspace_role import WorkspacePermission
 from app.db.session import get_session
 from app.models.user import User
+from app.models.workspace_membership import WorkspaceMembership
 from app.repositories.document_chunk import (
     DocumentChunkWriteConflictError,
     list_document_chunks,
@@ -15,7 +17,7 @@ from app.schemas.document_chunk import (
     DocumentChunkCreateRequest,
     DocumentChunkResponse,
 )
-from app.services.document import get_user_document
+from app.services.document import get_user_document, get_workspace_document
 from app.services.document_chunk import (
     chunk_document,
     embed_document_chunks,
@@ -72,12 +74,16 @@ async def create_document_chunks(
 async def get_document_chunks(
     document_id: UUID,
     session: Annotated[AsyncSession, Depends(get_session)],
-    current_user: Annotated[User, Depends(get_current_user)],
+    membership: Annotated[
+        WorkspaceMembership,
+        Depends(require_workspace_permission(WorkspacePermission.DOCUMENT_READ)),
+    ],
 ) -> list[DocumentChunkResponse]:
-    document = await get_user_document(
+    # Workspace-scoped read so cited chunks can be inspected by every member.
+    document = await get_workspace_document(
         session,
+        workspace_id=membership.workspace_id,
         document_id=document_id,
-        user=current_user,
     )
 
     if document is None:

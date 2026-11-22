@@ -1,4 +1,6 @@
+import dataclasses
 import inspect
+import time
 from enum import Enum
 from uuid import UUID
 
@@ -160,6 +162,7 @@ async def retrieve_context(
     if enable_reranking and settings.reranker_enabled:
         fetch_limit = max(limit, settings.reranker_pool_size)
 
+    t_ret_start = time.perf_counter()
     candidates = await retrieve_candidates(
         session,
         user_id=user_id,
@@ -171,15 +174,35 @@ async def retrieve_context(
         dense_weight=dense_weight,
         keyword_weight=keyword_weight,
     )
+    retrieval_ms = (time.perf_counter() - t_ret_start) * 1000.0
+    norm_mode = str(getattr(mode, "value", mode)).lower()
+
+    rerank_ms: float | None = None
+    is_reranked = False
+    fallback_reason: str | None = None
+    results_to_build = candidates[:limit]
 
     if enable_reranking:
+        t_rr_start = time.perf_counter()
         reranker_service = get_reranker_service()
-        final_results, _is_reranked, _fallback = await reranker_service.rerank_candidates(
+        results_to_build, is_reranked, fallback_reason = await reranker_service.rerank_candidates(
             query=query,
             candidates=candidates,
             limit=limit,
             opt_in=True,
         )
-        return build_retrieval_context(final_results)
+        rerank_ms = (time.perf_counter() - t_rr_start) * 1000.0
 
-    return build_retrieval_context(candidates[:limit])
+    t_ctx_start = time.perf_counter()
+    ctx = build_retrieval_context(results_to_build)
+    context_assembly_ms = (time.perf_counter() - t_ctx_start) * 1000.0
+
+    return dataclasses.replace(
+        ctx,
+        retrieval_ms=round(retrieval_ms, 3),
+        context_assembly_ms=round(context_assembly_ms, 3),
+        rerank_ms=round(rerank_ms, 3) if rerank_ms is not None else None,
+        rerank_used=is_reranked,
+        rerank_fallback_reason=fallback_reason,
+        retrieval_mode=norm_mode,
+    )
