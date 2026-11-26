@@ -106,6 +106,7 @@ export interface ChatStreamEvent {
   sources?: RAGSource[];
   token?: string;
   answer?: string;
+  grounding_status?: string | null;
   error?: string;
 }
 

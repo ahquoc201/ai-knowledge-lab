@@ -1,5 +1,6 @@
 from functools import lru_cache
 from pathlib import Path
+from typing import Literal
 
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
@@ -89,7 +90,7 @@ class Settings(BaseSettings):
 
     # Citation Grounding Verification (T260041)
     citation_grounding_enabled: bool = True
-    citation_grounding_mode: str = "enforce"  # "enforce" | "report_only"
+    citation_grounding_mode: Literal["report_only", "enforce"] = "report_only"
 
     model_config = SettingsConfigDict(
         env_file=PROJECT_ROOT / ".env",

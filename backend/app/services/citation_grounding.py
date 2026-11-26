@@ -4,14 +4,16 @@ Detects cases where an LLM produces syntactically valid [Source N] citations
 that do not actually support the factual claims in the answer (e.g. T260040 q01:
 citing [Source 2] for "18 ngày nghỉ phép" when that fact only exists in [Source 1]).
 
-Classifies each cited claim and the overall answer into:
-- VERIFIED: Deterministic factual anchors (numbers, units, dates, identifiers,
-  verbatim quotes) are present and consistent in the cited source(s).
-- UNSUPPORTED: Cited source(s) clearly lack a required factual anchor, have a
-  unit mismatch, or contradict the claim.
-- INCONCLUSIVE: Claim has no deterministic verifiable anchors (e.g. pure
-  paraphrase or arithmetic derivation); never falsely rejected as unsupported,
-  and never falsely labeled as verified.
+Important semantic scope:
+- VERIFIED means deterministic fact-anchor matching (numbers, units, dates,
+  identifiers, verbatim quotes) with consistent local negation polarity, NOT
+  full NLI semantic entailment.
+- UNSUPPORTED means cited source(s) clearly lack a required factual anchor, have
+  a unit mismatch, have a negation polarity contradiction, or a factual claim
+  lacks any [Source N] citation.
+- INCONCLUSIVE means automated deterministic verification cannot establish
+  support (e.g. pure paraphrase, or derived arithmetic such as 18 + 2 = 20);
+  never falsely rejected as unsupported, and never falsely labeled as verified.
 """
 
 import re
@@ -45,6 +47,10 @@ _CODE_IDENTIFIER_RE = re.compile(r"\b(?:[A-Z]{2,}[0-9]+|[A-Z]+-[A-Z0-9-]+|RPO|RT
 
 # Verbatim quotations
 _QUOTE_RE = re.compile(r'"([^"]{8,})"|«([^»]{8,})»')
+_NEGATION_RE = re.compile(
+    r"(?<!\w)(?:không|chưa|cấm|not|never|cannot|can't|won't|doesn't|don't|isn't|aren't)(?!\w)",
+    flags=re.IGNORECASE,
+)
 
 _SCALE_MULTIPLIERS = {
     "triệu": 1_000_000,
@@ -156,6 +162,56 @@ def _numbers_match(a: float, b: float) -> bool:
     return abs(a - b) <= 1e-6 * max(abs(a), abs(b))
 
 
+def _is_derived_two_operand(
+    target: float,
+    target_unit: str | None,
+    evidence_nums: list[tuple[float, str | None, str]],
+) -> bool:
+    """Check if target equals a + b or a - b for two distinct numbers in evidence."""
+    pool = [
+        ev[0]
+        for ev in evidence_nums
+        if target_unit is None or ev[1] is None or ev[1] == target_unit
+    ]
+    n = len(pool)
+    for i in range(n):
+        for j in range(i + 1, n):
+            a, b = pool[i], pool[j]
+            if _numbers_match(target, a + b) or _numbers_match(target, abs(a - b)):
+                return True
+    return False
+
+
+def _has_factual_anchors(text: str) -> bool:
+    norm = _normalize_text(text)
+    return bool(
+        _extract_dates(norm)
+        or _extract_numbers_and_units(norm)
+        or _CHANNEL_RE.search(norm)
+        or _CODE_IDENTIFIER_RE.search(text)
+        or _QUOTE_RE.search(text)
+    )
+
+
+def _negation_contradicts(
+    norm_claim: str,
+    norm_evidence: str,
+    matched_spans: list[str],
+) -> bool:
+    """Compare negation polarity between claim and evidence sentences holding matched anchors."""
+    if not matched_spans:
+        return False
+    claim_neg = bool(_NEGATION_RE.search(norm_claim))
+    ev_sentences = [s.strip() for s in _SENTENCE_SPLIT_RE.split(norm_evidence) if s.strip()]
+    anchor_sentences = [
+        s for s in ev_sentences if any(sp.lower() in s for sp in matched_spans)
+    ]
+    if not anchor_sentences:
+        return False
+    ev_neg = any(bool(_NEGATION_RE.search(s)) for s in anchor_sentences)
+    return claim_neg != ev_neg
+
+
 def _verify_claim_against_evidence(
     claim_text: str,
     cited_indices: tuple[int, ...],
@@ -166,6 +222,7 @@ def _verify_claim_against_evidence(
 
     matched: list[str] = []
     missing: list[str] = []
+    derived_anchors: list[str] = []
 
     # 1. Dates
     claim_dates = _extract_dates(norm_claim)
@@ -181,17 +238,18 @@ def _verify_claim_against_evidence(
     claim_nums = _extract_numbers_and_units(norm_claim)
     evidence_nums = _extract_numbers_and_units(norm_evidence)
     for val, unit, raw_span in claim_nums:
-        # Format integer cleanly if whole number
         val_str = str(int(val)) if val.is_integer() else str(val)
         anchor_label = f"num:{val_str}" + (f"_{unit}" if unit else "")
 
         matching_ev = [ev for ev in evidence_nums if _numbers_match(val, ev[0])]
         if not matching_ev:
-            missing.append(anchor_label)
+            if _is_derived_two_operand(val, unit, evidence_nums):
+                derived_anchors.append(anchor_label)
+            else:
+                missing.append(anchor_label)
             continue
 
         if unit is not None:
-            # If evidence has units on matching numbers, require unit compatibility
             ev_units = {ev[1] for ev in matching_ev if ev[1] is not None}
             if ev_units and unit not in ev_units:
                 missing.append(f"{anchor_label}(unit_mismatch_vs_{','.join(sorted(ev_units))})")
@@ -207,7 +265,6 @@ def _verify_claim_against_evidence(
         else:
             missing.append(f"id:{ch}")
 
-    # Code identifiers checked case-sensitively on original text to avoid false matches on common words
     for m in _CODE_IDENTIFIER_RE.finditer(claim_text):
         code = m.group(0)
         if code in evidence_text or code.lower() in norm_evidence:
@@ -233,6 +290,26 @@ def _verify_claim_against_evidence(
             reason=f"Missing or mismatched factual anchors in cited source(s) {list(cited_indices)}: {', '.join(missing)}",
         )
 
+    if derived_anchors:
+        return ClaimGroundingResult(
+            claim_text=claim_text,
+            cited_indices=cited_indices,
+            status=GroundingStatus.INCONCLUSIVE,
+            matched_anchors=tuple(matched),
+            missing_anchors=(),
+            reason=f"Derived arithmetic anchors ({', '.join(derived_anchors)}) require reasoning over source numbers.",
+        )
+
+    if matched and _negation_contradicts(norm_claim, norm_evidence, matched):
+        return ClaimGroundingResult(
+            claim_text=claim_text,
+            cited_indices=cited_indices,
+            status=GroundingStatus.UNSUPPORTED,
+            matched_anchors=tuple(matched),
+            missing_anchors=("polarity_contradiction",),
+            reason="Negation polarity contradiction between claim and cited source sentence.",
+        )
+
     if matched:
         return ClaimGroundingResult(
             claim_text=claim_text,
@@ -240,7 +317,7 @@ def _verify_claim_against_evidence(
             status=GroundingStatus.VERIFIED,
             matched_anchors=tuple(matched),
             missing_anchors=(),
-            reason="All deterministic factual anchors verified in cited source(s).",
+            reason="All deterministic factual anchors matched in cited source(s).",
         )
 
     return ClaimGroundingResult(
@@ -283,6 +360,17 @@ def verify_answer_grounding(
                 cited.append(idx)
 
         if not cited:
+            if _has_factual_anchors(seg):
+                claim_results.append(
+                    ClaimGroundingResult(
+                        claim_text=seg,
+                        cited_indices=(),
+                        status=GroundingStatus.UNSUPPORTED,
+                        matched_anchors=(),
+                        missing_anchors=("citation_missing",),
+                        reason="Factual claim contains verifiable anchors but has no [Source N] citation.",
+                    )
+                )
             continue
 
         clean_claim = _CITATION_MARKER_RE.sub("", seg).strip()

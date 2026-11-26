@@ -183,6 +183,16 @@ async def test_rag_non_streaming_rejects_q01_wrong_citation(monkeypatch):
         )
 
     monkeypatch.setattr(rag_mod, "retrieve_context", fake_retrieve)
+    monkeypatch.setattr(
+        rag_mod,
+        "get_settings",
+        lambda: Settings(
+            citation_grounding_enabled=True,
+            citation_grounding_mode="enforce",
+            database_url="postgresql+asyncpg://dummy:dummy@localhost/dummy",
+            jwt_secret_key="dummy",
+        ),
+    )
 
     # q01 wrong citation: fact is in Source 1, LLM cites Source 2
     wrong_llm = FakeLLMProvider(
@@ -236,6 +246,16 @@ async def test_rag_streaming_detects_q01_and_signals_unsupported_in_answer_compl
     monkeypatch.setattr(stream_mod, "retrieve_context", fake_retrieve)
     monkeypatch.setattr(stream_mod, "_persist_assistant_message", fake_persist)
     monkeypatch.setattr(stream_mod, "save_assistant_message_sources", fake_save_sources)
+    monkeypatch.setattr(
+        stream_mod,
+        "get_settings",
+        lambda: Settings(
+            citation_grounding_enabled=True,
+            citation_grounding_mode="enforce",
+            database_url="postgresql+asyncpg://dummy:dummy@localhost/dummy",
+            jwt_secret_key="dummy",
+        ),
+    )
 
     wrong_stream_llm = FakeLLMProvider(
         stream_chunks=["Nhân viên chính thức được hưởng 18 ngày nghỉ phép mỗi năm. ", "[Source 2]"]
@@ -322,3 +342,115 @@ def test_grounding_rejects_stale_or_foreign_chunk_index():
     res = verify_answer_grounding("Phụ cấp ăn trưa 1.200.000 đồng. [Source 2]", authorized_sources)
     assert res.status == GroundingStatus.UNSUPPORTED
     assert res.is_grounded is False
+
+
+# -----------------------------------------------------------------------------
+# Phase 1 & 2 Verification: Adversarial Semantic & Rollout Tests
+# -----------------------------------------------------------------------------
+def test_adversarial_negation_contradiction_detected():
+    sources = _make_sources()
+    # Source 2 says "được làm việc từ xa tối đa 2 ngày mỗi tuần" (affirmative)
+    # Claim negates it while matching "2 ngày" -> must be caught as UNSUPPORTED
+    answer = "Nhân viên không được làm việc từ xa 2 ngày mỗi tuần. [Source 2]"
+    res = verify_answer_grounding(answer, sources)
+    assert res.status == GroundingStatus.UNSUPPORTED
+    assert res.is_grounded is False
+    assert "polarity_contradiction" in res.unsupported_claims[0].missing_anchors
+
+
+def test_adversarial_uncited_factual_claim_detected():
+    sources = _make_sources()
+    # Sentence 1 is cited and verified, Sentence 2 has a factual numeric claim with NO citation
+    answer = (
+        "Nhân viên được hưởng 18 ngày nghỉ phép [Source 1]. "
+        "Ngoài ra nhân viên được thưởng 50 triệu đồng."
+    )
+    res = verify_answer_grounding(answer, sources)
+    assert res.status == GroundingStatus.UNSUPPORTED
+    assert res.is_grounded is False
+    assert "citation_missing" in res.unsupported_claims[0].missing_anchors
+
+
+def test_adversarial_mixed_verified_and_inconclusive_is_inconclusive():
+    sources = _make_sources()
+    answer = (
+        "Nhân viên được hưởng 18 ngày nghỉ phép mỗi năm [Source 1]. "
+        "Quy trình đăng ký giúp đảm bảo tính minh bạch nội bộ [Source 2]."
+    )
+    res = verify_answer_grounding(answer, sources)
+    assert res.status == GroundingStatus.INCONCLUSIVE
+    assert res.is_grounded is True
+
+
+def test_derived_arithmetic_18_plus_2_equals_20_is_inconclusive_not_rejected():
+    doc_id = uuid4()
+    src = ContextSource(
+        source_index=1,
+        document_id=doc_id,
+        chunk_id=uuid4(),
+        chunk_index=0,
+        content=(
+            "Nhân viên chính thức được hưởng 18 ngày nghỉ phép có lương mỗi năm. "
+            "Sau mỗi 5 năm làm việc liên tục, nhân viên được cộng thêm 2 ngày phép."
+        ),
+        similarity=0.92,
+    )
+    answer = "Sau 5 năm làm việc liên tục, nhân viên có tổng cộng 20 ngày phép mỗi năm. [Source 1]"
+    res = verify_answer_grounding(answer, [src])
+    # Must NOT be rejected as UNSUPPORTED, and must NOT be falsely labeled VERIFIED
+    assert res.status == GroundingStatus.INCONCLUSIVE
+    assert res.is_grounded is True
+
+
+def test_semantic_blind_spots_documented_as_anchor_matching_only():
+    """Demonstrate known deterministic anchor-matching blind spots (non-NLI)."""
+    doc_id = uuid4()
+    runbook = ContextSource(
+        source_index=1,
+        document_id=doc_id,
+        chunk_id=uuid4(),
+        chunk_index=0,
+        content=(
+            "Mục tiêu điểm khôi phục (RPO) là 15 phút. "
+            "Mục tiêu thời gian khôi phục (RTO) là 4 giờ."
+        ),
+        similarity=0.9,
+    )
+    # 1. Swapped RTO and RPO: both 'RPO' and '4 giờ' exist separately in Source 1
+    swapped = verify_answer_grounding("Mục tiêu điểm khôi phục RPO là 4 giờ. [Source 1]", [runbook])
+    assert swapped.status == GroundingStatus.VERIFIED  # Documented anchor-level blind spot
+
+    # 2. Wrong subject/benefit sharing same chunk: '1.200.000 đồng' belongs to lunch, not training
+    hr = _make_sources()[1]
+    wrong_benefit = verify_answer_grounding("Ngân sách đào tạo là 1.200.000 đồng mỗi tháng. [Source 2]", [hr])
+    assert wrong_benefit.status == GroundingStatus.VERIFIED  # Documented anchor-level blind spot
+
+    # 3. Maximum presented as exact value: 'tối đa 2 ngày' vs 'chính xác 2 ngày'
+    exact_max = verify_answer_grounding("Nhân viên phải làm việc từ xa chính xác 2 ngày mỗi tuần. [Source 2]", [hr])
+    assert exact_max.status == GroundingStatus.VERIFIED  # Documented anchor-level blind spot
+
+    # 4. Combined claim across two sources where anchors match individually
+    combined = verify_answer_grounding(
+        "Nhân viên được hưởng 18 ngày nghỉ phép [Source 1] nên nhận phụ cấp 1.200.000 đồng [Source 2].",
+        _make_sources(),
+    )
+    assert combined.status == GroundingStatus.VERIFIED  # Documented anchor-level blind spot
+
+
+def test_rollout_default_config_and_validation():
+    from pydantic import ValidationError
+
+    default_settings = Settings(
+        database_url="postgresql+asyncpg://dummy:dummy@localhost/dummy",
+        jwt_secret_key="dummy",
+    )
+    assert default_settings.citation_grounding_enabled is True
+    assert default_settings.citation_grounding_mode == "report_only"
+
+    with pytest.raises(ValidationError):
+        Settings(
+            citation_grounding_mode="invalid_mode",  # type: ignore[arg-type]
+            database_url="postgresql+asyncpg://dummy:dummy@localhost/dummy",
+            jwt_secret_key="dummy",
+        )
+
