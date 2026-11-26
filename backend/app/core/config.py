@@ -87,6 +87,10 @@ class Settings(BaseSettings):
     reranker_timeout_ms: float = 3000.0
     reranker_expected_sha256: str | None = None
 
+    # Citation Grounding Verification (T260041)
+    citation_grounding_enabled: bool = True
+    citation_grounding_mode: str = "enforce"  # "enforce" | "report_only"
+
     model_config = SettingsConfigDict(
         env_file=PROJECT_ROOT / ".env",
         env_file_encoding="utf-8",

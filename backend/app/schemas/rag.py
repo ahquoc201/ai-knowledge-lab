@@ -46,3 +46,7 @@ class RAGResponse(BaseModel):
     sources: list[RAGSourceResponse]
     # Model that generated the answer (None when no generation was needed).
     model_name: str | None = None
+    grounding_status: str | None = Field(
+        default=None,
+        description="Deterministic citation grounding status: verified, unsupported, or inconclusive.",
+    )

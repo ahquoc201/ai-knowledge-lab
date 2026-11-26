@@ -177,6 +177,7 @@ async def ask_rag(
         conversation_id=conversation_id,
         answer=result.answer,
         model_name=getattr(result, "model_name", None),
+        grounding_status=getattr(result, "grounding_status", None),
         sources=[
             RAGSourceResponse(
                 source_index=source.source_index,
