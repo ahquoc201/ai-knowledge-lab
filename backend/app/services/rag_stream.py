@@ -12,9 +12,11 @@ import httpx
 from fastapi import HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.core.config import get_settings
 from app.core.message_role import MessageRole
 from app.llm.base import LLMMessage, LLMProvider
 from app.models.user import User
+from app.services.citation_grounding import verify_answer_grounding
 from app.services.citation_validation import validate_answer_citations
 from app.services.context_builder import ContextSource
 from app.services.inference_governor import get_inference_governor
@@ -268,19 +270,31 @@ async def answer_with_rag_stream(
         raw_answer = "".join(accumulated_tokens)
 
         # Guardrail 2: Model self-refusal
+        grounding_status: str | None = None
         if raw_answer.strip() == INSUFFICIENT_CONTEXT_ANSWER:
             final_answer = INSUFFICIENT_CONTEXT_ANSWER
             final_sources: list[ContextSource] = []
         else:
-            # Guardrail 3: Strict citation validation
+            # Guardrail 3: Strict citation syntax + claim-to-evidence grounding verification
             stage = "citation_validation"
             validation = validate_answer_citations(raw_answer, context.sources)
             if not validation.is_valid:
                 final_answer = UNVERIFIED_CITATION_ANSWER
                 final_sources = []
             else:
-                final_answer = raw_answer
-                final_sources = context.sources
+                settings = get_settings()
+                if settings.citation_grounding_enabled:
+                    grounding = verify_answer_grounding(raw_answer, context.sources)
+                    grounding_status = grounding.status.value
+                    if not grounding.is_grounded and settings.citation_grounding_mode == "enforce":
+                        final_answer = UNVERIFIED_CITATION_ANSWER
+                        final_sources = []
+                    else:
+                        final_answer = raw_answer
+                        final_sources = context.sources
+                else:
+                    final_answer = raw_answer
+                    final_sources = context.sources
 
         # Persist assistant message and citations
         stage = "persistence"
@@ -324,6 +338,7 @@ async def answer_with_rag_stream(
                 "answer": final_answer,
                 "sources": [serialize_source(s) for s in final_sources],
                 "model_name": routed_model,
+                "grounding_status": grounding_status,
             },
         )
 

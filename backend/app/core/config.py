@@ -1,5 +1,6 @@
 from functools import lru_cache
 from pathlib import Path
+from typing import Literal
 
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
@@ -86,6 +87,10 @@ class Settings(BaseSettings):
     reranker_intra_op_threads: int = 4
     reranker_timeout_ms: float = 3000.0
     reranker_expected_sha256: str | None = None
+
+    # Citation Grounding Verification (T260041)
+    citation_grounding_enabled: bool = True
+    citation_grounding_mode: Literal["report_only", "enforce"] = "report_only"
 
     model_config = SettingsConfigDict(
         env_file=PROJECT_ROOT / ".env",

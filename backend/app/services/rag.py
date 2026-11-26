@@ -5,7 +5,9 @@ from uuid import UUID
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.core.config import get_settings
 from app.llm.base import LLMMessage, LLMProvider
+from app.services.citation_grounding import verify_answer_grounding
 from app.services.citation_validation import validate_answer_citations
 from app.services.context_builder import ContextSource
 from app.services.rag_observability import (
@@ -26,6 +28,7 @@ class RAGResult:
     answer: str
     sources: list[ContextSource]
     model_name: str | None = None
+    grounding_status: str | None = None
 
 
 async def answer_with_rag(
@@ -180,6 +183,37 @@ async def answer_with_rag(
                 model_name=routed.model_name,
             )
 
+        grounding_status: str | None = None
+        settings = get_settings()
+        if settings.citation_grounding_enabled:
+            grounding = verify_answer_grounding(answer, context.sources)
+            grounding_status = grounding.status.value
+            if not grounding.is_grounded and settings.citation_grounding_mode == "enforce":
+                obs.record_request(
+                    correlation_id=cid,
+                    mode=retrieval_mode,
+                    stream=False,
+                    rerank_opt_in=enable_reranking,
+                    rerank_used=rerank_used,
+                    rerank_fallback_reason=rerank_fallback,
+                    status="success",
+                    retrieval_ms=retrieval_ms,
+                    rerank_ms=rerank_ms,
+                    context_assembly_ms=context_ms,
+                    llm_generation_ms=llm_ms,
+                    total_ms=elapsed_ms(t_total_start),
+                    source_count=0,
+                )
+                return RAGResult(
+                    answer=(
+                        "Không thể xác minh câu trả lời "
+                        "từ tài liệu được truy xuất."
+                    ),
+                    sources=[],
+                    model_name=routed.model_name,
+                    grounding_status=grounding_status,
+                )
+
         obs.record_request(
             correlation_id=cid,
             mode=retrieval_mode,
@@ -199,6 +233,7 @@ async def answer_with_rag(
             answer=answer,
             sources=context.sources,
             model_name=routed.model_name,
+            grounding_status=grounding_status,
         )
     except asyncio.CancelledError:
         obs.record_request(

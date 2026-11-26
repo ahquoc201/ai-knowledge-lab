@@ -188,4 +188,74 @@ test.describe("Evidence-Driven AI Chat Workflows (T260022)", () => {
       page.getByRole("heading", { name: /trợ lý tri thức AI \(evidence-driven\)/i })
     ).toBeVisible();
   });
+
+  test("thay thế nội dung đã stream khi answer_completed báo citation grounding thất bại (T260041)", async ({
+    page,
+  }) => {
+    const user = generateTestUser();
+    await registerUserViaUI(page, user);
+
+    await page.getByRole("button", { name: /AI Chat \/ RAG/i }).click();
+
+    const mockDocId = "11111111-1111-1111-1111-111111111111";
+    const mockChunkId = "22222222-2222-2222-2222-222222222222";
+    const mockConvId = "55555555-5555-5555-5555-555555555555";
+    const rejectedText = "Không thể xác minh câu trả lời từ tài liệu được truy xuất.";
+
+    await page.route("**/api/v1/rag/ask/stream", async (route) => {
+      const sseBody = [
+        `event: retrieval_started\ndata: ${JSON.stringify({
+          event: "retrieval_started",
+          query: "Nghỉ phép?",
+          conversation_id: mockConvId,
+        })}\n\n`,
+        `event: retrieval_completed\ndata: ${JSON.stringify({
+          event: "retrieval_completed",
+          sources: [
+            {
+              source_index: 2,
+              document_id: mockDocId,
+              chunk_id: mockChunkId,
+              chunk_index: 1,
+              content: "Phụ cấp ăn trưa 1.200.000 đồng mỗi tháng.",
+              similarity: 0.88,
+              document_title: "lumora_hr_handbook.md",
+            },
+          ],
+        })}\n\n`,
+        `event: generation_started\ndata: ${JSON.stringify({
+          event: "generation_started",
+        })}\n\n`,
+        `event: token\ndata: ${JSON.stringify({
+          event: "token",
+          token: "Nhân viên được hưởng 18 ngày nghỉ phép [Source 2].",
+        })}\n\n`,
+        `event: answer_completed\ndata: ${JSON.stringify({
+          event: "answer_completed",
+          conversation_id: mockConvId,
+          message_id: "66666666-6666-6666-6666-666666666666",
+          answer: rejectedText,
+          sources: [],
+          grounding_status: "unsupported",
+        })}\n\n`,
+      ].join("");
+
+      await route.fulfill({
+        status: 200,
+        headers: {
+          "Content-Type": "text/event-stream; charset=utf-8",
+          "X-Conversation-Id": mockConvId,
+        },
+        body: sseBody,
+      });
+    });
+
+    const composer = page.getByPlaceholder(/đặt câu hỏi về tài liệu của bạn/i);
+    await composer.fill("Nghỉ phép?");
+    await page.keyboard.press("Enter");
+
+    // Final authoritative answer from answer_completed replaces streamed tokens
+    await expect(page.getByText(rejectedText)).toBeVisible();
+    await expect(page.getByText(/18 ngày nghỉ phép/i)).toHaveCount(0);
+  });
 });

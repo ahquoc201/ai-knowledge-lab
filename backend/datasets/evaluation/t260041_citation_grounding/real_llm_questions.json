@@ -1,0 +1,101 @@
+{
+  "name": "t260041_real_llm_extension",
+  "description": "T260041 extension of the T260040 real-LLM evaluation set. Labels were written from the two T260040 source documents before any model output was generated for these questions. 'required_facts' must all appear in a correct answer (alternatives separated by '|'); 'evidence' lists exact source fragments, every one of which must be contained in a cited chunk for the citation to be grounded. 'derived' marks answers that require arithmetic over the evidence (a known blind spot of deterministic verification).",
+  "documents": [
+    "../t260040_real_llm/lumora_hr_handbook.md",
+    "../t260040_real_llm/orchid_operations_runbook.md"
+  ],
+  "questions": [
+    {
+      "id": "r01",
+      "question": "Phụ cấp ăn trưa hằng tháng của nhân viên chính thức Lumora là bao nhiêu?",
+      "answerable": true,
+      "required_facts": ["1.200.000|1,2 triệu|1200000"],
+      "evidence": ["phụ cấp ăn trưa 1.200.000 đồng mỗi tháng"]
+    },
+    {
+      "id": "r02",
+      "question": "Mục tiêu điểm khôi phục RPO của hệ thống Orchid là bao nhiêu?",
+      "answerable": true,
+      "required_facts": ["15 phút"],
+      "evidence": ["Mục tiêu điểm khôi phục (RPO) là 15 phút"]
+    },
+    {
+      "id": "r03",
+      "question": "Nhân viên Lumora đã qua thử việc được làm việc từ xa tối đa mấy ngày mỗi tuần?",
+      "answerable": true,
+      "required_facts": ["2"],
+      "evidence": ["làm việc từ xa tối đa 2 ngày mỗi tuần"]
+    },
+    {
+      "id": "r04",
+      "question": "Lịch trực vận hành của Orchid bắt đầu vào thời điểm nào?",
+      "answerable": true,
+      "required_facts": ["10 giờ", "thứ Hai"],
+      "evidence": ["bắt đầu lúc 10 giờ sáng thứ Hai"]
+    },
+    {
+      "id": "r05",
+      "question": "Khi mất thiết bị, nhân viên Lumora báo cho bộ phận IT qua kênh nào?",
+      "answerable": true,
+      "required_facts": ["#it-helpdesk|it-helpdesk"],
+      "evidence": ["qua kênh #it-helpdesk"]
+    },
+    {
+      "id": "r06",
+      "question": "Số ngày phép năm chưa dùng hết được chuyển sang năm sau phải sử dụng trước ngày nào?",
+      "answerable": true,
+      "required_facts": ["31 tháng 3|31/3|31/03"],
+      "evidence": ["phải sử dụng trước ngày 31 tháng 3"]
+    },
+    {
+      "id": "r07",
+      "question": "Ngân sách đào tạo mỗi năm của một nhân viên Lumora là bao nhiêu?",
+      "answerable": true,
+      "required_facts": ["8.000.000|8 triệu|8000000"],
+      "evidence": ["ngân sách đào tạo 8.000.000 đồng mỗi năm"]
+    },
+    {
+      "id": "r08",
+      "question": "Kỹ sư trực Orchid nhận phụ cấp bao nhiêu cho mỗi ngày trực ngoài giờ hành chính?",
+      "answerable": true,
+      "required_facts": ["500.000|500 nghìn|500000"],
+      "evidence": ["phụ cấp 500.000 đồng cho mỗi ngày trực ngoài giờ hành chính"]
+    },
+    {
+      "id": "r09",
+      "question": "Phụ cấp ăn trưa mỗi tháng của nhân viên Lumora và phụ cấp mỗi ngày trực ngoài giờ của kỹ sư Orchid lần lượt là bao nhiêu?",
+      "answerable": true,
+      "required_facts": ["1.200.000|1,2 triệu|1200000", "500.000|500 nghìn|500000"],
+      "evidence": [
+        "phụ cấp ăn trưa 1.200.000 đồng mỗi tháng",
+        "phụ cấp 500.000 đồng cho mỗi ngày trực ngoài giờ hành chính"
+      ]
+    },
+    {
+      "id": "r10",
+      "question": "Sau 5 năm làm việc liên tục, nhân viên chính thức Lumora có tổng cộng bao nhiêu ngày phép mỗi năm?",
+      "answerable": true,
+      "derived": true,
+      "required_facts": ["20"],
+      "evidence": [
+        "được hưởng 18 ngày nghỉ phép có lương mỗi năm",
+        "được cộng thêm 2 ngày phép"
+      ]
+    },
+    {
+      "id": "r11",
+      "question": "Nhân viên Lumora đi làm muộn bị phạt bao nhiêu tiền?",
+      "answerable": false,
+      "required_facts": [],
+      "evidence": []
+    },
+    {
+      "id": "r12",
+      "question": "Hệ thống Orchid dùng công cụ giám sát nào để phát hiện sự cố?",
+      "answerable": false,
+      "required_facts": [],
+      "evidence": []
+    }
+  ]
+}
